@@ -16,76 +16,80 @@ class LocationSearchScreen extends StatefulWidget {
   State<LocationSearchScreen> createState() => _LocationSearchScreenState();
 }
 
-class _LocationSearchScreenState extends State<LocationSearchScreen>
-    with SingleTickerProviderStateMixin {
-  late final TabController _tabController;
+class _LocationSearchScreenState extends State<LocationSearchScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+  List<_LocationItem> _results = [];
 
-  // Mock data
-  final List<_LocationItem> _recentLocations = const [
-    _LocationItem(title: 'شارع التحلية، طرابلس', subtitle: 'طرابلس، ليبيا'),
-    _LocationItem(title: 'حي الأندلس، طرابلس', subtitle: 'طرابلس، ليبيا'),
-    _LocationItem(title: 'سوق الجمعة', subtitle: 'طرابلس، ليبيا'),
-    _LocationItem(title: 'جامعة طرابلس', subtitle: 'طرابلس، ليبيا'),
-    _LocationItem(title: 'مطار معيتيقة الدولي', subtitle: 'طرابلس، ليبيا'),
-  ];
-
-  final List<_LocationItem> _favoriteLocations = const [
-    _LocationItem(title: 'المنزل', subtitle: 'شارع التحلية، طرابلس'),
-    _LocationItem(title: 'العمل', subtitle: 'حي الأندلس، طرابلس'),
+  final List<_LocationItem> _allLocations = const [
+    _LocationItem(
+      title: 'المنصورة',
+      subtitle: 'أول المنصورة-قسم أول-شارع الحوار',
+    ),
+    _LocationItem(
+      title: 'المنصورة',
+      subtitle: 'أول المنصورة-قسم أول-شارع الحوار',
+    ),
+    _LocationItem(
+      title: 'المنصورة',
+      subtitle: 'أول المنصورة-قسم أول-شارع الحوار',
+    ),
   ];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.trim();
+    setState(() {
+      if (query.isEmpty) {
+        _results = [];
+      } else {
+        _results = _allLocations
+            .where(
+              (loc) =>
+                  loc.title.contains(query) || loc.subtitle.contains(query),
+            )
+            .toList();
+        if (_results.isEmpty) _results = List.from(_allLocations);
+      }
+    });
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
     _searchController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // App bar
-            _buildAppBar(),
-
-            // Search bar
-            _buildSearchBar(),
-            SizedBox(height: Sizes.s8),
-
-            // Current location option
-            if (widget.args.showCurrentLocation) ...[
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildAppBar(),
+              _buildSearchBar(),
+              const Divider(color: AppColors.divider, height: 1),
               _buildCurrentLocationOption(),
               const Divider(color: AppColors.divider, height: 1),
-            ],
-
-            // Choose on map option
-            _buildChooseOnMapOption(),
-            const Divider(color: AppColors.divider, height: 1),
-
-            // Tabs
-            _buildTabs(),
-
-            // Tab content
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _buildLocationList(_favoriteLocations),
-                  _buildLocationList(_recentLocations),
-                ],
+              _buildChooseOnMapOption(),
+              const Divider(color: AppColors.divider, height: 1),
+              Expanded(
+                child: _searchController.text.isEmpty
+                    ? const SizedBox.shrink()
+                    : _buildResultsList(),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -95,33 +99,35 @@ class _LocationSearchScreenState extends State<LocationSearchScreen>
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: Insets.s16,
-        vertical: Insets.s12,
+        vertical: 14.h,
       ),
-      child: Row(
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          Expanded(
-            child: Text(
-              widget.args.title,
-              style: getBoldStyle(
-                color: AppColors.black,
-                fontSize: FontSize.s18,
-              ),
-              textAlign: TextAlign.center,
+          Text(
+            widget.args.title,
+            style: getBoldStyle(
+              color: AppColors.black,
+              fontSize: FontSize.s18,
             ),
+            textAlign: TextAlign.center,
           ),
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              width: 36.w,
-              height: 36.w,
-              decoration: BoxDecoration(
-                color: AppColors.lightGrey,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.close,
-                size: 20.sp,
-                color: AppColors.black,
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                width: 36.w,
+                height: 36.w,
+                decoration: BoxDecoration(
+                  color: AppColors.lightGrey,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.close,
+                  size: 18.sp,
+                  color: AppColors.black,
+                ),
               ),
             ),
           ),
@@ -132,43 +138,53 @@ class _LocationSearchScreenState extends State<LocationSearchScreen>
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+      padding: EdgeInsets.fromLTRB(
+        Insets.s16,
+        0,
+        Insets.s16,
+        Insets.s12,
+      ),
       child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: Insets.s12,
-          vertical: Insets.s4,
-        ),
+        height: 48.h,
+        padding: EdgeInsets.symmetric(horizontal: Insets.s12),
         decoration: BoxDecoration(
           color: AppColors.lightGrey,
           borderRadius: BorderRadius.circular(AppRadius.s12),
+          border: Border.all(color: AppColors.inputBorder),
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.search_rounded,
-              color: AppColors.grey,
-              size: 22.sp,
-            ),
+            Icon(Icons.search_rounded, color: AppColors.grey, size: 20.sp),
             SizedBox(width: Insets.s8),
             Expanded(
               child: TextField(
                 controller: _searchController,
-                style: getRegularStyle(
+                focusNode: _focusNode,
+                textDirection: TextDirection.rtl,
+                style: getMediumStyle(
                   color: AppColors.black,
                   fontSize: FontSize.s14,
                 ),
                 decoration: InputDecoration(
-                  hintText: AppStrings.searchLocation,
+                  hintText: 'ابحث عن موقعك',
                   hintStyle: getRegularStyle(
                     color: AppColors.grey,
                     fontSize: FontSize.s14,
                   ),
                   border: InputBorder.none,
                   isDense: true,
-                  contentPadding: EdgeInsets.symmetric(vertical: Insets.s8),
+                  contentPadding: EdgeInsets.zero,
                 ),
               ),
             ),
+            if (_searchController.text.isNotEmpty)
+              GestureDetector(
+                onTap: () {
+                  _searchController.clear();
+                  setState(() => _results = []);
+                },
+                child: Icon(Icons.close, color: AppColors.grey, size: 18.sp),
+              ),
           ],
         ),
       ),
@@ -177,10 +193,7 @@ class _LocationSearchScreenState extends State<LocationSearchScreen>
 
   Widget _buildCurrentLocationOption() {
     return InkWell(
-      onTap: () {
-        // Return current location
-        Navigator.pop(context, 'موقعك الحالي');
-      },
+      onTap: () => Navigator.pop(context, AppStrings.yourCurrentLocation),
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: Insets.s16,
@@ -189,21 +202,21 @@ class _LocationSearchScreenState extends State<LocationSearchScreen>
         child: Row(
           children: [
             Container(
-              width: 40.w,
-              height: 40.w,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
+              width: 26.w,
+              height: 26.w,
+              decoration: const BoxDecoration(
+                color: AppColors.primary,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.my_location_rounded,
-                color: AppColors.primary,
-                size: 20.sp,
+                color: AppColors.white,
+                size: 14.sp,
               ),
             ),
             SizedBox(width: Insets.s12),
             Text(
-              AppStrings.useCurrentLocation,
+              AppStrings.yourCurrentLocation,
               style: getMediumStyle(
                 color: AppColors.primary,
                 fontSize: FontSize.s14,
@@ -231,24 +244,16 @@ class _LocationSearchScreenState extends State<LocationSearchScreen>
         ),
         child: Row(
           children: [
-            Container(
-              width: 40.w,
-              height: 40.w,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.map_rounded,
-                color: AppColors.primary,
-                size: 20.sp,
-              ),
+            Icon(
+              Icons.location_on_outlined,
+              color: AppColors.primary,
+              size: 24.sp,
             ),
             SizedBox(width: Insets.s12),
             Text(
-              AppStrings.chooseOnMap,
+              'حدد الموقع علي الخريطة',
               style: getMediumStyle(
-                color: AppColors.primary,
+                color: AppColors.black,
                 fontSize: FontSize.s14,
               ),
             ),
@@ -258,50 +263,17 @@ class _LocationSearchScreenState extends State<LocationSearchScreen>
     );
   }
 
-  Widget _buildTabs() {
-    return Container(
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: AppColors.divider, width: 1),
-        ),
-      ),
-      child: TabBar(
-        controller: _tabController,
-        labelColor: AppColors.primary,
-        unselectedLabelColor: AppColors.grey,
-        indicatorColor: AppColors.primary,
-        indicatorWeight: 2.5,
-        labelStyle: getSemiBoldStyle(
-          color: AppColors.primary,
-          fontSize: FontSize.s14,
-        ),
-        unselectedLabelStyle: getRegularStyle(
-          color: AppColors.grey,
-          fontSize: FontSize.s14,
-        ),
-        tabs: const [
-          Tab(text: AppStrings.favorites),
-          Tab(text: AppStrings.recentLocations),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLocationList(List<_LocationItem> locations) {
+  Widget _buildResultsList() {
+    final items = _results.isEmpty ? _allLocations : _results;
     return ListView.separated(
-      padding: EdgeInsets.symmetric(vertical: Insets.s8),
-      itemCount: locations.length,
-      separatorBuilder: (_, __) => const Divider(
-        color: AppColors.divider,
-        height: 1,
-        indent: 68,
-      ),
+      padding: EdgeInsets.only(top: 4.h),
+      itemCount: items.length,
+      separatorBuilder: (_, __) =>
+          const Divider(color: AppColors.divider, height: 1),
       itemBuilder: (context, index) {
-        final location = locations[index];
+        final loc = items[index];
         return InkWell(
-          onTap: () {
-            Navigator.pop(context, location.title);
-          },
+          onTap: () => Navigator.pop(context, loc.title),
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: Insets.s16,
@@ -309,43 +281,35 @@ class _LocationSearchScreenState extends State<LocationSearchScreen>
             ),
             child: Row(
               children: [
-                Container(
-                  width: 40.w,
-                  height: 40.w,
-                  decoration: BoxDecoration(
-                    color: AppColors.lightGrey,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.location_on_outlined,
-                    color: AppColors.grey,
-                    size: 20.sp,
-                  ),
-                ),
-                SizedBox(width: Insets.s12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        location.title,
+                        loc.title,
                         style: getMediumStyle(
                           color: AppColors.black,
                           fontSize: FontSize.s14,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 2.h),
+                      SizedBox(height: 4.h),
                       Text(
-                        location.subtitle,
+                        loc.subtitle,
                         style: getRegularStyle(
                           color: AppColors.grey,
                           fontSize: FontSize.s12,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
+                ),
+                SizedBox(width: Insets.s12),
+                Icon(
+                  Icons.north_west_rounded,
+                  color: AppColors.grey,
+                  size: 20.sp,
                 ),
               ],
             ),
