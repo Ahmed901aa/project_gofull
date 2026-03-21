@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter analyze:*)",
+      "Read(//Users/usermac/development/flutter/bin/**)",
+      "Read(//opt/homebrew/bin/**)",
+      "Read(//Users/usermac/**)",
+      "Bash(/Users/usermac/development/flutter/bin/flutter analyze:*)",
+      "Bash(/Users/usermac/development/flutter/bin/flutter build:*)",
+      "WebFetch(domain:www.figma.com)",
+      "Bash(claude mcp:*)",
+      "mcp__claude_ai_Figma__get_design_context"
+    ]
+  }
+}
