@@ -28,6 +28,18 @@ class AppColors {
   static const Color warning = Color(0xFFFFA726);
   static const Color info = Color(0xFF2196F3);
 
+  // Figma design tokens
+  static const Color neutral50  = Color(0xFFFAFAFB);
+  static const Color neutral200 = Color(0xFFF8F8F9);
+  static const Color neutral300 = Color(0xFFF4F5F6);
+  static const Color neutral400 = Color(0xFFF2F3F4);
+  static const Color neutral500 = Color(0xFFEFF0F1);
+  static const Color neutral600 = Color(0xFFD9DADB);
+  static const Color neutral800 = Color(0xFF838485);
+  static const Color neutral900 = Color(0xFF646565);
+  static const Color primary50  = Color(0xFFE6EDEB);
+  static const Color primary200 = Color(0xFF8AACA5);
+
   // Transparent
   static const Color transparent = Colors.transparent;
 

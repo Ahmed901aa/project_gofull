@@ -12,7 +12,19 @@
       "mcp__claude_ai_Figma__get_design_context",
       "mcp__claude_ai_Figma__get_metadata",
       "mcp__claude_ai_Figma__get_screenshot",
-      "Bash(dart analyze:*)"
+      "Bash(dart analyze:*)",
+      "Bash(flutter clean:*)",
+      "Bash(rm -rf Pods Podfile.lock .symlinks)",
+      "Bash(pod install:*)",
+      "Bash(flutter pub:*)",
+      "Bash(flutter build:*)",
+      "Bash(xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Debug -destination 'generic/platform=iOS Simulator' -showBuildSettings)",
+      "Bash(flutter precache:*)",
+      "Bash(find /Users/usermac/Desktop/project_Gofull/project_gofull/lib/core -type f -name *.dart)",
+      "Bash(grep -E \"\\\\.dart$\")",
+      "Bash(find /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/shell -type f -name *.dart)",
+      "Bash(find /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/orders -type f -name *.dart)",
+      "Bash(find /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/profile -type f -name *.dart)"
     ]
   }
 }

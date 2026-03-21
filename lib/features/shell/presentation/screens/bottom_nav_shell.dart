@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/strings_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
+import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/home/presentation/screens/home_screen.dart';
 import 'package:project_gofull/features/orders/presentation/screens/orders_screen.dart';
 import 'package:project_gofull/features/profile/presentation/screens/profile_screen.dart';
@@ -23,7 +25,6 @@ class _BottomNavShellState extends State<BottomNavShell> {
     ProfileScreen(),
   ];
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,25 +35,41 @@ class _BottomNavShellState extends State<BottomNavShell> {
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: AppColors.white,
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.shadow,
-              blurRadius: 12,
-              offset: const Offset(0, -2),
-            ),
-          ],
+          border: Border(
+            top: BorderSide(color: AppColors.neutral300, width: 1),
+          ),
         ),
         child: SafeArea(
+          top: false,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            padding: EdgeInsets.symmetric(
+              horizontal: Insets.s32,
+              vertical: 12.h,
+            ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildNavItem(0, Icons.home_rounded, AppStrings.home),
-                _buildNavItem(
-                    1, Icons.receipt_long_rounded, AppStrings.myOrders),
-                _buildNavItem(
-                    2, Icons.person_outline_rounded, AppStrings.myAccount),
+                _NavItem(
+                  icon: Icons.person_outline_rounded,
+                  label: AppStrings.myAccount,
+                  index: 2,
+                  currentIndex: _currentIndex,
+                  onTap: (i) => setState(() => _currentIndex = i),
+                ),
+                _NavItem(
+                  icon: Icons.receipt_long_rounded,
+                  label: AppStrings.myOrders,
+                  index: 1,
+                  currentIndex: _currentIndex,
+                  onTap: (i) => setState(() => _currentIndex = i),
+                ),
+                _NavItem(
+                  icon: Icons.home_rounded,
+                  label: AppStrings.home,
+                  index: 0,
+                  currentIndex: _currentIndex,
+                  onTap: (i) => setState(() => _currentIndex = i),
+                ),
               ],
             ),
           ),
@@ -60,39 +77,43 @@ class _BottomNavShellState extends State<BottomNavShell> {
       ),
     );
   }
+}
 
-  Widget _buildNavItem(int index, IconData icon, String label) {
-    final isActive = _currentIndex == index;
+class _NavItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final int index;
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+
+  const _NavItem({
+    required this.icon,
+    required this.label,
+    required this.index,
+    required this.currentIndex,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isActive = currentIndex == index;
+    final color = isActive ? AppColors.primary : AppColors.primary200;
+
     return GestureDetector(
-      onTap: () => setState(() => _currentIndex = index),
+      onTap: () => onTap(index),
       behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        decoration: BoxDecoration(
-          color: isActive
-              ? AppColors.primary.withValues(alpha: 0.1)
-              : AppColors.transparent,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 24,
-              color: isActive ? AppColors.primary : AppColors.grey,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: getMediumStyle(
-                color: isActive ? AppColors.primary : AppColors.grey,
-                fontSize: FontSize.s12,
-              ),
-            ),
-          ],
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 24.sp, color: color),
+          SizedBox(height: 4.h),
+          Text(
+            label,
+            style: isActive
+                ? getBoldStyle(color: color, fontSize: FontSize.s14)
+                : getRegularStyle(color: color, fontSize: FontSize.s14),
+          ),
+        ],
       ),
     );
   }

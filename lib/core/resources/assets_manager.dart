@@ -2,13 +2,15 @@ class ImageAssets {
   const ImageAssets._();
   static const String _path = 'assets/images';
   static const String logo = '$_path/logo_1.png';
-  static const String promoTruck = '$_path/promo_truck.png';
+  static const String promoTruck = '$_path/car.png';
+  static const String offerBanner = '$_path/Frame 1984080691.png';
 }
 
 class SvgAssets {
   const SvgAssets._();
   static const String _path = 'assets/svg';
   static const String logo = '$_path/logo.svg';
+  static const String ellipse = '$_path/Ellipse.svg';
   static const String fuelIcon = '$_path/fuel_icon.svg';
   static const String towTruckIcon = '$_path/tow_truck_icon.svg';
   static const String homeIcon = '$_path/home_icon.svg';

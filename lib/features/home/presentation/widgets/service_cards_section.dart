@@ -14,58 +14,24 @@ class ServiceCardsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: _ServiceCard(
-                svgAsset: IconAssets.towTruck,
-                title: AppStrings.towTruckService,
-                subtitle: AppStrings.towTruckServiceDesc,
-                onTap: () {
-                  // TODO: Navigate to car towing flow
-                },
-              ),
-            ),
-            SizedBox(width: Insets.s12),
-            Expanded(
-              child: _ServiceCard(
-                icon: Icons.local_car_wash_rounded,
-                title: 'غسيل سيارات',
-                subtitle: 'غسيل متنقل لسيارتك',
-                onTap: () {
-                  // TODO: Navigate to car wash flow
-                },
-              ),
-            ),
-          ],
+        Expanded(
+          child: _ServiceCard(
+            svgAsset: IconAssets.fuelTruck,
+            title: AppStrings.fuelSupply,
+            subtitle: AppStrings.fuelSupplyDesc,
+            onTap: () => Navigator.pushNamed(context, Routes.fuelType),
+          ),
         ),
-        SizedBox(height: Insets.s12),
-        Row(
-          children: [
-            Expanded(
-              child: _ServiceCard(
-                icon: Icons.battery_charging_full_rounded,
-                title: 'شحن بطارية',
-                subtitle: 'شحن وتشغيل فوري',
-                onTap: () {
-                  // TODO: Navigate to battery flow
-                },
-              ),
-            ),
-            SizedBox(width: Insets.s12),
-            Expanded(
-              child: _ServiceCard(
-                svgAsset: IconAssets.fuelTruck,
-                title: AppStrings.fuelSupply,
-                subtitle: AppStrings.fuelSupplyDesc,
-                onTap: () {
-                  Navigator.pushNamed(context, Routes.fuelType);
-                },
-              ),
-            ),
-          ],
+        SizedBox(width: Insets.s12),
+        Expanded(
+          child: _ServiceCard(
+            svgAsset: IconAssets.towTruck,
+            title: AppStrings.towTruckService,
+            subtitle: AppStrings.towTruckServiceDesc,
+            onTap: () => Navigator.pushNamed(context, Routes.towingRequest),
+          ),
         ),
       ],
     );
@@ -73,72 +39,64 @@ class ServiceCardsSection extends StatelessWidget {
 }
 
 class _ServiceCard extends StatelessWidget {
-  final String? svgAsset;
-  final IconData? icon;
+  final String svgAsset;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
 
   const _ServiceCard({
-    this.svgAsset,
-    this.icon,
+    required this.svgAsset,
     required this.title,
     required this.subtitle,
     required this.onTap,
   });
-
-  static const _cardBg = Color(0xFFF2F3F4);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.all(Insets.s16),
+        padding: EdgeInsets.symmetric(
+          horizontal: Insets.s16,
+          vertical: Insets.s8,
+        ),
         decoration: BoxDecoration(
-          color: _cardBg,
+          color: AppColors.neutral400,
           borderRadius: BorderRadius.circular(AppRadius.s16),
+          border: Border.all(color: AppColors.neutral500),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 48.w,
-              height: 48.w,
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
+            SizedBox(
+              width: 72.w,
+              height: 48.h,
+              child: SvgPicture.asset(
+                svgAsset,
+                fit: BoxFit.contain,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.primary,
+                  BlendMode.srcIn,
+                ),
               ),
-              child: svgAsset != null
-                  ? SvgPicture.asset(
-                      svgAsset!,
-                      colorFilter: const ColorFilter.mode(
-                        AppColors.primary,
-                        BlendMode.srcIn,
-                      ),
-                    )
-                  : Icon(
-                      icon,
-                      color: AppColors.primary,
-                      size: 28.sp,
-                    ),
             ),
-            SizedBox(height: Sizes.s16),
+            SizedBox(height: Insets.s8),
             Text(
               title,
-              style: getBoldStyle(
-                color: AppColors.black,
+              style: getMediumStyle(
+                color: const Color(0xFF0E0E0E),
                 fontSize: FontSize.s16,
               ),
+              textAlign: TextAlign.center,
             ),
-            SizedBox(height: 4.h),
+            SizedBox(height: 2.h),
             Text(
               subtitle,
               style: getRegularStyle(
-                color: AppColors.grey,
+                color: AppColors.neutral900,
                 fontSize: FontSize.s12,
               ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
