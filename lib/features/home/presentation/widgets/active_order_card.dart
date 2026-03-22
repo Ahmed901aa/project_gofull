@@ -253,31 +253,29 @@ class _RouteConnector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.w),
-      child: Column(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 8.w,
-            height: 8.w,
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
+            width: 6.w,
+            height: 6.w,
+            decoration: BoxDecoration(
+              color: AppColors.neutral600,
               shape: BoxShape.circle,
             ),
           ),
-          ...List.generate(
-            4,
-            (_) => Container(
-              width: 2.w,
-              height: 4.h,
-              margin: EdgeInsets.symmetric(vertical: 1.5.h),
+          SizedBox(
+            width: 36.w,
+            child: Divider(
               color: AppColors.neutral600,
+              thickness: 1,
             ),
           ),
           Container(
-            width: 8.w,
-            height: 8.w,
+            width: 6.w,
+            height: 6.w,
             decoration: BoxDecoration(
-              color: AppColors.error,
+              color: AppColors.neutral600,
               shape: BoxShape.circle,
             ),
           ),

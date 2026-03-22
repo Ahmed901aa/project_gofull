@@ -112,15 +112,18 @@ class _PromoBannerState extends State<PromoBanner> {
             ),
           ),
 
-          // Truck image — RIGHT side, overflows top & bottom
+          // Truck image — RIGHT side, overflows top & bottom, flipped to face left
           Positioned(
             right: -10.w,
             top: -5.h,
             bottom: -5.h,
             width: 140.w,
-            child: Image.asset(
-              ImageAssets.promoTruck,
-              fit: BoxFit.contain,
+            child: Transform.scale(
+              scaleX: -1,
+              child: Image.asset(
+                ImageAssets.promoTruck,
+                fit: BoxFit.contain,
+              ),
             ),
           ),
 
@@ -140,11 +143,11 @@ class _PromoBannerState extends State<PromoBanner> {
                         color: const Color(0xFF0E0E0E),
                         fontSize: FontSize.s16,
                       ),
-                      children: const [
-                        TextSpan(text: 'جميع  خدمات الطوارئ في '),
-                        TextSpan(
+                      children: [
+                        const TextSpan(text: 'جميع  خدمات الطوارئ في '),
+                        const TextSpan(
                           text: 'اشتراك واحد',
-                          style: TextStyle(color: AppColors.white),
+                          style: TextStyle(color: Colors.white),
                         ),
                       ],
                     ),

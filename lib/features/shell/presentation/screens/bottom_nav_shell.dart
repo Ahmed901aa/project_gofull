@@ -35,27 +35,35 @@ class _BottomNavShellState extends State<BottomNavShell> {
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: AppColors.white,
-          border: Border(
-            top: BorderSide(color: AppColors.neutral300, width: 1),
-          ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.shadow,
+              blurRadius: 12,
+              offset: const Offset(0, -2),
+            ),
+          ],
         ),
         child: SafeArea(
           top: false,
           child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: Insets.s32,
-              vertical: 12.h,
+              horizontal: Insets.s16,
+              vertical: 10.h,
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              // RTL: first child → right side, last child → left side
               children: [
+                // RIGHT: Home (index 0)
                 _NavItem(
-                  icon: Icons.person_outline_rounded,
-                  label: AppStrings.myAccount,
-                  index: 2,
+                  icon: Icons.home_rounded,
+                  label: AppStrings.home,
+                  index: 0,
                   currentIndex: _currentIndex,
                   onTap: (i) => setState(() => _currentIndex = i),
                 ),
+                // MIDDLE: Orders (index 1)
                 _NavItem(
                   icon: Icons.receipt_long_rounded,
                   label: AppStrings.myOrders,
@@ -63,10 +71,11 @@ class _BottomNavShellState extends State<BottomNavShell> {
                   currentIndex: _currentIndex,
                   onTap: (i) => setState(() => _currentIndex = i),
                 ),
+                // LEFT: Profile (index 2)
                 _NavItem(
-                  icon: Icons.home_rounded,
-                  label: AppStrings.home,
-                  index: 0,
+                  icon: Icons.person_outline_rounded,
+                  label: AppStrings.myAccount,
+                  index: 2,
                   currentIndex: _currentIndex,
                   onTap: (i) => setState(() => _currentIndex = i),
                 ),
@@ -102,18 +111,23 @@ class _NavItem extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap(index),
       behavior: HitTestBehavior.opaque,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 24.sp, color: color),
-          SizedBox(height: 4.h),
-          Text(
-            label,
-            style: isActive
-                ? getBoldStyle(color: color, fontSize: FontSize.s14)
-                : getRegularStyle(color: color, fontSize: FontSize.s14),
-          ),
-        ],
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 24.sp, color: color),
+            SizedBox(height: 6.h),
+            Text(
+              label,
+              style: isActive
+                  ? getBoldStyle(color: color, fontSize: FontSize.s14)
+                  : getRegularStyle(color: color, fontSize: FontSize.s14),
+            ),
+          ],
+        ),
       ),
     );
   }

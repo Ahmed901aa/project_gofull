@@ -135,7 +135,7 @@ class HomeHeader extends StatelessWidget {
 
                     // Text — beside icon, both grouped on RIGHT
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           AppStrings.yourCurrentLocation,
