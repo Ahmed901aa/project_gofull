@@ -134,7 +134,7 @@ class _FuelScreenState extends State<FuelScreen> {
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Icon(
-                    Icons.arrow_forward_ios_rounded,
+                    Icons.arrow_back_ios_rounded,
                     size: 22.sp,
                     color: const Color(0xFF0E0E0E),
                   ),
@@ -274,7 +274,7 @@ class _FuelScreenState extends State<FuelScreen> {
           const Spacer(),
           // → arrow on LEFT (last in RTL row)
           Icon(
-            Icons.arrow_back_ios_rounded,
+            Icons.arrow_forward_ios_rounded,
             size: 16.sp,
             color: const Color(0xFF0E0E0E),
           ),
