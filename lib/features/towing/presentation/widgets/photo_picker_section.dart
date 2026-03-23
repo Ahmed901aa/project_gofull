@@ -12,20 +12,13 @@ class PhotoPickerSection extends StatefulWidget {
 }
 
 class _PhotoPickerSectionState extends State<PhotoPickerSection> {
-  File? _cameraPhoto;
-  File? _galleryPhoto;
+  File? _photo; // both camera and gallery results go here (middle slot)
   final _picker = ImagePicker();
 
   Future<void> _pick(ImageSource source) async {
     final picked = await _picker.pickImage(source: source, imageQuality: 90);
     if (picked == null || !mounted) return;
-    setState(() {
-      if (source == ImageSource.camera) {
-        _cameraPhoto = File(picked.path);
-      } else {
-        _galleryPhoto = File(picked.path);
-      }
-    });
+    setState(() => _photo = File(picked.path));
   }
 
   @override
@@ -34,18 +27,18 @@ class _PhotoPickerSectionState extends State<PhotoPickerSection> {
     return Row(
       children: [
         // RIGHT — camera button (always)
-        _buildActionSlot(icon: Icons.add_a_photo_outlined, onTap: () => _pick(ImageSource.camera)),
+        _buildButton(icon: Icons.add_a_photo_outlined, onTap: () => _pick(ImageSource.camera)),
         SizedBox(width: Insets.s12),
-        // MIDDLE — camera photo result
-        _buildPhotoSlot(photo: _cameraPhoto, source: ImageSource.camera),
+        // MIDDLE — photo result (from camera or gallery)
+        _buildPhotoSlot(),
         SizedBox(width: Insets.s12),
-        // LEFT — gallery picker / gallery photo
-        _buildPhotoSlot(photo: _galleryPhoto, source: ImageSource.gallery, emptyIcon: Icons.photo_library_outlined, tappableWhenEmpty: true),
+        // LEFT — gallery button (always)
+        _buildButton(icon: Icons.photo_library_outlined, onTap: () => _pick(ImageSource.gallery)),
       ],
     );
   }
 
-  Widget _buildActionSlot({required IconData icon, required VoidCallback onTap}) => Expanded(
+  Widget _buildButton({required IconData icon, required VoidCallback onTap}) => Expanded(
     child: GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
@@ -56,29 +49,22 @@ class _PhotoPickerSectionState extends State<PhotoPickerSection> {
     ),
   );
 
-  Widget _buildPhotoSlot({required File? photo, required ImageSource source, IconData emptyIcon = Icons.image_outlined, bool tappableWhenEmpty = false}) => Expanded(
+  Widget _buildPhotoSlot() => Expanded(
     child: _slotBox(
-      borderColor: photo != null ? AppColors.primary : const Color(0xFFEFF0F1),
-      child: photo != null
+      borderColor: _photo != null ? AppColors.primary : const Color(0xFFEFF0F1),
+      child: _photo != null
           ? Stack(children: [
-              Positioned.fill(child: Image.file(photo, fit: BoxFit.cover)),
+              Positioned.fill(child: Image.file(_photo!, fit: BoxFit.cover)),
               Positioned(
                 top: 4.h, right: 4.w,
-                child: _badge(color: AppColors.primary, icon: Icons.edit_outlined, onTap: () => _pick(source)),
+                child: _badge(color: AppColors.primary, icon: Icons.edit_outlined, onTap: () => _pick(ImageSource.camera)),
               ),
               Positioned(
                 top: 4.h, left: 4.w,
-                child: _badge(color: AppColors.error, icon: Icons.close_rounded, onTap: () => setState(() {
-                  if (source == ImageSource.camera) _cameraPhoto = null;
-                  else _galleryPhoto = null;
-                })),
+                child: _badge(color: AppColors.error, icon: Icons.close_rounded, onTap: () => setState(() => _photo = null)),
               ),
             ])
-          : GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: tappableWhenEmpty ? () => _pick(source) : null,
-              child: SizedBox.expand(child: Center(child: Icon(emptyIcon, color: AppColors.neutral600, size: 28.sp))),
-            ),
+          : Icon(Icons.image_outlined, color: AppColors.neutral600, size: 28.sp),
     ),
   );
 
@@ -101,6 +87,6 @@ class _PhotoPickerSectionState extends State<PhotoPickerSection> {
       border: Border.all(color: borderColor),
     ),
     clipBehavior: Clip.hardEdge,
-    child: child,
+    child: Center(child: child),
   );
 }
