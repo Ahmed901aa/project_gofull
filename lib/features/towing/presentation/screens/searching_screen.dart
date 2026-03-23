@@ -14,8 +14,7 @@ class SearchingScreen extends StatefulWidget {
   State<SearchingScreen> createState() => _SearchingScreenState();
 }
 
-class _SearchingScreenState extends State<SearchingScreen> with TickerProviderStateMixin {
-  late final AnimationController _rotationCtrl;
+class _SearchingScreenState extends State<SearchingScreen> with SingleTickerProviderStateMixin {
   late final AnimationController _progressCtrl;
   late final Timer _navTimer;
   int _secondsLeft = 5;
@@ -23,7 +22,6 @@ class _SearchingScreenState extends State<SearchingScreen> with TickerProviderSt
   @override
   void initState() {
     super.initState();
-    _rotationCtrl = AnimationController(vsync: this, duration: const Duration(seconds: 1))..repeat();
     _progressCtrl = AnimationController(vsync: this, duration: const Duration(seconds: 5))..forward();
     Timer.periodic(const Duration(seconds: 1), (t) {
       if (!mounted) { t.cancel(); return; }
@@ -37,7 +35,6 @@ class _SearchingScreenState extends State<SearchingScreen> with TickerProviderSt
 
   @override
   void dispose() {
-    _rotationCtrl.dispose();
     _progressCtrl.dispose();
     _navTimer.cancel();
     super.dispose();
@@ -57,7 +54,7 @@ class _SearchingScreenState extends State<SearchingScreen> with TickerProviderSt
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SearchingAnimation(rotation: _rotationCtrl),
+                      const SearchingAnimation(),
                       SizedBox(height: Insets.s16),
                       Text('جاري البحث عن أقرب سائق ونش', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
                       SizedBox(height: Insets.s8),

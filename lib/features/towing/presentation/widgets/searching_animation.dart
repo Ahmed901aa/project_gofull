@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SearchingAnimation extends StatelessWidget {
-  final Animation<double> rotation;
-  const SearchingAnimation({super.key, required this.rotation});
+  const SearchingAnimation({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Outer glow circle
+        // Outer glow
         Container(
           width: 108.w,
           height: 108.w,
@@ -39,16 +38,14 @@ class SearchingAnimation extends StatelessWidget {
             ),
           ),
         ),
-        // Spinning indicator
-        RotationTransition(
-          turns: rotation,
-          child: SizedBox(
-            width: 60.w,
-            height: 60.w,
-            child: CircularProgressIndicator(
-              color: Colors.white.withValues(alpha: 0.7),
-              strokeWidth: 3,
-            ),
+        // Spinning arc
+        SizedBox(
+          width: 40.w,
+          height: 40.w,
+          child: CircularProgressIndicator(
+            color: Colors.white,
+            backgroundColor: Colors.white.withValues(alpha: 0.2),
+            strokeWidth: 3,
           ),
         ),
       ],
