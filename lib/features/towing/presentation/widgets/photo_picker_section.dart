@@ -27,24 +27,24 @@ class _PhotoPickerSectionState extends State<PhotoPickerSection> {
     return Row(
       children: [
         // RIGHT — camera button (always)
-        _buildButton(icon: Icons.add_a_photo_outlined, onTap: () => _pick(ImageSource.camera)),
+        _buildButton(icon: Icons.add_a_photo_outlined, onTap: () => _pick(ImageSource.camera), borderColor: const Color(0xFFEFF0F1), iconColor: AppColors.primary),
         SizedBox(width: Insets.s12),
         // MIDDLE — photo result (from camera or gallery)
         _buildPhotoSlot(),
         SizedBox(width: Insets.s12),
         // LEFT — gallery button (always)
-        _buildButton(icon: Icons.photo_library_outlined, onTap: () => _pick(ImageSource.gallery)),
+        _buildButton(icon: Icons.photo_library_outlined, onTap: () => _pick(ImageSource.gallery), borderColor: const Color(0xFFEFF0F1), iconColor: AppColors.neutral800),
       ],
     );
   }
 
-  Widget _buildButton({required IconData icon, required VoidCallback onTap}) => Expanded(
+  Widget _buildButton({required IconData icon, required VoidCallback onTap, Color? borderColor, Color? iconColor}) => Expanded(
     child: GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: _slotBox(
-        borderColor: AppColors.primary,
-        child: Icon(icon, color: AppColors.primary, size: 28.sp),
+        borderColor: borderColor ?? AppColors.primary,
+        child: Icon(icon, color: iconColor ?? AppColors.primary, size: 28.sp),
       ),
     ),
   );
