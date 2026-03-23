@@ -5,6 +5,7 @@ import 'package:project_gofull/features/auth/presentation/screens/splash_screen.
 import 'package:project_gofull/features/auth/presentation/screens/login_screen.dart';
 import 'package:project_gofull/features/auth/presentation/screens/otp_screen.dart';
 import 'package:project_gofull/features/fuel/presentation/screens/fuel_screen.dart';
+import 'package:project_gofull/features/towing/presentation/screens/towing_screen.dart';
 import 'package:project_gofull/features/location/presentation/screens/location_search_screen.dart';
 import 'package:project_gofull/features/location/presentation/screens/map_selection_screen.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
@@ -23,6 +24,8 @@ class RouteGenerator {
         return _buildRoute(const BottomNavShell(), settings);
       case Routes.fuelType:
         return _buildRoute(const FuelScreen(), settings);
+      case Routes.towingRequest:
+        return _buildRoute(const TowingScreen(), settings);
       case Routes.locationSearch:
         final args = settings.arguments as LocationSearchArgs;
         return _buildRoute(LocationSearchScreen(args: args), settings);
