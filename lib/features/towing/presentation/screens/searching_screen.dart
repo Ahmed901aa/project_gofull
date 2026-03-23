@@ -30,7 +30,7 @@ class _SearchingScreenState extends State<SearchingScreen> with SingleTickerProv
       if (_secondsLeft <= 0) t.cancel();
     });
     _navTimer = Timer(const Duration(seconds: 5), () {
-      if (mounted) Navigator.pushReplacementNamed(context, widget.args.nextRoute);
+      if (mounted) Navigator.pushReplacementNamed(context, widget.args.nextRoute, arguments: widget.args.nextRouteArgs);
     });
   }
 

@@ -33,7 +33,8 @@ class RouteGenerator {
         final args = settings.arguments as SearchingArgs;
         return _buildRoute(SearchingScreen(args: args), settings);
       case Routes.driverFound:
-        return _buildRoute(const DriverFoundScreen(), settings);
+        final args = settings.arguments as DriverFoundArgs?;
+        return _buildRoute(DriverFoundScreen(args: args), settings);
       case Routes.camera:
         return _buildRoute(const CameraScreen(), settings);
       case Routes.locationSearch:
