@@ -27,7 +27,7 @@ class _TowingScreenState extends State<TowingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
-      body: SafeArea(
+      body: SafeArea(top: false,
         child: Column(
           children: [
             const ServiceHeader(title: 'خدمة ونش'),

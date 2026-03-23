@@ -15,7 +15,7 @@ class DriverFoundScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
-      body: SafeArea(
+      body: SafeArea(top: false,
         child: Column(
           children: [
             const ServiceHeader(title: 'تم العثور على سائق'),

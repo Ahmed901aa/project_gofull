@@ -15,6 +15,7 @@ class ServiceHeader extends StatelessWidget {
       color: AppColors.white,
       child: Column(
         children: [
+          SizedBox(height: MediaQuery.of(context).padding.top),
           Padding(
             padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
             child: Row(
