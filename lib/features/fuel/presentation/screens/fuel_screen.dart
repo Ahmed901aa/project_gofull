@@ -385,6 +385,14 @@ class _FuelScreenState extends State<FuelScreen> {
             children: [
               Row(
                 children: [
+                  Text(
+                    'الإجمالي',
+                    style: getRegularStyle(
+                      color: AppColors.neutral900,
+                      fontSize: FontSize.s18,
+                    ),
+                  ),
+                  SizedBox(width: Insets.s8),
                   Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: Insets.s8,
@@ -401,14 +409,6 @@ class _FuelScreenState extends State<FuelScreen> {
                         color: AppColors.primary,
                         fontSize: FontSize.s12,
                       ),
-                    ),
-                  ),
-                  SizedBox(width: Insets.s8),
-                  Text(
-                    'الإجمالي',
-                    style: getRegularStyle(
-                      color: AppColors.neutral900,
-                      fontSize: FontSize.s18,
                     ),
                   ),
                 ],
@@ -467,18 +467,18 @@ class _FuelScreenState extends State<FuelScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.info_outline_rounded,
-                size: 16.sp,
-                color: AppColors.neutral900,
-              ),
-              SizedBox(width: 4.w),
               Text(
                 'رسوم الخدمة',
                 style: getRegularStyle(
                   color: AppColors.neutral900,
                   fontSize: FontSize.s16,
                 ),
+              ),
+              SizedBox(width: 4.w),
+              Icon(
+                Icons.info_outline_rounded,
+                size: 16.sp,
+                color: AppColors.primary,
               ),
             ],
           ),
