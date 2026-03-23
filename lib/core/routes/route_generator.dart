@@ -29,7 +29,8 @@ class RouteGenerator {
       case Routes.towingRequest:
         return _buildRoute(const TowingScreen(), settings);
       case Routes.searchingDriver:
-        return _buildRoute(const SearchingScreen(), settings);
+        final args = settings.arguments as SearchingArgs;
+        return _buildRoute(SearchingScreen(args: args), settings);
       case Routes.driverFound:
         return _buildRoute(const DriverFoundScreen(), settings);
       case Routes.locationSearch:

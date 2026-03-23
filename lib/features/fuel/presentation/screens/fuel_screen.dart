@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
@@ -72,7 +74,11 @@ class _FuelScreenState extends State<FuelScreen> {
                 ),
               ),
             ),
-            ServiceBottomButton(onPressed: _isValid ? () {} : null),
+            ServiceBottomButton(onPressed: _isValid ? () => Navigator.pushNamed(context, Routes.searchingDriver, arguments: const SearchingArgs(
+              searchingText: 'جاري البحث عن أقرب مزود وقود',
+              subtitleText: 'نقوم الآن بمطابقة طلبك مع أقرب سيارة إمداد مجهزة بنوع الوقود المختار.',
+              nextRoute: Routes.driverFound,
+            )) : null),
           ],
         ),
       ),

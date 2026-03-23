@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -89,7 +90,11 @@ class _TowingScreenState extends State<TowingScreen> {
                 ),
               ),
             ),
-            ServiceBottomButton(onPressed: _isValid ? () => Navigator.pushNamed(context, Routes.searchingDriver) : null),
+            ServiceBottomButton(onPressed: _isValid ? () => Navigator.pushNamed(context, Routes.searchingDriver, arguments: const SearchingArgs(
+              searchingText: 'جاري البحث عن أقرب سائق ونش',
+              subtitleText: 'نقوم الآن بمطابقة طلبك مع أقرب سيارة ونش متاحة في منطقتك.',
+              nextRoute: Routes.driverFound,
+            )) : null),
           ],
         ),
       ),

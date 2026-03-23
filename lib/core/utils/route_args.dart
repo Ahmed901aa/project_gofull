@@ -22,3 +22,14 @@ class MapSelectionArgs {
     this.initialLng,
   });
 }
+
+class SearchingArgs {
+  final String searchingText;
+  final String subtitleText;
+  final String nextRoute;
+  const SearchingArgs({
+    required this.searchingText,
+    required this.subtitleText,
+    required this.nextRoute,
+  });
+}

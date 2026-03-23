@@ -5,11 +5,12 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
-import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/searching_animation.dart';
 
 class SearchingScreen extends StatefulWidget {
-  const SearchingScreen({super.key});
+  final SearchingArgs args;
+  const SearchingScreen({super.key, required this.args});
   @override
   State<SearchingScreen> createState() => _SearchingScreenState();
 }
@@ -29,7 +30,7 @@ class _SearchingScreenState extends State<SearchingScreen> with SingleTickerProv
       if (_secondsLeft <= 0) t.cancel();
     });
     _navTimer = Timer(const Duration(seconds: 5), () {
-      if (mounted) Navigator.pushReplacementNamed(context, Routes.driverFound);
+      if (mounted) Navigator.pushReplacementNamed(context, widget.args.nextRoute);
     });
   }
 
@@ -45,35 +46,35 @@ class _SearchingScreenState extends State<SearchingScreen> with SingleTickerProv
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       body: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Insets.s16),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SearchingAnimation(),
-                      SizedBox(height: Insets.s16),
-                      Text('جاري البحث عن أقرب سائق ونش', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
-                      SizedBox(height: Insets.s8),
-                      Text('نقوم الآن بمطابقة طلبك مع أقرب سيارة ونش متاحة في منطقتك.', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.center),
-                      SizedBox(height: Insets.s16),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
-                        decoration: BoxDecoration(color: AppColors.primary50, borderRadius: BorderRadius.circular(AppRadius.s16), border: Border.all(color: AppColors.primary)),
-                        child: Text('يرجى الانتظار في مكان آمن بعيداً عن حركة المرور وتشغيل أضواء التنبيه في سيارتك حتى وصول السائق.', style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s14), textAlign: TextAlign.right),
-                      ),
-                    ],
-                  ),
+        children: [
+          _buildHeader(context),
+          Expanded(
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SearchingAnimation(),
+                    SizedBox(height: Insets.s16),
+                    Text(widget.args.searchingText, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
+                    SizedBox(height: Insets.s8),
+                    Text(widget.args.subtitleText, style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.center),
+                    SizedBox(height: Insets.s16),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
+                      decoration: BoxDecoration(color: AppColors.primary50, borderRadius: BorderRadius.circular(AppRadius.s16), border: Border.all(color: AppColors.primary)),
+                      child: Text('يرجى الانتظار في مكان آمن بعيداً عن حركة المرور وتشغيل أضواء التنبيه في سيارتك حتى وصول السائق.', style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s14), textAlign: TextAlign.right),
+                    ),
+                  ],
                 ),
               ),
             ),
-            _buildBottomPanel(context),
-            SizedBox(height: MediaQuery.of(context).padding.bottom),
-          ],
-        ),
+          ),
+          _buildBottomPanel(context),
+          SizedBox(height: MediaQuery.of(context).padding.bottom),
+        ],
+      ),
     );
   }
 
@@ -100,7 +101,7 @@ class _SearchingScreenState extends State<SearchingScreen> with SingleTickerProv
     final ss = (_secondsLeft % 60).toString().padLeft(2, '0');
     return Container(
       decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)), boxShadow: [BoxShadow(color: const Color(0xFFCCCCCC).withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2))]),
-      padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s16, Insets.s16, Insets.s16),
+      padding: EdgeInsets.all(Insets.s16),
       child: Column(children: [
         RichText(textDirection: TextDirection.rtl, text: TextSpan(children: [
           TextSpan(text: 'الوقت المتوقع للعثور على سائق: ', style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
