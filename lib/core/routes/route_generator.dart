@@ -8,6 +8,7 @@ import 'package:project_gofull/features/fuel/presentation/screens/fuel_screen.da
 import 'package:project_gofull/features/towing/presentation/screens/towing_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/searching_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/driver_found_screen.dart';
+import 'package:project_gofull/features/towing/presentation/screens/camera_screen.dart';
 import 'package:project_gofull/features/location/presentation/screens/location_search_screen.dart';
 import 'package:project_gofull/features/location/presentation/screens/map_selection_screen.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
@@ -33,6 +34,8 @@ class RouteGenerator {
         return _buildRoute(SearchingScreen(args: args), settings);
       case Routes.driverFound:
         return _buildRoute(const DriverFoundScreen(), settings);
+      case Routes.camera:
+        return _buildRoute(const CameraScreen(), settings);
       case Routes.locationSearch:
         final args = settings.arguments as LocationSearchArgs;
         return _buildRoute(LocationSearchScreen(args: args), settings);
