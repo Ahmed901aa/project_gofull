@@ -130,17 +130,7 @@ class _FuelScreenState extends State<FuelScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Empty space (RIGHT in RTL — balances the layout)
-                const SizedBox(width: 24),
-                // Title
-                Text(
-                  'إمداد وقود',
-                  style: getBoldStyle(
-                    color: const Color(0xFF0E0E0E),
-                    fontSize: FontSize.s20,
-                  ),
-                ),
-                // Back button — LEFT side (→ arrow, RTL back navigation)
+                // Back button — RIGHT side (first in RTL)
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Icon(
@@ -149,6 +139,16 @@ class _FuelScreenState extends State<FuelScreen> {
                     color: const Color(0xFF0E0E0E),
                   ),
                 ),
+                // Title
+                Text(
+                  'إمداد وقود',
+                  style: getBoldStyle(
+                    color: const Color(0xFF0E0E0E),
+                    fontSize: FontSize.s20,
+                  ),
+                ),
+                // Empty space (LEFT in RTL — balances the layout)
+                const SizedBox(width: 24),
               ],
             ),
           ),
@@ -235,16 +235,24 @@ class _FuelScreenState extends State<FuelScreen> {
       ),
       child: Row(
         children: [
-          // ← arrow on LEFT (last in RTL row)
-          Icon(
-            Icons.arrow_back_ios_rounded,
-            size: 16.sp,
-            color: const Color(0xFF0E0E0E),
+          // Location icon — RIGHT (first in RTL row)
+          Container(
+            width: 32.w,
+            height: 32.w,
+            decoration: BoxDecoration(
+              color: AppColors.primary50,
+              borderRadius: BorderRadius.circular(AppRadius.s16),
+            ),
+            child: Icon(
+              Icons.location_on_outlined,
+              color: AppColors.primary,
+              size: 16.sp,
+            ),
           ),
-          const Spacer(),
+          SizedBox(width: Insets.s8),
           // Text block
           Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'الموقع الحالي',
@@ -263,20 +271,12 @@ class _FuelScreenState extends State<FuelScreen> {
               ),
             ],
           ),
-          SizedBox(width: Insets.s8),
-          // Location icon — RIGHT (first in RTL row)
-          Container(
-            width: 32.w,
-            height: 32.w,
-            decoration: BoxDecoration(
-              color: AppColors.primary50,
-              borderRadius: BorderRadius.circular(AppRadius.s16),
-            ),
-            child: Icon(
-              Icons.location_on_outlined,
-              color: AppColors.primary,
-              size: 16.sp,
-            ),
+          const Spacer(),
+          // → arrow on LEFT (last in RTL row)
+          Icon(
+            Icons.arrow_back_ios_rounded,
+            size: 16.sp,
+            color: const Color(0xFF0E0E0E),
           ),
         ],
       ),
@@ -383,14 +383,6 @@ class _FuelScreenState extends State<FuelScreen> {
           padding: EdgeInsets.symmetric(horizontal: Insets.s16),
           child: Row(
             children: [
-              Text(
-                '985.00 ج.م',
-                style: getBoldStyle(
-                  color: const Color(0xFF0E0E0E),
-                  fontSize: FontSize.s18,
-                ),
-              ),
-              const Spacer(),
               Row(
                 children: [
                   Container(
@@ -421,6 +413,14 @@ class _FuelScreenState extends State<FuelScreen> {
                   ),
                 ],
               ),
+              const Spacer(),
+              Text(
+                '985.00 ج.م',
+                style: getBoldStyle(
+                  color: const Color(0xFF0E0E0E),
+                  fontSize: FontSize.s18,
+                ),
+              ),
             ],
           ),
         ),
@@ -438,17 +438,17 @@ class _FuelScreenState extends State<FuelScreen> {
       child: Row(
         children: [
           Text(
-            amount,
-            style: getBoldStyle(
-              color: const Color(0xFF0E0E0E),
+            label,
+            style: getRegularStyle(
+              color: AppColors.neutral900,
               fontSize: FontSize.s16,
             ),
           ),
           const Spacer(),
           Text(
-            label,
-            style: getRegularStyle(
-              color: AppColors.neutral900,
+            amount,
+            style: getBoldStyle(
+              color: const Color(0xFF0E0E0E),
               fontSize: FontSize.s16,
             ),
           ),
@@ -465,14 +465,6 @@ class _FuelScreenState extends State<FuelScreen> {
       ),
       child: Row(
         children: [
-          Text(
-            '15.00 ج.م',
-            style: getBoldStyle(
-              color: const Color(0xFF0E0E0E),
-              fontSize: FontSize.s16,
-            ),
-          ),
-          const Spacer(),
           Row(
             children: [
               Icon(
@@ -489,6 +481,14 @@ class _FuelScreenState extends State<FuelScreen> {
                 ),
               ),
             ],
+          ),
+          const Spacer(),
+          Text(
+            '15.00 ج.م',
+            style: getBoldStyle(
+              color: const Color(0xFF0E0E0E),
+              fontSize: FontSize.s16,
+            ),
           ),
         ],
       ),
