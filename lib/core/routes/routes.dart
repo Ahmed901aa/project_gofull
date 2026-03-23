@@ -9,6 +9,8 @@ class Routes {
   static const String fuelType = '/fuel-type';
   static const String fuelOrder = '/fuel-order';
   static const String towingRequest = '/towing-request';
+  static const String searchingDriver = '/searching-driver';
+  static const String driverFound = '/driver-found';
   static const String orderTracking = '/order-tracking';
   static const String orderHistory = '/order-history';
   static const String profile = '/profile';
