@@ -6,7 +6,8 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 
 class ServiceInputField extends StatelessWidget {
   final String hint;
-  const ServiceInputField({super.key, required this.hint});
+  final TextEditingController? controller;
+  const ServiceInputField({super.key, required this.hint, this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +22,7 @@ class ServiceInputField extends StatelessWidget {
       child: Align(
         alignment: Alignment.centerRight,
         child: TextField(
+          controller: controller,
           textAlign: TextAlign.right,
           textDirection: TextDirection.rtl,
           style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),

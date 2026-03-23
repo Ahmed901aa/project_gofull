@@ -23,6 +23,8 @@ class _FuelScreenState extends State<FuelScreen> {
   final _fuelTypes = ['بنزين 91', 'بنزين 95', 'ديزل'];
   final _quantities = ['20 لتر', '30 لتر', '40 لتر', '50 لتر'];
 
+  bool get _isValid => _selectedFuelType != null && _selectedQuantity != null;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,7 +72,7 @@ class _FuelScreenState extends State<FuelScreen> {
                 ),
               ),
             ),
-            const ServiceBottomButton(),
+            ServiceBottomButton(onPressed: _isValid ? () {} : null),
           ],
         ),
       ),

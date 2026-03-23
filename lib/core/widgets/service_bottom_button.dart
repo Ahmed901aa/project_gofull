@@ -23,10 +23,12 @@ class ServiceBottomButton extends StatelessWidget {
         height: 48.h,
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: onPressed ?? () {},
+          onPressed: onPressed,
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF54867C),
+            disabledBackgroundColor: const Color(0xFFD9DADB),
             foregroundColor: AppColors.white,
+            disabledForegroundColor: AppColors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
             elevation: 0,
           ),

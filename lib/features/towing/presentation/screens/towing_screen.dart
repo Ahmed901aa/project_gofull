@@ -22,6 +22,21 @@ class TowingScreen extends StatefulWidget {
 class _TowingScreenState extends State<TowingScreen> {
   String? _selectedCarType;
   final _carTypes = ['سيدان', 'SUV', 'بيك أب', 'شاحنة', 'هاتشباك'];
+  final _plateCtrl = TextEditingController();
+
+  bool get _isValid => _selectedCarType != null && _plateCtrl.text.trim().isNotEmpty;
+
+  @override
+  void initState() {
+    super.initState();
+    _plateCtrl.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _plateCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +71,7 @@ class _TowingScreenState extends State<TowingScreen> {
                             const SizedBox(height: 12),
                             Text('رقم اللوحة', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.right),
                             const SizedBox(height: 8),
-                            const ServiceInputField(hint: 'أدخل رقم اللوحة'),
+                            ServiceInputField(hint: 'أدخل رقم اللوحة', controller: _plateCtrl),
                             const SizedBox(height: 12),
                             Text('صورة السيارة', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.right),
                             const SizedBox(height: 8),
@@ -74,7 +89,7 @@ class _TowingScreenState extends State<TowingScreen> {
                 ),
               ),
             ),
-            ServiceBottomButton(onPressed: () => Navigator.pushNamed(context, Routes.searchingDriver)),
+            ServiceBottomButton(onPressed: _isValid ? () => Navigator.pushNamed(context, Routes.searchingDriver) : null),
           ],
         ),
       ),
