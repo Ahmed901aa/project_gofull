@@ -7,60 +7,100 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 
 class PhotoPickerSection extends StatefulWidget {
   const PhotoPickerSection({super.key});
-
   @override
   State<PhotoPickerSection> createState() => _PhotoPickerSectionState();
 }
 
 class _PhotoPickerSectionState extends State<PhotoPickerSection> {
-  final List<File?> _photos = [null, null, null];
+  File? _cameraPhoto;
+  File? _galleryPhoto;
   final _picker = ImagePicker();
 
-  Future<void> _pickPhoto(int index) async {
-    final picked = await _picker.pickImage(source: ImageSource.camera, imageQuality: 90);
+  Future<void> _pick(ImageSource source) async {
+    final picked = await _picker.pickImage(source: source, imageQuality: 90);
     if (picked == null || !mounted) return;
-    setState(() => _photos[index] = File(picked.path));
+    setState(() {
+      if (source == ImageSource.camera) {
+        _cameraPhoto = File(picked.path);
+      } else {
+        _galleryPhoto = File(picked.path);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    // RTL Row: children[0]=right, children[1]=middle, children[2]=left
     return Row(
-      children: List.generate(3, (i) => _buildSlot(i)),
+      children: [
+        // RIGHT — camera button (always)
+        _buildActionSlot(icon: Icons.add_a_photo_outlined, onTap: () => _pick(ImageSource.camera)),
+        SizedBox(width: Insets.s12),
+        // MIDDLE — camera photo result
+        _buildPhotoSlot(photo: _cameraPhoto, source: ImageSource.camera),
+        SizedBox(width: Insets.s12),
+        // LEFT — gallery picker / gallery photo
+        _buildPhotoSlot(photo: _galleryPhoto, source: ImageSource.gallery, emptyIcon: Icons.photo_library_outlined, tappableWhenEmpty: true),
+      ],
     );
   }
 
-  Widget _buildSlot(int index) {
-    final photo = _photos[index];
-    return Expanded(
-      child: Padding(
-        padding: EdgeInsets.only(left: index < 2 ? Insets.s16 : 0),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => _pickPhoto(index),
-          child: Container(
-            height: 88,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF8F8F9),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: photo != null ? AppColors.primary : const Color(0xFFEFF0F1)),
+  Widget _buildActionSlot({required IconData icon, required VoidCallback onTap}) => Expanded(
+    child: GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: _slotBox(
+        borderColor: AppColors.primary,
+        child: Icon(icon, color: AppColors.primary, size: 28.sp),
+      ),
+    ),
+  );
+
+  Widget _buildPhotoSlot({required File? photo, required ImageSource source, IconData emptyIcon = Icons.image_outlined, bool tappableWhenEmpty = false}) => Expanded(
+    child: _slotBox(
+      borderColor: photo != null ? AppColors.primary : const Color(0xFFEFF0F1),
+      child: photo != null
+          ? Stack(children: [
+              Positioned.fill(child: Image.file(photo, fit: BoxFit.cover)),
+              Positioned(
+                top: 4.h, right: 4.w,
+                child: _badge(color: AppColors.primary, icon: Icons.edit_outlined, onTap: () => _pick(source)),
+              ),
+              Positioned(
+                top: 4.h, left: 4.w,
+                child: _badge(color: AppColors.error, icon: Icons.close_rounded, onTap: () => setState(() {
+                  if (source == ImageSource.camera) _cameraPhoto = null;
+                  else _galleryPhoto = null;
+                })),
+              ),
+            ])
+          : GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: tappableWhenEmpty ? () => _pick(source) : null,
+              child: SizedBox.expand(child: Center(child: Icon(emptyIcon, color: AppColors.neutral600, size: 28.sp))),
             ),
-            clipBehavior: Clip.hardEdge,
-            child: photo != null
-                ? Stack(children: [
-                    Positioned.fill(child: Image.file(photo, fit: BoxFit.cover)),
-                    Positioned(
-                      top: 4.h, right: 4.w,
-                      child: Container(
-                        width: 22.w, height: 22.w,
-                        decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(AppRadius.s16)),
-                        child: Icon(Icons.edit_outlined, color: AppColors.white, size: 12.sp),
-                      ),
-                    ),
-                  ])
-                : Center(child: Icon(Icons.add_a_photo_outlined, color: AppColors.primary, size: 32.sp)),
-          ),
-        ),
+    ),
+  );
+
+  Widget _badge({required Color color, required IconData icon, required VoidCallback onTap}) =>
+    GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Container(
+        width: 22.w, height: 22.w,
+        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(AppRadius.s16)),
+        child: Icon(icon, color: AppColors.white, size: 12.sp),
       ),
     );
-  }
+
+  Widget _slotBox({required Color borderColor, required Widget child}) => Container(
+    height: 88,
+    decoration: BoxDecoration(
+      color: const Color(0xFFF8F8F9),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: borderColor),
+    ),
+    clipBehavior: Clip.hardEdge,
+    child: child,
+  );
 }
