@@ -1,3 +1,7 @@
 {
-    "cmake.sourceDirectory": "/Users/usermac/Desktop/project_Gofull/project_gofull/linux"
+    "cmake.sourceDirectory": "/Users/usermac/Desktop/project_Gofull/project_gofull/linux",
+    "code-runner.executorMap": {
+        "dart": "flutter run"
+    },
+    "code-runner.runInTerminal": true
 }

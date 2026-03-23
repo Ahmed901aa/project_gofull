@@ -27,7 +27,16 @@
       "Bash(find /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/profile -type f -name *.dart)",
       "mcp__claude_ai_Figma__get_variable_defs",
       "mcp__figma-remote-mcp__get_design_context",
-      "Bash(flutter run:*)"
+      "Bash(flutter run:*)",
+      "mcp__figma-remote-mcp__get_metadata",
+      "Bash(pkill -f \"flutter run\")",
+      "Bash(pkill -f \"flutter_tools\")",
+      "Bash(pkill -f 'flutter run')",
+      "Bash(pkill -f flutter_tools)",
+      "Read(//proc/83484/fd/**)",
+      "Bash(jobs -l)",
+      "Bash(flutter devices:*)",
+      "Bash(flutter --version)"
     ]
   }
 }
