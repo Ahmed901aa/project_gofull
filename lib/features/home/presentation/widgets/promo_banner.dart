@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'promo_banner_card.dart';
 import 'promo_dots_indicator.dart';
@@ -18,7 +19,7 @@ class _PromoBannerState extends State<PromoBanner> {
   int _currentPage = 0;
 
   static const int _totalPages = 3;
-  static const Duration _interval = Duration(seconds: 3);
+  static const Duration _interval = Duration(seconds: 4);
 
   @override
   void initState() {
@@ -28,7 +29,7 @@ class _PromoBannerState extends State<PromoBanner> {
       final next = (_currentPage + 1) % _totalPages;
       _pageController.animateToPage(
         next,
-        duration: const Duration(milliseconds: 400),
+        duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
     });
@@ -54,12 +55,12 @@ class _PromoBannerState extends State<PromoBanner> {
               controller: _pageController,
               itemCount: _totalPages,
               onPageChanged: (i) => setState(() => _currentPage = i),
-              itemBuilder: (_, __) => const PromoBannerCard(),
+              itemBuilder: (_, i) => PromoBannerCard(index: i),
             ),
           ),
         ),
         SizedBox(height: Insets.s12),
-        PromoDotsIndicator(totalPages: _totalPages, currentPage: _currentPage),
+        PromoDotsIndicator(totalPages: _totalPages, currentPage: _currentPage, activeColor: AppColors.primary),
       ],
     );
   }
