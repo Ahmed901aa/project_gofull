@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import '../widgets/map_address_bar.dart';
 import '../widgets/map_confirm_button.dart';
+import '../widgets/map_my_location_button.dart';
 import '../widgets/map_top_bar.dart';
 
 class MapSelectionScreen extends StatefulWidget {
@@ -81,18 +82,7 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
             Positioned(
               left: Insets.s16,
               bottom: 110.h,
-              child: GestureDetector(
-                onTap: _goToMyLocation,
-                child: Container(
-                  width: 48.w, height: 48.w,
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [BoxShadow(color: AppColors.shadow, blurRadius: 10, offset: const Offset(0, 3))],
-                  ),
-                  child: Icon(Icons.my_location_rounded, color: AppColors.primary, size: 22.sp),
-                ),
-              ),
+              child: MapMyLocationButton(onTap: _goToMyLocation),
             ),
             Positioned(
               left: 0, right: 0, bottom: 0,
