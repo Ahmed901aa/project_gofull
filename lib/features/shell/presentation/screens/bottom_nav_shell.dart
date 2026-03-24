@@ -28,6 +28,7 @@ class _BottomNavShellState extends State<BottomNavShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.white,
       body: IndexedStack(
         index: _currentIndex,
         children: _screens,
@@ -53,9 +54,7 @@ class _BottomNavShellState extends State<BottomNavShell> {
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              // RTL: first child → right side, last child → left side
               children: [
-                // RIGHT: Home (index 0)
                 _NavItem(
                   icon: Icons.home_rounded,
                   label: AppStrings.home,
@@ -63,7 +62,6 @@ class _BottomNavShellState extends State<BottomNavShell> {
                   currentIndex: _currentIndex,
                   onTap: (i) => setState(() => _currentIndex = i),
                 ),
-                // MIDDLE: Orders (index 1)
                 _NavItem(
                   icon: Icons.receipt_long_rounded,
                   label: AppStrings.myOrders,
@@ -71,7 +69,6 @@ class _BottomNavShellState extends State<BottomNavShell> {
                   currentIndex: _currentIndex,
                   onTap: (i) => setState(() => _currentIndex = i),
                 ),
-                // LEFT: Profile (index 2)
                 _NavItem(
                   icon: Icons.person_outline_rounded,
                   label: AppStrings.myAccount,

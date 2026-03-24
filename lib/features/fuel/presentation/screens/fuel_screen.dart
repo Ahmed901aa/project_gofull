@@ -30,7 +30,7 @@ class _FuelScreenState extends State<FuelScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
+      backgroundColor: AppColors.white,
       body: SafeArea(top: false,
         child: Column(
           children: [

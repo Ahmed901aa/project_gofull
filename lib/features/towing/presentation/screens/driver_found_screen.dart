@@ -41,7 +41,7 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
+      backgroundColor: AppColors.white,
       body: Column(children: [
         _buildHeader(context),
         Expanded(

@@ -44,7 +44,7 @@ class _SearchingScreenState extends State<SearchingScreen> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
+      backgroundColor: AppColors.white,
       body: Column(
         children: [
           _buildHeader(context),
