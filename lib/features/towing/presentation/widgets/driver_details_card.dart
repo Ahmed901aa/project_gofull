@@ -1,0 +1,89 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/core/resources/font_manager.dart';
+import 'package:project_gofull/core/resources/styles_manager.dart';
+import 'package:project_gofull/core/resources/values_manager.dart';
+import 'driver_avatar.dart';
+import 'rating_badge.dart';
+import 'info_pill.dart';
+
+class DriverDetailsCard extends StatelessWidget {
+  final String name;
+  final String rating;
+  final String reviewCount;
+  final String plateNumber;
+  final String vehicleLabel;
+  final String vehicleValue;
+  final bool showActionIcons;
+
+  const DriverDetailsCard({
+    super.key,
+    required this.name,
+    required this.rating,
+    required this.reviewCount,
+    required this.plateNumber,
+    required this.vehicleLabel,
+    required this.vehicleValue,
+    this.showActionIcons = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.neutral400,
+        borderRadius: BorderRadius.circular(AppRadius.s16),
+        border: Border.all(color: AppColors.neutral500),
+      ),
+      child: Column(children: [
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(Insets.s16, Insets.s12, Insets.s16, 0),
+          child: Row(
+            mainAxisAlignment: showActionIcons ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
+            children: [
+              Row(children: [
+                const DriverAvatar(),
+                SizedBox(width: Insets.s12),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(name, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
+                  SizedBox(height: 4.h),
+                  RatingBadge(rating: rating, reviewCount: reviewCount),
+                ]),
+              ]),
+              if (showActionIcons)
+                Row(children: [
+                  _ActionIcon(icon: Icons.call_rounded),
+                  SizedBox(width: Insets.s12),
+                  _ActionIcon(icon: Icons.chat_bubble_outline_rounded),
+                ]),
+            ],
+          ),
+        ),
+        SizedBox(height: 10.h),
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(Insets.s16, 0, Insets.s16, Insets.s12),
+          child: Row(children: [
+            InfoPill(label: vehicleLabel, value: vehicleValue),
+            SizedBox(width: Insets.s16),
+            InfoPill(label: 'رقم اللوحة', value: plateNumber),
+          ]),
+        ),
+      ]),
+    );
+  }
+}
+
+class _ActionIcon extends StatelessWidget {
+  final IconData icon;
+  const _ActionIcon({required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 32.w, height: 32.w,
+      decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(AppRadius.s16)),
+      child: Icon(icon, size: 16.sp, color: AppColors.primary),
+    );
+  }
+}
