@@ -9,6 +9,7 @@ import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/driver_details_card.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/eta_bottom_panel.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/gif_circle.dart';
+import '../widgets/driver_found_header.dart';
 
 // replace with API data later
 const _mockDriver = {
@@ -27,7 +28,7 @@ class DriverFoundScreen extends StatefulWidget {
 }
 
 class _DriverFoundScreenState extends State<DriverFoundScreen> {
-  static const int _total = 15; // mock ETA seconds — replace with API value
+  static const int _total = 15;
   late int _secondsLeft;
   Timer? _timer;
 
@@ -61,56 +62,42 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: Column(children: [
-        _buildHeader(context),
-        Expanded(
-          child: Container(
-            color: AppColors.scaffoldBg,
-            child: Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: Insets.s16),
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  GifCircle(imagePath: _args.imagePath ?? 'assets/images/tank_truck.gif'),
-                  SizedBox(height: Insets.s16),
-                  Text(_args.title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
-                  SizedBox(height: 4.h),
-                  Text('وافق السائق على طلبك وهو الآن في طريقه إليك.', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.center),
-                  SizedBox(height: Insets.s16),
-                  DriverDetailsCard(
-                    name: _mockDriver['name']!,
-                    rating: _mockDriver['rating']!,
-                    reviewCount: _mockDriver['reviewCount']!,
-                    plateNumber: _mockDriver['plateNumber']!,
-                    vehicleLabel: _args.vehicleLabel,
-                    vehicleValue: _args.vehicleValue,
+      body: Column(
+        children: [
+          DriverFoundHeader(showClose: _args.showClose),
+          Expanded(
+            child: Container(
+              color: AppColors.scaffoldBg,
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GifCircle(imagePath: _args.imagePath ?? 'assets/images/tank_truck.gif'),
+                      SizedBox(height: Insets.s16),
+                      Text(_args.title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
+                      SizedBox(height: 4.h),
+                      Text('وافق السائق على طلبك وهو الآن في طريقه إليك.', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.center),
+                      SizedBox(height: Insets.s16),
+                      DriverDetailsCard(
+                        name: _mockDriver['name']!,
+                        rating: _mockDriver['rating']!,
+                        reviewCount: _mockDriver['reviewCount']!,
+                        plateNumber: _mockDriver['plateNumber']!,
+                        vehicleLabel: _args.vehicleLabel,
+                        vehicleValue: _args.vehicleValue,
+                      ),
+                    ],
                   ),
-                ]),
+                ),
               ),
             ),
           ),
-        ),
-        EtaBottomPanel(etaFormatted: _eta, progress: _progress),
-        SizedBox(height: MediaQuery.of(context).padding.bottom),
-      ]),
+          EtaBottomPanel(etaFormatted: _eta, progress: _progress),
+          SizedBox(height: MediaQuery.of(context).padding.bottom),
+        ],
+      ),
     );
   }
-
-  Widget _buildHeader(BuildContext context) => Container(
-    color: AppColors.white,
-    child: Column(children: [
-      SizedBox(height: MediaQuery.of(context).padding.top),
-      Padding(
-        padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          if (_args.showClose)
-            GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.close_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)))
-          else
-            const SizedBox(width: 24),
-          Text('في الطريق لك', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
-          Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
-        ]),
-      ),
-      const Divider(height: 1, color: Color(0xFFF5F5F5)),
-    ]),
-  );
 }

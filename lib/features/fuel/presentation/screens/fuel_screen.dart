@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:project_gofull/core/routes/routes.dart';
-import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
-import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/payment_summary.dart';
 import 'package:project_gofull/core/widgets/safety_notice_card.dart';
 import 'package:project_gofull/core/widgets/service_bottom_button.dart';
-import 'package:project_gofull/core/widgets/service_dropdown.dart';
 import 'package:project_gofull/core/widgets/service_header.dart';
 import 'package:project_gofull/core/widgets/service_input_field.dart';
 import 'package:project_gofull/core/widgets/service_location_card.dart';
+import '../widgets/fuel_details_form.dart';
 
 class FuelScreen extends StatefulWidget {
   const FuelScreen({super.key});
@@ -31,7 +30,8 @@ class _FuelScreenState extends State<FuelScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: SafeArea(top: false,
+      body: SafeArea(
+        top: false,
         child: Column(
           children: [
             const ServiceHeader(title: 'إمداد وقود'),
@@ -47,22 +47,13 @@ class _FuelScreenState extends State<FuelScreen> {
                       _section('الموقع', gap: 16),
                       const Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: ServiceLocationCard(topLabel: 'الموقع الحالي', bottomLabel: 'موقع السيارة الحالي')),
                       _section('تفاصيل الوقود', gap: 16),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text('نوع الوقود', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.right),
-                            const SizedBox(height: 8),
-                            ServiceDropdown(hint: 'اختر نوع الوقود', value: _selectedFuelType, items: _fuelTypes, onChanged: (v) => setState(() => _selectedFuelType = v)),
-                            const SizedBox(height: 12),
-                            Text('الكمية المطلوبة', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.right),
-                            const SizedBox(height: 4),
-                            Text('سيتم إضافة رسوم الخدمة والتوصيل إلى سعر الوقود.', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.right),
-                            const SizedBox(height: 8),
-                            ServiceDropdown(hint: 'اختر الكمية المطلوبة', value: _selectedQuantity, items: _quantities, onChanged: (v) => setState(() => _selectedQuantity = v)),
-                          ],
-                        ),
+                      FuelDetailsForm(
+                        selectedFuelType: _selectedFuelType,
+                        selectedQuantity: _selectedQuantity,
+                        fuelTypes: _fuelTypes,
+                        quantities: _quantities,
+                        onFuelTypeChanged: (v) => setState(() => _selectedFuelType = v),
+                        onQuantityChanged: (v) => setState(() => _selectedQuantity = v),
                       ),
                       _section('ملاحظات إضافية', gap: 8),
                       const Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: ServiceInputField(hint: 'ملاحظات إضافية عن حالة السيارة')),
@@ -74,18 +65,11 @@ class _FuelScreenState extends State<FuelScreen> {
                 ),
               ),
             ),
-            ServiceBottomButton(onPressed: _isValid ? () => Navigator.pushNamed(context, Routes.searchingDriver, arguments: const SearchingArgs(
+            ServiceBottomButton(onPressed: _isValid ? () => Navigator.pushNamed(context, Routes.searchingDriver, arguments: SearchingArgs(
               searchingText: 'جاري البحث عن أقرب مزود وقود',
               subtitleText: 'نقوم الآن بمطابقة طلبك مع أقرب سيارة إمداد مجهزة بنوع الوقود المختار.',
               nextRoute: Routes.driverFound,
-              nextRouteArgs: DriverFoundArgs(
-                title: 'تم العثور على مزود وقود!',
-                vehicleLabel: 'نوع المركبة',
-                vehicleValue: 'سيارة إمداد وقود',
-                showClose: true,
-                imagePath: 'assets/images/tank_truck.gif',
-                nextRoute: Routes.serviceArrived,
-              ),
+              nextRouteArgs: const DriverFoundArgs(title: 'تم العثور على مزود وقود!', vehicleLabel: 'نوع المركبة', vehicleValue: 'سيارة إمداد وقود', showClose: true, imagePath: 'assets/images/tank_truck.gif', nextRoute: Routes.serviceArrived),
             )) : null),
           ],
         ),

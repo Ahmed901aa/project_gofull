@@ -5,6 +5,8 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'order_address_column.dart';
+import 'order_badges_row.dart';
+import 'order_price_row.dart';
 import 'order_route_connector.dart';
 
 class ActiveOrderCard extends StatelessWidget {
@@ -35,43 +37,15 @@ class ActiveOrderCard extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildBadgesRow(),
+                const OrderBadgesRow(),
                 _buildRouteCard(),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: Sizes.s12),
                   child: Divider(color: AppColors.neutral500, height: 1, thickness: 1),
                 ),
-                _buildPriceRow(),
+                const OrderPriceRow(price: _price),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBadgesRow() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: Insets.s12, vertical: 4.h),
-            decoration: BoxDecoration(color: AppColors.primary50, borderRadius: BorderRadius.circular(AppRadius.s16), border: Border.all(color: AppColors.primary)),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('خدمة ونش', style: getMediumStyle(color: AppColors.primary, fontSize: FontSize.s12)),
-                SizedBox(width: 4.w),
-                Icon(Icons.local_shipping_outlined, size: 14.sp, color: AppColors.primary),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: Insets.s12, vertical: 4.h),
-            decoration: BoxDecoration(color: AppColors.neutral500, borderRadius: BorderRadius.circular(AppRadius.s16), border: Border.all(color: AppColors.neutral600)),
-            child: Text('قيد التنفيذ', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12)),
           ),
         ],
       ),
@@ -96,29 +70,6 @@ class ActiveOrderCard extends StatelessWidget {
             Expanded(child: OrderAddressColumn(label: 'نقطة الوصول', address: _toAddress)),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildPriceRow() {
-    return Padding(
-      padding: EdgeInsets.only(left: Insets.s16, right: Insets.s16, bottom: Insets.s12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Text('الإجمالي', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
-              SizedBox(width: 6.w),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: Insets.s12, vertical: 4.h),
-                decoration: BoxDecoration(color: AppColors.primary50, borderRadius: BorderRadius.circular(AppRadius.s16)),
-                child: Text('كاش', style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12)),
-              ),
-            ],
-          ),
-          Text(_price, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
-        ],
       ),
     );
   }
