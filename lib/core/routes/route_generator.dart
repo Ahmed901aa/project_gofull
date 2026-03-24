@@ -9,6 +9,7 @@ import 'package:project_gofull/features/towing/presentation/screens/towing_scree
 import 'package:project_gofull/features/towing/presentation/screens/searching_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/driver_found_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/service_arrived_screen.dart';
+import 'package:project_gofull/features/towing/presentation/screens/towing_started_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/camera_screen.dart';
 import 'package:project_gofull/features/location/presentation/screens/location_search_screen.dart';
 import 'package:project_gofull/features/location/presentation/screens/map_selection_screen.dart';
@@ -39,6 +40,9 @@ class RouteGenerator {
       case Routes.serviceArrived:
         final args = settings.arguments as ServiceArrivedArgs?;
         return _buildRoute(ServiceArrivedScreen(args: args), settings);
+      case Routes.towingStarted:
+        final args = settings.arguments as TowingStartedArgs?;
+        return _buildRoute(TowingStartedScreen(args: args), settings);
       case Routes.camera:
         return _buildRoute(const CameraScreen(), settings);
       case Routes.locationSearch:

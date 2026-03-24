@@ -53,6 +53,21 @@ class DriverFoundArgs {
   });
 }
 
+class TowingStartedArgs {
+  final String title;
+  final String subtitle;
+  final String imagePath;
+  final String vehicleLabel;
+  final String vehicleValue;
+  const TowingStartedArgs({
+    this.title = 'السائق وصل لموقعك.',
+    this.subtitle = 'يتم الآن تحميل وتأمين السيارة على الونش لبدء الرحلة إلى وجهتك.',
+    this.imagePath = 'assets/images/crane (1).gif',
+    this.vehicleLabel = 'نوع الونش',
+    this.vehicleValue = 'ونش هيدروليك',
+  });
+}
+
 class ServiceArrivedArgs {
   final String title;
   final String subtitle;

@@ -6,14 +6,15 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 
 class SafetySection extends StatelessWidget {
-  static const _items = [
+  static const _defaultItems = [
     'تأمين السيارة: يرجى ركن السيارة في مكان آمن ومنبسط.',
     'إطفاء المحرك: تأكد من إطفاء المحرك تماماً قبل بدء التعبئة.',
     'تأكيد النوع: جاري تحضير (بنزين 95) حسب طلبك.',
     'إجراءات السلامة: يرجى الامتناع عن التدخين تماماً في منطقة التعبئة.',
   ];
 
-  const SafetySection({super.key});
+  final List<String>? items;
+  const SafetySection({super.key, this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class SafetySection extends StatelessWidget {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: _items.map((t) => _BulletItem(text: t, last: t == _items.last)).toList(),
+            children: (items ?? _defaultItems).map((t) => _BulletItem(text: t, last: t == (items ?? _defaultItems).last)).toList(),
           ),
         ),
       ],

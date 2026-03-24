@@ -13,6 +13,7 @@ class Routes {
   static const String searchingDriver = '/searching-driver';
   static const String driverFound = '/driver-found';
   static const String serviceArrived = '/service-arrived';
+  static const String towingStarted = '/towing-started';
   static const String orderTracking = '/order-tracking';
   static const String orderHistory = '/order-history';
   static const String profile = '/profile';
