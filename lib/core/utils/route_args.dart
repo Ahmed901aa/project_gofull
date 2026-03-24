@@ -62,7 +62,7 @@ class TowingStartedArgs {
   const TowingStartedArgs({
     this.title = 'السائق وصل لموقعك.',
     this.subtitle = 'يتم الآن تحميل وتأمين السيارة على الونش لبدء الرحلة إلى وجهتك.',
-    this.imagePath = 'assets/images/crane (1).gif',
+    this.imagePath = 'assets/images/service_tools.gif',
     this.vehicleLabel = 'نوع الونش',
     this.vehicleValue = 'ونش هيدروليك',
   });
