@@ -62,7 +62,7 @@ class ServiceArrivedArgs {
   const ServiceArrivedArgs({
     this.title = 'بدء عملية تعبئة الوقود',
     this.subtitle = 'مزود الخدمة متواجد الآن في موقعك وبانتظارك.',
-    this.imagePath = 'assets/images/tank_truck.gif',
+    this.imagePath = 'assets/images/refuel.gif',
     this.vehicleLabel = 'نوع المركبة',
     this.vehicleValue = 'سيارة إمداد وقود',
   });
