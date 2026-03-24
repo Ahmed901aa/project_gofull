@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
-import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/styles_manager.dart';
-import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import '../widgets/location_option_tile.dart';
 import '../widgets/location_results_list.dart';
+import '../widgets/location_search_app_bar.dart';
 import '../widgets/location_search_bar.dart';
 
 class LocationSearchScreen extends StatefulWidget {
@@ -65,7 +62,7 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
         body: SafeArea(
           child: Column(
             children: [
-              _buildAppBar(),
+              LocationSearchAppBar(title: widget.args.title),
               LocationSearchBar(
                 controller: _searchController,
                 focusNode: _focusNode,
@@ -84,29 +81,6 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildAppBar() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: 14.h),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Text(widget.args.title, style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s18), textAlign: TextAlign.center),
-          Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Container(
-                width: 36.w, height: 36.w,
-                decoration: BoxDecoration(color: AppColors.lightGrey, shape: BoxShape.circle),
-                child: Icon(Icons.close, size: 18.sp, color: AppColors.black),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
