@@ -230,30 +230,30 @@ class _DriverSection extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Left: action buttons
+                    // Right (RTL first): avatar + name + rating
                     Row(
                       children: [
-                        _ActionIcon(icon: Icons.call_rounded),
+                        _Avatar(),
                         SizedBox(width: Insets.s12),
-                        _ActionIcon(icon: Icons.chat_bubble_outline_rounded),
-                      ],
-                    ),
-                    // Right: avatar + name + rating
-                    Row(
-                      children: [
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'محمود عبدالعليم',
+                              'احمد احميد',
                               style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
                             ),
                             SizedBox(height: 4.h),
                             _RatingBadge(),
                           ],
                         ),
+                      ],
+                    ),
+                    // Left (RTL last): action buttons
+                    Row(
+                      children: [
+                        _ActionIcon(icon: Icons.call_rounded),
                         SizedBox(width: Insets.s12),
-                        _Avatar(),
+                        _ActionIcon(icon: Icons.chat_bubble_outline_rounded),
                       ],
                     ),
                   ],

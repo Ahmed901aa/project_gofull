@@ -9,7 +9,7 @@ import 'package:project_gofull/core/utils/route_args.dart';
 
 // replace with API data later
 const _mockDriver = {
-  'name': 'محمود عبدالعليم',
+  'name': 'احمد احميد',
   'rating': '4.9',
   'reviewCount': '541',
   'plateNumber': 'أ ب م - 3541',
