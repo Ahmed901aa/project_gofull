@@ -6,7 +6,8 @@ import 'package:project_gofull/core/resources/strings_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
-import 'package:project_gofull/features/auth/presentation/widgets/otp_input_field.dart';
+import 'otp_input_field.dart';
+import 'otp_resend_row.dart';
 
 class OtpFormCard extends StatefulWidget {
   final String phoneNumber;
@@ -39,10 +40,7 @@ class _OtpFormCardState extends State<OtpFormCard> {
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (_seconds == 0) {
-        t.cancel();
-        return;
-      }
+      if (_seconds == 0) { t.cancel(); return; }
       setState(() => _seconds--);
     });
   }
@@ -71,55 +69,26 @@ class _OtpFormCardState extends State<OtpFormCard> {
       padding: EdgeInsets.symmetric(horizontal: Insets.s24, vertical: Insets.s32),
       child: Column(
         children: [
-          Text(AppStrings.otpTitle,
-              textAlign: TextAlign.center,
-              style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s24)),
+          Text(AppStrings.otpTitle, textAlign: TextAlign.center, style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s24)),
           SizedBox(height: Sizes.s12),
-          Text('${AppStrings.otpSubtitle} $_maskedPhone',
-              textAlign: TextAlign.center,
-              style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+          Text('${AppStrings.otpSubtitle} $_maskedPhone', textAlign: TextAlign.center, style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
           SizedBox(height: Sizes.s8),
           GestureDetector(
             onTap: widget.onChangeNumber,
-            child: Text(AppStrings.changeNumber,
-                style: getSemiBoldStyle(
-                    color: AppColors.primary, fontSize: FontSize.s14)),
+            child: Text(AppStrings.changeNumber, style: getSemiBoldStyle(color: AppColors.primary, fontSize: FontSize.s14)),
           ),
           SizedBox(height: Sizes.s32),
           OtpInputField(onCompleted: (code) => _otpCode = code),
           SizedBox(height: Sizes.s24),
-          _buildResendRow(),
-          SizedBox(height: Sizes.s32),
-          AppButton(
-            text: AppStrings.confirm,
-            isLoading: widget.isLoading,
-            onPressed: () => widget.onConfirm(_otpCode),
+          OtpResendRow(
+            seconds: _seconds,
+            formattedTime: _formattedTime,
+            onResend: () => setState(() { _seconds = 60; _startTimer(); }),
           ),
+          SizedBox(height: Sizes.s32),
+          AppButton(text: AppStrings.confirm, isLoading: widget.isLoading, onPressed: () => widget.onConfirm(_otpCode)),
         ],
       ),
     );
   }
-
-  Widget _buildResendRow() => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (_seconds > 0)
-            Text('${AppStrings.resendIn} $_formattedTime',
-                style: getRegularStyle(
-                    color: AppColors.grey, fontSize: FontSize.s14))
-          else
-            GestureDetector(
-              onTap: () => setState(() {
-                _seconds = 60;
-                _startTimer();
-              }),
-              child: Text(AppStrings.resend,
-                  style: getSemiBoldStyle(
-                      color: AppColors.primary, fontSize: FontSize.s14)),
-            ),
-          Text(' ${AppStrings.noCode}',
-              style:
-                  getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
-        ],
-      );
 }
