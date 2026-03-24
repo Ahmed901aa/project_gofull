@@ -48,7 +48,7 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
           child: SingleChildScrollView(
             padding: EdgeInsets.all(Insets.s16),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              SizedBox(height: Insets.s24),
+              SizedBox(height: 140),
               _buildCircle(),
               SizedBox(height: Insets.s16),
               Text(_args.title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
