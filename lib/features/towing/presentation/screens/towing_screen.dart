@@ -94,7 +94,7 @@ class _TowingScreenState extends State<TowingScreen> {
               searchingText: 'جاري البحث عن أقرب سائق ونش',
               subtitleText: 'نقوم الآن بمطابقة طلبك مع أقرب سيارة ونش متاحة في منطقتك.',
               nextRoute: Routes.driverFound,
-              nextRouteArgs: DriverFoundArgs(title: 'تم العثور على ونش!', vehicleLabel: 'نوع الونش', vehicleValue: 'ونش هيدروليك'),
+              nextRouteArgs: DriverFoundArgs(title: 'تم العثور على ونش!', vehicleLabel: 'نوع الونش', vehicleValue: 'ونش هيدروليك', imagePath: 'assets/images/magnifying_glass.gif'),
             )) : null),
           ],
         ),
