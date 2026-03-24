@@ -62,9 +62,9 @@ class DriverCard extends StatelessWidget {
             padding: EdgeInsetsDirectional.fromSTEB(Insets.s16, 0, Insets.s16, Insets.s12),
             child: Row(
               children: [
-                _infoPill(label: 'رقم اللوحة', value: 'أ ب م - 3541'),
-                SizedBox(width: Insets.s16),
                 _infoPill(label: vehicleLabel, value: vehicleValue),
+                SizedBox(width: Insets.s16),
+                _infoPill(label: 'رقم اللوحة', value: 'أ ب م - 3541'),
               ],
             ),
           ),
