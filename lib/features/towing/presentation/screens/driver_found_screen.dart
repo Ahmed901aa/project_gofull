@@ -167,10 +167,16 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
         Padding(
           padding: EdgeInsetsDirectional.fromSTEB(Insets.s16, Insets.s12, Insets.s16, 0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              Container(
+                width: 56.w, height: 56.w,
+                decoration: const BoxDecoration(color: AppColors.white, shape: BoxShape.circle),
+                child: Icon(Icons.person_rounded, color: AppColors.neutral800, size: 32.sp),
+              ),
+              SizedBox(width: Insets.s12),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     _mockDriver['name'] as String,
@@ -179,12 +185,6 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
                   SizedBox(height: 4.h),
                   _RatingBadge(),
                 ],
-              ),
-              SizedBox(width: Insets.s12),
-              Container(
-                width: 56.w, height: 56.w,
-                decoration: const BoxDecoration(color: AppColors.white, shape: BoxShape.circle),
-                child: Icon(Icons.person_rounded, color: AppColors.neutral800, size: 32.sp),
               ),
             ],
           ),
