@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_gofull/core/cubits/location_cubit.dart';
+import 'package:project_gofull/core/cubits/location_state.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
@@ -21,8 +24,24 @@ class _TowingScreenState extends State<TowingScreen> {
   String? _selectedCarType;
   final _carTypes = ['سيدان', 'SUV', 'بيك أب', 'شاحنة', 'هاتشباك'];
   final _plateCtrl = TextEditingController();
+  String _destinationAddress = 'وجهة سحب السيارة';
 
   bool get _isValid => _selectedCarType != null && _plateCtrl.text.trim().isNotEmpty;
+
+  Future<void> _onDestinationTap() async {
+    final cubit = context.read<LocationCubit>();
+    final prev = cubit.state;
+    await Navigator.pushNamed(context, Routes.locationSearch,
+        arguments: const LocationSearchArgs(title: 'وجهة التوصيل'));
+    if (!mounted) return;
+    final selected = cubit.state;
+    if (selected.address != prev.address) {
+      setState(() => _destinationAddress = selected.address);
+      if (prev.lat != null) {
+        cubit.setLocation(prev.address, prev.lat!, prev.lng!);
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -55,9 +74,26 @@ class _TowingScreenState extends State<TowingScreen> {
                     children: [
                       const Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: SafetyNoticeCard()),
                       const ServiceSectionHeader(title: 'مسار الرحلة', gap: 16),
-                      const Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: ServiceLocationCard(topLabel: 'نقطة الانطلاق', bottomLabel: 'موقع السيارة الحالي')),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: BlocBuilder<LocationCubit, LocationState>(
+                          builder: (context, loc) => ServiceLocationCard(
+                            topLabel: 'نقطة الانطلاق',
+                            bottomLabel: loc.address,
+                            onTap: () => Navigator.pushNamed(context, Routes.locationSearch,
+                                arguments: const LocationSearchArgs(title: 'الموقع الحالي')),
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 12),
-                      const Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: ServiceLocationCard(topLabel: 'وجهة التوصيل', bottomLabel: 'وجهة سحب السيارة')),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: ServiceLocationCard(
+                          topLabel: 'وجهة التوصيل',
+                          bottomLabel: _destinationAddress,
+                          onTap: _onDestinationTap,
+                        ),
+                      ),
                       const ServiceSectionHeader(title: 'تفاصيل السيارة', gap: 16),
                       TowingCarDetailsForm(selectedCarType: _selectedCarType, carTypes: _carTypes, plateCtrl: _plateCtrl, onCarTypeChanged: (v) => setState(() => _selectedCarType = v)),
                       const ServiceSectionHeader(title: 'ملاحظات إضافية', gap: 8),
