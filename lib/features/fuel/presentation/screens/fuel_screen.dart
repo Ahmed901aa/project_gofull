@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_gofull/core/cubits/location_cubit.dart';
+import 'package:project_gofull/core/cubits/location_state.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
@@ -45,7 +48,17 @@ class _FuelScreenState extends State<FuelScreen> {
                     children: [
                       const Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: SafetyNoticeCard()),
                       _section('الموقع', gap: 16),
-                      const Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: ServiceLocationCard(topLabel: 'الموقع الحالي', bottomLabel: 'موقع السيارة الحالي')),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: BlocBuilder<LocationCubit, LocationState>(
+                          builder: (context, loc) => ServiceLocationCard(
+                            topLabel: 'الموقع الحالي',
+                            bottomLabel: loc.address,
+                            onTap: () => Navigator.pushNamed(context, Routes.locationSearch,
+                                arguments: const LocationSearchArgs(title: 'الموقع الحالي')),
+                          ),
+                        ),
+                      ),
                       _section('تفاصيل الوقود', gap: 16),
                       FuelDetailsForm(
                         selectedFuelType: _selectedFuelType,

@@ -8,11 +8,14 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 class ServiceLocationCard extends StatelessWidget {
   final String topLabel;
   final String bottomLabel;
-  const ServiceLocationCard({super.key, required this.topLabel, required this.bottomLabel});
+  final VoidCallback? onTap;
+  const ServiceLocationCard({super.key, required this.topLabel, required this.bottomLabel, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
       padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
       decoration: BoxDecoration(
         color: const Color(0xFFF4F5F6),
@@ -40,6 +43,6 @@ class ServiceLocationCard extends StatelessWidget {
           Icon(Icons.arrow_forward_ios_rounded, size: 16.sp, color: const Color(0xFF0E0E0E)),
         ],
       ),
-    );
+    ));
   }
 }
