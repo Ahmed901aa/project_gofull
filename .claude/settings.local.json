@@ -36,7 +36,8 @@
       "Read(//proc/83484/fd/**)",
       "Bash(jobs -l)",
       "Bash(flutter devices:*)",
-      "Bash(flutter --version)"
+      "Bash(flutter --version)",
+      "Bash(wc -l /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/location/presentation/widgets/picker/*.dart /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/location/data/nominatim_service.dart /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/location/domain/nominatim_result.dart /Users/usermac/Desktop/project_Gofull/project_gofull/lib/core/utils/gps_utils.dart)"
     ]
   }
 }
