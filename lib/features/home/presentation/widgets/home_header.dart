@@ -14,7 +14,7 @@ class HomeHeader extends StatelessWidget {
   const HomeHeader({
     super.key,
     required this.userName,
-    this.address = 'شارع التحلية، الرياض',
+    this.address = 'الرياض، المملكة العربية السعودية',
   });
 
   @override

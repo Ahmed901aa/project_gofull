@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:project_gofull/core/cubits/location_cubit.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
@@ -19,7 +21,9 @@ class GoFullApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
+    return BlocProvider(
+      create: (_) => LocationCubit(),
+      child: ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
       builder: (context, child) => MaterialApp(
@@ -40,6 +44,7 @@ class GoFullApp extends StatelessWidget {
         ),
         initialRoute: Routes.splash,
         onGenerateRoute: RouteGenerator.getRoute,
+      ),
       ),
     );
   }

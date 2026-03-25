@@ -13,10 +13,17 @@ import 'package:project_gofull/features/home/presentation/widgets/offers_shimmer
 import 'package:project_gofull/features/home/presentation/widgets/promo_banner.dart';
 import 'package:project_gofull/features/home/presentation/widgets/service_cards_section.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   static const bool _hasActiveOrder = false;
+
+  String _address = 'شارع التحلية، الرياض';
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +42,23 @@ class HomeScreen extends StatelessWidget {
               child: SafeArea(
                 top: false,
                 child: CustomScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                  physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics()),
                   slivers: [
-                    const SliverToBoxAdapter(child: HomeHeader(userName: 'أحمد')),
+                    SliverToBoxAdapter(
+                      child: HomeHeader(
+                        userName: 'أحمد',
+                        address: _address,
+                        onAddressChanged: (addr) =>
+                            setState(() => _address = addr),
+                      ),
+                    ),
                     SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
                     SliverPadding(
-                      padding: EdgeInsets.symmetric(horizontal: Insets.s16),
-                      sliver: const SliverToBoxAdapter(child: PromoBanner()),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: Insets.s16),
+                      sliver:
+                          const SliverToBoxAdapter(child: PromoBanner()),
                     ),
                     SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
                     if (_hasActiveOrder) ...[
@@ -49,8 +66,10 @@ class HomeScreen extends StatelessWidget {
                       SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
                     ],
                     SliverPadding(
-                      padding: EdgeInsets.symmetric(horizontal: Insets.s16),
-                      sliver: const SliverToBoxAdapter(child: ServiceCardsSection()),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: Insets.s16),
+                      sliver: const SliverToBoxAdapter(
+                          child: ServiceCardsSection()),
                     ),
                     SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
                     SliverToBoxAdapter(

@@ -5,6 +5,7 @@ class Routes {
   static const String otp = '/otp';
   static const String home = '/home';
   static const String locationSearch = '/location-search';
+  static const String locationPicker = '/location-picker';
   static const String mapSelection = '/map-selection';
   static const String fuelType = '/fuel-type';
   static const String fuelOrder = '/fuel-order';

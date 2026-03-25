@@ -6,7 +6,6 @@ import 'package:project_gofull/core/resources/strings_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
-import 'package:project_gofull/core/utils/route_args.dart';
 
 class HomeLocationBar extends StatelessWidget {
   final String address;
@@ -16,11 +15,7 @@ class HomeLocationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(
-        context,
-        Routes.locationSearch,
-        arguments: LocationSearchArgs(title: AppStrings.currentLocation, showCurrentLocation: true),
-      ),
+      onTap: () => Navigator.pushNamed(context, Routes.locationPicker),
       child: Padding(
         padding: EdgeInsets.fromLTRB(Insets.s16, 0, Insets.s16, Insets.s16),
         child: Container(
@@ -34,16 +29,29 @@ class HomeLocationBar extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Icon(Icons.location_on_outlined, color: AppColors.primary, size: 20.sp),
+              Icon(Icons.location_on_outlined,
+                  color: AppColors.primary, size: 20.sp),
               SizedBox(width: 8.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(AppStrings.yourCurrentLocation, style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12)),
-                  SizedBox(height: 2.h),
-                  Text(address, style: getMediumStyle(color: AppColors.black, fontSize: FontSize.s14)),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(AppStrings.yourCurrentLocation,
+                        style: getRegularStyle(
+                            color: AppColors.neutral800,
+                            fontSize: FontSize.s12)),
+                    SizedBox(height: 2.h),
+                    Text(address,
+                        style: getMediumStyle(
+                            color: AppColors.black,
+                            fontSize: FontSize.s14),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                  ],
+                ),
               ),
+              Icon(Icons.keyboard_arrow_down_rounded,
+                  color: AppColors.grey, size: 20.sp),
             ],
           ),
         ),
