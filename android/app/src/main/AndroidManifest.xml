@@ -35,6 +35,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDZ_ZezX058d36aMTOc9E--MbyWqCdOI9I" />
     </application>
+    <!-- Required for all HTTP/HTTPS calls (Dio, Google APIs) -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <!-- Location permissions for Google Maps + Geolocator -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
