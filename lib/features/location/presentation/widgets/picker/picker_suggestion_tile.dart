@@ -4,11 +4,11 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
-import '../../../data/google_places_service.dart';
+import '../../../domain/nominatim_result.dart';
 
 class PickerSuggestionTile extends StatelessWidget {
-  final PlacePrediction item;
-  final ValueChanged<PlacePrediction> onTap;
+  final NominatimResult item;
+  final ValueChanged<NominatimResult> onTap;
 
   const PickerSuggestionTile({super.key, required this.item, required this.onTap});
 

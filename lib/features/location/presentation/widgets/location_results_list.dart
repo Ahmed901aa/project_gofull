@@ -13,8 +13,6 @@ class LocationItem {
       {required this.title, required this.subtitle, this.placeId});
 }
 
-/// Results list matching Figma: place info on RIGHT, arrow icon on LEFT.
-/// RTL Row: first child = rightmost, last child = leftmost.
 class LocationResultsList extends StatelessWidget {
   final List<LocationItem> items;
   final void Function(LocationItem) onItemTap;
@@ -40,6 +38,8 @@ class LocationResultsList extends StatelessWidget {
   }
 }
 
+/// Matches PickerSuggestionTile style:
+/// RTL Row → location icon (right) | title + subtitle (expanded left)
 class _ResultTile extends StatelessWidget {
   final LocationItem item;
   final void Function(LocationItem) onTap;
@@ -53,34 +53,30 @@ class _ResultTile extends StatelessWidget {
         padding: EdgeInsets.symmetric(
             horizontal: Insets.s16, vertical: Insets.s12),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // RTL first child → rightmost = place info
+            // RTL first child → rightmost = location pin icon
+            Icon(Icons.location_on_outlined,
+                color: AppColors.primary, size: 20.sp),
+            SizedBox(width: Insets.s12),
+            // Expanded text column
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(item.title,
-                      style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
-                          fontSize: FontSize.s14)),
+                      style: getMediumStyle(
+                          color: AppColors.black, fontSize: FontSize.s14)),
                   if (item.subtitle.isNotEmpty) ...[
                     SizedBox(height: 2.h),
                     Text(item.subtitle,
                         style: getRegularStyle(
-                            color: AppColors.neutral900,
-                            fontSize: FontSize.s12),
+                            color: AppColors.grey, fontSize: FontSize.s12),
                         maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textDirection: TextDirection.rtl),
+                        overflow: TextOverflow.ellipsis),
                   ],
                 ],
               ),
             ),
-            SizedBox(width: Insets.s12),
-            // RTL last child → leftmost = arrow icon
-            Icon(Icons.north_west_rounded,
-                color: const Color(0xFF646565), size: 20.sp),
           ],
         ),
       ),

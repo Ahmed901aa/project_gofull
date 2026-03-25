@@ -6,7 +6,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:project_gofull/core/cubits/location_cubit.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/utils/gps_utils.dart';
-import '../../data/google_places_service.dart';
+import '../../data/nominatim_service.dart';
+import '../../domain/nominatim_result.dart';
 import '../widgets/picker/picker_confirm_card.dart';
 import '../widgets/picker/picker_map.dart';
 import '../widgets/picker/picker_my_location_btn.dart';
@@ -23,10 +24,10 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   LatLng _center = const LatLng(24.7136, 46.6753);
   String _address = '';
   bool _loadingAddr = false, _searching = false, _loadingSugg = false;
-  List<PlacePrediction> _suggestions = [];
+  List<NominatimResult> _suggestions = [];
   final _searchCtrl = TextEditingController();
   final _searchFocus = FocusNode();
-  final _places = GooglePlacesService();
+  final _service = NominatimService();
   Timer? _debounce;
   @override
   void initState() {
@@ -43,13 +44,13 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     _searchCtrl.dispose();
     _searchFocus.dispose();
     _ctrl?.dispose();
-    _places.dispose();
+    _service.dispose();
     super.dispose();
   }
   Future<void> _reverseGeocode(LatLng pos) async {
     setState(() => _loadingAddr = true);
     try {
-      final name = await _places.reverseGeocode(pos.latitude, pos.longitude);
+      final name = await _service.reverseGeocode(pos);
       if (mounted) setState(() { _address = name; _loadingAddr = false; });
     } catch (_) { if (mounted) setState(() => _loadingAddr = false); }
   }
@@ -59,17 +60,16 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () async {
       setState(() => _loadingSugg = true);
-      final r = await _places.autocomplete(q);
-      if (mounted) setState(() { _suggestions = r; _loadingSugg = false; });
+      try {
+        final r = await _service.search(q);
+        if (mounted) setState(() { _suggestions = r; _loadingSugg = false; });
+      } catch (_) { if (mounted) setState(() => _loadingSugg = false); }
     });
   }
-  void _onSelect(PlacePrediction p) { _selectAndMove(p); }
-  Future<void> _selectAndMove(PlacePrediction p) async {
-    final detail = await _places.getDetails(p.placeId);
-    if (detail == null || !mounted) return;
-    final ll = LatLng(detail.lat, detail.lng);
+  void _select(NominatimResult r) {
+    final ll = LatLng(r.lat, r.lng);
     _searchFocus.unfocus();
-    setState(() { _searching = false; _suggestions = []; _address = detail.address; _center = ll; });
+    setState(() { _searching = false; _suggestions = []; _address = r.title; _center = ll; });
     WidgetsBinding.instance.addPostFrameCallback(
         (_) => _ctrl?.animateCamera(CameraUpdate.newLatLngZoom(ll, 15)));
   }
@@ -98,7 +98,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
               suggestions: _suggestions, isLoading: _loadingSugg,
               onBack: () { setState(() { _searching = false; _suggestions = []; }); _searchFocus.unfocus(); },
               onClear: () { _searchCtrl.clear(); setState(() => _suggestions = []); },
-              onSelect: _onSelect),
+              onSelect: _select),
           ]))),
       Positioned(left: Insets.s16, bottom: 140.h,
         child: PickerMyLocationBtn(onTap: () => animateToCurrentLocation(_ctrl))),

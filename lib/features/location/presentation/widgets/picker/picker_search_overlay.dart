@@ -4,17 +4,17 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
-import '../../../data/google_places_service.dart';
+import '../../../domain/nominatim_result.dart';
 import 'picker_suggestion_tile.dart';
 
 class PickerSearchOverlay extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
-  final List<PlacePrediction> suggestions;
+  final List<NominatimResult> suggestions;
   final bool isLoading;
   final VoidCallback onBack;
   final VoidCallback onClear;
-  final ValueChanged<PlacePrediction> onSelect;
+  final ValueChanged<NominatimResult> onSelect;
 
   const PickerSearchOverlay({
     super.key,
