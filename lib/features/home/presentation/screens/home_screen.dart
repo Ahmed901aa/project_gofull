@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_gofull/core/cubits/location_cubit.dart';
+import 'package:project_gofull/core/cubits/location_state.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -13,17 +15,10 @@ import 'package:project_gofull/features/home/presentation/widgets/offers_shimmer
 import 'package:project_gofull/features/home/presentation/widgets/promo_banner.dart';
 import 'package:project_gofull/features/home/presentation/widgets/service_cards_section.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
   static const bool _hasActiveOrder = false;
-
-  String _address = 'شارع التحلية، الرياض';
 
   @override
   Widget build(BuildContext context) {
@@ -45,20 +40,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   physics: const AlwaysScrollableScrollPhysics(
                       parent: BouncingScrollPhysics()),
                   slivers: [
+                    // Read address from shared LocationCubit
                     SliverToBoxAdapter(
-                      child: HomeHeader(
-                        userName: 'أحمد',
-                        address: _address,
-                        onAddressChanged: (addr) =>
-                            setState(() => _address = addr),
+                      child: BlocBuilder<LocationCubit, LocationState>(
+                        builder: (context, location) => HomeHeader(
+                          userName: 'أحمد',
+                          address: location.address,
+                        ),
                       ),
                     ),
                     SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
                     SliverPadding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: Insets.s16),
-                      sliver:
-                          const SliverToBoxAdapter(child: PromoBanner()),
+                      padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+                      sliver: const SliverToBoxAdapter(child: PromoBanner()),
                     ),
                     SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
                     if (_hasActiveOrder) ...[
@@ -66,8 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
                     ],
                     SliverPadding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: Insets.s16),
+                      padding: EdgeInsets.symmetric(horizontal: Insets.s16),
                       sliver: const SliverToBoxAdapter(
                           child: ServiceCardsSection()),
                     ),
