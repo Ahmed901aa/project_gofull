@@ -21,16 +21,11 @@ class LocationPickerScreen extends StatefulWidget {
 }
 
 class _LocationPickerScreenState extends State<LocationPickerScreen> {
-  static const _default = LatLng(24.7136, 46.6753);
-
   GoogleMapController? _ctrl;
-  LatLng _center = _default;
+  LatLng _center = const LatLng(24.7136, 46.6753);
   String _address = '';
-  bool _loadingAddr = false;
-  bool _searching = false;
+  bool _loadingAddr = false, _searching = false, _loadingSugg = false;
   List<NominatimResult> _suggestions = [];
-  bool _loadingSugg = false;
-
   final _searchCtrl = TextEditingController();
   final _searchFocus = FocusNode();
   final _service = NominatimService();
@@ -105,14 +100,14 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
         Positioned(top: 0, left: 0, right: 0,
           child: Material(color: Colors.white, child: Column(mainAxisSize: MainAxisSize.min, children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
-            PickerSearchOverlay(
-              controller: _searchCtrl, focusNode: _searchFocus,
+            PickerSearchOverlay(controller: _searchCtrl, focusNode: _searchFocus,
               suggestions: _suggestions, isLoading: _loadingSugg,
               onBack: () { setState(() { _searching = false; _suggestions = []; }); _searchFocus.unfocus(); },
               onClear: () { _searchCtrl.clear(); setState(() => _suggestions = []); },
               onSelect: _select),
           ]))),
-      Positioned(left: Insets.s16, bottom: 140.h, child: PickerMyLocationBtn(onTap: () => animateToCurrentLocation(_ctrl))),
+      Positioned(left: Insets.s16, bottom: 140.h,
+        child: PickerMyLocationBtn(onTap: () => animateToCurrentLocation(_ctrl))),
       Positioned(left: 0, right: 0, bottom: 0,
         child: PickerConfirmCard(address: _address, isLoading: _loadingAddr, onConfirm: _confirm)),
     ]));
