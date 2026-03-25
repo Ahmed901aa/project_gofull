@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/strings_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/utils/route_args.dart';
 
 class HomeLocationBar extends StatelessWidget {
   final String address;
@@ -15,7 +16,11 @@ class HomeLocationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, Routes.locationPicker),
+      onTap: () => Navigator.pushNamed(
+        context,
+        Routes.locationSearch,
+        arguments: const LocationSearchArgs(title: 'الموقع الحالي'),
+      ),
       child: Padding(
         padding: EdgeInsets.fromLTRB(Insets.s16, 0, Insets.s16, Insets.s16),
         child: Container(

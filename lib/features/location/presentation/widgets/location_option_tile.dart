@@ -2,64 +2,72 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
-import 'package:project_gofull/core/routes/routes.dart';
-import 'package:project_gofull/core/utils/route_args.dart';
 
-class CurrentLocationTile extends StatelessWidget {
-  const CurrentLocationTile({super.key});
+/// Two quick-action rows separated by a divider.
+/// Callbacks are provided by the parent screen.
+class LocationOptionTile extends StatelessWidget {
+  final VoidCallback onGpsTap;
+  final VoidCallback onMapTap;
+  const LocationOptionTile(
+      {super.key, required this.onGpsTap, required this.onMapTap});
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => Navigator.pop(context, AppStrings.yourCurrentLocation),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
-        child: Row(
-          children: [
-            Container(
-              width: 26.w,
-              height: 26.w,
-              decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-              child: Icon(Icons.my_location_rounded, color: AppColors.white, size: 14.sp),
-            ),
-            SizedBox(width: Insets.s12),
-            Text(
-              AppStrings.yourCurrentLocation,
-              style: getMediumStyle(color: AppColors.primary, fontSize: FontSize.s14),
-            ),
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _ActionRow(
+          icon: Icon(Icons.my_location_rounded,
+              color: AppColors.primary, size: 22.sp),
+          label: 'موقعك الحالي',
+          onTap: onGpsTap,
+          labelColor: const Color(0xFF0E0E0E),
         ),
-      ),
+        const Divider(color: AppColors.neutral500, height: 1),
+        _ActionRow(
+          icon: Icon(Icons.location_on_outlined,
+              color: AppColors.primary, size: 22.sp),
+          label: 'حدد الموقع علي الخريطة',
+          onTap: onMapTap,
+          labelColor: const Color(0xFF0E0E0E),
+        ),
+      ],
     );
   }
 }
 
-class ChooseOnMapTile extends StatelessWidget {
-  final String title;
-  const ChooseOnMapTile({super.key, required this.title});
+class _ActionRow extends StatelessWidget {
+  final Widget icon;
+  final String label;
+  final Color labelColor;
+  final VoidCallback onTap;
+  const _ActionRow(
+      {required this.icon,
+      required this.label,
+      required this.labelColor,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.pushNamed(
-        context,
-        Routes.mapSelection,
-        arguments: MapSelectionArgs(title: title),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
-        child: Row(
-          children: [
-            Icon(Icons.location_on_outlined, color: AppColors.primary, size: 24.sp),
-            SizedBox(width: Insets.s12),
-            Text(
-              'حدد الموقع علي الخريطة',
-              style: getMediumStyle(color: AppColors.black, fontSize: FontSize.s14),
-            ),
-          ],
+      onTap: onTap,
+      child: SizedBox(
+        height: 52.h,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+          child: Row(
+            // MainAxisAlignment.start in RTL = right-aligned content
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              // RTL first child → rightmost = icon
+              icon,
+              SizedBox(width: Insets.s8),
+              Text(label,
+                  style: getBoldStyle(color: labelColor, fontSize: FontSize.s14)),
+            ],
+          ),
         ),
       ),
     );

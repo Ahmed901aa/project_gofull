@@ -1,9 +1,13 @@
+import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_gofull/core/cubits/location_cubit.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/utils/gps_utils.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
+import '../../data/nominatim_service.dart';
 import '../widgets/location_option_tile.dart';
 import '../widgets/location_results_list.dart';
 import '../widgets/location_search_app_bar.dart';
@@ -12,132 +16,94 @@ import '../widgets/location_search_bar.dart';
 class LocationSearchScreen extends StatefulWidget {
   final LocationSearchArgs args;
   const LocationSearchScreen({super.key, required this.args});
-
-  @override
-  State<LocationSearchScreen> createState() => _LocationSearchScreenState();
+  @override State<LocationSearchScreen> createState() => _State();
 }
 
-class _LocationSearchScreenState extends State<LocationSearchScreen> {
+class _State extends State<LocationSearchScreen> {
   static const _apiKey = 'AIzaSyDZ_ZezX058d36aMTOc9E--MbyWqCdOI9I';
-
-  final TextEditingController _searchController = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
+  final _ctrl = TextEditingController();
+  final _focus = FocusNode();
   final _dio = Dio();
-
+  final _nominatim = NominatimService();
   List<LocationItem> _results = [];
   bool _isLoading = false;
-
+  Timer? _debounce;
   @override
-  void initState() {
-    super.initState();
-    _searchController.addListener(_onSearchChanged);
+  void initState() { super.initState(); _ctrl.addListener(_onChanged); }
+  @override
+  void dispose() {
+    _debounce?.cancel(); _ctrl.dispose(); _focus.dispose();
+    _dio.close(); _nominatim.dispose(); super.dispose();
   }
-
-  void _onSearchChanged() {
-    final query = _searchController.text.trim();
-    if (query.length < 2) {
-      setState(() => _results = []);
-      return;
-    }
-    _searchPlaces(query);
+  void _onChanged() {
+    final q = _ctrl.text.trim();
+    if (q.length < 2) { setState(() => _results = []); return; }
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () => _search(q));
   }
-
-  Future<void> _searchPlaces(String query) async {
+  Future<void> _search(String q) async {
     setState(() => _isLoading = true);
     try {
-      final response = await _dio.get(
+      final res = await _dio.get(
         'https://maps.googleapis.com/maps/api/geocode/json',
-        queryParameters: {
-          'address': query,
-          'key': _apiKey,
-          'language': 'ar',
-          'region': 'LY',
-        },
+        queryParameters: {'address': q, 'key': _apiKey, 'language': 'ar'},
       );
-      final status = response.data['status'] as String;
-      final results = status == 'OK' ? response.data['results'] as List : [];
+      final list = res.data['status'] == 'OK' ? res.data['results'] as List : [];
       setState(() {
-        _results = results.map<LocationItem>((r) {
-          final description = r['formatted_address'] as String;
-          final parts = description.split('،');
+        _results = list.map<LocationItem>((r) {
+          final desc = r['formatted_address'] as String;
+          final parts = desc.split('،');
           return LocationItem(
             title: parts.first.trim(),
-            subtitle: parts.length > 1 ? parts.skip(1).join('،').trim() : description,
+            subtitle: parts.length > 1 ? parts.skip(1).join('،').trim() : '',
             placeId: '${r['geometry']['location']['lat']},${r['geometry']['location']['lng']}',
           );
         }).toList();
         _isLoading = false;
       });
-    } catch (_) {
-      setState(() => _isLoading = false);
-    }
+    } catch (_) { setState(() => _isLoading = false); }
   }
-
-  Future<void> _onResultTap(LocationItem item) async {
+  void _onResultTap(LocationItem item) {
     if (item.placeId == null) return;
-    final parts = item.placeId!.split(',');
-    final lat = double.parse(parts[0]);
-    final lng = double.parse(parts[1]);
-    if (!mounted) return;
-    final address = await Navigator.pushNamed(
-      context,
-      Routes.mapSelection,
-      arguments: MapSelectionArgs(
-        title: widget.args.title,
-        initialLat: lat,
-        initialLng: lng,
-      ),
-    );
-    if (address != null && mounted) {
-      Navigator.pop(context, address);
+    final p = item.placeId!.split(',');
+    context.read<LocationCubit>()
+        .setLocation(item.title, double.parse(p[0]), double.parse(p[1]));
+    Navigator.pop(context);
+  }
+  Future<void> _onGpsTap() async {
+    final loc = await fetchCurrentGpsLocation(_nominatim);
+    if (loc != null && mounted) {
+      context.read<LocationCubit>()
+          .setLocation(loc.address, loc.lat, loc.lng);
+      Navigator.pop(context);
     }
   }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    _focusNode.dispose();
-    _dio.close();
-    super.dispose();
+  Future<void> _onMapTap() async {
+    await Navigator.pushNamed(context, Routes.locationPicker);
+    if (mounted) Navigator.pop(context);
   }
-
   @override
   Widget build(BuildContext context) {
+    final hasQuery = _ctrl.text.isNotEmpty;
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: AppColors.white,
         resizeToAvoidBottomInset: true,
-        body: SafeArea(
-          child: Column(
-            children: [
-              LocationSearchAppBar(title: widget.args.title),
-              LocationSearchBar(
-                controller: _searchController,
-                focusNode: _focusNode,
-                onClear: () {
-                  _searchController.clear();
-                  setState(() => _results = []);
-                },
-              ),
-              const Divider(color: AppColors.divider, height: 1),
-              const CurrentLocationTile(),
-              const Divider(color: AppColors.divider, height: 1),
-              ChooseOnMapTile(title: widget.args.title),
-              const Divider(color: AppColors.divider, height: 1),
-              Expanded(
-                child: _searchController.text.isEmpty
-                    ? const SizedBox.shrink()
-                    : _isLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : LocationResultsList(
-                            items: _results,
-                            onItemTap: _onResultTap,
-                          ),
-              ),
-            ],
-          ),
-        ),
+        body: SafeArea(child: Column(children: [
+          LocationSearchAppBar(onClose: () => Navigator.pop(context)),
+          LocationSearchBar(controller: _ctrl, focusNode: _focus,
+            onClear: () { _ctrl.clear(); setState(() => _results = []); }),
+          const Divider(color: AppColors.neutral500, height: 1),
+          LocationOptionTile(onGpsTap: _onGpsTap, onMapTap: _onMapTap),
+          const Divider(color: AppColors.neutral500, height: 1),
+          if (hasQuery && _isLoading)
+            const Expanded(child: Center(child: CircularProgressIndicator(
+                color: AppColors.primary, strokeWidth: 2))),
+          if (hasQuery && !_isLoading)
+            Expanded(child: LocationResultsList(
+                items: _results, onItemTap: _onResultTap)),
+        ])),
       ),
     );
   }
