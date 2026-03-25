@@ -235,15 +235,32 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
             ),
           ),
 
-          // ── Top bar ────────────────────────────────────────────────────────
-          SafeArea(
-            child: Material(
-              type: MaterialType.transparency,
-              child: _isSearching
-                  ? _buildSearchOverlay()
-                  : _buildTopBar(),
+          // ── Top bar (with SafeArea for normal state) ───────────────────────
+          if (!_isSearching)
+            SafeArea(
+              child: Material(
+                type: MaterialType.transparency,
+                child: _buildTopBar(),
+              ),
             ),
-          ),
+
+          // ── Search overlay (no SafeArea — starts at very top) ──────────────
+          if (_isSearching)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Material(
+                color: AppColors.white,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).padding.top),
+                    _buildSearchOverlay(),
+                  ],
+                ),
+              ),
+            ),
 
           // ── My location button ─────────────────────────────────────────────
           Positioned(
