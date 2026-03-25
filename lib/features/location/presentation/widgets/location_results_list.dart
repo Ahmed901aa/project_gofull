@@ -8,13 +8,15 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 class LocationItem {
   final String title;
   final String subtitle;
-  const LocationItem({required this.title, required this.subtitle});
+  final String? placeId;
+  const LocationItem({required this.title, required this.subtitle, this.placeId});
 }
 
 class LocationResultsList extends StatelessWidget {
   final List<LocationItem> items;
+  final void Function(LocationItem)? onItemTap;
 
-  const LocationResultsList({super.key, required this.items});
+  const LocationResultsList({super.key, required this.items, this.onItemTap});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,13 @@ class LocationResultsList extends StatelessWidget {
       itemBuilder: (context, index) {
         final loc = items[index];
         return InkWell(
-          onTap: () => Navigator.pop(context, loc.title),
+          onTap: () {
+            if (onItemTap != null) {
+              onItemTap!(loc);
+            } else {
+              Navigator.pop(context, loc.title);
+            }
+          },
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
             child: Row(

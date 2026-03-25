@@ -7,7 +7,8 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 
 class MapTopBar extends StatelessWidget {
-  const MapTopBar({super.key});
+  final VoidCallback? onSearchTap;
+  const MapTopBar({super.key, this.onSearchTap});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class MapTopBar extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            onTap: () => Navigator.pop(context),
+            onTap: onSearchTap,
             child: Container(
               width: 36.w, height: 36.w,
               decoration: BoxDecoration(color: AppColors.lightGrey, shape: BoxShape.circle),
