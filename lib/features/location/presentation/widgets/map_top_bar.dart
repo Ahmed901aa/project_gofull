@@ -34,6 +34,7 @@ class MapTopBar extends StatelessWidget {
           ),
           GestureDetector(
             onTap: onSearchTap,
+            behavior: HitTestBehavior.opaque,
             child: Container(
               width: 36.w, height: 36.w,
               decoration: BoxDecoration(color: AppColors.lightGrey, shape: BoxShape.circle),

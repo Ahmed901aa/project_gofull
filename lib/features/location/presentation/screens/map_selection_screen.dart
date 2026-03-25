@@ -168,22 +168,27 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
             ),
             // Top bar + address bar (hidden while searching)
             if (!_isSearching)
-              SafeArea(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    MapTopBar(
-                      onSearchTap: () => setState(() => _isSearching = true),
-                    ),
-                    MapAddressBar(
-                      address: _address.isEmpty ? 'جارٍ تحديد الموقع...' : _address,
-                    ),
-                  ],
+              Material(
+                type: MaterialType.transparency,
+                child: SafeArea(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      MapTopBar(
+                        onSearchTap: () => setState(() => _isSearching = true),
+                      ),
+                      MapAddressBar(
+                        address: _address.isEmpty ? 'جارٍ تحديد الموقع...' : _address,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             // Search overlay
             if (_isSearching)
-              SafeArea(
+              Material(
+                type: MaterialType.transparency,
+                child: SafeArea(
                 child: Column(
                   children: [
                     // Search input row
