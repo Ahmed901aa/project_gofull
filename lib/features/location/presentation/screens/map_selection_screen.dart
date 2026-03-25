@@ -113,7 +113,6 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
       final placemarks = await placemarkFromCoordinates(
         _selectedLocation.latitude,
         _selectedLocation.longitude,
-        localeIdentifier: 'ar',
       );
       if (placemarks.isNotEmpty && mounted) {
         final p = placemarks.first;
