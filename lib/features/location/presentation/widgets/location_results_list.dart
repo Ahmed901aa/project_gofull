@@ -8,9 +8,10 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 class LocationItem {
   final String title;
   final String subtitle;
-  final String? placeId;
+  final double? lat;
+  final double? lng;
   const LocationItem(
-      {required this.title, required this.subtitle, this.placeId});
+      {required this.title, required this.subtitle, this.lat, this.lng});
 }
 
 class LocationResultsList extends StatelessWidget {

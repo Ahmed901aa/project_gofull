@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:project_gofull/core/cubits/location_cubit.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/gps_utils.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
-import '../../data/google_places_service.dart';
+import '../../data/nominatim_service.dart';
 import '../widgets/location_option_tile.dart';
 import '../widgets/location_results_list.dart';
 import '../widgets/location_search_app_bar.dart';
@@ -21,7 +22,7 @@ class LocationSearchScreen extends StatefulWidget {
 class _State extends State<LocationSearchScreen> {
   final _ctrl = TextEditingController();
   final _focus = FocusNode();
-  final _places = GooglePlacesService();
+  final _service = NominatimService();
   List<LocationItem> _results = [];
   bool _isLoading = false;
   Timer? _debounce;
@@ -32,44 +33,42 @@ class _State extends State<LocationSearchScreen> {
   @override
   void dispose() {
     _debounce?.cancel(); _ctrl.dispose(); _focus.dispose();
-    _places.dispose(); super.dispose();
+    _service.dispose(); super.dispose();
   }
 
   void _onChanged() {
     final q = _ctrl.text.trim();
-    if (q.length < 2) { setState(() => _results = []); return; }
+    if (q.isEmpty) { setState(() => _results = []); return; }
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () => _search(q));
   }
 
   Future<void> _search(String q) async {
     setState(() => _isLoading = true);
-    final preds = await _places.autocomplete(q);
-    if (!mounted) return;
-    setState(() {
-      _results = preds
-          .map((p) => LocationItem(
-              placeId: p.placeId, title: p.title, subtitle: p.subtitle))
-          .toList();
-      _isLoading = false;
-    });
-  }
-
-  // Wrap async work so onItemTap stays void Function(LocationItem).
-  void _onResultTap(LocationItem item) { _selectPlace(item); }
-
-  Future<void> _selectPlace(LocationItem item) async {
-    if (item.placeId == null) return;
-    final detail = await _places.getDetails(item.placeId!);
-    if (detail != null && mounted) {
-      context.read<LocationCubit>()
-          .setLocation(detail.address, detail.lat, detail.lng);
-      Navigator.pop(context);
+    try {
+      final r = await _service.search(q);
+      if (!mounted) return;
+      setState(() {
+        _results = r
+            .map((n) => LocationItem(title: n.title, subtitle: n.subtitle,
+                lat: n.lat, lng: n.lng))
+            .toList();
+        _isLoading = false;
+      });
+    } catch (_) {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
+  void _onResultTap(LocationItem item) {
+    context.read<LocationCubit>()
+        .setLocation(item.title, item.lat!, item.lng!);
+    Navigator.pop(context);
+  }
+
   Future<void> _onGpsTap() async {
-    final loc = await fetchCurrentGpsLocation(_places.reverseGeocode);
+    final loc = await fetchCurrentGpsLocation(
+        (lat, lng) => _service.reverseGeocode(LatLng(lat, lng)));
     if (loc != null && mounted) {
       context.read<LocationCubit>()
           .setLocation(loc.address, loc.lat, loc.lng);
