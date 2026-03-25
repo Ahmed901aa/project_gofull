@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/driver_details_card.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/gif_circle.dart';
@@ -29,6 +30,12 @@ class ServiceArrivedScreen extends StatelessWidget {
       backgroundColor: AppColors.scaffoldBg,
       body: Column(children: [
         _buildHeader(context),
+        // TODO: Remove this mock button — in production, the backend will trigger
+        // navigation to the completion screen when the driver confirms fueling is done.
+        _MockTriggerButton(
+          label: 'محاكاة: اكتمال التعبئة',
+          onTap: () => Navigator.pushReplacementNamed(context, Routes.fuelComplete),
+        ),
         Expanded(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -84,4 +91,29 @@ class ServiceArrivedScreen extends StatelessWidget {
       ),
     ],
   );
+}
+
+// ── Mock trigger button (REMOVE IN PRODUCTION) ────────────────────────────────
+class _MockTriggerButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+  const _MockTriggerButton({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: AppColors.white,
+      padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s8, Insets.s16, Insets.s8),
+      child: OutlinedButton(
+        onPressed: onTap,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.warning,
+          side: const BorderSide(color: AppColors.warning),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
+          minimumSize: Size(double.infinity, 44.h),
+        ),
+        child: Text(label, style: getBoldStyle(color: AppColors.warning, fontSize: FontSize.s14)),
+      ),
+    );
+  }
 }

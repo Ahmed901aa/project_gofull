@@ -36,7 +36,7 @@ class NavItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 24.sp, color: color),
-            SizedBox(height: 6.h),
+            SizedBox(height: 8.h),
             Text(
               label,
               style: isActive

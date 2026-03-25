@@ -25,7 +25,7 @@ class ServiceBottomButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF54867C),
+            backgroundColor: AppColors.primary,
             disabledBackgroundColor: const Color(0xFFD9DADB),
             foregroundColor: AppColors.white,
             disabledForegroundColor: AppColors.white,

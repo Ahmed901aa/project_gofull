@@ -30,15 +30,14 @@ class _BottomNavShellState extends State<BottomNavShell> {
       backgroundColor: AppColors.white,
       body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-          boxShadow: [BoxShadow(color: AppColors.shadow, blurRadius: 12, offset: const Offset(0, -2))],
+        decoration: const BoxDecoration(
+          color: AppColors.scaffoldBg,
+          border: Border(top: BorderSide(color: Color(0xFFF4F5F6))),
         ),
         child: SafeArea(
           top: false,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: 10.h),
+            padding: EdgeInsets.only(top: 12.h, left: 32.w, right: 32.w),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [

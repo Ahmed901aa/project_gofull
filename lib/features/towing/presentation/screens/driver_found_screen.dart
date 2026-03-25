@@ -2,6 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/core/resources/font_manager.dart';
+import 'package:project_gofull/core/resources/styles_manager.dart';
+import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/eta_bottom_panel.dart';
 import '../widgets/driver_found_body.dart';
@@ -73,8 +76,43 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
             ),
           ),
           EtaBottomPanel(etaFormatted: _eta, progress: _progress),
+          // TODO: Remove this mock button — in production, the driver app triggers
+          // navigation when the driver confirms they have arrived at the user's location.
+          if (_args.nextRoute != null)
+            _MockTriggerButton(
+              label: 'محاكاة: وصول مزود الخدمة',
+              onTap: () {
+                _timer?.cancel();
+                Navigator.pushReplacementNamed(context, _args.nextRoute!);
+              },
+            ),
           SizedBox(height: MediaQuery.of(context).padding.bottom),
         ],
+      ),
+    );
+  }
+}
+
+// ── Mock trigger button (REMOVE IN PRODUCTION) ────────────────────────────────
+class _MockTriggerButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+  const _MockTriggerButton({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: AppColors.white,
+      padding: EdgeInsets.fromLTRB(Insets.s16, 0, Insets.s16, Insets.s12),
+      child: OutlinedButton(
+        onPressed: onTap,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.warning,
+          side: const BorderSide(color: AppColors.warning),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
+          minimumSize: Size(double.infinity, 44.h),
+        ),
+        child: Text(label, style: getBoldStyle(color: AppColors.warning, fontSize: FontSize.s14)),
       ),
     );
   }

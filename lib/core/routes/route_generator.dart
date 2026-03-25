@@ -5,6 +5,8 @@ import 'package:project_gofull/features/auth/presentation/screens/splash_screen.
 import 'package:project_gofull/features/auth/presentation/screens/login_screen.dart';
 import 'package:project_gofull/features/auth/presentation/screens/otp_screen.dart';
 import 'package:project_gofull/features/fuel/presentation/screens/fuel_screen.dart';
+import 'package:project_gofull/features/fuel/presentation/screens/fuel_complete_screen.dart';
+import 'package:project_gofull/features/fuel/presentation/screens/rating_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/towing_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/searching_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/driver_found_screen.dart';
@@ -41,6 +43,10 @@ class RouteGenerator {
       case Routes.serviceArrived:
         final args = settings.arguments as ServiceArrivedArgs?;
         return _buildRoute(ServiceArrivedScreen(args: args), settings);
+      case Routes.fuelComplete:
+        return _buildRoute(const FuelCompleteScreen(), settings);
+      case Routes.rating:
+        return _buildRoute(const RatingScreen(), settings);
       case Routes.towingStarted:
         final args = settings.arguments as TowingStartedArgs?;
         return _buildRoute(TowingStartedScreen(args: args), settings);
