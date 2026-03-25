@@ -46,23 +46,24 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
     setState(() => _isLoading = true);
     try {
       final response = await _dio.get(
-        'https://maps.googleapis.com/maps/api/place/autocomplete/json',
+        'https://maps.googleapis.com/maps/api/geocode/json',
         queryParameters: {
-          'input': query,
+          'address': query,
           'key': _apiKey,
           'language': 'ar',
-          'components': 'country:ly',
+          'region': 'LY',
         },
       );
-      final predictions = response.data['predictions'] as List;
+      final status = response.data['status'] as String;
+      final results = status == 'OK' ? response.data['results'] as List : [];
       setState(() {
-        _results = predictions.map((p) {
-          final description = p['description'] as String;
-          final parts = description.split(',');
+        _results = results.map<LocationItem>((r) {
+          final description = r['formatted_address'] as String;
+          final parts = description.split('،');
           return LocationItem(
             title: parts.first.trim(),
-            subtitle: parts.length > 1 ? parts.skip(1).join(',').trim() : '',
-            placeId: p['place_id'] as String,
+            subtitle: parts.length > 1 ? parts.skip(1).join('،').trim() : description,
+            placeId: '${r['geometry']['location']['lat']},${r['geometry']['location']['lng']}',
           );
         }).toList();
         _isLoading = false;
@@ -74,30 +75,22 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
 
   Future<void> _onResultTap(LocationItem item) async {
     if (item.placeId == null) return;
-    try {
-      final response = await _dio.get(
-        'https://maps.googleapis.com/maps/api/place/details/json',
-        queryParameters: {
-          'place_id': item.placeId,
-          'fields': 'geometry',
-          'key': _apiKey,
-        },
-      );
-      final loc = response.data['result']['geometry']['location'];
-      if (!mounted) return;
-      final address = await Navigator.pushNamed(
-        context,
-        Routes.mapSelection,
-        arguments: MapSelectionArgs(
-          title: widget.args.title,
-          initialLat: (loc['lat'] as num).toDouble(),
-          initialLng: (loc['lng'] as num).toDouble(),
-        ),
-      );
-      if (address != null && mounted) {
-        Navigator.pop(context, address);
-      }
-    } catch (_) {}
+    final parts = item.placeId!.split(',');
+    final lat = double.parse(parts[0]);
+    final lng = double.parse(parts[1]);
+    if (!mounted) return;
+    final address = await Navigator.pushNamed(
+      context,
+      Routes.mapSelection,
+      arguments: MapSelectionArgs(
+        title: widget.args.title,
+        initialLat: lat,
+        initialLng: lng,
+      ),
+    );
+    if (address != null && mounted) {
+      Navigator.pop(context, address);
+    }
   }
 
   @override
