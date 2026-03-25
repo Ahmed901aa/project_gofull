@@ -16,8 +16,7 @@ import '../widgets/picker/picker_top_bar.dart';
 
 class LocationPickerScreen extends StatefulWidget {
   const LocationPickerScreen({super.key});
-  @override
-  State<LocationPickerScreen> createState() => _LocationPickerScreenState();
+  @override State<LocationPickerScreen> createState() => _LocationPickerScreenState();
 }
 
 class _LocationPickerScreenState extends State<LocationPickerScreen> {
@@ -30,7 +29,6 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   final _searchFocus = FocusNode();
   final _service = NominatimService();
   Timer? _debounce;
-
   @override
   void initState() {
     super.initState();
@@ -40,7 +38,6 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
       if (s.lat != null) setState(() { _center = LatLng(s.lat!, s.lng!); _address = s.address; });
     });
   }
-
   @override
   void dispose() {
     _debounce?.cancel();
@@ -50,7 +47,6 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     _service.dispose();
     super.dispose();
   }
-
   Future<void> _reverseGeocode(LatLng pos) async {
     setState(() => _loadingAddr = true);
     try {
@@ -58,7 +54,6 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
       if (mounted) setState(() { _address = name; _loadingAddr = false; });
     } catch (_) { if (mounted) setState(() => _loadingAddr = false); }
   }
-
   void _onSearchChanged() {
     final q = _searchCtrl.text.trim();
     if (q.isEmpty) { setState(() => _suggestions = []); return; }
@@ -71,19 +66,16 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
       } catch (_) { if (mounted) setState(() => _loadingSugg = false); }
     });
   }
-
   void _select(NominatimResult r) {
     final ll = LatLng(r.lat, r.lng);
     _searchFocus.unfocus();
     setState(() { _searching = false; _suggestions = []; _address = r.title; _center = ll; });
     WidgetsBinding.instance.addPostFrameCallback((_) => _ctrl?.animateCamera(CameraUpdate.newLatLngZoom(ll, 15)));
   }
-
   void _confirm() {
     context.read<LocationCubit>().setLocation(_address.isNotEmpty ? _address : 'موقع محدد', _center.latitude, _center.longitude);
     Navigator.pop(context);
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: Stack(children: [
