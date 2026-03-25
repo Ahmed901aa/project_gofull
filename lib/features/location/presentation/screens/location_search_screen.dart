@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/cubits/location_cubit.dart';
@@ -7,7 +6,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/gps_utils.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
-import '../../data/nominatim_service.dart';
+import '../../data/google_places_service.dart';
 import '../widgets/location_option_tile.dart';
 import '../widgets/location_results_list.dart';
 import '../widgets/location_search_app_bar.dart';
@@ -20,68 +19,69 @@ class LocationSearchScreen extends StatefulWidget {
 }
 
 class _State extends State<LocationSearchScreen> {
-  static const _apiKey = 'AIzaSyDZ_ZezX058d36aMTOc9E--MbyWqCdOI9I';
   final _ctrl = TextEditingController();
   final _focus = FocusNode();
-  final _dio = Dio();
-  final _nominatim = NominatimService();
+  final _places = GooglePlacesService();
   List<LocationItem> _results = [];
   bool _isLoading = false;
   Timer? _debounce;
+
   @override
   void initState() { super.initState(); _ctrl.addListener(_onChanged); }
+
   @override
   void dispose() {
     _debounce?.cancel(); _ctrl.dispose(); _focus.dispose();
-    _dio.close(); _nominatim.dispose(); super.dispose();
+    _places.dispose(); super.dispose();
   }
+
   void _onChanged() {
     final q = _ctrl.text.trim();
     if (q.length < 2) { setState(() => _results = []); return; }
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () => _search(q));
   }
+
   Future<void> _search(String q) async {
     setState(() => _isLoading = true);
-    try {
-      final res = await _dio.get(
-        'https://maps.googleapis.com/maps/api/geocode/json',
-        queryParameters: {'address': q, 'key': _apiKey, 'language': 'ar'},
-      );
-      final list = res.data['status'] == 'OK' ? res.data['results'] as List : [];
-      setState(() {
-        _results = list.map<LocationItem>((r) {
-          final desc = r['formatted_address'] as String;
-          final parts = desc.split('،');
-          return LocationItem(
-            title: parts.first.trim(),
-            subtitle: parts.length > 1 ? parts.skip(1).join('،').trim() : '',
-            placeId: '${r['geometry']['location']['lat']},${r['geometry']['location']['lng']}',
-          );
-        }).toList();
-        _isLoading = false;
-      });
-    } catch (_) { setState(() => _isLoading = false); }
+    final preds = await _places.autocomplete(q);
+    if (!mounted) return;
+    setState(() {
+      _results = preds
+          .map((p) => LocationItem(
+              placeId: p.placeId, title: p.title, subtitle: p.subtitle))
+          .toList();
+      _isLoading = false;
+    });
   }
-  void _onResultTap(LocationItem item) {
+
+  // Wrap async work so onItemTap stays void Function(LocationItem).
+  void _onResultTap(LocationItem item) { _selectPlace(item); }
+
+  Future<void> _selectPlace(LocationItem item) async {
     if (item.placeId == null) return;
-    final p = item.placeId!.split(',');
-    context.read<LocationCubit>()
-        .setLocation(item.title, double.parse(p[0]), double.parse(p[1]));
-    Navigator.pop(context);
+    final detail = await _places.getDetails(item.placeId!);
+    if (detail != null && mounted) {
+      context.read<LocationCubit>()
+          .setLocation(detail.address, detail.lat, detail.lng);
+      Navigator.pop(context);
+    }
   }
+
   Future<void> _onGpsTap() async {
-    final loc = await fetchCurrentGpsLocation(_nominatim);
+    final loc = await fetchCurrentGpsLocation(_places.reverseGeocode);
     if (loc != null && mounted) {
       context.read<LocationCubit>()
           .setLocation(loc.address, loc.lat, loc.lng);
       Navigator.pop(context);
     }
   }
+
   Future<void> _onMapTap() async {
     await Navigator.pushNamed(context, Routes.locationPicker);
     if (mounted) Navigator.pop(context);
   }
+
   @override
   Widget build(BuildContext context) {
     final hasQuery = _ctrl.text.isNotEmpty;
