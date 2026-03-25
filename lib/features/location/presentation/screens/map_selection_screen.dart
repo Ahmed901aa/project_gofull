@@ -39,8 +39,8 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
   void initState() {
     super.initState();
     _selectedLocation = LatLng(
-      widget.args.initialLat ?? 31.0409,
-      widget.args.initialLng ?? 31.3785,
+      widget.args.initialLat ?? 32.9022,
+      widget.args.initialLng ?? 13.1800,
     );
     _searchController.addListener(_onSearchChanged);
   }
@@ -67,7 +67,12 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
     try {
       final response = await _dio.get(
         'https://maps.googleapis.com/maps/api/place/autocomplete/json',
-        queryParameters: {'input': query, 'key': _apiKey, 'language': 'ar'},
+        queryParameters: {
+          'input': query,
+          'key': _apiKey,
+          'language': 'ar',
+          'components': 'country:ly',
+        },
       );
       final predictions = response.data['predictions'] as List;
       if (!mounted) return;
@@ -178,7 +183,8 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
                         onSearchTap: () => setState(() => _isSearching = true),
                       ),
                       MapAddressBar(
-                        address: _address.isEmpty ? 'جارٍ تحديد الموقع...' : _address,
+                        address: _address,
+                        onSearchTap: () => setState(() => _isSearching = true),
                       ),
                     ],
                   ),
@@ -320,6 +326,7 @@ class _MapSelectionScreenState extends State<MapSelectionScreen> {
                   ],
                 ),
               ),
+            ),
             // My location button
             if (!_isSearching)
               Positioned(

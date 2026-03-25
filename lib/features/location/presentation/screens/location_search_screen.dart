@@ -51,6 +51,7 @@ class _LocationSearchScreenState extends State<LocationSearchScreen> {
           'input': query,
           'key': _apiKey,
           'language': 'ar',
+          'components': 'country:ly',
         },
       );
       final predictions = response.data['predictions'] as List;

@@ -7,8 +7,9 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 
 class MapAddressBar extends StatelessWidget {
   final String address;
+  final VoidCallback? onSearchTap;
 
-  const MapAddressBar({super.key, required this.address});
+  const MapAddressBar({super.key, required this.address, this.onSearchTap});
 
   @override
   Widget build(BuildContext context) {
@@ -24,25 +25,32 @@ class MapAddressBar extends StatelessWidget {
           border: Border.all(color: AppColors.inputBorder),
           boxShadow: [BoxShadow(color: AppColors.shadow, blurRadius: 6, offset: const Offset(0, 2))],
         ),
-        child: Row(
-          children: [
-            Icon(Icons.search_rounded, color: AppColors.grey, size: 20.sp),
-            SizedBox(width: Insets.s8),
-            Expanded(
-              child: Text(
-                address,
-                style: getMediumStyle(color: AppColors.black, fontSize: FontSize.s12),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textDirection: TextDirection.rtl,
+        child: GestureDetector(
+          onTap: onSearchTap,
+          behavior: HitTestBehavior.opaque,
+          child: Row(
+            children: [
+              Icon(Icons.search_rounded, color: AppColors.grey, size: 20.sp),
+              SizedBox(width: Insets.s8),
+              Expanded(
+                child: Text(
+                  address.isEmpty ? 'ابحث عن موقع...' : address,
+                  style: getMediumStyle(
+                    color: address.isEmpty ? AppColors.grey : AppColors.black,
+                    fontSize: FontSize.s12,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textDirection: TextDirection.rtl,
+                ),
               ),
-            ),
-            SizedBox(width: Insets.s8),
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Icon(Icons.close, color: AppColors.grey, size: 18.sp),
-            ),
-          ],
+              SizedBox(width: Insets.s8),
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Icon(Icons.close, color: AppColors.grey, size: 18.sp),
+              ),
+            ],
+          ),
         ),
       ),
     );
