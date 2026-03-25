@@ -14,6 +14,7 @@ class Routes {
   static const String searchingDriver = '/searching-driver';
   static const String driverFound = '/driver-found';
   static const String serviceArrived = '/service-arrived';
+  static const String tripInProgress = '/trip-in-progress';
   static const String fuelComplete = '/fuel-complete';
   static const String rating = '/rating';
   static const String towingStarted = '/towing-started';

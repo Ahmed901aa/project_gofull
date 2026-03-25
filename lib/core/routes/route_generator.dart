@@ -8,6 +8,7 @@ import 'package:project_gofull/features/fuel/presentation/screens/fuel_screen.da
 import 'package:project_gofull/features/fuel/presentation/screens/fuel_complete_screen.dart';
 import 'package:project_gofull/features/fuel/presentation/screens/rating_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/towing_screen.dart';
+import 'package:project_gofull/features/towing/presentation/screens/trip_in_progress_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/searching_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/driver_found_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/service_arrived_screen.dart';
@@ -47,6 +48,8 @@ class RouteGenerator {
         return _buildRoute(const FuelCompleteScreen(), settings);
       case Routes.rating:
         return _buildRoute(const RatingScreen(), settings);
+      case Routes.tripInProgress:
+        return _buildRoute(const TripInProgressScreen(), settings);
       case Routes.towingStarted:
         final args = settings.arguments as TowingStartedArgs?;
         return _buildRoute(TowingStartedScreen(args: args), settings);
