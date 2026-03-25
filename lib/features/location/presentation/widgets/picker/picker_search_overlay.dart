@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import '../../../domain/nominatim_result.dart';
+import 'picker_suggestion_tile.dart';
 
 class PickerSearchOverlay extends StatelessWidget {
   final TextEditingController controller;
@@ -82,7 +83,7 @@ class PickerSearchOverlay extends StatelessWidget {
               shrinkWrap: true,
               itemCount: suggestions.length,
               separatorBuilder: (_, __) => const Divider(color: AppColors.divider, height: 1),
-              itemBuilder: (_, i) => _SuggestionTile(item: suggestions[i], onTap: onSelect),
+              itemBuilder: (_, i) => PickerSuggestionTile(item: suggestions[i], onTap: onSelect),
             ),
           ),
       ],
