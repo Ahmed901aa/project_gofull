@@ -25,8 +25,6 @@ class GooglePlacesService {
 
   // ── Autocomplete ───────────────────────────────────────────────────────────
   // POST https://places.googleapis.com/v1/places:autocomplete
-  // Headers: X-Goog-Api-Key, Content-Type: application/json
-  // Body:    { "input": "query", "languageCode": "ar" }
   Future<List<PlacePrediction>> autocomplete(String query) async {
     try {
       final res = await _dio.post(
@@ -60,7 +58,6 @@ class GooglePlacesService {
 
   // ── Place Details ──────────────────────────────────────────────────────────
   // GET https://places.googleapis.com/v1/places/{placeId}
-  // Headers: X-Goog-Api-Key, X-Goog-FieldMask: displayName,location,formattedAddress
   Future<PlaceDetail?> getDetails(String placeId) async {
     try {
       final res = await _dio.get(
@@ -73,7 +70,7 @@ class GooglePlacesService {
       final loc = res.data['location'] as Map;
       final name = (res.data['displayName'] as Map?)?['text'] as String?
           ?? res.data['formattedAddress'] as String? ?? placeId;
-      debugPrint('[Places] details: "$name" @ ${loc['latitude']},${loc['longitude']}');
+      debugPrint('[Places] details: "$name"');
       return (
         address: name,
         lat: (loc['latitude'] as num).toDouble(),
@@ -89,25 +86,50 @@ class GooglePlacesService {
   }
 
   // ── Reverse Geocoding ──────────────────────────────────────────────────────
-  // GET https://maps.googleapis.com/maps/api/geocode/json?latlng=LAT,LNG&key=K&language=ar
+  // Primary: Google Geocoding API
+  // Fallback: Nominatim (free, no key — ensures a readable name is always returned)
   Future<String> reverseGeocode(double lat, double lng) async {
+    // 1 — Google Geocoding API
     try {
       final res = await _dio.get(_geocodeBase, queryParameters: {
         'latlng': '$lat,$lng',
         'key': _key,
         'language': 'ar',
       });
-      final status = res.data['status'] as String;
-      if (status != 'OK') {
-        debugPrint('[Geocode] reverse status=$status  error=${res.data['error_message'] ?? '-'}');
-        return '$lat, $lng';
+      if (res.data['status'] == 'OK') {
+        final results = res.data['results'] as List;
+        if (results.isNotEmpty) {
+          return results.first['formatted_address'] as String;
+        }
       }
-      final results = res.data['results'] as List;
-      return results.isNotEmpty
-          ? results.first['formatted_address'] as String
-          : '$lat, $lng';
-    } catch (e) {
-      debugPrint('[Geocode] reverse exception: $e');
+      debugPrint('[Geocode] status=${res.data['status']} — using Nominatim fallback');
+    } catch (_) {
+      debugPrint('[Geocode] Google failed — using Nominatim fallback');
+    }
+
+    // 2 — Nominatim fallback (no API key needed)
+    try {
+      final r = await _dio.get(
+        'https://nominatim.openstreetmap.org/reverse',
+        queryParameters: {
+          'format': 'json',
+          'lat': lat,
+          'lon': lng,
+          'accept-language': 'ar',
+        },
+        options: Options(headers: {'User-Agent': 'GoFullApp/1.0'}),
+      );
+      final addr = r.data['address'] as Map<String, dynamic>?;
+      if (addr != null) {
+        final parts = [
+          addr['neighbourhood'],
+          addr['suburb'],
+          addr['city'] ?? addr['town'] ?? addr['village'],
+        ].whereType<String>().where((s) => s.isNotEmpty).toList();
+        if (parts.isNotEmpty) return parts.join('، ');
+      }
+      return r.data['display_name'] as String? ?? '$lat, $lng';
+    } catch (_) {
       return '$lat, $lng';
     }
   }
