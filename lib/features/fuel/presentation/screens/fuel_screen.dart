@@ -82,7 +82,7 @@ class _FuelScreenState extends State<FuelScreen> {
               searchingText: 'جاري البحث عن أقرب مزود وقود',
               subtitleText: 'نقوم الآن بمطابقة طلبك مع أقرب سيارة إمداد مجهزة بنوع الوقود المختار.',
               nextRoute: Routes.driverFound,
-              nextRouteArgs: const DriverFoundArgs(title: 'تم العثور على مزود وقود!', vehicleLabel: 'نوع المركبة', vehicleValue: 'سيارة إمداد وقود', showClose: true, imagePath: 'assets/images/tank_truck.gif', nextRoute: Routes.serviceArrived),
+nextRouteArgs: const DriverFoundArgs(title: 'تم العثور على مزود وقود!', vehicleLabel: 'نوع المركبة', vehicleValue: 'سيارة إمداد وقود', showClose: true, imagePath: 'assets/images/tank_truck.gif', nextRoute: Routes.serviceArrived),
             )) : null),
           ],
         ),
