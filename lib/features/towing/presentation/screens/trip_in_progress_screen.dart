@@ -310,48 +310,52 @@ class _RouteCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.s16),
         border: Border.all(color: AppColors.neutral500),
       ),
-      child: Row(children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
-              SizedBox(height: 2.h),
-              Text(
-                address,
-                style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
-                textAlign: TextAlign.right,
-              ),
-              if (distanceLabel != null && distanceValue != null) ...[
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.right),
                 SizedBox(height: 2.h),
-                RichText(
-                  textDirection: TextDirection.rtl,
-                  text: TextSpan(children: [
-                    TextSpan(
-                      text: '$distanceLabel ',
-                      style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
-                    ),
-                    TextSpan(
-                      text: distanceValue,
-                      style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
-                    ),
-                  ]),
+                Text(
+                  address,
+                  style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
+                  textAlign: TextAlign.right,
                 ),
+                if (distanceLabel != null && distanceValue != null) ...[
+                  SizedBox(height: 2.h),
+                  RichText(
+                    textDirection: TextDirection.rtl,
+                    text: TextSpan(children: [
+                      TextSpan(
+                        text: '$distanceLabel ',
+                        style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+                      ),
+                      TextSpan(
+                        text: distanceValue,
+                        style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+                      ),
+                    ]),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
-        ),
-        SizedBox(width: Insets.s12),
-        Container(
-          width: 56.w,
-          height: 56.w,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.neutral600,
+          SizedBox(width: Insets.s12),
+          Container(
+            width: 56.w,
+            height: 56.w,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.neutral600,
+            ),
+            child: Icon(Icons.location_on_outlined, size: 32.sp, color: const Color(0xFF0E0E0E)),
           ),
-          child: Icon(Icons.location_on_outlined, size: 32.sp, color: const Color(0xFF0E0E0E)),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }
