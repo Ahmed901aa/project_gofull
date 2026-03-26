@@ -49,7 +49,8 @@ class RouteGenerator {
       case Routes.rating:
         return _buildRoute(const RatingScreen(), settings);
       case Routes.tripInProgress:
-        return _buildRoute(const TripInProgressScreen(), settings);
+        final args = settings.arguments as TripInProgressArgs?;
+        return _buildRoute(TripInProgressScreen(args: args), settings);
       case Routes.towingStarted:
         final args = settings.arguments as TowingStartedArgs?;
         return _buildRoute(TowingStartedScreen(args: args), settings);

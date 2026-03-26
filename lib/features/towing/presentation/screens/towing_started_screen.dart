@@ -38,7 +38,7 @@ class TowingStartedScreen extends StatelessWidget {
         // TODO: Remove — mock only; production: backend triggers when car is loaded
         _MockTriggerButton(
           label: 'محاكاة: الرحلة قيد التنفيذ',
-          onTap: () => Navigator.pushReplacementNamed(context, Routes.tripInProgress),
+          onTap: () => Navigator.pushReplacementNamed(context, Routes.tripInProgress, arguments: args?.nextRouteArgs),
         ),
         Expanded(
           child: SingleChildScrollView(

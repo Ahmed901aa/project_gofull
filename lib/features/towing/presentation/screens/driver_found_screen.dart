@@ -45,7 +45,7 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
       setState(() => _secondsLeft--);
       if (_secondsLeft <= 0) {
         t.cancel();
-        if (_args.nextRoute != null) Navigator.pushReplacementNamed(context, _args.nextRoute!);
+        if (_args.nextRoute != null) Navigator.pushReplacementNamed(context, _args.nextRoute!, arguments: _args.nextRouteArgs);
       }
     });
   }
@@ -83,7 +83,7 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
               label: 'محاكاة: وصول مزود الخدمة',
               onTap: () {
                 _timer?.cancel();
-                Navigator.pushReplacementNamed(context, _args.nextRoute!);
+                Navigator.pushReplacementNamed(context, _args.nextRoute!, arguments: _args.nextRouteArgs);
               },
             ),
           SizedBox(height: MediaQuery.of(context).padding.bottom),

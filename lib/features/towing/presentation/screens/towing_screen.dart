@@ -25,6 +25,8 @@ class _TowingScreenState extends State<TowingScreen> {
   final _carTypes = ['سيدان', 'SUV', 'بيك أب', 'شاحنة', 'هاتشباك'];
   final _plateCtrl = TextEditingController();
   String _destinationAddress = 'وجهة سحب السيارة';
+  double? _destinationLat;
+  double? _destinationLng;
 
   bool get _isValid => _selectedCarType != null && _plateCtrl.text.trim().isNotEmpty;
 
@@ -36,7 +38,11 @@ class _TowingScreenState extends State<TowingScreen> {
     if (!mounted) return;
     final selected = cubit.state;
     if (selected.address != prev.address) {
-      setState(() => _destinationAddress = selected.address);
+      setState(() {
+        _destinationAddress = selected.address;
+        _destinationLat = selected.lat;
+        _destinationLng = selected.lng;
+      });
       if (prev.lat != null) {
         cubit.setLocation(prev.address, prev.lat!, prev.lng!);
       }
@@ -106,12 +112,30 @@ class _TowingScreenState extends State<TowingScreen> {
                 ),
               ),
             ),
-            ServiceBottomButton(onPressed: _isValid ? () => Navigator.pushNamed(context, Routes.searchingDriver, arguments: const SearchingArgs(
-              searchingText: 'جاري البحث عن أقرب سائق ونش',
-              subtitleText: 'نقوم الآن بمطابقة طلبك مع أقرب سيارة ونش متاحة في منطقتك.',
-              nextRoute: Routes.driverFound,
-              nextRouteArgs: DriverFoundArgs(title: 'تم العثور على ونش!', vehicleLabel: 'نوع الونش', vehicleValue: 'ونش هيدروليك', imagePath: 'assets/images/magnifying_glass.gif', nextRoute: Routes.towingStarted),
-            )) : null),
+            ServiceBottomButton(onPressed: _isValid ? () {
+              final loc = context.read<LocationCubit>().state;
+              final tripArgs = TripInProgressArgs(
+                originAddress: loc.address,
+                destinationAddress: _destinationAddress,
+                originLat: loc.lat,
+                originLng: loc.lng,
+                destinationLat: _destinationLat,
+                destinationLng: _destinationLng,
+              );
+              Navigator.pushNamed(context, Routes.searchingDriver, arguments: SearchingArgs(
+                searchingText: 'جاري البحث عن أقرب سائق ونش',
+                subtitleText: 'نقوم الآن بمطابقة طلبك مع أقرب سيارة ونش متاحة في منطقتك.',
+                nextRoute: Routes.driverFound,
+                nextRouteArgs: DriverFoundArgs(
+                  title: 'تم العثور على ونش!',
+                  vehicleLabel: 'نوع الونش',
+                  vehicleValue: 'ونش هيدروليك',
+                  imagePath: 'assets/images/magnifying_glass.gif',
+                  nextRoute: Routes.towingStarted,
+                  nextRouteArgs: TowingStartedArgs(nextRouteArgs: tripArgs),
+                ),
+              ));
+            } : null),
           ],
         ),
       ),

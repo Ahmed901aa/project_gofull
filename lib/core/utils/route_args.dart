@@ -43,6 +43,7 @@ class DriverFoundArgs {
   final bool showClose;
   final String? imagePath;
   final String? nextRoute; // optional auto-navigate when ETA reaches 0
+  final Object? nextRouteArgs;
   const DriverFoundArgs({
     required this.title,
     required this.vehicleLabel,
@@ -50,6 +51,7 @@ class DriverFoundArgs {
     this.showClose = false,
     this.imagePath,
     this.nextRoute,
+    this.nextRouteArgs,
   });
 }
 
@@ -59,12 +61,31 @@ class TowingStartedArgs {
   final String imagePath;
   final String vehicleLabel;
   final String vehicleValue;
+  final Object? nextRouteArgs;
   const TowingStartedArgs({
     this.title = 'السائق وصل لموقعك.',
     this.subtitle = 'يتم الآن تحميل وتأمين السيارة على الونش لبدء الرحلة إلى وجهتك.',
     this.imagePath = 'assets/images/service_tools.gif',
     this.vehicleLabel = 'نوع الونش',
     this.vehicleValue = 'ونش هيدروليك',
+    this.nextRouteArgs,
+  });
+}
+
+class TripInProgressArgs {
+  final String originAddress;
+  final String destinationAddress;
+  final double? originLat;
+  final double? originLng;
+  final double? destinationLat;
+  final double? destinationLng;
+  const TripInProgressArgs({
+    required this.originAddress,
+    required this.destinationAddress,
+    this.originLat,
+    this.originLng,
+    this.destinationLat,
+    this.destinationLng,
   });
 }
 

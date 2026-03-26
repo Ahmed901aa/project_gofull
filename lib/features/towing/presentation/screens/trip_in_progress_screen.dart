@@ -1,9 +1,11 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/utils/route_args.dart';
 import '../widgets/driver_details_card.dart';
 import '../widgets/gif_circle.dart';
 import '../widgets/info_pill.dart';
@@ -17,6 +19,7 @@ const _mockDriver = {
   'vehicleType': 'ونش هيدروليك',
 };
 
+// fallback mock data
 const _mockRoute = {
   'origin': 'المنصورة، مدينة مبارك، شارع مكة..., 30, 11',
   'destination': 'المنصورة، مدينة مبارك، شارع مكة..., 30, 11',
@@ -29,8 +32,19 @@ const _mockPayment = {
   'total': '985.00 ج.م',
 };
 
+String _calcDistance(double lat1, double lng1, double lat2, double lng2) {
+  const r = 6371.0;
+  final dLat = (lat2 - lat1) * pi / 180;
+  final dLng = (lng2 - lng1) * pi / 180;
+  final a = sin(dLat / 2) * sin(dLat / 2) +
+      cos(lat1 * pi / 180) * cos(lat2 * pi / 180) * sin(dLng / 2) * sin(dLng / 2);
+  final km = r * 2 * atan2(sqrt(a), sqrt(1 - a));
+  return '${km.toStringAsFixed(1)} كم';
+}
+
 class TripInProgressScreen extends StatelessWidget {
-  const TripInProgressScreen({super.key});
+  final TripInProgressArgs? args;
+  const TripInProgressScreen({super.key, this.args});
 
   @override
   Widget build(BuildContext context) {
@@ -145,28 +159,41 @@ class TripInProgressScreen extends StatelessWidget {
 
   // ── Trip route ──────────────────────────────────────────────────────────────
 
-  Widget _buildTripRoute() => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'مسار الرحلة',
-            style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-            textAlign: TextAlign.right,
-          ),
-          SizedBox(height: Insets.s8),
-          _RouteCard(
-            title: 'نقطة الانطلاق',
-            address: _mockRoute['origin']!,
-          ),
-          SizedBox(height: Insets.s8),
-          _RouteCard(
-            title: 'وجهة التوصيل',
-            address: _mockRoute['destination']!,
-            distanceLabel: 'المسافة المتبقية:',
-            distanceValue: _mockRoute['distance']!,
-          ),
-        ],
-      );
+  Widget _buildTripRoute() {
+    final origin = args?.originAddress ?? _mockRoute['origin']!; // fallback mock data
+    final destination = args?.destinationAddress ?? _mockRoute['destination']!; // fallback mock data
+
+    String distance;
+    if (args?.originLat != null && args?.originLng != null &&
+        args?.destinationLat != null && args?.destinationLng != null) {
+      distance = _calcDistance(args!.originLat!, args!.originLng!, args!.destinationLat!, args!.destinationLng!);
+    } else {
+      distance = _mockRoute['distance']!; // fallback mock data
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'مسار الرحلة',
+          style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
+          textAlign: TextAlign.right,
+        ),
+        SizedBox(height: Insets.s8),
+        _RouteCard(
+          title: 'نقطة الانطلاق',
+          address: origin,
+        ),
+        SizedBox(height: Insets.s8),
+        _RouteCard(
+          title: 'وجهة التوصيل',
+          address: destination,
+          distanceLabel: 'المسافة المتبقية:',
+          distanceValue: distance,
+        ),
+      ],
+    );
+  }
 
   // ── Car photos ──────────────────────────────────────────────────────────────
 
