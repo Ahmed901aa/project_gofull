@@ -102,12 +102,12 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
+                SizedBox(width: 24.sp),
                 Text(
                   'وصل السائق للوجهة',
                   style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
                 ),
-                SizedBox(width: 24.sp),
+                Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
               ],
             ),
           ),
@@ -231,30 +231,28 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
   Widget _payRow(String label, String amount) => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
         child: Row(children: [
-          Text(amount, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
-          const Spacer(),
           Text(label, style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
+          const Spacer(),
+          Text(amount, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
         ]),
       );
 
   Widget _serviceFeeRow() => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
         child: Row(children: [
-          Text(_mockPayment['serviceFee']!, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
-          const Spacer(),
           Row(children: [
             Text('رسوم الخدمة', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
             const SizedBox(width: 4),
             Icon(Icons.info_outline_rounded, size: 16, color: AppColors.primary),
           ]),
+          const Spacer(),
+          Text(_mockPayment['serviceFee']!, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
         ]),
       );
 
   Widget _totalRow() => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16),
         child: Row(children: [
-          Text(_mockPayment['total']!, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
-          const Spacer(),
           Row(children: [
             Text('الإجمالي', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s18)),
             SizedBox(width: Insets.s8),
@@ -267,6 +265,8 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
               child: Text('كاش', style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12)),
             ),
           ]),
+          const Spacer(),
+          Text(_mockPayment['total']!, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
         ]),
       );
 
