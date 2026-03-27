@@ -4,8 +4,8 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/widgets/loading_circle_widget.dart';
 import 'driver_details_card.dart';
-import 'gif_circle.dart';
 
 class DriverFoundBody extends StatelessWidget {
   final String imagePath;
