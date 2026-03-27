@@ -8,7 +8,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import '../widgets/driver_details_card.dart';
-import '../widgets/gif_circle.dart';
+import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
 import '../widgets/info_pill.dart';
 
 // replace with API data later
@@ -67,8 +67,9 @@ class TripInProgressScreen extends StatelessWidget {
               children: [
                 SizedBox(height: Insets.s16),
 
-                // ── Gradient circle with crane gif ───────────────────
-                Center(child: GifCircle(imagePath: 'assets/images/crane (1).gif')),
+                const Center(child: DottedCircleContainer(
+                  icon: Icon(Icons.fire_truck, color: Colors.white, size: 40),
+                )),
                 SizedBox(height: Insets.s16),
 
                 // ── Status texts ─────────────────────────────────────

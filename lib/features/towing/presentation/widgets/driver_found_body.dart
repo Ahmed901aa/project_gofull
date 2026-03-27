@@ -4,7 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
-import 'package:project_gofull/core/widgets/loading_circle_widget.dart';
+import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
 import 'driver_details_card.dart';
 
 class DriverFoundBody extends StatelessWidget {
@@ -37,8 +37,8 @@ class DriverFoundBody extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const LoadingCircleWidget(
-                icon: Icon(Icons.fire_truck, color: Colors.white, size: 40),
+              const DottedCircleContainer(
+                icon: Icon(Icons.shield, color: Colors.white, size: 40),
               ),
               SizedBox(height: Insets.s16),
               Text(title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),

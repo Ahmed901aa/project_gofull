@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -47,7 +48,9 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(height: Insets.s16),
-                  _buildGradientCircle(),
+                  const Center(child: DottedCircleContainer(
+                    icon: Icon(Icons.check_circle, color: Colors.white, size: 40),
+                  )),
                   SizedBox(height: Insets.s16),
                   _buildSuccessTexts(),
                   SizedBox(height: Insets.s24),
@@ -93,27 +96,6 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
             ),
             const Divider(height: 1, color: Color(0xFFF5F5F5)),
           ],
-        ),
-      );
-
-  // ── Gradient circle ───────────────────────────────────────────────────────
-
-  Widget _buildGradientCircle() => Center(
-        child: Container(
-          width: 104.w,
-          height: 104.w,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [AppColors.primary, AppColors.primary200],
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(24.w),
-            child: Image.asset('assets/images/shield.gif', fit: BoxFit.contain),
-          ),
         ),
       );
 
