@@ -7,7 +7,7 @@ class SearchingAnimation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const DottedCircleContainer(
-      icon: Icon(Icons.local_gas_station, color: Colors.white, size: 40),
+      imagePath: 'assets/images/magnifying_glass.gif',
     );
   }
 }

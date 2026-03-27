@@ -49,7 +49,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
                 children: [
                   SizedBox(height: Insets.s16),
                   const Center(child: DottedCircleContainer(
-                    icon: Icon(Icons.check_circle, color: Colors.white, size: 40),
+                    imagePath: 'assets/images/shield.gif',
                   )),
                   SizedBox(height: Insets.s16),
                   _buildSuccessTexts(),

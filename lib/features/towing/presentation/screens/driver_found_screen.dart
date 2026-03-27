@@ -65,6 +65,7 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
           DriverFoundHeader(showClose: _args.showClose),
           Expanded(
             child: DriverFoundBody(
+              imagePath: _args.imagePath ?? 'assets/images/tank_truck.gif',
               title: _args.title,
               driverName: _mockDriver['name']!,
               driverRating: _mockDriver['rating']!,

@@ -42,9 +42,7 @@ class ServiceArrivedScreen extends StatelessWidget {
             padding: EdgeInsets.all(Insets.s16),
             child: Column(children: [
               SizedBox(height: Insets.s16),
-              const DottedCircleContainer(
-                icon: Icon(Icons.build, color: Colors.white, size: 40),
-              ),
+              DottedCircleContainer(imagePath: _args.imagePath),
               SizedBox(height: Insets.s16),
               Text(_args.title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
               SizedBox(height: 4.h),

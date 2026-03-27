@@ -68,7 +68,7 @@ class TripInProgressScreen extends StatelessWidget {
                 SizedBox(height: Insets.s16),
 
                 const Center(child: DottedCircleContainer(
-                  icon: Icon(Icons.fire_truck, color: Colors.white, size: 40),
+                  imagePath: 'assets/images/crane (1).gif',
                 )),
                 SizedBox(height: Insets.s16),
 

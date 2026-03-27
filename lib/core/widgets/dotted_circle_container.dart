@@ -1,24 +1,22 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-/// Green gradient circle with evenly-spaced white dots around the edge
-/// and an optional center icon.
+/// Solid green circle with evenly-spaced rectangular marks around the edge
+/// and a GIF image in the center.
 ///
 /// Usage:
 /// ```dart
-/// DottedCircleContainer(
-///   icon: Icon(Icons.fire_truck, color: Colors.white, size: 40),
-/// )
+/// DottedCircleContainer(imagePath: 'assets/images/crane (1).gif')
 /// ```
 class DottedCircleContainer extends StatelessWidget {
-  final Widget? icon;
+  final String? imagePath;
   final double size;
   final int dotCount;
   final double dotRadius;
 
   const DottedCircleContainer({
     super.key,
-    this.icon,
+    this.imagePath,
     this.size = 108,
     this.dotCount = 24,
     this.dotRadius = 2.0,
@@ -42,7 +40,7 @@ class DottedCircleContainer extends StatelessWidget {
             ),
           ),
 
-          // White dots around the circumference
+          // Rectangular marks around the circumference
           CustomPaint(
             size: Size(size, size),
             painter: _DottedBorderPainter(
@@ -51,7 +49,12 @@ class DottedCircleContainer extends StatelessWidget {
             ),
           ),
 
-          if (icon != null) icon!,
+          // Center GIF image
+          if (imagePath != null)
+            Padding(
+              padding: EdgeInsets.all(size * 0.18),
+              child: Image.asset(imagePath!, fit: BoxFit.contain),
+            ),
         ],
       ),
     );
@@ -75,7 +78,6 @@ class _DottedBorderPainter extends CustomPainter {
       ..color = const Color(0xFFB0C7C2)
       ..style = PaintingStyle.fill;
 
-    // Rectangle dimensions: 6px tangential length, 4px radial width
     const rectW = 3.0;
     const rectH = 6.0;
     final rect = Rect.fromCenter(center: Offset.zero, width: rectW, height: rectH);
@@ -87,7 +89,7 @@ class _DottedBorderPainter extends CustomPainter {
 
       canvas.save();
       canvas.translate(x, y);
-      canvas.rotate(angle); // align rectangle tangentially
+      canvas.rotate(angle);
       canvas.drawRect(rect, paint);
       canvas.restore();
     }

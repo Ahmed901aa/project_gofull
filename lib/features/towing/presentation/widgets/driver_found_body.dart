@@ -8,6 +8,7 @@ import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
 import 'driver_details_card.dart';
 
 class DriverFoundBody extends StatelessWidget {
+  final String imagePath;
   final String title;
   final String driverName;
   final String driverRating;
@@ -18,6 +19,7 @@ class DriverFoundBody extends StatelessWidget {
 
   const DriverFoundBody({
     super.key,
+    required this.imagePath,
     required this.title,
     required this.driverName,
     required this.driverRating,
@@ -37,9 +39,7 @@ class DriverFoundBody extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const DottedCircleContainer(
-                icon: Icon(Icons.shield, color: Colors.white, size: 40),
-              ),
+              DottedCircleContainer(imagePath: imagePath),
               SizedBox(height: Insets.s16),
               Text(title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
               SizedBox(height: 4.h),
