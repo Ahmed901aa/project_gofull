@@ -6,8 +6,8 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
+import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/driver_details_card.dart';
-import 'package:project_gofull/features/towing/presentation/widgets/gif_circle.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/safety_section.dart';
 
 // replace with API data later
@@ -46,7 +46,7 @@ class TowingStartedScreen extends StatelessWidget {
             padding: EdgeInsets.all(Insets.s16),
             child: Column(children: [
               SizedBox(height: Insets.s16),
-              GifCircle(imagePath: _args.imagePath),
+              DottedCircleContainer(imagePath: _args.imagePath),
               SizedBox(height: Insets.s16),
               Text(_args.title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
               SizedBox(height: 4.h),
