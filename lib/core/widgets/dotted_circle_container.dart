@@ -32,17 +32,13 @@ class DottedCircleContainer extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Green gradient circle
+          // Solid green circle
           Container(
             width: size,
             height: size,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFF004B3B), Color(0xFF8AACA5)],
-              ),
+              color: Color(0xFF004B3B),
             ),
           ),
 
