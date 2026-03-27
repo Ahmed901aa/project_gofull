@@ -124,12 +124,12 @@ class TripInProgressScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
+                SizedBox(width: 24.sp),
                 Text(
                   'الرحلة قيد التنفيذ',
                   style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
                 ),
-                SizedBox(width: 24.sp),
+                Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
               ],
             ),
           ),
