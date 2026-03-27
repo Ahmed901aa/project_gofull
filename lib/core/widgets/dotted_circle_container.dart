@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 /// ```
 class DottedCircleContainer extends StatelessWidget {
   final String? imagePath;
+  final bool loading;
   final double size;
   final int dotCount;
   final double dotRadius;
@@ -17,6 +18,7 @@ class DottedCircleContainer extends StatelessWidget {
   const DottedCircleContainer({
     super.key,
     this.imagePath,
+    this.loading = false,
     this.size = 108,
     this.dotCount = 24,
     this.dotRadius = 2.0,
@@ -49,8 +51,17 @@ class DottedCircleContainer extends StatelessWidget {
             ),
           ),
 
-          // Center GIF image
-          if (imagePath != null)
+          // Center: loading spinner or GIF image
+          if (loading)
+            SizedBox(
+              width: size * 0.38,
+              height: size * 0.38,
+              child: const CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 3,
+              ),
+            )
+          else if (imagePath != null)
             Padding(
               padding: EdgeInsets.all(size * 0.18),
               child: Image.asset(imagePath!, fit: BoxFit.contain),

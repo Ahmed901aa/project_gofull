@@ -6,8 +6,6 @@ class SearchingAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const DottedCircleContainer(
-      imagePath: 'assets/images/magnifying_glass.gif',
-    );
+    return const DottedCircleContainer(loading: true);
   }
 }
