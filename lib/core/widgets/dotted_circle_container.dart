@@ -76,16 +76,24 @@ class _DottedBorderPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - dotRadius;
     final paint = Paint()
-      ..color = Colors.white
+      ..color = const Color(0xFFB0C7C2)
       ..style = PaintingStyle.fill;
+
+    // Rectangle dimensions: 6px tangential length, 4px radial width
+    const rectW = 3.0;
+    const rectH = 6.0;
+    final rect = Rect.fromCenter(center: Offset.zero, width: rectW, height: rectH);
 
     for (int i = 0; i < dotCount; i++) {
       final angle = (2 * pi * i) / dotCount;
-      canvas.drawCircle(
-        Offset(center.dx + radius * cos(angle), center.dy + radius * sin(angle)),
-        dotRadius,
-        paint,
-      );
+      final x = center.dx + radius * cos(angle);
+      final y = center.dy + radius * sin(angle);
+
+      canvas.save();
+      canvas.translate(x, y);
+      canvas.rotate(angle); // align rectangle tangentially
+      canvas.drawRect(rect, paint);
+      canvas.restore();
     }
   }
 

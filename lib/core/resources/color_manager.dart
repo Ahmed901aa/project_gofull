@@ -17,6 +17,7 @@ class AppColors {
   static const Color inputBorder = Color(0xFFE0E0E0);
   static const Color scaffoldBg = Color(0xFFF8F9FA);
   static const Color divider = Color(0xFFEEEEEE);
+  static const Color dots = Color(0xFFB0C7C2);
 
   // Accent
   static const Color gold = Color(0xFFD4A843);
