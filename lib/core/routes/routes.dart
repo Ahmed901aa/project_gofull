@@ -17,6 +17,7 @@ class Routes {
   static const String tripInProgress = '/trip-in-progress';
   static const String driverArrived = '/driver-arrived';
   static const String fuelComplete = '/fuel-complete';
+  static const String tripDetails = '/trip-details';
   static const String rating = '/rating';
   static const String towingStarted = '/towing-started';
   static const String orderTracking = '/order-tracking';

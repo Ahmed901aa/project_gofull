@@ -6,6 +6,7 @@ import 'package:project_gofull/features/auth/presentation/screens/login_screen.d
 import 'package:project_gofull/features/auth/presentation/screens/otp_screen.dart';
 import 'package:project_gofull/features/fuel/presentation/screens/fuel_screen.dart';
 import 'package:project_gofull/features/fuel/presentation/screens/fuel_complete_screen.dart';
+import 'package:project_gofull/features/fuel/presentation/screens/trip_details_screen.dart';
 import 'package:project_gofull/features/fuel/presentation/screens/rating_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/driver_arrived_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/towing_screen.dart';

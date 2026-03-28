@@ -4,59 +4,122 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/routes/routes.dart';
 
-// TODO: Build the full rating screen UI — this is a placeholder.
-class RatingScreen extends StatelessWidget {
+class RatingScreen extends StatefulWidget {
   const RatingScreen({super.key});
+
+  @override
+  State<RatingScreen> createState() => _RatingScreenState();
+}
+
+class _RatingScreenState extends State<RatingScreen> {
+  int _rating = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      backgroundColor: AppColors.scaffoldBg,
+      body: Column(children: [
+        _buildHeader(context),
+        Expanded(
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.all(Insets.s16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.close_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
-                  ),
+                  Text('كيف كانت تجربتك؟',
+                      style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
+                  SizedBox(height: 4.h),
                   Text(
-                    'تقييم الخدمة',
-                    style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
+                    'ملاحظاتك تساعدنا في تحسين جودة خدماتنا وتطوير أداء السائقين.',
+                    style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
+                    textAlign: TextAlign.center,
                   ),
-                  SizedBox(width: 24.sp),
+                  SizedBox(height: Insets.s16),
+                  _buildStars(),
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF5F5F5)),
-            Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.star_rounded, size: 64.sp, color: AppColors.gold),
-                    SizedBox(height: Insets.s16),
-                    Text(
-                      'شاشة التقييم قيد الإنشاء',
-                      style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-                    ),
-                    SizedBox(height: 6.h),
-                    Text(
-                      'سيتم إضافة نظام التقييم قريباً.',
-                      style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14),
-                    ),
-                  ],
+          ),
+        ),
+        _buildBottomButton(context),
+      ]),
+    );
+  }
+
+  Widget _buildStars() => Directionality(
+        textDirection: TextDirection.rtl,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(5, (i) {
+            final star = i + 1;
+            return GestureDetector(
+              onTap: () => setState(() => _rating = star),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Icon(
+                  _rating >= star ? Icons.star_rounded : Icons.star_outline_rounded,
+                  size: 40.sp,
+                  color: _rating >= star ? const Color(0xFFFFB800) : const Color(0xFF141B34),
                 ),
               ),
+            );
+          }),
+        ),
+      );
+
+  Widget _buildHeader(BuildContext context) => Container(
+        color: AppColors.white,
+        child: Column(children: [
+          SizedBox(height: MediaQuery.of(context).padding.top),
+          Padding(
+            padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
+                Text('تقييم الرحلة',
+                    style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Icon(Icons.arrow_forward_ios_rounded, size: 20.sp, color: const Color(0xFF0E0E0E)),
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 1, color: Color(0xFFF5F5F5)),
+        ]),
+      );
+
+  Widget _buildBottomButton(BuildContext context) => Container(
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFCCCCCC).withValues(alpha: 0.15),
+              blurRadius: 8,
+              offset: const Offset(0, -2),
             ),
           ],
         ),
-      ),
-    );
-  }
+        padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s16),
+        child: SizedBox(
+          height: 48.h,
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () =>
+                Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: AppColors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
+              elevation: 0,
+            ),
+            child: Text('إرسال التقييم', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+          ),
+        ),
+      );
 }
