@@ -301,7 +301,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
           height: 48.h,
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () => Navigator.pushReplacementNamed(context, Routes.rating),
+            onPressed: () => Navigator.pushReplacementNamed(context, Routes.tripDetails),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: AppColors.white,

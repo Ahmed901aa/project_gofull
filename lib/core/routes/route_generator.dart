@@ -48,6 +48,8 @@ class RouteGenerator {
         return _buildRoute(ServiceArrivedScreen(args: args), settings);
       case Routes.fuelComplete:
         return _buildRoute(const FuelCompleteScreen(), settings);
+      case Routes.tripDetails:
+        return _buildRoute(const TripDetailsScreen(), settings);
       case Routes.rating:
         return _buildRoute(const RatingScreen(), settings);
       case Routes.tripInProgress:
