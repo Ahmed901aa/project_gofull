@@ -36,31 +36,31 @@ class TripPaymentCard extends StatelessWidget {
   Widget _payRow(String label, String amount) => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
         child: Row(children: [
-          Text(amount, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
-          const Spacer(),
           Text(label, style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
+          const Spacer(),
+          Text(amount, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
         ]),
       );
 
   Widget _feeRow() => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
         child: Row(children: [
-          Text(_fee, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
-          const Spacer(),
           Row(children: [
-            Icon(Icons.info_outline_rounded, size: 16, color: AppColors.primary),
-            const SizedBox(width: 4),
             Text('رسوم الخدمة', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
+            const SizedBox(width: 4),
+            Icon(Icons.info_outline_rounded, size: 16, color: AppColors.primary),
           ]),
+          const Spacer(),
+          Text(_fee, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
         ]),
       );
 
   Widget _totalRow() => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16),
         child: Row(children: [
-          Text(_total, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
-          const Spacer(),
           Row(children: [
+            Text('الإجمالي', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s18)),
+            SizedBox(width: Insets.s8),
             Container(
               padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
               decoration: BoxDecoration(
@@ -69,9 +69,9 @@ class TripPaymentCard extends StatelessWidget {
               ),
               child: Text('كاش', style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12)),
             ),
-            SizedBox(width: Insets.s8),
-            Text('الإجمالي', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s18)),
           ]),
+          const Spacer(),
+          Text(_total, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
         ]),
       );
 }
