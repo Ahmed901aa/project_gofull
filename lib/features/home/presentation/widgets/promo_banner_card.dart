@@ -101,7 +101,7 @@ class PromoBannerCard extends StatelessWidget {
                   RichText(
                     textDirection: TextDirection.rtl,
                     text: TextSpan(
-                      style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+                      style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
                       children: [
                         TextSpan(text: slide.headline),
                         TextSpan(text: slide.headlineAccent, style: TextStyle(color: accentColor)),

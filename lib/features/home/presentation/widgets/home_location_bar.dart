@@ -55,8 +55,6 @@ class HomeLocationBar extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(Icons.keyboard_arrow_down_rounded,
-                  color: AppColors.grey, size: 20.sp),
             ],
           ),
         ),

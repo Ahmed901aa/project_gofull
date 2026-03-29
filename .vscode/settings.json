@@ -3,5 +3,14 @@
     "code-runner.executorMap": {
         "dart": "flutter run"
     },
-    "code-runner.runInTerminal": true
+    "code-runner.runInTerminal": true,
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./lib",
+        "-p",
+        "*_test.py"
+    ],
+    "python.testing.pytestEnabled": false,
+    "python.testing.unittestEnabled": true
 }
