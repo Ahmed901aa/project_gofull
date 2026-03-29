@@ -96,12 +96,12 @@ class _RatingScreenState extends State<RatingScreen> {
 
   Widget _buildNotesSection() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'أضف ملاحظاتك',
           style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-          textAlign: TextAlign.right,
+          textAlign: TextAlign.start,
         ),
         SizedBox(height: Insets.s8),
         Container(
@@ -133,7 +133,7 @@ class _RatingScreenState extends State<RatingScreen> {
           child: Text(
             '${_notesController.text.length}/$_maxNoteLength',
             style: getMediumStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
-            textAlign: TextAlign.right,
+            textAlign: TextAlign.start,
           ),
         ),
       ],
