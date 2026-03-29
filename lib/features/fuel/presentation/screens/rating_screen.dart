@@ -81,7 +81,7 @@ class _RatingScreenState extends State<RatingScreen> {
               children: [
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Icon(Icons.arrow_forward_ios_rounded, size: 20.sp, color: const Color(0xFF0E0E0E)),
+                  child: Icon(Icons.arrow_back_ios_new_rounded, size: 20.sp, color: const Color(0xFF0E0E0E)),
                 ),
                 Text('تقييم الرحلة',
                     style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
