@@ -1,13 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-/// Solid green circle with evenly-spaced rectangular marks around the edge
-/// and a GIF image in the center.
-///
-/// Usage:
-/// ```dart
-/// DottedCircleContainer(imagePath: 'assets/images/crane (1).gif')
-/// ```
+
+
 class DottedCircleContainer extends StatelessWidget {
   final String? imagePath;
   final bool loading;

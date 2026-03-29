@@ -64,13 +64,13 @@ class TripDetailsScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
-                Text('تفاصيل الرحلة',
-                    style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Icon(Icons.arrow_forward_ios_rounded, size: 20.sp, color: const Color(0xFF0E0E0E)),
                 ),
+                Text('تفاصيل الرحلة',
+                    style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
+                Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
               ],
             ),
           ),

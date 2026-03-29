@@ -37,7 +37,13 @@
       "Bash(jobs -l)",
       "Bash(flutter devices:*)",
       "Bash(flutter --version)",
-      "Bash(wc -l /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/location/presentation/widgets/picker/*.dart /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/location/data/nominatim_service.dart /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/location/domain/nominatim_result.dart /Users/usermac/Desktop/project_Gofull/project_gofull/lib/core/utils/gps_utils.dart)"
+      "Bash(wc -l /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/location/presentation/widgets/picker/*.dart /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/location/data/nominatim_service.dart /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/location/domain/nominatim_result.dart /Users/usermac/Desktop/project_Gofull/project_gofull/lib/core/utils/gps_utils.dart)",
+      "Bash(git rm:*)",
+      "Bash(flutter doctor:*)",
+      "Bash(security find-identity:*)",
+      "Bash(/usr/libexec/PlistBuddy -c \"Print :objects\" ios/Runner.xcodeproj/project.pbxproj)",
+      "Bash(fastlane --version)",
+      "Bash(kill %1)"
     ]
   }
 }
