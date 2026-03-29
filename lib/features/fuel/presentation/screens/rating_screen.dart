@@ -134,6 +134,7 @@ class _RatingScreenState extends State<RatingScreen> {
             '${_notesController.text.length}/$_maxNoteLength',
             style: getMediumStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
             textAlign: TextAlign.start,
+            textDirection: TextDirection.rtl,
           ),
         ),
       ],
