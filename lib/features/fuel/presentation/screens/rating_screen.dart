@@ -128,13 +128,15 @@ class _RatingScreenState extends State<RatingScreen> {
           ),
         ),
         SizedBox(height: 4.h),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: Insets.s8),
-          child: Text(
-            '${_notesController.text.length}/$_maxNoteLength',
-            style: getMediumStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
-            textAlign: TextAlign.start,
-            textDirection: TextDirection.rtl,
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: Insets.s8),
+            child: Text(
+              '${_notesController.text.length}/$_maxNoteLength',
+              style: getMediumStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
+              textDirection: TextDirection.ltr,
+            ),
           ),
         ),
       ],
