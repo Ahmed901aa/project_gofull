@@ -16,6 +16,7 @@ import 'package:project_gofull/features/towing/presentation/screens/driver_found
 import 'package:project_gofull/features/towing/presentation/screens/service_arrived_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/towing_started_screen.dart';
 import 'package:project_gofull/features/towing/presentation/screens/camera_screen.dart';
+import 'package:project_gofull/features/towing/presentation/screens/towing_trip_details_screen.dart';
 import 'package:project_gofull/features/location/presentation/screens/location_search_screen.dart';
 import 'package:project_gofull/features/location/presentation/screens/map_selection_screen.dart';
 import 'package:project_gofull/features/location/presentation/screens/location_picker_screen.dart';

@@ -22,5 +22,6 @@ class Routes {
   static const String towingStarted = '/towing-started';
   static const String orderTracking = '/order-tracking';
   static const String orderHistory = '/order-history';
+  static const String towingTripDetails = '/towing-trip-details';
   static const String profile = '/profile';
 }
