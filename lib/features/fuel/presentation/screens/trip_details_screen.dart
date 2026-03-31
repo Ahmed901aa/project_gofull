@@ -5,13 +5,21 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/trip_driver_card.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/trip_fuel_chips.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/trip_location_card.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/trip_payment_card.dart';
+import 'package:project_gofull/features/orders/models/order_data.dart';
 
 class TripDetailsScreen extends StatelessWidget {
-  const TripDetailsScreen({super.key});
+  final TripDetailsArgs? args;
+  const TripDetailsScreen({super.key, this.args});
+
+  bool get _showRatingButton {
+    if (args == null) return true; // default: show when opened outside orders flow
+    return args!.status == OrderStatus.completed && !args!.isRated;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +47,7 @@ class TripDetailsScreen extends StatelessWidget {
             ),
           ),
         ),
-        _buildBottomButton(context),
+        if (_showRatingButton) _buildRatingButton(context),
       ]),
     );
   }
@@ -78,7 +86,7 @@ class TripDetailsScreen extends StatelessWidget {
         ]),
       );
 
-  Widget _buildBottomButton(BuildContext context) => Container(
+  Widget _buildRatingButton(BuildContext context) => Container(
         decoration: BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),

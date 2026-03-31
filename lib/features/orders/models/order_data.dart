@@ -8,6 +8,7 @@ class OrderData {
   final ServiceType serviceType;
   final OrderStatus status;
   final String price;
+  final bool isRated; // replace with API data later — only meaningful for completed orders
 
   // tow-specific
   final String? fromAddress;
@@ -29,6 +30,7 @@ class OrderData {
     required this.price,
     required this.carType,
     required this.plateNumber,
+    this.isRated = false,
     this.fromAddress,
     this.toAddress,
     this.winchType,
@@ -39,7 +41,7 @@ class OrderData {
 
   // replace with API data later
   static const List<OrderData> mockOrders = [
-    // Current active tow order
+    // [0] Current active tow — no rating button (trip ongoing)
     OrderData(
       serviceType: ServiceType.tow,
       status: OrderStatus.active,
@@ -50,7 +52,7 @@ class OrderData {
       carType: 'نيسان صني',
       plateNumber: 'أ ب م - 3541',
     ),
-    // Past cancelled tow order
+    // [1] Past cancelled tow — no rating button (cancelled)
     OrderData(
       serviceType: ServiceType.tow,
       status: OrderStatus.cancelled,
@@ -61,16 +63,29 @@ class OrderData {
       carType: 'تويوتا كورولا',
       plateNumber: 'س ط ر - 7812',
     ),
-    // Past completed fuel order
+    // [2] Past completed fuel, not yet rated — shows rating button
     OrderData(
       serviceType: ServiceType.fuel,
       status: OrderStatus.completed,
+      isRated: false,
       price: '320.00 ج.م',
       location: 'المنصورة، مدينة مبارك، شارع مكة',
       fuelType: 'بنزين 95',
       quantity: '30 لتر',
       carType: 'هيونداي اكسنت',
       plateNumber: 'م ن ص - 1234',
+    ),
+    // [3] Past completed tow, already rated — no rating button
+    OrderData(
+      serviceType: ServiceType.tow,
+      status: OrderStatus.completed,
+      isRated: true,
+      price: '750.00 ج.م',
+      fromAddress: 'الإسكندرية، سيدي جابر، شارع الجمهورية',
+      toAddress: 'القاهرة، مصر الجديدة، شارع الثورة',
+      winchType: 'ونش هيدروليك',
+      carType: 'كيا سيراتو',
+      plateNumber: 'ر س م - 9900',
     ),
   ];
 }
