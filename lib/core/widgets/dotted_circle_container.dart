@@ -27,7 +27,7 @@ class DottedCircleContainer extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Solid green circle
+     
           Container(
             width: size,
             height: size,
@@ -37,7 +37,7 @@ class DottedCircleContainer extends StatelessWidget {
             ),
           ),
 
-          // Rectangular marks around the circumference
+         
           CustomPaint(
             size: Size(size, size),
             painter: _DottedBorderPainter(
@@ -45,8 +45,6 @@ class DottedCircleContainer extends StatelessWidget {
               dotRadius: dotRadius,
             ),
           ),
-
-          // Center: loading spinner or GIF image
           if (loading)
             SizedBox(
               width: size * 0.38,

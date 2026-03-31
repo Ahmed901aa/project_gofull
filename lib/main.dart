@@ -38,9 +38,13 @@ class GoFullApp extends StatelessWidget {
             primary: AppColors.primary,
           ),
         ),
-        builder: (context, child) => Directionality(
-          textDirection: TextDirection.rtl,
-          child: child!,
+        builder: (context, child) => GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          behavior: HitTestBehavior.opaque,
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: child!,
+          ),
         ),
         initialRoute: Routes.splash,
         onGenerateRoute: RouteGenerator.getRoute,
