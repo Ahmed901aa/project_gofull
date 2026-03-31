@@ -62,6 +62,8 @@ class RouteGenerator {
       case Routes.towingStarted:
         final args = settings.arguments as TowingStartedArgs?;
         return _buildRoute(TowingStartedScreen(args: args), settings);
+      case Routes.towingTripDetails:
+        return _buildRoute(const TowingTripDetailsScreen(), settings);
       case Routes.camera:
         return _buildRoute(const CameraScreen(), settings);
       case Routes.locationPicker:
