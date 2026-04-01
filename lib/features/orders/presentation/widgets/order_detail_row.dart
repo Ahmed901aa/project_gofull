@@ -18,13 +18,13 @@ class OrderDetailRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            value,
-            style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+            label,
+            style: getRegularStyle(color: const Color(0xFF646565), fontSize: FontSize.s12),
           ),
           SizedBox(width: Insets.s8),
           Text(
-            label,
-            style: getRegularStyle(color: const Color(0xFF646565), fontSize: FontSize.s12),
+            value,
+            style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
           ),
         ],
       ),

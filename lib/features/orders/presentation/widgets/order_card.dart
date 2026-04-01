@@ -116,8 +116,8 @@ class OrderCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _StatusBadge(status: order.status),
           _ServiceBadge(serviceType: order.serviceType),
+          _StatusBadge(status: order.status),
         ],
       ),
     );
@@ -138,15 +138,15 @@ class OrderCard extends StatelessWidget {
         children: [
           Expanded(
             child: OrderAddressColumn(
-              label: 'نقطة الانطلاق',
-              address: order.fromAddress ?? '',
+              label: 'وجهة التوصيل',
+              address: order.toAddress ?? '',
             ),
           ),
           const OrderRouteConnector(),
           Expanded(
             child: OrderAddressColumn(
-              label: 'وجهة التوصيل',
-              address: order.toAddress ?? '',
+              label: 'نقطة الانطلاق',
+              address: order.fromAddress ?? '',
             ),
           ),
         ],
