@@ -4,8 +4,6 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
-import 'package:project_gofull/core/routes/routes.dart';
-import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/home/presentation/widgets/order_address_column.dart';
 import 'package:project_gofull/features/home/presentation/widgets/order_price_row.dart';
 import 'package:project_gofull/features/home/presentation/widgets/order_route_connector.dart';
@@ -17,12 +15,6 @@ class OrderCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const OrderCard({super.key, required this.order, required this.onTap});
-
-  bool get _showRatingButton =>
-      order.status == OrderStatus.completed && !order.isRated;
-
-  bool get _showAlreadyRatedText =>
-      order.status == OrderStatus.completed && order.isRated;
 
   @override
   Widget build(BuildContext context) {
@@ -54,57 +46,8 @@ class OrderCard extends StatelessWidget {
             SizedBox(height: Sizes.s8),
             Divider(color: AppColors.neutral500, height: 1, thickness: 1),
             SizedBox(height: Sizes.s8),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: Insets.s16),
-              child: OrderPriceRow(price: order.price),
-            ),
-            if (_showRatingButton) ...[
-              SizedBox(height: Sizes.s8),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Insets.s16),
-                child: _buildRatingButton(context),
-              ),
-            ],
-            if (_showAlreadyRatedText) ...[
-              SizedBox(height: Sizes.s8),
-              _buildAlreadyRatedText(),
-            ],
-            SizedBox(height: Insets.s12),
+            OrderPriceRow(price: order.price),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRatingButton(BuildContext context) {
-    return SizedBox(
-      height: 40.h,
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () => Navigator.pushNamed(context, Routes.rating,
-            arguments: RatingArgs(orderId: order.id)),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.white,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.s12)),
-          elevation: 0,
-        ),
-        child: Text('تقييم الرحلة',
-            style:
-                getBoldStyle(color: AppColors.white, fontSize: FontSize.s14)),
-      ),
-    );
-  }
-
-  Widget _buildAlreadyRatedText() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 4.h),
-        child: Text(
-          'تم التقييم',
-          style:
-              getMediumStyle(color: AppColors.neutral800, fontSize: FontSize.s12),
         ),
       ),
     );
