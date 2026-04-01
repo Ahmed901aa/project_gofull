@@ -1,9 +1,15 @@
 import 'package:project_gofull/features/orders/models/order_data.dart';
 
 class TripDetailsArgs {
+  final String orderId;
   final OrderStatus status;
   final bool isRated;
-  const TripDetailsArgs({required this.status, this.isRated = false});
+  const TripDetailsArgs({required this.orderId, required this.status, this.isRated = false});
+}
+
+class RatingArgs {
+  final String orderId;
+  const RatingArgs({required this.orderId});
 }
 
 class OtpArgs {

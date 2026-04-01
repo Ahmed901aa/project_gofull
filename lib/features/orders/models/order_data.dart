@@ -5,6 +5,7 @@ enum ServiceType { tow, fuel }
 enum OrderStatus { active, cancelled, completed }
 
 class OrderData {
+  final String id;
   final ServiceType serviceType;
   final OrderStatus status;
   final String price;
@@ -25,6 +26,7 @@ class OrderData {
   final String plateNumber;
 
   const OrderData({
+    required this.id,
     required this.serviceType,
     required this.status,
     required this.price,
@@ -43,6 +45,7 @@ class OrderData {
   static const List<OrderData> mockOrders = [
     // [0] Current active tow — no rating button (trip ongoing)
     OrderData(
+      id: 'order_0',
       serviceType: ServiceType.tow,
       status: OrderStatus.active,
       price: '985.00 ج.م',
@@ -54,6 +57,7 @@ class OrderData {
     ),
     // [1] Past cancelled tow — no rating button (cancelled)
     OrderData(
+      id: 'order_1',
       serviceType: ServiceType.tow,
       status: OrderStatus.cancelled,
       price: '650.00 ج.م',
@@ -65,6 +69,7 @@ class OrderData {
     ),
     // [2] Past completed fuel, not yet rated — shows rating button
     OrderData(
+      id: 'order_2',
       serviceType: ServiceType.fuel,
       status: OrderStatus.completed,
       isRated: false,
@@ -77,6 +82,7 @@ class OrderData {
     ),
     // [3] Past completed tow, already rated — no rating button
     OrderData(
+      id: 'order_3',
       serviceType: ServiceType.tow,
       status: OrderStatus.completed,
       isRated: true,

@@ -176,7 +176,8 @@ class TowingTripDetailsScreen extends StatelessWidget {
           height: 48.h,
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () => Navigator.pushNamed(context, Routes.rating),
+            onPressed: () => Navigator.pushNamed(context, Routes.rating,
+                arguments: args != null ? RatingArgs(orderId: args!.orderId) : null),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: AppColors.white,
