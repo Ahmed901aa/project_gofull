@@ -128,22 +128,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
             SizedBox(height: MediaQuery.of(context).padding.top),
             Padding(
               padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {},
-                    child: Icon(Icons.close_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
-                  ),
-                  Text(
-                    'طلباتي',
-                    style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
-                  ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Icon(Icons.close_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
-                  ),
-                ],
+              child: Center(
+                child: Text(
+                  'طلباتي',
+                  style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
+                ),
               ),
             ),
             const Divider(height: 1, color: Color(0xFFF5F5F5)),
