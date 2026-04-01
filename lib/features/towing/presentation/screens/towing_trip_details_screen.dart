@@ -23,6 +23,11 @@ class TowingTripDetailsScreen extends StatelessWidget {
     return args!.status == OrderStatus.completed && !args!.isRated;
   }
 
+  bool get _showAlreadyRatedText {
+    if (args == null) return false;
+    return args!.status == OrderStatus.completed && args!.isRated;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,6 +102,7 @@ class TowingTripDetailsScreen extends StatelessWidget {
             ),
           ),
           if (_showRatingButton) _buildRatingButton(context),
+          if (_showAlreadyRatedText) _buildAlreadyRatedText(),
         ],
       ),
     );
@@ -183,6 +189,27 @@ class TowingTripDetailsScreen extends StatelessWidget {
               'تقييم الرحلة',
               style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16),
             ),
+          ),
+        ),
+      );
+
+  Widget _buildAlreadyRatedText() => Container(
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFCCCCCC).withValues(alpha: 0.15),
+              blurRadius: 8,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s16),
+        child: Center(
+          child: Text(
+            'تم التقييم',
+            style: getMediumStyle(color: AppColors.neutral800, fontSize: FontSize.s14),
           ),
         ),
       );

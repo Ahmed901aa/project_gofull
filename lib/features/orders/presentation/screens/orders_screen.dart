@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/orders/models/order_data.dart';
 import 'package:project_gofull/features/orders/presentation/widgets/order_card.dart';
 
@@ -34,19 +35,40 @@ class OrdersScreen extends StatelessWidget {
                   SizedBox(height: Sizes.s8),
                   OrderCard(
                     order: _orders[0],
-                    onTap: () => Navigator.pushNamed(context, Routes.towingTripDetails),
+                    onTap: () => Navigator.pushNamed(
+                      context,
+                      Routes.towingTripDetails,
+                      arguments: TripDetailsArgs(status: _orders[0].status, isRated: _orders[0].isRated),
+                    ),
                   ),
                   SizedBox(height: Sizes.s24),
                   _sectionTitle('الطلبات السابقة'),
                   SizedBox(height: Sizes.s8),
                   OrderCard(
                     order: _orders[1],
-                    onTap: () => Navigator.pushNamed(context, Routes.towingTripDetails),
+                    onTap: () => Navigator.pushNamed(
+                      context,
+                      Routes.towingTripDetails,
+                      arguments: TripDetailsArgs(status: _orders[1].status, isRated: _orders[1].isRated),
+                    ),
                   ),
                   SizedBox(height: Insets.s16),
                   OrderCard(
                     order: _orders[2],
-                    onTap: () => Navigator.pushNamed(context, Routes.tripDetails),
+                    onTap: () => Navigator.pushNamed(
+                      context,
+                      Routes.tripDetails,
+                      arguments: TripDetailsArgs(status: _orders[2].status, isRated: _orders[2].isRated),
+                    ),
+                  ),
+                  SizedBox(height: Insets.s16),
+                  OrderCard(
+                    order: _orders[3],
+                    onTap: () => Navigator.pushNamed(
+                      context,
+                      Routes.towingTripDetails,
+                      arguments: TripDetailsArgs(status: _orders[3].status, isRated: _orders[3].isRated),
+                    ),
                   ),
                   SizedBox(height: Sizes.s16),
                 ],

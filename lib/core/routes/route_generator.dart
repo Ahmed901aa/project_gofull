@@ -50,7 +50,8 @@ class RouteGenerator {
       case Routes.fuelComplete:
         return _buildRoute(const FuelCompleteScreen(), settings);
       case Routes.tripDetails:
-        return _buildRoute(const TripDetailsScreen(), settings);
+        final args = settings.arguments as TripDetailsArgs?;
+        return _buildRoute(TripDetailsScreen(args: args), settings);
       case Routes.rating:
         return _buildRoute(const RatingScreen(), settings);
       case Routes.tripInProgress:
@@ -63,7 +64,8 @@ class RouteGenerator {
         final args = settings.arguments as TowingStartedArgs?;
         return _buildRoute(TowingStartedScreen(args: args), settings);
       case Routes.towingTripDetails:
-        return _buildRoute(const TowingTripDetailsScreen(), settings);
+        final args = settings.arguments as TripDetailsArgs?;
+        return _buildRoute(TowingTripDetailsScreen(args: args), settings);
       case Routes.camera:
         return _buildRoute(const CameraScreen(), settings);
       case Routes.locationPicker:
