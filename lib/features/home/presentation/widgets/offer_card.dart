@@ -37,7 +37,7 @@ class OfferCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(Insets.s12),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     offer.title,

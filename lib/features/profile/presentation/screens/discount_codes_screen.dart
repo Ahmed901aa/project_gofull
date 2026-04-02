@@ -94,6 +94,7 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
           Text(
             'عندك كود خصم؟',
             style: getMediumStyle(color: const Color(0xFF121212), fontSize: FontSize.s16).copyWith(height: 1.4),
+            textAlign: TextAlign.right,
           ),
           SizedBox(height: Sizes.s8),
           Container(
@@ -122,12 +123,12 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
       );
 
   Widget _buildActivateButton() => SizedBox(
-        height: 40.h,
+        height: 48.h,
         width: double.infinity,
         child: ElevatedButton(
           onPressed: () {},
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF54867C),
+            backgroundColor: const Color(0xFF004B3B),
             foregroundColor: AppColors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
             elevation: 0,
@@ -212,14 +213,13 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
             .toList(),
       );
 
-  Widget _buildPreviousCodes() => Center(
-        child: Padding(
-          padding: EdgeInsets.only(top: Sizes.s32),
-          child: Text(
-            'لا توجد أكواد سابقة',
-            style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16),
-          ),
-        ),
+  Widget _buildPreviousCodes() => Column(
+        children: _mockCoupons
+            .map((c) => Padding(
+                  padding: EdgeInsets.only(bottom: Sizes.s12),
+                  child: _ExpiredCouponCard(title: c['title']!, expiry: 'انتهي 3 يناير 2025'),
+                ))
+            .toList(),
       );
 }
 
@@ -234,9 +234,9 @@ class _CouponCard extends StatelessWidget {
       height: 79.h,
       padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
       decoration: BoxDecoration(
-        color: AppColors.primary50,
-        borderRadius: BorderRadius.circular(AppRadius.s24),
-        border: Border.all(color: AppColors.primary, width: 1),
+        color: AppColors.neutral400,
+        borderRadius: BorderRadius.circular(AppRadius.s16),
+        border: Border.all(color: AppColors.neutral500, width: 1),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -287,6 +287,60 @@ class _CouponCard extends StatelessWidget {
               'إستخدام',
               style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s14),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ExpiredCouponCard extends StatelessWidget {
+  final String title;
+  final String expiry;
+  const _ExpiredCouponCard({required this.title, required this.expiry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 79.h,
+      padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
+      decoration: BoxDecoration(
+        color: AppColors.neutral400,
+        borderRadius: BorderRadius.circular(AppRadius.s16),
+        border: Border.all(color: AppColors.neutral500, width: 1),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          // Icon (RIGHT in RTL)
+          Container(
+            width: 32.w,
+            height: 32.w,
+            decoration: const BoxDecoration(
+              color: AppColors.neutral500,
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: Icon(Icons.local_offer_outlined, size: 16.sp, color: AppColors.neutral900),
+          ),
+          SizedBox(width: 4.w),
+          // Text (LEFT in RTL)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
+              ),
+              Text(
+                expiry,
+                style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16).copyWith(
+                  fontWeight: FontWeight.w100,
+                  height: 1.6,
+                ),
+              ),
+            ],
           ),
         ],
       ),

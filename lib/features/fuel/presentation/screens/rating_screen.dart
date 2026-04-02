@@ -132,7 +132,7 @@ class _RatingScreenState extends State<RatingScreen> {
         ),
         SizedBox(height: 4.h),
         Align(
-          alignment: Alignment.centerLeft,
+          alignment: Alignment.centerRight,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: Insets.s8),
             child: Text(

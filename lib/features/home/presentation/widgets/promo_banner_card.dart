@@ -87,10 +87,10 @@ class PromoBannerCard extends StatelessWidget {
           Padding(
             padding: EdgeInsets.fromLTRB(Insets.s12, 0, 140.w, 0),
             child: Align(
-              alignment: Alignment.centerLeft,
+              alignment: Alignment.centerRight,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),

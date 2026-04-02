@@ -21,7 +21,7 @@ class ActiveOrderCard extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: Insets.s16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(

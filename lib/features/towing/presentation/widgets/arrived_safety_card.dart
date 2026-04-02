@@ -63,7 +63,7 @@ class _ArrivedSafetyCardState extends State<ArrivedSafetyCard> {
                 child: Text(
                   _expanded ? 'أخفاء العرض' : 'عرض الكل',
                   style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s14),
-                  textAlign: TextAlign.left,
+                  textAlign: TextAlign.right,
                 ),
               ),
             ],

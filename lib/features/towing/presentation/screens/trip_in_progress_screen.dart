@@ -216,7 +216,7 @@ class TripInProgressScreen extends StatelessWidget {
           Row(
             children: List.generate(3, (i) => Expanded(
               child: Padding(
-                padding: EdgeInsets.only(left: i < 2 ? Insets.s8 : 0),
+                padding: EdgeInsets.only(right: i < 2 ? Insets.s8 : 0),
                 child: _PhotoPlaceholder(),
               ),
             )),
