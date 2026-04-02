@@ -66,7 +66,7 @@ class ProfileScreen extends StatelessWidget {
                   ProfileMenuItem(
                     icon: Icons.description_outlined,
                     label: 'الشروط والأحكام',
-                    onTap: () {},
+                    onTap: () => Navigator.pushNamed(context, Routes.terms),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
