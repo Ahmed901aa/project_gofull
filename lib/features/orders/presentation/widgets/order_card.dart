@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
@@ -163,9 +164,6 @@ class _ServiceBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = serviceType == ServiceType.tow ? 'خدمة ونش' : 'إمداد وقود';
-    final icon = serviceType == ServiceType.tow
-        ? Icons.local_shipping_outlined
-        : Icons.local_gas_station_outlined;
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Insets.s12, vertical: 4.h),
@@ -176,9 +174,11 @@ class _ServiceBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(label, style: getMediumStyle(color: AppColors.white, fontSize: FontSize.s12)),
+          serviceType == ServiceType.tow
+              ? SvgPicture.asset('assets/svg/towing.svg', width: 14.sp, height: 14.sp, colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn))
+              : Icon(Icons.local_gas_station_outlined, size: 14.sp, color: AppColors.white),
           SizedBox(width: 4.w),
-          Icon(icon, size: 14.sp, color: AppColors.white),
+          Text(label, style: getMediumStyle(color: AppColors.white, fontSize: FontSize.s12)),
         ],
       ),
     );
