@@ -9,12 +9,12 @@ import 'home_location_bar.dart';
 
 class HomeHeader extends StatelessWidget {
   final String userName;
-  final String address;
+  final VoidCallback onSearchTap;
 
   const HomeHeader({
     super.key,
     required this.userName,
-    this.address = 'الرياض، المملكة العربية السعودية',
+    required this.onSearchTap,
   });
 
   @override
@@ -60,7 +60,7 @@ class HomeHeader extends StatelessWidget {
             ),
           ),
           SizedBox(height: Insets.s12),
-          HomeLocationBar(address: address),
+          HomeSearchBar(onTap: onSearchTap),
         ],
       ),
     );

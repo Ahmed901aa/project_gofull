@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:project_gofull/core/cubits/location_cubit.dart';
-import 'package:project_gofull/core/cubits/location_state.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -14,6 +12,7 @@ import 'package:project_gofull/features/home/presentation/widgets/offers_section
 import 'package:project_gofull/features/home/presentation/widgets/offers_shimmer.dart';
 import 'package:project_gofull/features/home/presentation/widgets/promo_banner.dart';
 import 'package:project_gofull/features/home/presentation/widgets/service_cards_section.dart';
+import 'app_search_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -40,12 +39,12 @@ class HomeScreen extends StatelessWidget {
                   physics: const AlwaysScrollableScrollPhysics(
                       parent: BouncingScrollPhysics()),
                   slivers: [
-                    // Read address from shared LocationCubit
                     SliverToBoxAdapter(
-                      child: BlocBuilder<LocationCubit, LocationState>(
-                        builder: (context, location) => HomeHeader(
-                          userName: 'أحمد',
-                          address: location.address,
+                      child: HomeHeader(
+                        userName: 'أحمد',
+                        onSearchTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const AppSearchScreen()),
                         ),
                       ),
                     ),
