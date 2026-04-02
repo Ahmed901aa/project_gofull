@@ -60,7 +60,7 @@ class ProfileScreen extends StatelessWidget {
                   ProfileMenuItem(
                     icon: Icons.help_outline_rounded,
                     label: 'الأسئلة الشائعة',
-                    onTap: () {},
+                    onTap: () => Navigator.pushNamed(context, Routes.faq),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(

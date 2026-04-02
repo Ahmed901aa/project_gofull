@@ -21,6 +21,7 @@ import 'package:project_gofull/features/location/presentation/screens/location_s
 import 'package:project_gofull/features/location/presentation/screens/map_selection_screen.dart';
 import 'package:project_gofull/features/location/presentation/screens/location_picker_screen.dart';
 import 'package:project_gofull/features/profile/presentation/screens/discount_codes_screen.dart';
+import 'package:project_gofull/features/profile/presentation/screens/faq_screen.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 
 class RouteGenerator {
@@ -80,6 +81,8 @@ class RouteGenerator {
         return _buildRoute(MapSelectionScreen(args: args), settings);
       case Routes.discountCodes:
         return _buildRoute(const DiscountCodesScreen(), settings);
+      case Routes.faq:
+        return _buildRoute(const FaqScreen(), settings);
       default:
         return _undefinedRoute();
     }
