@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/features/profile/presentation/widgets/profile_menu_item.dart';
 import 'package:project_gofull/features/profile/presentation/widgets/profile_user_card.dart';
 
@@ -34,13 +35,13 @@ class ProfileScreen extends StatelessWidget {
                   ProfileMenuItem(
                     icon: Icons.local_offer_outlined,
                     label: 'أكواد الخصم',
-                    onTap: () {},
+                    onTap: () => Navigator.pushNamed(context, Routes.discountCodes),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
                     icon: Icons.local_offer_outlined,
                     label: 'أكواد الخصم',
-                    onTap: () {},
+                    onTap: () => Navigator.pushNamed(context, Routes.discountCodes),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(

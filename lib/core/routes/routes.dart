@@ -24,4 +24,5 @@ class Routes {
   static const String orderHistory = '/order-history';
   static const String towingTripDetails = '/towing-trip-details';
   static const String profile = '/profile';
+  static const String discountCodes = '/discount-codes';
 }
