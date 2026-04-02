@@ -13,19 +13,17 @@ class OrderAddressColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           label,
           style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12),
-          textAlign: TextAlign.right,
         ),
         SizedBox(height: 2.h),
         Text(
           address,
           style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12),
-          textAlign: TextAlign.right,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),

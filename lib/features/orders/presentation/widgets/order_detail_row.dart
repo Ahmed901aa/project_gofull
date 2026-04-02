@@ -19,7 +19,7 @@ class OrderDetailRow extends StatelessWidget {
         children: [
           Text(
             label,
-            style: getRegularStyle(color: const Color(0xFF646565), fontSize: FontSize.s12),
+            style: getRegularStyle(color: const Color(0xFF646565), fontSize: FontSize.s14),
           ),
           SizedBox(width: Insets.s8),
           Text(

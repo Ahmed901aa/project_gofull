@@ -109,28 +109,21 @@ class OrderCard extends StatelessWidget {
           BoxShadow(color: AppColors.shadow, blurRadius: 4, offset: const Offset(0, 1)),
         ],
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'موقع السيارة',
-                style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12),
-                textAlign: TextAlign.right,
-              ),
-              SizedBox(height: 2.h),
-              Text(
-                order.location ?? '',
-                style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12),
-                textAlign: TextAlign.right,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+          Text(
+            'موقع السيارة',
+            style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12),
           ),
-          const Spacer(),
+          SizedBox(height: 2.h),
+          Text(
+            order.location ?? '',
+            style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
     );
