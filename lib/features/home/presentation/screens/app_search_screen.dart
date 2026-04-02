@@ -9,17 +9,16 @@ import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_sh
 
 // replace with real data later
 const _searchableItems = [
-  {'title': 'إمداد وقود', 'subtitle': 'توصيل الوقود لموقعك', 'icon': Icons.local_gas_station_outlined, 'route': Routes.fuelType},
-  {'title': 'ونش', 'subtitle': 'خدمة سحب السيارات', 'icon': Icons.fire_truck_outlined, 'route': Routes.towingRequest},
-  {'title': 'طلباتي', 'subtitle': 'عرض الطلبات الحالية والسابقة', 'icon': Icons.receipt_long_outlined, 'route': '_orders'},
-  {'title': 'أكواد الخصم', 'subtitle': 'إدخال وعرض أكواد الخصم', 'icon': Icons.local_offer_outlined, 'route': Routes.discountCodes},
-  {'title': 'الأسئلة الشائعة', 'subtitle': 'إجابات على الأسئلة المتكررة', 'icon': Icons.help_outline_rounded, 'route': Routes.faq},
-  {'title': 'تعديل بيانات الحساب', 'subtitle': 'تعديل الاسم ورقم الجوال', 'icon': Icons.person_outline_rounded, 'route': Routes.editProfile},
-  {'title': 'الشروط والأحكام', 'subtitle': 'شروط استخدام التطبيق', 'icon': Icons.description_outlined, 'route': Routes.terms},
-  {'title': 'الدعم والمساعدة', 'subtitle': 'تواصل معنا للمساعدة', 'icon': Icons.headset_mic_outlined, 'route': '_support'},
+  {'title': 'إمداد وقود', 'subtitle': 'توصيل الوقود لموقعك', 'icon': Icons.local_gas_station_outlined, 'route': Routes.fuelType, 'category': 'خدمات'},
+  {'title': 'ونش', 'subtitle': 'خدمة سحب السيارات', 'icon': Icons.fire_truck_outlined, 'route': Routes.towingRequest, 'category': 'خدمات'},
+  {'title': 'طلباتي', 'subtitle': 'عرض الطلبات الحالية والسابقة', 'icon': Icons.receipt_long_outlined, 'route': '_orders', 'category': 'التطبيق'},
+  {'title': 'أكواد الخصم', 'subtitle': 'إدخال وعرض أكواد الخصم', 'icon': Icons.local_offer_outlined, 'route': Routes.discountCodes, 'category': 'التطبيق'},
+  {'title': 'الأسئلة الشائعة', 'subtitle': 'إجابات على الأسئلة المتكررة', 'icon': Icons.help_outline_rounded, 'route': Routes.faq, 'category': 'التطبيق'},
+  {'title': 'تعديل بيانات الحساب', 'subtitle': 'تعديل الاسم ورقم الجوال', 'icon': Icons.person_outline_rounded, 'route': Routes.editProfile, 'category': 'الحساب'},
+  {'title': 'الشروط والأحكام', 'subtitle': 'شروط استخدام التطبيق', 'icon': Icons.description_outlined, 'route': Routes.terms, 'category': 'التطبيق'},
+  {'title': 'الدعم والمساعدة', 'subtitle': 'تواصل معنا للمساعدة', 'icon': Icons.headset_mic_outlined, 'route': '_support', 'category': 'التطبيق'},
 ];
 
-// Keywords for better matching
 const _searchKeywords = {
   'إمداد وقود': ['وقود', 'بنزين', 'ديزل', 'تعبئة', 'طلب وقود'],
   'ونش': ['ونش', 'سحب', 'نقل', 'طلب ونش', 'سيارة'],
@@ -32,10 +31,10 @@ const _searchKeywords = {
 };
 
 const _quickShortcuts = [
-  {'title': 'إمداد وقود', 'route': Routes.fuelType},
-  {'title': 'ونش', 'route': Routes.towingRequest},
-  {'title': 'طلباتي', 'route': '_orders'},
-  {'title': 'الدعم', 'route': '_support'},
+  {'title': 'إمداد وقود', 'icon': Icons.local_gas_station_outlined, 'route': Routes.fuelType},
+  {'title': 'ونش', 'icon': Icons.fire_truck_outlined, 'route': Routes.towingRequest},
+  {'title': 'طلباتي', 'icon': Icons.receipt_long_outlined, 'route': '_orders'},
+  {'title': 'الدعم', 'icon': Icons.headset_mic_outlined, 'route': '_support'},
 ];
 
 class AppSearchScreen extends StatefulWidget {
@@ -111,27 +110,62 @@ class _AppSearchScreenState extends State<AppSearchScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     if (query.isEmpty) ...[
-                      SizedBox(height: Insets.s16),
+                      SizedBox(height: Insets.s24),
+                      Text(
+                        'الوصول السريع',
+                        style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+                      ),
+                      SizedBox(height: Insets.s12),
                       _buildQuickShortcuts(),
+                      SizedBox(height: Insets.s24),
+                      Text(
+                        'جميع الخدمات',
+                        style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+                      ),
+                      SizedBox(height: Insets.s12),
+                      ..._searchableItems.map((item) => _SearchResultTile(
+                            title: item['title'] as String,
+                            subtitle: item['subtitle'] as String,
+                            icon: item['icon'] as IconData,
+                            category: item['category'] as String,
+                            onTap: () => _navigate(item['route'] as String),
+                          )),
                     ],
                     if (query.isNotEmpty && _results.isEmpty) ...[
-                      SizedBox(height: 48.h),
+                      SizedBox(height: 80.h),
+                      Icon(Icons.search_off_rounded, size: 48.sp, color: const Color(0xFFD9DADB)),
+                      SizedBox(height: Insets.s12),
                       Center(
                         child: Text(
                           'لا توجد نتائج',
-                          style: getRegularStyle(color: const Color(0xFF838485), fontSize: FontSize.s16),
+                          style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Center(
+                        child: Text(
+                          'حاول البحث بكلمة مختلفة',
+                          style: getRegularStyle(color: const Color(0xFF838485), fontSize: FontSize.s14),
                         ),
                       ),
                     ],
-                    if (_results.isNotEmpty) ...[
-                      SizedBox(height: Insets.s8),
+                    if (query.isNotEmpty && _results.isNotEmpty) ...[
+                      SizedBox(height: Insets.s16),
+                      Text(
+                        'نتائج البحث (${_results.length})',
+                        style: getMediumStyle(color: const Color(0xFF838485), fontSize: FontSize.s14),
+                      ),
+                      SizedBox(height: Insets.s12),
                       ..._results.map((item) => _SearchResultTile(
                             title: item['title'] as String,
                             subtitle: item['subtitle'] as String,
                             icon: item['icon'] as IconData,
+                            category: item['category'] as String,
+                            highlightQuery: query,
                             onTap: () => _navigate(item['route'] as String),
                           )),
                     ],
+                    SizedBox(height: Insets.s16),
                   ],
                 ),
               ),
@@ -200,24 +234,45 @@ class _AppSearchScreenState extends State<AppSearchScreen> {
         ),
       );
 
-  Widget _buildQuickShortcuts() => Wrap(
-        spacing: Insets.s8,
-        runSpacing: Insets.s8,
-        children: _quickShortcuts.map((s) => GestureDetector(
-              onTap: () => _navigate(s['route'] as String),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(AppRadius.s24),
-                  border: Border.all(color: const Color(0xFFEFF0F1)),
-                ),
-                child: Text(
-                  s['title'] as String,
-                  style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+  Widget _buildQuickShortcuts() => Row(
+        children: _quickShortcuts.map((s) {
+          final isLast = s == _quickShortcuts.last;
+          return Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(left: isLast ? 0 : Insets.s8),
+              child: GestureDetector(
+                onTap: () => _navigate(s['route'] as String),
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: Insets.s12),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(AppRadius.s16),
+                    border: Border.all(color: const Color(0xFFEFF0F1)),
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 40.w,
+                        height: 40.w,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withOpacity(0.08),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(s['icon'] as IconData, size: 20.sp, color: AppColors.primary),
+                      ),
+                      SizedBox(height: Insets.s8),
+                      Text(
+                        s['title'] as String,
+                        style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            )).toList(),
+            ),
+          );
+        }).toList(),
       );
 }
 
@@ -225,13 +280,17 @@ class _SearchResultTile extends StatelessWidget {
   final String title;
   final String subtitle;
   final IconData icon;
+  final String category;
+  final String? highlightQuery;
   final VoidCallback onTap;
 
   const _SearchResultTile({
     required this.title,
     required this.subtitle,
     required this.icon,
+    required this.category,
     required this.onTap,
+    this.highlightQuery,
   });
 
   @override
@@ -239,7 +298,7 @@ class _SearchResultTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
+        padding: EdgeInsets.all(Insets.s12),
         margin: EdgeInsets.only(bottom: Insets.s8),
         decoration: BoxDecoration(
           color: AppColors.white,
@@ -249,28 +308,69 @@ class _SearchResultTile extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 40.w,
-              height: 40.w,
+              width: 44.w,
+              height: 44.w,
               decoration: BoxDecoration(
-                color: const Color(0xFFF8F8F9),
+                color: AppColors.primary.withOpacity(0.08),
                 borderRadius: BorderRadius.circular(AppRadius.s12),
               ),
-              child: Icon(icon, size: 20.sp, color: AppColors.primary),
+              child: Icon(icon, size: 22.sp, color: AppColors.primary),
             ),
             SizedBox(width: Insets.s12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
-                  SizedBox(height: 2.h),
-                  Text(subtitle, style: getRegularStyle(color: const Color(0xFF838485), fontSize: FontSize.s14)),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildTitle(),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 2.h),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(AppRadius.s24),
+                        ),
+                        child: Text(
+                          category,
+                          style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    subtitle,
+                    style: getRegularStyle(color: const Color(0xFF838485), fontSize: FontSize.s14),
+                  ),
                 ],
               ),
             ),
-            Icon(Icons.arrow_back_ios_new_rounded, size: 14.sp, color: const Color(0xFF838485)),
+            SizedBox(width: Insets.s8),
+            Icon(Icons.arrow_back_ios_new_rounded, size: 12.sp, color: const Color(0xFFD9DADB)),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    if (highlightQuery == null || highlightQuery!.isEmpty || !title.contains(highlightQuery!)) {
+      return Text(title, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16));
+    }
+    final idx = title.indexOf(highlightQuery!);
+    final before = title.substring(0, idx);
+    final match = title.substring(idx, idx + highlightQuery!.length);
+    final after = title.substring(idx + highlightQuery!.length);
+    return RichText(
+      text: TextSpan(
+        style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+        children: [
+          if (before.isNotEmpty) TextSpan(text: before),
+          TextSpan(text: match, style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s16)),
+          if (after.isNotEmpty) TextSpan(text: after),
+        ],
       ),
     );
   }
