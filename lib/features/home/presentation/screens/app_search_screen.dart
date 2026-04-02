@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 
 // replace with real data later
 const _searchableItems = [
@@ -79,8 +80,8 @@ class _AppSearchScreenState extends State<AppSearchScreen> {
 
   void _navigate(String route) {
     if (route == '_orders') {
-      // Go back to home and switch to orders tab
-      Navigator.pop(context, 1);
+      Navigator.pop(context);
+      BottomNavShell.shellKey.currentState?.switchTo(1);
       return;
     }
     if (route == '_support') {

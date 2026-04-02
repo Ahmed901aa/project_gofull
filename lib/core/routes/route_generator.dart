@@ -37,7 +37,7 @@ class RouteGenerator {
         final args = settings.arguments as OtpArgs;
         return _buildRoute(OtpScreen(args: args), settings);
       case Routes.home:
-        return _buildRoute(const BottomNavShell(), settings);
+        return _buildRoute(BottomNavShell(), settings);
       case Routes.fuelType:
         return _buildRoute(const FuelScreen(), settings);
       case Routes.towingRequest:

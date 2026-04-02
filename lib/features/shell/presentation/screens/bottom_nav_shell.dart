@@ -9,7 +9,9 @@ import 'package:project_gofull/features/profile/presentation/screens/profile_scr
 import '../widgets/nav_item.dart';
 
 class BottomNavShell extends StatefulWidget {
-  const BottomNavShell({super.key});
+  BottomNavShell({Key? key}) : super(key: key ?? shellKey);
+
+  static final shellKey = GlobalKey<_BottomNavShellState>();
 
   @override
   State<BottomNavShell> createState() => _BottomNavShellState();
@@ -17,6 +19,8 @@ class BottomNavShell extends StatefulWidget {
 
 class _BottomNavShellState extends State<BottomNavShell> {
   int _currentIndex = 0;
+
+  void switchTo(int index) => setState(() => _currentIndex = index);
 
   final List<Widget> _screens = const [
     HomeScreen(),
