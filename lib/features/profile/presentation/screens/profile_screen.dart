@@ -26,7 +26,7 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   // replace with API data later
                   const ProfileUserCard(
-                    name: 'أحمد العمريطي',
+                    name: 'احمد احميد',
                     phone: '0915909734',
                     initials: 'أ . ل',
                   ),
