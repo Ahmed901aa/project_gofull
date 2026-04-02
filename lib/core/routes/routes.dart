@@ -27,4 +27,5 @@ class Routes {
   static const String discountCodes = '/discount-codes';
   static const String faq = '/faq';
   static const String terms = '/terms';
+  static const String editProfile = '/edit-profile';
 }

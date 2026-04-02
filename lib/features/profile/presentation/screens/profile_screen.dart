@@ -26,10 +26,11 @@ class ProfileScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // replace with API data later
-                  const ProfileUserCard(
+                  ProfileUserCard(
                     name: 'احمد احميد',
                     phone: '0915909734',
                     initials: 'أ . ل',
+                    onEdit: () => Navigator.pushNamed(context, Routes.editProfile),
                   ),
                   SizedBox(height: Insets.s16),
                   ProfileMenuItem(
