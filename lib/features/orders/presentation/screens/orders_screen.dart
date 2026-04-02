@@ -48,7 +48,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       arguments: TripDetailsArgs(
         orderId: order.id,
         status: order.status,
-        isRated: _isRated(order),
+        isRated: true,
       ),
     );
     _loadRatedStatus();

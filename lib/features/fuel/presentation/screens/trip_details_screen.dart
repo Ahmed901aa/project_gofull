@@ -17,7 +17,7 @@ class TripDetailsScreen extends StatelessWidget {
   const TripDetailsScreen({super.key, this.args});
 
   bool get _showRatingButton {
-    if (args == null) return true; // default: show when opened outside orders flow
+    if (args == null) return false;
     return args!.status == OrderStatus.completed && !args!.isRated;
   }
 

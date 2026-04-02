@@ -6,6 +6,8 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/utils/route_args.dart';
+import 'package:project_gofull/features/orders/models/order_data.dart';
 
 // replace with API data later
 const _mockData = {
@@ -301,7 +303,15 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
           height: 48.h,
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () => Navigator.pushReplacementNamed(context, Routes.tripDetails),
+            onPressed: () => Navigator.pushReplacementNamed(
+              context,
+              Routes.tripDetails,
+              arguments: const TripDetailsArgs(
+                orderId: 'fuel_active',
+                status: OrderStatus.completed,
+                isRated: false,
+              ),
+            ),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: AppColors.white,
