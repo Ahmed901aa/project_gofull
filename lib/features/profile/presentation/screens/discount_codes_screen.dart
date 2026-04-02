@@ -30,33 +30,36 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
-      body: Column(
-        children: [
-          _buildHeader(context),
-          Expanded(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.symmetric(horizontal: Insets.s16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(height: Insets.s16),
-                  _buildInputSection(),
-                  SizedBox(height: Insets.s16),
-                  _buildActivateButton(),
-                  SizedBox(height: Insets.s16),
-                  _buildTabs(),
-                  SizedBox(height: Insets.s16),
-                  if (_selectedTab == 0) _buildCouponsList(),
-                  if (_selectedTab == 1) _buildPreviousCodes(),
-                  SizedBox(height: Sizes.s16),
-                ],
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        backgroundColor: AppColors.scaffoldBg,
+        body: Column(
+          children: [
+            _buildHeader(context),
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: Insets.s16),
+                    _buildInputSection(),
+                    SizedBox(height: Insets.s16),
+                    _buildActivateButton(),
+                    SizedBox(height: Insets.s16),
+                    _buildTabs(),
+                    SizedBox(height: Insets.s16),
+                    if (_selectedTab == 0) _buildCouponsList(),
+                    if (_selectedTab == 1) _buildPreviousCodes(),
+                    SizedBox(height: Sizes.s16),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -69,17 +72,19 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
             Padding(
               padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Icon(Icons.arrow_forward_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
                   ),
-                  Text(
-                    'أكواد الخصم',
-                    style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
+                  Expanded(
+                    child: Text(
+                      'أكواد الخصم',
+                      style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
+                  SizedBox(width: 24.sp),
                 ],
               ),
             ),
@@ -94,7 +99,6 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
           Text(
             'عندك كود خصم؟',
             style: getMediumStyle(color: const Color(0xFF121212), fontSize: FontSize.s16).copyWith(height: 1.4),
-            textAlign: TextAlign.right,
           ),
           SizedBox(height: Sizes.s8),
           Container(
@@ -108,7 +112,7 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
             alignment: Alignment.centerRight,
             child: TextField(
               controller: _codeController,
-              textAlign: TextAlign.right,
+              textDirection: TextDirection.rtl,
               decoration: InputDecoration(
                 hintText: 'أدخل كود الخصم..',
                 hintStyle: getRegularStyle(color: const Color(0xFFAAAAAB), fontSize: FontSize.s14),
@@ -239,42 +243,35 @@ class _CouponCard extends StatelessWidget {
         border: Border.all(color: AppColors.neutral500, width: 1),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // RIGHT: icon + text
-          Row(
-            mainAxisSize: MainAxisSize.min,
+          Container(
+            width: 32.w,
+            height: 32.w,
+            decoration: BoxDecoration(
+              color: AppColors.dots,
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: Icon(Icons.local_offer_outlined, size: 16.sp, color: AppColors.primary),
+          ),
+          SizedBox(width: 4.w),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 32.w,
-                height: 32.w,
-                decoration: BoxDecoration(
-                  color: AppColors.dots,
-                  shape: BoxShape.circle,
-                ),
-                alignment: Alignment.center,
-                child: Icon(Icons.local_offer_outlined, size: 16.sp, color: AppColors.primary),
+              Text(
+                title,
+                style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
               ),
-              SizedBox(width: 4.w),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-                  ),
-                  Text(
-                    expiry,
-                    style: getRegularStyle(color: const Color(0xFF121212), fontSize: FontSize.s16).copyWith(
-                      fontWeight: FontWeight.w100,
-                      height: 1.6,
-                    ),
-                  ),
-                ],
+              Text(
+                expiry,
+                style: getRegularStyle(color: const Color(0xFF121212), fontSize: FontSize.s16).copyWith(
+                  fontWeight: FontWeight.w100,
+                  height: 1.6,
+                ),
               ),
             ],
           ),
-          // LEFT: button
+          const Spacer(),
           Container(
             height: 32.h,
             padding: EdgeInsets.symmetric(horizontal: Insets.s16),
@@ -310,9 +307,7 @@ class _ExpiredCouponCard extends StatelessWidget {
         border: Border.all(color: AppColors.neutral500, width: 1),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          // Icon (RIGHT in RTL)
           Container(
             width: 32.w,
             height: 32.w,
@@ -324,7 +319,6 @@ class _ExpiredCouponCard extends StatelessWidget {
             child: Icon(Icons.local_offer_outlined, size: 16.sp, color: AppColors.neutral900),
           ),
           SizedBox(width: 4.w),
-          // Text (LEFT in RTL)
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
