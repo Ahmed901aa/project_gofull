@@ -75,7 +75,7 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_forward_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
+                    child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
                   ),
                   Expanded(
                     child: Text(
