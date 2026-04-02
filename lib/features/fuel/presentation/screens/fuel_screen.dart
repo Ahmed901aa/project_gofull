@@ -54,8 +54,7 @@ class _FuelScreenState extends State<FuelScreen> {
                           builder: (context, loc) => ServiceLocationCard(
                             topLabel: 'الموقع الحالي',
                             bottomLabel: loc.address,
-                            onTap: () => Navigator.pushNamed(context, Routes.locationSearch,
-                                arguments: const LocationSearchArgs(title: 'الموقع الحالي')),
+                            onTap: () => Navigator.pushNamed(context, Routes.locationPicker),
                           ),
                         ),
                       ),

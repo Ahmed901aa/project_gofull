@@ -33,8 +33,7 @@ class _TowingScreenState extends State<TowingScreen> {
   Future<void> _onDestinationTap() async {
     final cubit = context.read<LocationCubit>();
     final prev = cubit.state;
-    await Navigator.pushNamed(context, Routes.locationSearch,
-        arguments: const LocationSearchArgs(title: 'وجهة التوصيل'));
+    await Navigator.pushNamed(context, Routes.locationPicker);
     if (!mounted) return;
     final selected = cubit.state;
     if (selected.address != prev.address) {
@@ -86,8 +85,7 @@ class _TowingScreenState extends State<TowingScreen> {
                           builder: (context, loc) => ServiceLocationCard(
                             topLabel: 'نقطة الانطلاق',
                             bottomLabel: loc.address,
-                            onTap: () => Navigator.pushNamed(context, Routes.locationSearch,
-                                arguments: const LocationSearchArgs(title: 'الموقع الحالي')),
+                            onTap: () => Navigator.pushNamed(context, Routes.locationPicker),
                           ),
                         ),
                       ),
