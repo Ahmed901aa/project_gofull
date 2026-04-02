@@ -9,6 +9,7 @@ class ProfileMenuItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final String? trailing;
+  final Color? iconColor;
   final VoidCallback? onTap;
 
   const ProfileMenuItem({
@@ -16,6 +17,7 @@ class ProfileMenuItem extends StatelessWidget {
     required this.icon,
     required this.label,
     this.trailing,
+    this.iconColor,
     this.onTap,
   });
 
@@ -47,7 +49,7 @@ class ProfileMenuItem extends StatelessWidget {
                     border: Border.all(color: AppColors.neutral500),
                   ),
                   alignment: Alignment.center,
-                  child: Icon(icon, size: 16.sp, color: const Color(0xFF0E0E0E)),
+                  child: Icon(icon, size: 16.sp, color: iconColor ?? const Color(0xFF0E0E0E)),
                 ),
                 SizedBox(width: Insets.s8),
                 Text(

@@ -83,6 +83,7 @@ class ProfileScreen extends StatelessWidget {
                   ProfileMenuItem(
                     icon: Icons.logout_rounded,
                     label: 'تسجيل الخروج',
+                    iconColor: AppColors.error,
                     onTap: () {},
                   ),
                   SizedBox(height: Sizes.s16),
