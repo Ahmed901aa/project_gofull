@@ -85,6 +85,7 @@ class _AppSearchScreenState extends State<AppSearchScreen> {
     }
     if (route == '_support') {
       Navigator.pop(context);
+      Navigator.pushNamed(context, Routes.support);
       return;
     }
     Navigator.pop(context);

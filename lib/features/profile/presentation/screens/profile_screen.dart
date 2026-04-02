@@ -53,9 +53,9 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
-                    icon: Icons.chat_bubble_outline_rounded,
-                    label: 'الدعم الفني',
-                    onTap: () {},
+                    icon: Icons.headset_mic_outlined,
+                    label: 'الدعم والمساعدة',
+                    onTap: () => Navigator.pushNamed(context, Routes.support),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(

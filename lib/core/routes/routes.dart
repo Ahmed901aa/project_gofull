@@ -28,4 +28,5 @@ class Routes {
   static const String faq = '/faq';
   static const String terms = '/terms';
   static const String editProfile = '/edit-profile';
+  static const String support = '/support';
 }

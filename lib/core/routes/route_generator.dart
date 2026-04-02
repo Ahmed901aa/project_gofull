@@ -24,6 +24,7 @@ import 'package:project_gofull/features/profile/presentation/screens/discount_co
 import 'package:project_gofull/features/profile/presentation/screens/faq_screen.dart';
 import 'package:project_gofull/features/profile/presentation/screens/terms_screen.dart';
 import 'package:project_gofull/features/profile/presentation/screens/edit_profile_screen.dart';
+import 'package:project_gofull/features/profile/presentation/screens/support_screen.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 
 class RouteGenerator {
@@ -89,6 +90,8 @@ class RouteGenerator {
         return _buildRoute(const TermsScreen(), settings);
       case Routes.editProfile:
         return _buildRoute(const EditProfileScreen(), settings);
+      case Routes.support:
+        return _buildRoute(const SupportScreen(), settings);
       default:
         return _undefinedRoute();
     }
