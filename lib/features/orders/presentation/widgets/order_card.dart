@@ -110,7 +110,6 @@ class OrderCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Spacer(),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
@@ -130,6 +129,7 @@ class OrderCard extends StatelessWidget {
               ),
             ],
           ),
+          const Spacer(),
         ],
       ),
     );
