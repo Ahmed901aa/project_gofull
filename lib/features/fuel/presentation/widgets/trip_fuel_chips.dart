@@ -23,9 +23,9 @@ class TripFuelChips extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Expanded(child: _Chip(label: 'الكمية المطلوبة', value: _quantity)),
-          SizedBox(width: Insets.s16),
           Expanded(child: _Chip(label: 'نوع الوقود', value: _fuelType)),
+          SizedBox(width: Insets.s16),
+          Expanded(child: _Chip(label: 'الكمية المطلوبة', value: _quantity)),
         ],
       ),
     );

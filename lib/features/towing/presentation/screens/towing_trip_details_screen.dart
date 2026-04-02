@@ -69,9 +69,9 @@ class TowingTripDetailsScreen extends StatelessWidget {
                         // replace with API data later
                         Row(
                           children: [
-                            _DetailChip(label: 'رقم اللوحة: أ ب م - 3541'),
-                            SizedBox(width: Insets.s8),
                             _DetailChip(label: 'نوع السيارة: نيسان صني'),
+                            SizedBox(width: Insets.s8),
+                            _DetailChip(label: 'رقم اللوحة: أ ب م - 3541'),
                           ],
                         ),
                         SizedBox(height: Sizes.s8),
