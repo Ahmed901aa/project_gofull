@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import '../widgets/confirmation_dialog.dart';
 import '../widgets/phone_otp_bottom_sheet.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -53,29 +54,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _deleteAccount() {
     showDialog(
       context: context,
-      builder: (ctx) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
-          title: Text('حذف الحساب', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
-          content: Text(
-            'هل أنت متأكد من حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء.',
-            style: getRegularStyle(color: const Color(0xFF838485), fontSize: FontSize.s14),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text('إلغاء', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-                // replace with API later
-              },
-              child: Text('حذف', style: getMediumStyle(color: const Color(0xFFE63946), fontSize: FontSize.s14)),
-            ),
-          ],
-        ),
+      builder: (_) => ConfirmationDialog(
+        icon: Icons.person_remove_outlined,
+        iconColor: const Color(0xFFE63946),
+        title: 'حذف الحساب؟',
+        subtitle: 'حذف الحساب يعني خسارة جميع بياناتك، سجل طلباتك. هل أنت متأكد؟',
+        confirmLabel: 'تأكيد الحذف',
+        onConfirm: () {
+          Navigator.pop(context);
+          // TODO: handle delete account logic
+        },
       ),
     );
   }

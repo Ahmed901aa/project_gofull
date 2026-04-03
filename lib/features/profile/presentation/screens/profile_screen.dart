@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/features/profile/presentation/widgets/profile_menu_item.dart';
+import 'package:project_gofull/features/profile/presentation/widgets/confirmation_dialog.dart';
 import 'package:project_gofull/features/profile/presentation/widgets/profile_user_card.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -54,7 +55,7 @@ class ProfileScreen extends StatelessWidget {
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
                     icon: Icons.headset_mic_outlined,
-                    label: 'الدعم والمساعدة',
+                    label: 'الدعم الفني',
                     onTap: () => Navigator.pushNamed(context, Routes.support),
                   ),
                   SizedBox(height: Sizes.s12),
@@ -86,7 +87,7 @@ class ProfileScreen extends StatelessWidget {
                     icon: Icons.logout_rounded,
                     label: 'تسجيل الخروج',
                     iconColor: AppColors.error,
-                    onTap: () {},
+                    onTap: () => _showLogoutDialog(context),
                   ),
                   SizedBox(height: Sizes.s16),
                 ],
@@ -94,6 +95,23 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => ConfirmationDialog(
+        icon: Icons.logout_rounded,
+        iconColor: AppColors.primary,
+        title: 'تسجيل الخروج؟',
+        subtitle: 'متأكد إنك عاوز تخرج من حسابك؟ تقدر ترجع لنا في أي وقت وتكمل توفير.',
+        confirmLabel: 'تسجيل الخروج',
+        onConfirm: () {
+          Navigator.pop(context);
+          // TODO: handle logout logic
+        },
       ),
     );
   }
