@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
-import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
-import 'package:project_gofull/features/profile/presentation/widgets/profile_menu_item.dart';
-import 'package:project_gofull/features/profile/presentation/widgets/confirmation_dialog.dart';
-import 'package:project_gofull/features/profile/presentation/widgets/profile_user_card.dart';
+import 'package:project_gofull/core/widgets/app_header.dart';
+import '../widgets/confirmation_dialog.dart';
+import '../widgets/profile_menu_item.dart';
+import '../widgets/profile_user_card.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -18,7 +17,7 @@ class ProfileScreen extends StatelessWidget {
       backgroundColor: AppColors.scaffoldBg,
       body: Column(
         children: [
-          _buildHeader(context),
+          const AppHeader(title: 'حسابي', showBack: false),
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -26,7 +25,6 @@ class ProfileScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // replace with API data later
                   ProfileUserCard(
                     name: 'احمد احميد',
                     phone: '0915909734',
@@ -109,23 +107,4 @@ class ProfileScreen extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
-        child: Column(
-          children: [
-            SizedBox(height: MediaQuery.of(context).padding.top),
-            Padding(
-              padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
-              child: Center(
-                child: Text(
-                  'حسابي',
-                  style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
-                ),
-              ),
-            ),
-            const Divider(height: 1, color: Color(0xFFF5F5F5)),
-          ],
-        ),
-      );
 }
