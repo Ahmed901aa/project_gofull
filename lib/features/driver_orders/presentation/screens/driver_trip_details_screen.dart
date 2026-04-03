@@ -6,7 +6,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
-import 'package:project_gofull/features/driver_orders/presentation/screens/driver_orders_screen.dart';
+import 'package:project_gofull/core/utils/route_args.dart';
 
 class DriverTripDetailsScreen extends StatelessWidget {
   final DriverTripDetailsArgs args;
