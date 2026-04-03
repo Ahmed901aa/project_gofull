@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/features/profile/presentation/widgets/faq_card.dart';
 
 const _faqs = [
   {
@@ -14,7 +15,6 @@ const _faqs = [
 
 class FaqScreen extends StatefulWidget {
   const FaqScreen({super.key});
-
   @override
   State<FaqScreen> createState() => _FaqScreenState();
 }
@@ -36,7 +36,7 @@ class _FaqScreenState extends State<FaqScreen> {
                 physics: const BouncingScrollPhysics(),
                 padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s16),
                 child: Column(
-                  children: List.generate(_faqs.length, (i) => _FaqCard(
+                  children: List.generate(_faqs.length, (i) => FaqCard(
                     question: _faqs[i]['question']!,
                     answer: _faqs[i]['answer']!,
                     isExpanded: _expandedIndex == i,
@@ -60,17 +60,8 @@ class _FaqScreenState extends State<FaqScreen> {
               padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
               child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
-                  ),
-                  Expanded(
-                    child: Text(
-                      'الأسئلة الشائعة',
-                      style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+                  GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: const Color(0xFF0E0E0E))),
+                  Expanded(child: Text('الأسئلة الشائعة', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20), textAlign: TextAlign.center)),
                   SizedBox(width: 24.sp),
                 ],
               ),
@@ -79,76 +70,4 @@ class _FaqScreenState extends State<FaqScreen> {
           ],
         ),
       );
-}
-
-class _FaqCard extends StatelessWidget {
-  final String question;
-  final String answer;
-  final bool isExpanded;
-  final VoidCallback onTap;
-
-  const _FaqCard({
-    required this.question,
-    required this.answer,
-    required this.isExpanded,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: Insets.s12),
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeInOut,
-          padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFDFDFD),
-            borderRadius: BorderRadius.circular(AppRadius.s24),
-            border: Border.all(color: const Color(0xFFEFEFEF)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      question,
-                      style: getSemiBoldStyle(color: const Color(0xFF252525), fontSize: FontSize.s14).copyWith(height: 1.6),
-                    ),
-                  ),
-                  SizedBox(width: Insets.s8),
-                  AnimatedRotation(
-                    turns: isExpanded ? 0.5 : 0,
-                    duration: const Duration(milliseconds: 250),
-                    child: Icon(Icons.keyboard_arrow_down_rounded, size: 20.sp, color: const Color(0xFF252525)),
-                  ),
-                ],
-              ),
-              AnimatedCrossFade(
-                firstChild: const SizedBox.shrink(),
-                secondChild: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SizedBox(height: Insets.s8),
-                    Container(height: 1, color: const Color(0xFFEFEFEF)),
-                    SizedBox(height: Insets.s8),
-                    Text(
-                      answer,
-                      style: getRegularStyle(color: const Color(0xFF252525), fontSize: FontSize.s14).copyWith(height: 1.6),
-                    ),
-                  ],
-                ),
-                crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                duration: const Duration(milliseconds: 250),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }

@@ -11,22 +11,20 @@ import 'package:project_gofull/core/widgets/service_location_card.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/trip_payment_card.dart';
 import 'package:project_gofull/features/orders/models/order_data.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/arrived_car_photos.dart';
+import 'package:project_gofull/features/towing/presentation/widgets/detail_chip.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/driver_details_card.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/photo_log_section.dart';
+import 'package:project_gofull/features/towing/presentation/widgets/trip_rating_bottom_bar.dart';
 
 class TowingTripDetailsScreen extends StatelessWidget {
   final TripDetailsArgs? args;
   const TowingTripDetailsScreen({super.key, this.args});
 
-  bool get _showRatingButton {
-    if (args == null) return false;
-    return args!.status == OrderStatus.completed && !args!.isRated;
-  }
+  bool get _showRatingButton =>
+      args != null && args!.status == OrderStatus.completed && !args!.isRated;
 
-  bool get _showAlreadyRatedText {
-    if (args == null) return false;
-    return args!.status == OrderStatus.completed && args!.isRated;
-  }
+  bool get _showAlreadyRatedText =>
+      args != null && args!.status == OrderStatus.completed && args!.isRated;
 
   @override
   Widget build(BuildContext context) {
@@ -43,55 +41,19 @@ class TowingTripDetailsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(height: Sizes.s8),
-                  _section(
-                    'مسار الرحلة',
-                    Column(
-                      children: [
-                        // replace with API data later
-                        const ServiceLocationCard(
-                          topLabel: 'نقطة الانطلاق',
-                          bottomLabel: 'المنصورة، مدينة مبارك، شارع مكة',
-                        ),
-                        SizedBox(height: Sizes.s8),
-                        const ServiceLocationCard(
-                          topLabel: 'وجهة التوصيل',
-                          bottomLabel: 'الرياض، حي النزهة، شارع الأمير',
-                        ),
-                      ],
-                    ),
-                  ),
+                  _section('مسار الرحلة', Column(children: [
+                    const ServiceLocationCard(topLabel: 'نقطة الانطلاق', bottomLabel: 'المنصورة، مدينة مبارك، شارع مكة'),
+                    SizedBox(height: Sizes.s8),
+                    const ServiceLocationCard(topLabel: 'وجهة التوصيل', bottomLabel: 'الرياض، حي النزهة، شارع الأمير'),
+                  ])),
                   SizedBox(height: Insets.s16),
-                  _section(
-                    'تفاصيل السيارة',
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // replace with API data later
-                        Row(
-                          children: [
-                            _DetailChip(label: 'نوع السيارة: نيسان صني'),
-                            SizedBox(width: Insets.s8),
-                            _DetailChip(label: 'رقم اللوحة: أ ب م - 3541'),
-                          ],
-                        ),
-                        SizedBox(height: Sizes.s8),
-                        const ArrivedCarPhotos(),
-                      ],
-                    ),
-                  ),
+                  _section('تفاصيل السيارة', Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                    Row(children: [const DetailChip(label: 'نوع السيارة: نيسان صني'), SizedBox(width: Insets.s8), const DetailChip(label: 'رقم اللوحة: أ ب م - 3541')]),
+                    SizedBox(height: Sizes.s8),
+                    const ArrivedCarPhotos(),
+                  ])),
                   SizedBox(height: Insets.s16),
-                  _section(
-                    'تفاصيل السائق',
-                    // replace with API data later
-                    const DriverDetailsCard(
-                      name: 'محمد أحمد',
-                      rating: '4.9',
-                      reviewCount: '541',
-                      plateNumber: 'أ ب م - 3541',
-                      vehicleLabel: 'نوع الونش',
-                      vehicleValue: 'ونش هيدروليك',
-                    ),
-                  ),
+                  _section('تفاصيل السائق', const DriverDetailsCard(name: 'محمد أحمد', rating: '4.9', reviewCount: '541', plateNumber: 'أ ب م - 3541', vehicleLabel: 'نوع الونش', vehicleValue: 'ونش هيدروليك')),
                   SizedBox(height: Insets.s16),
                   _section('ملخص الدفع', const TripPaymentCard()),
                   SizedBox(height: Insets.s16),
@@ -101,8 +63,9 @@ class TowingTripDetailsScreen extends StatelessWidget {
               ),
             ),
           ),
-          if (_showRatingButton) _buildRatingButton(context),
-          if (_showAlreadyRatedText) _buildAlreadyRatedText(),
+          if (_showRatingButton)
+            TripRatingBottomBar(label: 'تقييم الرحلة', onPressed: () => Navigator.pushNamed(context, Routes.rating, arguments: args != null ? RatingArgs(orderId: args!.orderId) : null)),
+          if (_showAlreadyRatedText) const AlreadyRatedBar(),
         ],
       ),
     );
@@ -111,11 +74,7 @@ class TowingTripDetailsScreen extends StatelessWidget {
   Widget _section(String title, Widget content) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            title,
-            style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-            textAlign: TextAlign.right,
-          ),
+          Text(title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
           SizedBox(height: Insets.s8),
           content,
         ],
@@ -131,26 +90,9 @@ class TowingTripDetailsScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      size: 20.sp,
-                      color: const Color(0xFF0E0E0E),
-                    ),
-                  ),
-                  Text(
-                    'تفاصيل الرحلة',
-                    style: getBoldStyle(
-                      color: const Color(0xFF0E0E0E),
-                      fontSize: FontSize.s20,
-                    ),
-                  ),
-                  Icon(
-                    Icons.info_outline_rounded,
-                    size: 24.sp,
-                    color: const Color(0xFF0E0E0E),
-                  ),
+                  GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back_ios_new_rounded, size: 20.sp, color: const Color(0xFF0E0E0E))),
+                  Text('تفاصيل الرحلة', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
+                  Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
                 ],
               ),
             ),
@@ -158,81 +100,4 @@ class TowingTripDetailsScreen extends StatelessWidget {
           ],
         ),
       );
-
-  Widget _buildRatingButton(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFFCCCCCC).withValues(alpha: 0.15),
-              blurRadius: 8,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s16),
-        child: SizedBox(
-          height: 48.h,
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () => Navigator.pushNamed(context, Routes.rating,
-                arguments: args != null ? RatingArgs(orderId: args!.orderId) : null),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: AppColors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.s16),
-              ),
-              elevation: 0,
-            ),
-            child: Text(
-              'تقييم الرحلة',
-              style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16),
-            ),
-          ),
-        ),
-      );
-
-  Widget _buildAlreadyRatedText() => Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFFCCCCCC).withValues(alpha: 0.15),
-              blurRadius: 8,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s16),
-        child: Center(
-          child: Text(
-            'تم التقييم',
-            style: getMediumStyle(color: AppColors.neutral800, fontSize: FontSize.s14),
-          ),
-        ),
-      );
-}
-
-class _DetailChip extends StatelessWidget {
-  final String label;
-  const _DetailChip({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: Insets.s12, vertical: 6.h),
-      decoration: BoxDecoration(
-        color: AppColors.neutral400,
-        borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
-      ),
-      child: Text(
-        label,
-        style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12),
-      ),
-    );
-  }
 }

@@ -5,45 +5,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
-
-class BannerData {
-  final List<Color> gradientColors;
-  final String headline;
-  final String headlineAccent;
-  final String badge;
-  final String tag;
-  const BannerData({
-    required this.gradientColors,
-    required this.headline,
-    required this.headlineAccent,
-    required this.badge,
-    required this.tag,
-  });
-}
-
-const _slides = [
-  BannerData(
-    gradientColors: [Color(0xFFFFB800), Color(0xFFE1A200), Color(0xFF996E00)],
-    headline: 'جميع خدمات الطوارئ في ',
-    headlineAccent: 'اشتراك واحد',
-    badge: 'قسائم مجانية + خصومات حصرية',
-    tag: 'عرض حصري',
-  ),
-  BannerData(
-    gradientColors: [Color(0xFF1A6B54), Color(0xFF004B3B), Color(0xFF003329)],
-    headline: 'خدمة الونش على مدار ',
-    headlineAccent: '24 ساعة',
-    badge: 'استجابة سريعة في أي وقت',
-    tag: 'متاح الآن',
-  ),
-  BannerData(
-    gradientColors: [Color(0xFF2979FF), Color(0xFF1565C0), Color(0xFF0D47A1)],
-    headline: 'احصل على خصم ',
-    headlineAccent: '20%',
-    badge: 'استخدم الكود: GO20',
-    tag: 'لفترة محدودة',
-  ),
-];
+import 'banner_data.dart';
 
 class PromoBannerCard extends StatelessWidget {
   final int index;
@@ -51,7 +13,7 @@ class PromoBannerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final slide = _slides[index % _slides.length];
+    final slide = bannerSlides[index % bannerSlides.length];
     final accentColor = index == 0 ? AppColors.white : const Color(0xFFFFD54F);
 
     return Container(
@@ -66,20 +28,8 @@ class PromoBannerCard extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Positioned(
-            right: -20.w, top: -16.h,
-            child: Container(
-              width: 130.w, height: 130.w,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withValues(alpha: 0.08)),
-            ),
-          ),
-          Positioned(
-            right: 10.w, top: 20.h,
-            child: Container(
-              width: 80.w, height: 80.w,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withValues(alpha: 0.06)),
-            ),
-          ),
+          Positioned(right: -20.w, top: -16.h, child: Container(width: 130.w, height: 130.w, decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withValues(alpha: 0.08)))),
+          Positioned(right: 10.w, top: 20.h, child: Container(width: 80.w, height: 80.w, decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withValues(alpha: 0.06)))),
           Positioned(
             right: -10.w, top: -5.h, bottom: -5.h, width: 140.w,
             child: Transform.scale(scaleX: -1, child: Image.asset(ImageAssets.promoTruck, fit: BoxFit.contain)),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/cubits/location_cubit.dart';
-import 'package:project_gofull/core/cubits/location_state.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
@@ -10,9 +9,9 @@ import 'package:project_gofull/core/widgets/safety_notice_card.dart';
 import 'package:project_gofull/core/widgets/service_bottom_button.dart';
 import 'package:project_gofull/core/widgets/service_header.dart';
 import 'package:project_gofull/core/widgets/service_input_field.dart';
-import 'package:project_gofull/core/widgets/service_location_card.dart';
 import '../widgets/service_section_header.dart';
 import '../widgets/towing_car_details_form.dart';
+import '../widgets/towing_route_section.dart';
 
 class TowingScreen extends StatefulWidget {
   const TowingScreen({super.key});
@@ -42,9 +41,7 @@ class _TowingScreenState extends State<TowingScreen> {
         _destinationLat = selected.lat;
         _destinationLng = selected.lng;
       });
-      if (prev.lat != null) {
-        cubit.setLocation(prev.address, prev.lat!, prev.lng!);
-      }
+      if (prev.lat != null) cubit.setLocation(prev.address, prev.lat!, prev.lng!);
     }
   }
 
@@ -58,6 +55,25 @@ class _TowingScreenState extends State<TowingScreen> {
   void dispose() {
     _plateCtrl.dispose();
     super.dispose();
+  }
+
+  void _onSubmit() {
+    final loc = context.read<LocationCubit>().state;
+    final tripArgs = TripInProgressArgs(
+      originAddress: loc.address, destinationAddress: _destinationAddress,
+      originLat: loc.lat, originLng: loc.lng,
+      destinationLat: _destinationLat, destinationLng: _destinationLng,
+    );
+    Navigator.pushNamed(context, Routes.searchingDriver, arguments: SearchingArgs(
+      searchingText: 'جاري البحث عن أقرب سائق ونش',
+      subtitleText: 'نقوم الآن بمطابقة طلبك مع أقرب سيارة ونش متاحة في منطقتك.',
+      nextRoute: Routes.driverFound,
+      nextRouteArgs: DriverFoundArgs(
+        title: 'تم العثور على ونش!', vehicleLabel: 'نوع الونش', vehicleValue: 'ونش هيدروليك',
+        imagePath: 'assets/images/magnifying_glass.gif', nextRoute: Routes.towingStarted,
+        nextRouteArgs: TowingStartedArgs(nextRouteArgs: tripArgs),
+      ),
+    ));
   }
 
   @override
@@ -79,25 +95,7 @@ class _TowingScreenState extends State<TowingScreen> {
                     children: [
                       const Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: SafetyNoticeCard()),
                       const ServiceSectionHeader(title: 'مسار الرحلة', gap: 16),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: BlocBuilder<LocationCubit, LocationState>(
-                          builder: (context, loc) => ServiceLocationCard(
-                            topLabel: 'نقطة الانطلاق',
-                            bottomLabel: loc.address,
-                            onTap: () => Navigator.pushNamed(context, Routes.locationPicker),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: ServiceLocationCard(
-                          topLabel: 'وجهة التوصيل',
-                          bottomLabel: _destinationAddress,
-                          onTap: _onDestinationTap,
-                        ),
-                      ),
+                      TowingRouteSection(destinationAddress: _destinationAddress, onDestinationTap: _onDestinationTap),
                       const ServiceSectionHeader(title: 'تفاصيل السيارة', gap: 16),
                       TowingCarDetailsForm(selectedCarType: _selectedCarType, carTypes: _carTypes, plateCtrl: _plateCtrl, onCarTypeChanged: (v) => setState(() => _selectedCarType = v)),
                       const ServiceSectionHeader(title: 'ملاحظات إضافية', gap: 8),
@@ -110,30 +108,7 @@ class _TowingScreenState extends State<TowingScreen> {
                 ),
               ),
             ),
-            ServiceBottomButton(onPressed: _isValid ? () {
-              final loc = context.read<LocationCubit>().state;
-              final tripArgs = TripInProgressArgs(
-                originAddress: loc.address,
-                destinationAddress: _destinationAddress,
-                originLat: loc.lat,
-                originLng: loc.lng,
-                destinationLat: _destinationLat,
-                destinationLng: _destinationLng,
-              );
-              Navigator.pushNamed(context, Routes.searchingDriver, arguments: SearchingArgs(
-                searchingText: 'جاري البحث عن أقرب سائق ونش',
-                subtitleText: 'نقوم الآن بمطابقة طلبك مع أقرب سيارة ونش متاحة في منطقتك.',
-                nextRoute: Routes.driverFound,
-                nextRouteArgs: DriverFoundArgs(
-                  title: 'تم العثور على ونش!',
-                  vehicleLabel: 'نوع الونش',
-                  vehicleValue: 'ونش هيدروليك',
-                  imagePath: 'assets/images/magnifying_glass.gif',
-                  nextRoute: Routes.towingStarted,
-                  nextRouteArgs: TowingStartedArgs(nextRouteArgs: tripArgs),
-                ),
-              ));
-            } : null),
+            ServiceBottomButton(onPressed: _isValid ? _onSubmit : null),
           ],
         ),
       ),

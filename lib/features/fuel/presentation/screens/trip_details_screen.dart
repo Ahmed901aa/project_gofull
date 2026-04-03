@@ -11,20 +11,17 @@ import 'package:project_gofull/features/fuel/presentation/widgets/trip_fuel_chip
 import 'package:project_gofull/features/fuel/presentation/widgets/trip_location_card.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/trip_payment_card.dart';
 import 'package:project_gofull/features/orders/models/order_data.dart';
+import 'package:project_gofull/features/towing/presentation/widgets/trip_rating_bottom_bar.dart';
 
 class TripDetailsScreen extends StatelessWidget {
   final TripDetailsArgs? args;
   const TripDetailsScreen({super.key, this.args});
 
-  bool get _showRatingButton {
-    if (args == null) return false;
-    return args!.status == OrderStatus.completed && !args!.isRated;
-  }
+  bool get _showRatingButton =>
+      args != null && args!.status == OrderStatus.completed && !args!.isRated;
 
-  bool get _showAlreadyRatedText {
-    if (args == null) return false;
-    return args!.status == OrderStatus.completed && args!.isRated;
-  }
+  bool get _showAlreadyRatedText =>
+      args != null && args!.status == OrderStatus.completed && args!.isRated;
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +49,13 @@ class TripDetailsScreen extends StatelessWidget {
             ),
           ),
         ),
-        if (_showRatingButton) _buildRatingButton(context),
-        if (_showAlreadyRatedText) _buildAlreadyRatedText(),
+        if (_showRatingButton)
+          TripRatingBottomBar(
+            label: 'تقييم الرحلة',
+            onPressed: () => Navigator.pushNamed(context, Routes.rating,
+                arguments: args != null ? RatingArgs(orderId: args!.orderId) : null),
+          ),
+        if (_showAlreadyRatedText) const AlreadyRatedBar(),
       ]),
     );
   }
@@ -61,9 +63,7 @@ class TripDetailsScreen extends StatelessWidget {
   Widget _section(String title, Widget content) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(title,
-              style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-              textAlign: TextAlign.right),
+          Text(title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
           SizedBox(height: Insets.s8),
           content,
         ],
@@ -78,68 +78,13 @@ class TripDetailsScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Icon(Icons.arrow_back_ios_new_rounded, size: 20.sp, color: const Color(0xFF0E0E0E)),
-                ),
-                Text('تفاصيل الرحلة',
-                    style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
+                GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back_ios_new_rounded, size: 20.sp, color: const Color(0xFF0E0E0E))),
+                Text('تفاصيل الرحلة', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
                 Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
               ],
             ),
           ),
           const Divider(height: 1, color: Color(0xFFF5F5F5)),
         ]),
-      );
-
-  Widget _buildRatingButton(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFFCCCCCC).withValues(alpha: 0.15),
-              blurRadius: 8,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s16),
-        child: SizedBox(
-          height: 48.h,
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () => Navigator.pushNamed(context, Routes.rating,
-                arguments: args != null ? RatingArgs(orderId: args!.orderId) : null),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: AppColors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
-              elevation: 0,
-            ),
-            child: Text('تقييم الرحلة', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
-          ),
-        ),
-      );
-
-  Widget _buildAlreadyRatedText() => Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFFCCCCCC).withValues(alpha: 0.15),
-              blurRadius: 8,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s16),
-        child: Center(
-          child: Text(
-            'تم التقييم',
-            style: getMediumStyle(color: AppColors.neutral800, fontSize: FontSize.s14),
-          ),
-        ),
       );
 }
