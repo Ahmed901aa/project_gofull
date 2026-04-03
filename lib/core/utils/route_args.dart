@@ -117,3 +117,110 @@ class ServiceArrivedArgs {
     this.vehicleValue = 'سيارة إمداد وقود',
   });
 }
+
+// ── Driver App Route Args ────────────────────────────────
+
+class DriverOrderDetailsArgs {
+  final String orderId;
+  final String serviceType; // 'towing' or 'fuel'
+  final String customerName;
+  final String customerPhone;
+  final String pickupAddress;
+  final String deliveryAddress;
+  final String carType;
+  final String plateNumber;
+  final double distance;
+  final double amount;
+  final String paymentMethod;
+  final String? customerNotes;
+  final List<String> carPhotos;
+  // Fuel-specific
+  final String? fuelType;
+  final String? fuelQuantity;
+  final String? pricePerLiter;
+
+  const DriverOrderDetailsArgs({
+    required this.orderId,
+    required this.serviceType,
+    required this.customerName,
+    required this.customerPhone,
+    required this.pickupAddress,
+    required this.deliveryAddress,
+    required this.carType,
+    required this.plateNumber,
+    required this.distance,
+    required this.amount,
+    this.paymentMethod = 'كاش',
+    this.customerNotes,
+    this.carPhotos = const [],
+    this.fuelType,
+    this.fuelQuantity,
+    this.pricePerLiter,
+  });
+}
+
+class DriverNavigateArgs {
+  final String orderId;
+  final String address;
+  final double? lat;
+  final double? lng;
+  final String navigationType; // 'to_customer' or 'to_destination'
+
+  const DriverNavigateArgs({
+    required this.orderId,
+    required this.address,
+    this.lat,
+    this.lng,
+    required this.navigationType,
+  });
+}
+
+class DriverDocumentationArgs {
+  final String orderId;
+  final String documentationType; // 'pickup' or 'delivery'
+
+  const DriverDocumentationArgs({
+    required this.orderId,
+    required this.documentationType,
+  });
+}
+
+class DriverCollectPaymentArgs {
+  final String orderId;
+  final double amount;
+  final String paymentMethod;
+
+  const DriverCollectPaymentArgs({
+    required this.orderId,
+    required this.amount,
+    this.paymentMethod = 'كاش',
+  });
+}
+
+class DriverTaskCompleteArgs {
+  final String orderId;
+  final double earnings;
+
+  const DriverTaskCompleteArgs({
+    required this.orderId,
+    required this.earnings,
+  });
+}
+
+class DriverRateArgs {
+  final String orderId;
+
+  const DriverRateArgs({
+    required this.orderId,
+  });
+}
+
+class DriverTripDetailsArgs {
+  final String orderId;
+  final String serviceType; // 'towing' or 'fuel'
+
+  const DriverTripDetailsArgs({
+    required this.orderId,
+    required this.serviceType,
+  });
+}

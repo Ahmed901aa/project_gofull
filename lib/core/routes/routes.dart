@@ -29,4 +29,19 @@ class Routes {
   static const String terms = '/terms';
   static const String editProfile = '/edit-profile';
   static const String support = '/support';
+
+  // ── Driver App Routes ──────────────────────────────────
+  static const String driverHome = '/driver-home';
+  static const String driverProfile = '/driver-profile';
+  static const String driverReports = '/driver-reports';
+  static const String driverOrders = '/driver-orders';
+  static const String driverSupport = '/driver-support';
+  static const String driverOrderDetails = '/driver-order-details';
+  static const String driverNavigate = '/driver-navigate';
+  static const String driverDocumentation = '/driver-documentation';
+  static const String driverCollectPayment = '/driver-collect-payment';
+  static const String driverTaskComplete = '/driver-task-complete';
+  static const String driverRateCustomer = '/driver-rate-customer';
+  static const String driverTripDetails = '/driver-trip-details';
+  static const String driverPrivacyPolicy = '/driver-privacy-policy';
 }
