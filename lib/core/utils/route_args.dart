@@ -218,9 +218,11 @@ class DriverRateArgs {
 class DriverTripDetailsArgs {
   final String orderId;
   final String serviceType; // 'towing' or 'fuel'
+  final bool isRated;
 
   const DriverTripDetailsArgs({
     required this.orderId,
     required this.serviceType,
+    this.isRated = false,
   });
 }
