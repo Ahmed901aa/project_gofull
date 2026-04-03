@@ -41,12 +41,6 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
-                    icon: Icons.local_offer_outlined,
-                    label: 'أكواد الخصم',
-                    onTap: () => Navigator.pushNamed(context, Routes.discountCodes),
-                  ),
-                  SizedBox(height: Sizes.s12),
-                  ProfileMenuItem(
                     icon: Icons.language_rounded,
                     label: 'اللغة',
                     trailing: 'English',
