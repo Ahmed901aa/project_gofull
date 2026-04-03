@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SupportScreen extends StatelessWidget {
@@ -28,39 +29,34 @@ class SupportScreen extends StatelessWidget {
           children: [
             _buildHeader(context),
             Expanded(
-              child: Center(
+              child: SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: Insets.s16),
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Insets.s24,
-                      vertical: Insets.s32,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      borderRadius: BorderRadius.circular(AppRadius.s24),
-                      border: Border.all(color: const Color(0xFFEFF0F1)),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 64.w,
-                          height: 64.w,
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.08),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.headset_mic_outlined,
-                            size: 32.sp,
-                            color: AppColors.primary,
-                          ),
+                  child: Column(
+                    children: [
+                      SizedBox(height: Insets.s24),
+                      SvgPicture.asset(
+                        'assets/svg/help_user.svg',
+                        width: 180.w,
+                        height: 180.w,
+                      ),
+                      SizedBox(height: Insets.s24),
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Insets.s24,
+                          vertical: Insets.s32,
                         ),
-                        SizedBox(height: Insets.s16),
-                        Text(
-                          'تواصل معنا',
+                        decoration: BoxDecoration(
+                          color: AppColors.white,
+                          borderRadius: BorderRadius.circular(AppRadius.s24),
+                          border: Border.all(color: const Color(0xFFEFF0F1)),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'تواصل معنا',
                           style: getBoldStyle(
                             color: const Color(0xFF0E0E0E),
                             fontSize: FontSize.s20,
@@ -75,36 +71,39 @@ class SupportScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: Insets.s24),
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: Insets.s16,
-                            vertical: Insets.s12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF8F8F9),
-                            borderRadius: BorderRadius.circular(AppRadius.s16),
-                            border: Border.all(color: const Color(0xFFEFF0F1)),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.phone_outlined,
-                                size: 20.sp,
-                                color: AppColors.primary,
-                              ),
-                              SizedBox(width: Insets.s12),
-                              Expanded(
-                                child: Text(
-                                  _phoneNumber,
-                                  style: getMediumStyle(
-                                    color: const Color(0xFF0E0E0E),
-                                    fontSize: FontSize.s16,
-                                  ),
-                                  textDirection: TextDirection.ltr,
+                        GestureDetector(
+                          onTap: _makeCall,
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: Insets.s16,
+                              vertical: Insets.s12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8F8F9),
+                              borderRadius: BorderRadius.circular(AppRadius.s16),
+                              border: Border.all(color: const Color(0xFFEFF0F1)),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.phone_outlined,
+                                  size: 20.sp,
+                                  color: AppColors.primary,
                                 ),
-                              ),
-                            ],
+                                SizedBox(width: Insets.s12),
+                                Expanded(
+                                  child: Text(
+                                    _phoneNumber,
+                                    style: getMediumStyle(
+                                      color: const Color(0xFF0E0E0E),
+                                      fontSize: FontSize.s16,
+                                    ),
+                                    textDirection: TextDirection.ltr,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         SizedBox(height: Insets.s16),
@@ -131,8 +130,11 @@ class SupportScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: Insets.s24),
+                    ],
                   ),
                 ),
               ),

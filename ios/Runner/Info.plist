@@ -55,5 +55,9 @@
 	<string>نحتاج إلى موقعك لتحديد مكان التوصيل</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>نحتاج إلى موقعك لتتبع طلبك</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tel</string>
+	</array>
 </dict>
 </plist>
