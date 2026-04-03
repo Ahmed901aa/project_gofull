@@ -7,9 +7,13 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
-import '../widgets/driver_details_card.dart';
 import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
-import '../widgets/info_pill.dart';
+import '../widgets/driver_details_card.dart';
+import '../widgets/trip_mock_trigger_button.dart';
+import '../widgets/trip_photo_placeholder.dart';
+import '../widgets/trip_route_card.dart';
+import '../widgets/trip_payment_section.dart';
+import '../widgets/trip_safety_section.dart';
 
 // replace with API data later
 const _mockDriver = {
@@ -20,7 +24,6 @@ const _mockDriver = {
   'vehicleType': 'ونش هيدروليك',
 };
 
-// fallback mock data
 const _mockRoute = {
   'origin': 'المنصورة، مدينة مبارك، شارع مكة..., 30, 11',
   'destination': 'المنصورة، مدينة مبارك، شارع مكة..., 30, 11',
@@ -53,8 +56,7 @@ class TripInProgressScreen extends StatelessWidget {
       backgroundColor: AppColors.scaffoldBg,
       body: Column(children: [
         _buildHeader(context),
-        // TODO: Remove — mock only; production: backend triggers when driver arrives at destination
-        _MockTriggerButton(
+        MockTriggerButton(
           label: 'محاكاة: وصل السائق للوجهة',
           onTap: () => Navigator.pushReplacementNamed(context, Routes.driverArrived, arguments: args),
         ),
@@ -66,13 +68,8 @@ class TripInProgressScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(height: Insets.s16),
-
-                const Center(child: DottedCircleContainer(
-                  imagePath: 'assets/images/crane (1).gif',
-                )),
+                const Center(child: DottedCircleContainer(imagePath: 'assets/images/crane (1).gif')),
                 SizedBox(height: Insets.s16),
-
-                // ── Status texts ─────────────────────────────────────
                 Text(
                   'سيارتك في طريقها إلى وجهة التوصيل.',
                   style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
@@ -85,25 +82,19 @@ class TripInProgressScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: Insets.s24),
-
-                // ── Safety instructions ──────────────────────────────
-                _buildSafetySection(),
+                const TripSafetySection(),
                 SizedBox(height: Insets.s16),
-
-                // ── Trip route ───────────────────────────────────────
                 _buildTripRoute(),
                 SizedBox(height: Insets.s16),
-
-                // ── Car photos ───────────────────────────────────────
                 _buildCarPhotos(),
                 SizedBox(height: Insets.s16),
-
-                // ── Driver details ───────────────────────────────────
                 _buildDriverDetails(),
                 SizedBox(height: Insets.s16),
-
-                // ── Payment summary ──────────────────────────────────
-                _buildPaymentSection(),
+                TripPaymentSection(
+                  subtotal: _mockPayment['subtotal']!,
+                  serviceFee: _mockPayment['serviceFee']!,
+                  total: _mockPayment['total']!,
+                ),
                 SizedBox(height: Insets.s16),
               ],
             ),
@@ -112,8 +103,6 @@ class TripInProgressScreen extends StatelessWidget {
       ]),
     );
   }
-
-  // ── Header ─────────────────────────────────────────────────────────────────
 
   Widget _buildHeader(BuildContext context) => Container(
         color: AppColors.white,
@@ -125,10 +114,7 @@ class TripInProgressScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(width: 24.sp),
-                Text(
-                  'الرحلة قيد التنفيذ',
-                  style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
-                ),
+                Text('الرحلة قيد التنفيذ', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
                 Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
               ],
             ),
@@ -137,103 +123,43 @@ class TripInProgressScreen extends StatelessWidget {
         ]),
       );
 
-  // ── Safety section ──────────────────────────────────────────────────────────
-
-  Widget _buildSafetySection() => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'إرشادات الأمان',
-            style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-            textAlign: TextAlign.right,
-          ),
-          SizedBox(height: Insets.s8),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
-            decoration: BoxDecoration(
-              color: AppColors.primary50,
-              borderRadius: BorderRadius.circular(AppRadius.s16),
-              border: Border.all(color: AppColors.primary),
-            ),
-            child: Text(
-              'يرجى التأكد من وجودك في وجهة التوصيل أو وجود شخص لاستلام السيارة عند وصول السائق.',
-              style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s14),
-              textAlign: TextAlign.right,
-            ),
-          ),
-        ],
-      );
-
-  // ── Trip route ──────────────────────────────────────────────────────────────
-
   Widget _buildTripRoute() {
-    final origin = args?.originAddress ?? _mockRoute['origin']!; // fallback mock data
-    final destination = args?.destinationAddress ?? _mockRoute['destination']!; // fallback mock data
-
+    final origin = args?.originAddress ?? _mockRoute['origin']!;
+    final destination = args?.destinationAddress ?? _mockRoute['destination']!;
     String distance;
     if (args?.originLat != null && args?.originLng != null &&
         args?.destinationLat != null && args?.destinationLng != null) {
       distance = _calcDistance(args!.originLat!, args!.originLng!, args!.destinationLat!, args!.destinationLng!);
     } else {
-      distance = _mockRoute['distance']!; // fallback mock data
+      distance = _mockRoute['distance']!;
     }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          'مسار الرحلة',
-          style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-          textAlign: TextAlign.right,
-        ),
+        Text('مسار الرحلة', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
         SizedBox(height: Insets.s8),
-        _RouteCard(
-          title: 'نقطة الانطلاق',
-          address: origin,
-        ),
+        TripRouteCard(title: 'نقطة الانطلاق', address: origin),
         SizedBox(height: Insets.s8),
-        _RouteCard(
-          title: 'وجهة التوصيل',
-          address: destination,
-          distanceLabel: 'المسافة المتبقية:',
-          distanceValue: distance,
-        ),
+        TripRouteCard(title: 'وجهة التوصيل', address: destination, distanceLabel: 'المسافة المتبقية:', distanceValue: distance),
       ],
     );
   }
 
-  // ── Car photos ──────────────────────────────────────────────────────────────
-
   Widget _buildCarPhotos() => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            'صور السيارة',
-            style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-            textAlign: TextAlign.right,
-          ),
+          Text('صور السيارة', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
           SizedBox(height: Insets.s8),
-          Row(
-            children: List.generate(3, (i) => Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(right: i < 2 ? Insets.s8 : 0),
-                child: _PhotoPlaceholder(),
-              ),
-            )),
-          ),
+          Row(children: List.generate(3, (i) => Expanded(
+            child: Padding(padding: EdgeInsets.only(right: i < 2 ? Insets.s8 : 0), child: const TripPhotoPlaceholder()),
+          ))),
         ],
       );
-
-  // ── Driver details ──────────────────────────────────────────────────────────
 
   Widget _buildDriverDetails() => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            'تفاصيل السائق',
-            style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-            textAlign: TextAlign.right,
-          ),
+          Text('تفاصيل السائق', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
           SizedBox(height: Insets.s8),
           DriverDetailsCard(
             name: _mockDriver['name']!,
@@ -246,189 +172,4 @@ class TripInProgressScreen extends StatelessWidget {
           ),
         ],
       );
-
-  // ── Payment section ─────────────────────────────────────────────────────────
-
-  Widget _buildPaymentSection() => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'ملخص الدفع',
-            style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-            textAlign: TextAlign.right,
-          ),
-          SizedBox(height: Insets.s8),
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.neutral400,
-              borderRadius: BorderRadius.circular(AppRadius.s16),
-              border: Border.all(color: AppColors.neutral500),
-            ),
-            child: Column(children: [
-              SizedBox(height: Insets.s8),
-              _payRow('المجموع', _mockPayment['subtotal']!),
-              _serviceFeeRow(),
-              const Divider(height: 1, color: AppColors.neutral500),
-              SizedBox(height: Insets.s8),
-              _totalRow(),
-              SizedBox(height: Insets.s8),
-            ]),
-          ),
-        ],
-      );
-
-  Widget _payRow(String label, String amount) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
-        child: Row(children: [
-          Text(label, style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
-          const Spacer(),
-          Text(amount, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
-        ]),
-      );
-
-  Widget _serviceFeeRow() => Padding(
-        padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
-        child: Row(children: [
-          Row(children: [
-            Text('رسوم الخدمة', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
-            const SizedBox(width: 4),
-            Icon(Icons.info_outline_rounded, size: 16, color: AppColors.primary),
-          ]),
-          const Spacer(),
-          Text(_mockPayment['serviceFee']!, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
-        ]),
-      );
-
-  Widget _totalRow() => Padding(
-        padding: EdgeInsets.symmetric(horizontal: Insets.s16),
-        child: Row(children: [
-          Row(children: [
-            Text('الإجمالي', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s18)),
-            SizedBox(width: Insets.s8),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
-              decoration: BoxDecoration(
-                color: AppColors.primary50,
-                borderRadius: BorderRadius.circular(AppRadius.s16),
-              ),
-              child: Text('كاش', style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12)),
-            ),
-          ]),
-          const Spacer(),
-          Text(_mockPayment['total']!, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
-        ]),
-      );
-}
-
-// ── Route card ──────────────────────────────────────────────────────────────
-
-class _RouteCard extends StatelessWidget {
-  final String title;
-  final String address;
-  final String? distanceLabel;
-  final String? distanceValue;
-
-  const _RouteCard({
-    required this.title,
-    required this.address,
-    this.distanceLabel,
-    this.distanceValue,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
-      decoration: BoxDecoration(
-        color: AppColors.neutral400,
-        borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
-      ),
-      child: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Row(
-          children: [
-            Container(
-              width: 56.w,
-              height: 56.w,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.neutral600,
-              ),
-              child: Icon(Icons.location_on_outlined, size: 32.sp, color: const Color(0xFF0E0E0E)),
-            ),
-            SizedBox(width: Insets.s12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
-                  SizedBox(height: 2.h),
-                  Text(address, style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14)),
-                  if (distanceLabel != null && distanceValue != null) ...[
-                    SizedBox(height: 2.h),
-                    RichText(
-                      textDirection: TextDirection.rtl,
-                      text: TextSpan(children: [
-                        TextSpan(
-                          text: '$distanceLabel ',
-                          style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
-                        ),
-                        TextSpan(
-                          text: distanceValue,
-                          style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
-                        ),
-                      ]),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Mock trigger button (REMOVE IN PRODUCTION) ───────────────────────────────
-
-class _MockTriggerButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-  const _MockTriggerButton({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: 6.h),
-      child: OutlinedButton(
-        onPressed: onTap,
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.warning,
-          side: const BorderSide(color: AppColors.warning),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
-          minimumSize: Size(double.infinity, 44.h),
-        ),
-        child: Text(label, style: getBoldStyle(color: AppColors.warning, fontSize: FontSize.s14)),
-      ),
-    );
-  }
-}
-
-// ── Photo placeholder ───────────────────────────────────────────────────────
-
-class _PhotoPlaceholder extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 88.h,
-      decoration: BoxDecoration(
-        color: AppColors.neutral200,
-        borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
-      ),
-      child: Icon(Icons.image_outlined, size: 28.sp, color: AppColors.neutral600),
-    );
-  }
 }
