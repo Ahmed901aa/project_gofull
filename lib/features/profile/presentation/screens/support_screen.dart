@@ -34,103 +34,88 @@ class SupportScreen extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: Insets.s16),
                   child: Column(
                     children: [
-                      SizedBox(height: Insets.s24),
+                      SizedBox(height: 32.h),
                       SvgPicture.asset(
                         'assets/svg/help_user.svg',
-                        width: 180.w,
-                        height: 180.w,
+                        width: 200.w,
+                        height: 200.w,
                       ),
-                      SizedBox(height: Insets.s24),
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Insets.s24,
-                          vertical: Insets.s32,
+                      SizedBox(height: 24.h),
+                      Text(
+                        'كيف يمكننا مساعدتك؟',
+                        style: getBoldStyle(
+                          color: const Color(0xFF0E0E0E),
+                          fontSize: FontSize.s20,
                         ),
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(AppRadius.s24),
-                          border: Border.all(color: const Color(0xFFEFF0F1)),
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        'فريق الدعم الفني متاح لمساعدتك على مدار الساعة',
+                        style: getRegularStyle(
+                          color: const Color(0xFF646565),
+                          fontSize: FontSize.s14,
                         ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'تواصل معنا',
-                          style: getBoldStyle(
-                            color: const Color(0xFF0E0E0E),
-                            fontSize: FontSize.s20,
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 32.h),
+                      GestureDetector(
+                        onTap: _makeCall,
+                        child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(Insets.s16),
+                          decoration: BoxDecoration(
+                            color: AppColors.white,
+                            borderRadius: BorderRadius.circular(AppRadius.s16),
+                            border: Border.all(color: const Color(0xFFEFF0F1)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
-                        ),
-                        SizedBox(height: Insets.s8),
-                        Text(
-                          'للمساعدة والدعم الفني',
-                          style: getRegularStyle(
-                            color: const Color(0xFF838485),
-                            fontSize: FontSize.s14,
-                          ),
-                        ),
-                        SizedBox(height: Insets.s24),
-                        GestureDetector(
-                          onTap: _makeCall,
-                          child: Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: Insets.s16,
-                              vertical: Insets.s12,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF8F8F9),
-                              borderRadius: BorderRadius.circular(AppRadius.s16),
-                              border: Border.all(color: const Color(0xFFEFF0F1)),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.phone_outlined,
-                                  size: 20.sp,
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 48.w,
+                                height: 48.w,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withOpacity(0.1),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.phone_rounded,
+                                  size: 22.sp,
                                   color: AppColors.primary,
                                 ),
-                                SizedBox(width: Insets.s12),
-                                Expanded(
-                                  child: Text(
-                                    _phoneNumber,
-                                    style: getMediumStyle(
-                                      color: const Color(0xFF0E0E0E),
-                                      fontSize: FontSize.s16,
+                              ),
+                              SizedBox(width: 14.w),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'اتصال مباشر',
+                                      style: getBoldStyle(
+                                        color: const Color(0xFF0E0E0E),
+                                        fontSize: FontSize.s16,
+                                      ),
                                     ),
-                                    textDirection: TextDirection.ltr,
-                                  ),
+                                    SizedBox(height: 4.h),
+                                    Text(
+                                      'رقم الجوال: $_phoneNumber',
+                                      style: getRegularStyle(
+                                        color: const Color(0xFF646565),
+                                        fontSize: FontSize.s14,
+                                      ),
+                                      textDirection: TextDirection.rtl,
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: Insets.s16),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 48.h,
-                          child: ElevatedButton.icon(
-                            onPressed: _makeCall,
-                            icon: Icon(Icons.call_rounded, size: 20.sp),
-                            label: Text(
-                              'اتصل بنا',
-                              style: getBoldStyle(
-                                color: AppColors.white,
-                                fontSize: FontSize.s16,
                               ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: AppColors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(AppRadius.s16),
-                              ),
-                              elevation: 0,
-                            ),
+                            ],
                           ),
-                        ),
-                          ],
                         ),
                       ),
                       SizedBox(height: Insets.s24),
@@ -166,7 +151,7 @@ class SupportScreen extends StatelessWidget {
                     child: SizedBox.shrink(),
                   ),
                   Text(
-                    'الدعم والمساعدة',
+                    'الدعم الفني',
                     style: getBoldStyle(
                       color: const Color(0xFF0E0E0E),
                       fontSize: FontSize.s20,
