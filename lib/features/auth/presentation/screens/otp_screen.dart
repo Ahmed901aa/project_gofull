@@ -25,7 +25,7 @@ class OtpScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is AuthAuthenticated) {
             Navigator.of(context).pushNamedAndRemoveUntil(
-              Routes.home,
+              Routes.driverHome,
               (route) => false,
             );
           }
