@@ -1,0 +1,61 @@
+import 'package:flutter/material.dart';
+import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/core/resources/font_manager.dart';
+import 'package:project_gofull/core/resources/styles_manager.dart';
+import 'package:project_gofull/core/resources/values_manager.dart';
+import 'bullet_item.dart';
+
+class FuelCompleteSafetySection extends StatefulWidget {
+  final List<String> items;
+  const FuelCompleteSafetySection({super.key, required this.items});
+
+  @override
+  State<FuelCompleteSafetySection> createState() => _FuelCompleteSafetySectionState();
+}
+
+class _FuelCompleteSafetySectionState extends State<FuelCompleteSafetySection> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text('إرشادات الأمان', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
+        SizedBox(height: Insets.s8),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
+          decoration: BoxDecoration(
+            color: AppColors.primary50,
+            borderRadius: BorderRadius.circular(AppRadius.s16),
+            border: Border.all(color: AppColors.primary),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AnimatedSize(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                child: _expanded
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: widget.items.map((t) => BulletItem(text: t, last: t == widget.items.last)).toList(),
+                      )
+                    : BulletItem(text: widget.items.first, last: true),
+              ),
+              SizedBox(height: Insets.s8),
+              GestureDetector(
+                onTap: () => setState(() => _expanded = !_expanded),
+                child: Text(
+                  _expanded ? 'أخفاء العرض' : 'عرض الكل',
+                  style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s14),
+                  textAlign: TextAlign.right,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
