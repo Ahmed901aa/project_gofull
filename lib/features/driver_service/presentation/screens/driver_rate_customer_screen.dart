@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -20,7 +19,7 @@ class DriverRateCustomerScreen extends StatefulWidget {
 }
 
 class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
-  int _selectedRating = 5;
+  int _selectedRating = 0;
   final TextEditingController _notesController = TextEditingController();
   static const int _maxChars = 80;
 
@@ -36,7 +35,7 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
       backgroundColor: AppColors.scaffoldBg,
       body: Column(
         children: [
-          const ServiceHeader(title: AppStrings.rateTrip),
+          const ServiceHeader(title: 'تقييم الرحلة'),
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -76,13 +75,13 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
           ),
           SizedBox(height: Insets.s12),
           Text(
-            AppStrings.howWasCustomer,
+            'كيف كان التعامل مع العميل؟',
             style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s18),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: Insets.s8),
           Text(
-            AppStrings.ratingHelps,
+            'تقييمك يساعدنا في تصنيف العملاء وتحسين تجربتك',
             style: getRegularStyle(
               color: AppColors.white.withValues(alpha: 0.8),
               fontSize: FontSize.s14,
@@ -138,7 +137,7 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          AppStrings.additionalNotes,
+          'ملاحظات إضافية للإدارة',
           style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s16),
         ),
         SizedBox(height: Insets.s8),
@@ -163,7 +162,7 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
                 textDirection: TextDirection.rtl,
                 onChanged: (_) => setState(() {}),
                 decoration: InputDecoration(
-                  hintText: AppStrings.additionalNotesHint,
+                  hintText: 'اكتب أي تفاصيل تريد إبلاغ الإدارة بها',
                   hintStyle: getRegularStyle(
                     color: AppColors.grey,
                     fontSize: FontSize.s14,
@@ -216,7 +215,7 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
         ],
       ),
       child: AppButton(
-        text: AppStrings.submitRating,
+        text: 'إرسال التقييم',
         onPressed: () {
           Navigator.pushNamedAndRemoveUntil(
             context,
