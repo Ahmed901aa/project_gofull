@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -20,7 +19,7 @@ class DriverTaskCompleteScreen extends StatelessWidget {
       backgroundColor: AppColors.scaffoldBg,
       body: Column(
         children: [
-          const ServiceHeader(title: AppStrings.taskComplete),
+          const ServiceHeader(title: 'إتمام المهمة'),
           Expanded(
             child: Padding(
               padding: EdgeInsets.all(Insets.s16),
@@ -45,28 +44,10 @@ class DriverTaskCompleteScreen extends StatelessWidget {
   }
 
   Widget _buildSuccessIcon() {
-    return Container(
-      width: 100.w,
-      height: 100.w,
-      decoration: BoxDecoration(
-        color: AppColors.success.withValues(alpha: 0.12),
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: Container(
-          width: 70.w,
-          height: 70.w,
-          decoration: const BoxDecoration(
-            color: AppColors.success,
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            Icons.check_rounded,
-            size: 40.sp,
-            color: AppColors.white,
-          ),
-        ),
-      ),
+    return Icon(
+      Icons.check_circle,
+      size: 80.sp,
+      color: AppColors.success,
     );
   }
 
@@ -74,13 +55,13 @@ class DriverTaskCompleteScreen extends StatelessWidget {
     return Column(
       children: [
         Text(
-          AppStrings.orderCompletedSuccess,
+          'تم إكمال الطلب بنجاح!',
           style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s20),
           textAlign: TextAlign.center,
         ),
         SizedBox(height: Insets.s8),
         Text(
-          AppStrings.earningsRecorded,
+          'تم تسجيل استلام المبلغ وإضافة الأرباح إلى رصيدك',
           style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14),
           textAlign: TextAlign.center,
         ),
@@ -106,13 +87,13 @@ class DriverTaskCompleteScreen extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            AppStrings.addedEarnings,
+            'الأرباح المضافة',
             style: getMediumStyle(color: AppColors.grey, fontSize: FontSize.s14),
           ),
           SizedBox(height: Insets.s8),
           Text(
-            '${args.earnings.toStringAsFixed(0)} د.ك',
-            style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s28),
+            '${args.earnings.toStringAsFixed(0)} ج.م',
+            style: getBoldStyle(color: AppColors.success, fontSize: FontSize.s28),
           ),
         ],
       ),
@@ -133,7 +114,7 @@ class DriverTaskCompleteScreen extends StatelessWidget {
         ],
       ),
       child: AppButton(
-        text: AppStrings.rateCustomer,
+        text: 'تقييم العميل',
         onPressed: () {
           Navigator.pushNamed(
             context,

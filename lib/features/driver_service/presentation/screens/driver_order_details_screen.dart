@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -24,7 +23,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
       backgroundColor: AppColors.scaffoldBg,
       body: Column(
         children: [
-          const ServiceHeader(title: AppStrings.orderDetails),
+          const ServiceHeader(title: 'تفاصيل الطلب'),
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -32,10 +31,10 @@ class DriverOrderDetailsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildServiceBadge(),
-                  SizedBox(height: Insets.s16),
                   _buildCustomerInfoCard(context),
-                  if (_isTowing && args.carPhotos != null && args.carPhotos!.isNotEmpty) ...[
+                  SizedBox(height: Insets.s16),
+                  _buildServiceBadge(),
+                  if (_isTowing) ...[
                     SizedBox(height: Insets.s16),
                     _buildCarPhotosSection(),
                   ],
@@ -45,7 +44,8 @@ class DriverOrderDetailsScreen extends StatelessWidget {
                   ],
                   SizedBox(height: Insets.s16),
                   _buildTripRouteCard(),
-                  if (args.customerNotes != null && args.customerNotes!.isNotEmpty) ...[
+                  if (args.customerNotes != null &&
+                      args.customerNotes!.isNotEmpty) ...[
                     SizedBox(height: Insets.s16),
                     _buildCustomerNotesCard(),
                   ],
@@ -62,6 +62,82 @@ class DriverOrderDetailsScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildCustomerInfoCard(BuildContext context) {
+    return _card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'معلومات العميل',
+            style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s16),
+          ),
+          SizedBox(height: Insets.s12),
+          Row(
+            children: [
+              Container(
+                width: 48.w,
+                height: 48.w,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.person, size: 26.sp, color: AppColors.primary),
+              ),
+              SizedBox(width: Insets.s12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      args.customerName,
+                      style: getSemiBoldStyle(
+                        color: AppColors.black,
+                        fontSize: FontSize.s16,
+                      ),
+                    ),
+                    SizedBox(height: Insets.s4),
+                    GestureDetector(
+                      onTap: () => _callCustomer(),
+                      child: Row(
+                        children: [
+                          Icon(Icons.phone_outlined, size: 16.sp, color: AppColors.primary),
+                          SizedBox(width: Insets.s4),
+                          Text(
+                            args.customerPhone,
+                            style: getMediumStyle(
+                              color: AppColors.primary,
+                              fontSize: FontSize.s14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () => _callCustomer(),
+                child: Container(
+                  width: 40.w,
+                  height: 40.w,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.phone, size: 20.sp, color: AppColors.primary),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: Insets.s12),
+          _infoRow(Icons.directions_car_outlined, 'نوع السيارة', args.carType),
+          SizedBox(height: Insets.s8),
+          _infoRow(Icons.confirmation_number_outlined, 'رقم اللوحة', args.plateNumber),
+        ],
+      ),
+    );
+  }
+
   Widget _buildServiceBadge() {
     return Align(
       alignment: Alignment.centerRight,
@@ -71,60 +147,33 @@ class DriverOrderDetailsScreen extends StatelessWidget {
           color: AppColors.primary.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppRadius.s24),
         ),
-        child: Text(
-          _isTowing ? AppStrings.towService : AppStrings.fuelService,
-          style: getMediumStyle(color: AppColors.primary, fontSize: FontSize.s14),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              _isTowing ? Icons.local_shipping_outlined : Icons.local_gas_station_outlined,
+              size: 18.sp,
+              color: AppColors.primary,
+            ),
+            SizedBox(width: Insets.s4),
+            Text(
+              _isTowing ? 'خدمة ونش' : 'خدمة وقود',
+              style: getMediumStyle(color: AppColors.primary, fontSize: FontSize.s14),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildCustomerInfoCard(BuildContext context) {
-    return _card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            AppStrings.customerInfo,
-            style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s16),
-          ),
-          SizedBox(height: Insets.s12),
-          _infoRow(Icons.person_outline_rounded, 'الاسم', args.customerName),
-          SizedBox(height: Insets.s8),
-          Row(
-            children: [
-              Expanded(
-                child: _infoRow(Icons.phone_outlined, 'رقم الجوال', args.customerPhone),
-              ),
-              GestureDetector(
-                onTap: () => _callCustomer(),
-                child: Container(
-                  width: 36.w,
-                  height: 36.w,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.phone, size: 18.sp, color: AppColors.primary),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: Insets.s8),
-          _infoRow(Icons.directions_car_outlined, 'نوع السيارة', args.carType),
-          SizedBox(height: Insets.s8),
-          _infoRow(Icons.confirmation_number_outlined, 'رقم اللوحة', args.plateNumber),
-        ],
-      ),
-    );
-  }
-
   Widget _buildCarPhotosSection() {
+    final photos = args.carPhotos;
+    final hasPhotos = photos != null && photos.isNotEmpty;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          AppStrings.carPhotos,
+          'صور السيارة',
           style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s16),
         ),
         SizedBox(height: Insets.s8),
@@ -133,7 +182,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
-            itemCount: args.carPhotos!.length,
+            itemCount: hasPhotos ? photos.length : 4,
             separatorBuilder: (_, __) => SizedBox(width: Insets.s8),
             itemBuilder: (_, index) {
               return Container(
@@ -142,8 +191,17 @@ class DriverOrderDetailsScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.neutral400,
                   borderRadius: BorderRadius.circular(AppRadius.s12),
+                  border: Border.all(
+                    color: AppColors.grey.withValues(alpha: 0.3),
+                  ),
                 ),
-                child: Icon(Icons.image_outlined, size: 32.sp, color: AppColors.grey),
+                child: Center(
+                  child: Icon(
+                    Icons.image_outlined,
+                    size: 32.sp,
+                    color: AppColors.grey,
+                  ),
+                ),
               );
             },
           ),
@@ -183,7 +241,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppStrings.tripRoute,
+            'مسار الرحلة',
             style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s16),
           ),
           SizedBox(height: Insets.s12),
@@ -192,8 +250,12 @@ class DriverOrderDetailsScreen extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Icon(Icons.location_on, size: 20.sp, color: AppColors.primary),
-                  Container(width: 2, height: 24.h, color: AppColors.primary.withValues(alpha: 0.3)),
+                  Icon(Icons.location_on, size: 20.sp, color: AppColors.success),
+                  Container(
+                    width: 2,
+                    height: 24.h,
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                  ),
                   Icon(Icons.location_on, size: 20.sp, color: AppColors.error),
                 ],
               ),
@@ -204,12 +266,18 @@ class DriverOrderDetailsScreen extends StatelessWidget {
                   children: [
                     Text(
                       args.pickupAddress,
-                      style: getRegularStyle(color: AppColors.darkGrey, fontSize: FontSize.s14),
+                      style: getRegularStyle(
+                        color: AppColors.darkGrey,
+                        fontSize: FontSize.s14,
+                      ),
                     ),
                     SizedBox(height: Insets.s20),
                     Text(
                       args.deliveryAddress,
-                      style: getRegularStyle(color: AppColors.darkGrey, fontSize: FontSize.s14),
+                      style: getRegularStyle(
+                        color: AppColors.darkGrey,
+                        fontSize: FontSize.s14,
+                      ),
                     ),
                   ],
                 ),
@@ -224,7 +292,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadius.s8),
             ),
             child: Text(
-              '${AppStrings.distanceAway} ${args.distance} ${AppStrings.km}',
+              'على بعد ${args.distance} كم',
               style: getMediumStyle(color: AppColors.grey, fontSize: FontSize.s12),
             ),
           ),
@@ -239,9 +307,15 @@ class DriverOrderDetailsScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            AppStrings.customerNotes,
-            style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s16),
+          Row(
+            children: [
+              Icon(Icons.note_alt_outlined, size: 20.sp, color: AppColors.primary),
+              SizedBox(width: Insets.s8),
+              Text(
+                'ملاحظات العميل',
+                style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s16),
+              ),
+            ],
           ),
           SizedBox(height: Insets.s8),
           Text(
@@ -259,7 +333,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppStrings.paymentSummaryLabel,
+            'ملخص الدفع',
             style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s16),
           ),
           SizedBox(height: Insets.s12),
@@ -267,11 +341,11 @@ class DriverOrderDetailsScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                AppStrings.totalAmount,
+                'المبلغ الإجمالي',
                 style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14),
               ),
               Text(
-                '${args.amount.toStringAsFixed(0)} د.ك',
+                '${args.amount.toStringAsFixed(0)} ج.م',
                 style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s16),
               ),
             ],
@@ -318,7 +392,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
         children: [
           Expanded(
             child: AppButton(
-              text: AppStrings.rejectOrder,
+              text: 'رفض الطلب',
               isOutlined: true,
               textColor: AppColors.error,
               onPressed: () => Navigator.pop(context),
@@ -327,7 +401,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
           SizedBox(width: Insets.s12),
           Expanded(
             child: AppButton(
-              text: AppStrings.acceptOrder,
+              text: 'قبول الطلب',
               onPressed: () => _showConfirmDialog(context),
             ),
           ),
@@ -344,12 +418,12 @@ class DriverOrderDetailsScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.s16),
         ),
         title: Text(
-          AppStrings.confirmAcceptTitle,
+          'تأكيد قبول الطلب',
           style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s18),
           textAlign: TextAlign.center,
         ),
         content: Text(
-          AppStrings.confirmAcceptMessage,
+          'هل أنت متأكد من رغبتك في قبول هذا الطلب؟ سيتم إشعار العميل فوراً.',
           style: getRegularStyle(color: AppColors.darkGrey, fontSize: FontSize.s14),
           textAlign: TextAlign.center,
         ),
@@ -358,7 +432,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
           SizedBox(
             width: 120.w,
             child: AppButton(
-              text: AppStrings.cancel,
+              text: 'إلغاء',
               isOutlined: true,
               onPressed: () => Navigator.pop(ctx),
             ),
@@ -367,7 +441,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
           SizedBox(
             width: 120.w,
             child: AppButton(
-              text: AppStrings.confirmAccept,
+              text: 'تأكيد القبول',
               onPressed: () {
                 Navigator.pop(ctx);
                 Navigator.pushNamed(

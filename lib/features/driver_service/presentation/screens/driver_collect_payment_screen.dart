@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -20,7 +19,7 @@ class DriverCollectPaymentScreen extends StatelessWidget {
       backgroundColor: AppColors.scaffoldBg,
       body: Column(
         children: [
-          const ServiceHeader(title: AppStrings.collectPayment),
+          const ServiceHeader(title: 'تحصيل مبلغ الخدمة'),
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -29,11 +28,11 @@ class DriverCollectPaymentScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   SizedBox(height: Sizes.s24),
-                  _buildLargeAmount(),
+                  _buildAmountDisplay(),
                   SizedBox(height: Sizes.s32),
                   _buildInstructionsCard(),
                   SizedBox(height: Sizes.s24),
-                  _buildRequiredAmountSection(),
+                  _buildPaymentMethodRow(),
                   SizedBox(height: Sizes.s48),
                 ],
               ),
@@ -45,25 +44,30 @@ class DriverCollectPaymentScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLargeAmount() {
+  Widget _buildAmountDisplay() {
     return Column(
       children: [
+        Text(
+          'المبلغ المطلوب تحصيله',
+          style: getMediumStyle(color: AppColors.grey, fontSize: FontSize.s16),
+        ),
+        SizedBox(height: Insets.s12),
         Container(
-          width: 80.w,
-          height: 80.w,
+          width: 100.w,
+          height: 100.w,
           decoration: BoxDecoration(
             color: AppColors.primary.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(
             Icons.payments_outlined,
-            size: 40.sp,
+            size: 44.sp,
             color: AppColors.primary,
           ),
         ),
         SizedBox(height: Insets.s16),
         Text(
-          '${args.amount.toStringAsFixed(0)} د.ك',
+          '${args.amount.toStringAsFixed(0)} ج.م',
           style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s28),
         ),
       ],
@@ -104,9 +108,9 @@ class DriverCollectPaymentScreen extends StatelessWidget {
             ],
           ),
           SizedBox(height: Insets.s12),
-          _buildBulletPoint(AppStrings.collectionInstructions),
+          _buildBulletPoint('تأكد من استلام المبلغ كاملاً قبل التأكيد'),
           SizedBox(height: Insets.s8),
-          _buildBulletPoint(AppStrings.cashOnly),
+          _buildBulletPoint('الدفع نقداً فقط'),
         ],
       ),
     );
@@ -138,42 +142,53 @@ class DriverCollectPaymentScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRequiredAmountSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          AppStrings.requiredAmount,
-          style: getMediumStyle(color: AppColors.grey, fontSize: FontSize.s14),
-        ),
-        SizedBox(height: Insets.s8),
-        Container(
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(vertical: Insets.s20, horizontal: Insets.s16),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(AppRadius.s12),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.shadow,
-                blurRadius: 4,
-                offset: const Offset(0, 1),
-              ),
-            ],
+  Widget _buildPaymentMethodRow() {
+    return Container(
+      padding: EdgeInsets.all(Insets.s16),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(AppRadius.s12),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadow,
+            blurRadius: 4,
+            offset: const Offset(0, 1),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.money_rounded, size: 24.sp, color: AppColors.primary),
-              SizedBox(width: Insets.s8),
-              Text(
-                '${args.amount.toStringAsFixed(0)} د.ك',
-                style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s24),
-              ),
-            ],
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'طريقة الدفع',
+            style: getMediumStyle(color: AppColors.grey, fontSize: FontSize.s14),
           ),
-        ),
-      ],
+          Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: Insets.s12,
+              vertical: Insets.s4,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(AppRadius.s24),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.money_rounded, size: 18.sp, color: AppColors.primary),
+                SizedBox(width: Insets.s4),
+                Text(
+                  'كاش',
+                  style: getMediumStyle(
+                    color: AppColors.primary,
+                    fontSize: FontSize.s14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -191,7 +206,7 @@ class DriverCollectPaymentScreen extends StatelessWidget {
         ],
       ),
       child: AppButton(
-        text: AppStrings.confirmReceived,
+        text: 'تأكيد استلام المبلغ',
         onPressed: () {
           Navigator.pushNamed(
             context,

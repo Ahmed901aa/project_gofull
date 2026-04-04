@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -18,7 +17,8 @@ class DriverDocumentationScreen extends StatefulWidget {
   const DriverDocumentationScreen({super.key, required this.args});
 
   @override
-  State<DriverDocumentationScreen> createState() => _DriverDocumentationScreenState();
+  State<DriverDocumentationScreen> createState() =>
+      _DriverDocumentationScreenState();
 }
 
 class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
@@ -28,8 +28,8 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
   static const List<String> _labels = [
     'الجهة الأمامية',
     'الجهة الخلفية',
-    'الجانب الأيمن',
-    'الجانب الأيسر',
+    'الجهة اليمنى',
+    'الجهة اليسرى',
   ];
 
   int get _capturedCount => _capturedImages.where((img) => img != null).length;
@@ -56,7 +56,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
         arguments: DriverNavigateArgs(
           orderId: widget.args.orderId,
           navigationType: 'to_destination',
-          address: '\u0627\u0644\u0645\u0646\u0635\u0648\u0631\u0629\u060C \u0645\u062F\u064A\u0646\u0629 \u0645\u0628\u0627\u0631\u0643\u060C \u0634\u0627\u0631\u0639 \u0645\u0643\u0629...',
+          address: 'وجهة التوصيل',
         ),
       );
     } else {
@@ -77,7 +77,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
       backgroundColor: AppColors.scaffoldBg,
       body: Column(
         children: [
-          const ServiceHeader(title: AppStrings.documentation),
+          const ServiceHeader(title: 'التوثيق'),
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -105,27 +105,33 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.06),
+        color: AppColors.goldLight,
         borderRadius: BorderRadius.circular(AppRadius.s12),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+        border: Border.all(color: AppColors.gold.withValues(alpha: 0.4)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.info_outline_rounded, size: 22.sp, color: AppColors.primary),
+          Icon(Icons.warning_amber_rounded, size: 24.sp, color: AppColors.gold),
           SizedBox(width: Insets.s12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  AppStrings.mandatoryDoc,
-                  style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s16),
+                  'توثيق إلزامي',
+                  style: getBoldStyle(
+                    color: AppColors.black,
+                    fontSize: FontSize.s16,
+                  ),
                 ),
                 SizedBox(height: Insets.s4),
                 Text(
-                  AppStrings.mandatoryDocDesc,
-                  style: getRegularStyle(color: AppColors.darkGrey, fontSize: FontSize.s14),
+                  'يرجى التقاط 4 صور واضحة للسيارة من جميع الجهات قبل المتابعة.',
+                  style: getRegularStyle(
+                    color: AppColors.darkGrey,
+                    fontSize: FontSize.s14,
+                  ),
                 ),
               ],
             ),
@@ -140,10 +146,10 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          '$_capturedCount/4',
-          style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s18),
+          '$_capturedCount من 4',
+          style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s16),
         ),
-        SizedBox(width: Insets.s8),
+        SizedBox(width: Insets.s12),
         Expanded(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(AppRadius.s8),
@@ -226,7 +232,10 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
             padding: EdgeInsets.symmetric(horizontal: Insets.s8),
             child: Text(
               _labels[index],
-              style: getMediumStyle(color: AppColors.black, fontSize: FontSize.s12),
+              style: getMediumStyle(
+                color: AppColors.black,
+                fontSize: FontSize.s12,
+              ),
               textAlign: TextAlign.center,
             ),
           ),
@@ -246,8 +255,11 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
                   padding: EdgeInsets.zero,
                 ),
                 child: Text(
-                  hasImage ? AppStrings.retake : AppStrings.capture,
-                  style: getMediumStyle(color: AppColors.white, fontSize: FontSize.s12),
+                  hasImage ? 'إعادة التقاط' : 'التقاط',
+                  style: getMediumStyle(
+                    color: AppColors.white,
+                    fontSize: FontSize.s12,
+                  ),
                 ),
               ),
             ),
@@ -271,7 +283,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
         ],
       ),
       child: AppButton(
-        text: _isPickup ? AppStrings.startToDestination : AppStrings.collectPayment,
+        text: _isPickup ? 'بدء التحرك لوجهة التوصيل' : 'تحصيل مبلغ الخدمة',
         backgroundColor: _allCaptured ? AppColors.primary : AppColors.grey,
         onPressed: _allCaptured ? () => _onContinue() : () {},
       ),

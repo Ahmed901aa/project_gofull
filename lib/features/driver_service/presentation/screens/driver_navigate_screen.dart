@@ -1,20 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
 
-class DriverNavigateScreen extends StatelessWidget {
+class DriverNavigateScreen extends StatefulWidget {
   final DriverNavigateArgs args;
   const DriverNavigateScreen({super.key, required this.args});
 
-  bool get _isToCustomer => args.navigationType == 'to_customer';
+  @override
+  State<DriverNavigateScreen> createState() => _DriverNavigateScreenState();
+}
+
+class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
+  GoogleMapController? _mapController;
+
+  bool get _isToCustomer => widget.args.navigationType == 'to_customer';
+
+  LatLng get _targetLocation => LatLng(
+        widget.args.lat ?? 30.0444,
+        widget.args.lng ?? 31.2357,
+      );
+
+  @override
+  void dispose() {
+    _mapController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +40,29 @@ class DriverNavigateScreen extends StatelessWidget {
       backgroundColor: AppColors.scaffoldBg,
       body: Stack(
         children: [
-          // Map placeholder
+          // Full-screen Google Map
           Positioned.fill(
-            child: Container(
-              color: AppColors.neutral400,
-              child: Center(
-                child: Text(
-                  'خريطة الملاحة',
-                  style: getMediumStyle(color: AppColors.grey, fontSize: FontSize.s18),
-                ),
+            child: GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: _targetLocation,
+                zoom: 14.0,
               ),
+              onMapCreated: (controller) {
+                _mapController = controller;
+              },
+              markers: {
+                Marker(
+                  markerId: const MarkerId('destination'),
+                  position: _targetLocation,
+                  infoWindow: InfoWindow(
+                    title: _isToCustomer ? 'موقع العميل' : 'وجهة التوصيل',
+                  ),
+                ),
+              },
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              mapToolbarEnabled: false,
             ),
           ),
           // Top bar
@@ -41,15 +72,23 @@ class DriverNavigateScreen extends StatelessWidget {
             right: 0,
             child: _buildTopBar(context),
           ),
-          // Side buttons
+          // Map control buttons
           Positioned(
             left: Insets.s16,
             bottom: 280.h,
             child: Column(
               children: [
-                _circleButton(Icons.refresh_rounded, () {}),
+                _circleButton(Icons.refresh_rounded, () {
+                  _mapController?.animateCamera(
+                    CameraUpdate.newLatLng(_targetLocation),
+                  );
+                }),
                 SizedBox(height: Insets.s8),
-                _circleButton(Icons.my_location_rounded, () {}),
+                _circleButton(Icons.my_location_rounded, () {
+                  _mapController?.animateCamera(
+                    CameraUpdate.newLatLng(_targetLocation),
+                  );
+                }),
               ],
             ),
           ),
@@ -78,13 +117,24 @@ class DriverNavigateScreen extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Icon(Icons.arrow_back_ios_rounded, size: 22.sp, color: const Color(0xFF0E0E0E)),
+                  child: Icon(
+                    Icons.arrow_back_ios_rounded,
+                    size: 22.sp,
+                    color: const Color(0xFF0E0E0E),
+                  ),
                 ),
                 Text(
-                  _isToCustomer ? AppStrings.navigateToCustomer : AppStrings.navigateToDestination,
-                  style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
+                  _isToCustomer ? 'التحرك للعميل' : 'التحرك لوجهة التوصيل',
+                  style: getBoldStyle(
+                    color: const Color(0xFF0E0E0E),
+                    fontSize: FontSize.s20,
+                  ),
                 ),
-                Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
+                Icon(
+                  Icons.info_outline_rounded,
+                  size: 24.sp,
+                  color: const Color(0xFF0E0E0E),
+                ),
               ],
             ),
           ),
@@ -114,58 +164,94 @@ class DriverNavigateScreen extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Destination address
+          // Destination label + address
           Row(
             children: [
-              Icon(Icons.location_on, size: 22.sp, color: AppColors.primary),
-              SizedBox(width: Insets.s8),
+              Container(
+                width: 36.w,
+                height: 36.w,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.location_on,
+                  size: 20.sp,
+                  color: AppColors.primary,
+                ),
+              ),
+              SizedBox(width: Insets.s12),
               Expanded(
-                child: Text(
-                  args.address,
-                  style: getMediumStyle(color: AppColors.black, fontSize: FontSize.s14),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _isToCustomer ? 'موقع العميل' : 'وجهة التوصيل',
+                      style: getMediumStyle(
+                        color: AppColors.grey,
+                        fontSize: FontSize.s12,
+                      ),
+                    ),
+                    SizedBox(height: Insets.s4),
+                    Text(
+                      widget.args.address,
+                      style: getMediumStyle(
+                        color: AppColors.black,
+                        fontSize: FontSize.s14,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
           SizedBox(height: Insets.s16),
-          // Google Maps + Phone row
+          // Phone call + Google Maps row
           Row(
             children: [
-              Expanded(
-                child: AppButton(
-                  text: AppStrings.openInGoogleMaps,
-                  isOutlined: true,
-                  onPressed: () => _openGoogleMaps(),
-                ),
-              ),
-              SizedBox(width: Insets.s12),
               GestureDetector(
                 onTap: () => _callCustomer(),
                 child: Container(
                   width: Sizes.s48,
                   height: Sizes.s48,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
+                    color: AppColors.white,
                     shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.divider),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.shadow,
+                        blurRadius: 4,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
                   ),
                   child: Icon(Icons.phone, size: 22.sp, color: AppColors.primary),
+                ),
+              ),
+              SizedBox(width: Insets.s12),
+              Expanded(
+                child: AppButton(
+                  text: 'فتح في خرائط جوجل',
+                  isOutlined: true,
+                  onPressed: () => _openGoogleMaps(),
                 ),
               ),
             ],
           ),
           SizedBox(height: Insets.s16),
-          // Arrived button
+          // Main action button
           AppButton(
-            text: AppStrings.arrivedStartDoc,
+            text: 'وصلت - بدء التوثيق',
             onPressed: () {
               final docType = _isToCustomer ? 'pickup' : 'delivery';
               Navigator.pushNamed(
                 context,
                 Routes.driverDocumentation,
                 arguments: DriverDocumentationArgs(
-                  orderId: args.orderId,
+                  orderId: widget.args.orderId,
                   documentationType: docType,
                 ),
               );
@@ -199,9 +285,11 @@ class DriverNavigateScreen extends StatelessWidget {
   }
 
   Future<void> _openGoogleMaps() async {
-    final lat = args.lat ?? 31.0409;
-    final lng = args.lng ?? 31.3785;
-    final uri = Uri.parse('https://www.google.com/maps/dir/?api=1&destination=$lat,$lng');
+    final lat = widget.args.lat ?? 30.0444;
+    final lng = widget.args.lng ?? 31.2357;
+    final uri = Uri.parse(
+      'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng',
+    );
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
