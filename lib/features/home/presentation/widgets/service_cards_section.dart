@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/assets_manager.dart';
 import 'package:project_gofull/core/resources/strings_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';

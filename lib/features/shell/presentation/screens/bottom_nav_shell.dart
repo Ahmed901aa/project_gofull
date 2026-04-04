@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/strings_manager.dart';
-import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/home/presentation/screens/home_screen.dart';
 import 'package:project_gofull/features/orders/presentation/screens/orders_screen.dart';
 import 'package:project_gofull/features/profile/presentation/screens/profile_screen.dart';

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
-import 'package:project_gofull/core/resources/values_manager.dart';
 
 class MapMyLocationButton extends StatelessWidget {
   final VoidCallback onTap;
