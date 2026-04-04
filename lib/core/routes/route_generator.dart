@@ -26,6 +26,12 @@ import 'package:project_gofull/features/profile/presentation/screens/terms_scree
 import 'package:project_gofull/features/profile/presentation/screens/edit_profile_screen.dart';
 import 'package:project_gofull/features/profile/presentation/screens/support_screen.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
+import 'package:project_gofull/features/driver_service/presentation/screens/driver_order_details_screen.dart';
+import 'package:project_gofull/features/driver_service/presentation/screens/driver_navigate_screen.dart';
+import 'package:project_gofull/features/driver_service/presentation/screens/driver_documentation_screen.dart';
+import 'package:project_gofull/features/driver_service/presentation/screens/driver_collect_payment_screen.dart';
+import 'package:project_gofull/features/driver_service/presentation/screens/driver_task_complete_screen.dart';
+import 'package:project_gofull/features/driver_service/presentation/screens/driver_rate_customer_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -92,6 +98,25 @@ class RouteGenerator {
         return _buildRoute(const EditProfileScreen(), settings);
       case Routes.support:
         return _buildRoute(const SupportScreen(), settings);
+      // Driver Service Flow
+      case Routes.driverOrderDetails:
+        final args = settings.arguments as DriverOrderDetailsArgs;
+        return _buildRoute(DriverOrderDetailsScreen(args: args), settings);
+      case Routes.driverNavigate:
+        final args = settings.arguments as DriverNavigateArgs;
+        return _buildRoute(DriverNavigateScreen(args: args), settings);
+      case Routes.driverDocumentation:
+        final args = settings.arguments as DriverDocumentationArgs;
+        return _buildRoute(DriverDocumentationScreen(args: args), settings);
+      case Routes.driverCollectPayment:
+        final args = settings.arguments as DriverCollectPaymentArgs;
+        return _buildRoute(DriverCollectPaymentScreen(args: args), settings);
+      case Routes.driverTaskComplete:
+        final args = settings.arguments as DriverTaskCompleteArgs;
+        return _buildRoute(DriverTaskCompleteScreen(args: args), settings);
+      case Routes.driverRateCustomer:
+        final args = settings.arguments as DriverRateArgs;
+        return _buildRoute(DriverRateCustomerScreen(args: args), settings);
       default:
         return _undefinedRoute();
     }

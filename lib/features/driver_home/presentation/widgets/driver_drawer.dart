@@ -137,7 +137,7 @@ class DriverDrawer extends StatelessWidget {
                   ),
                   SizedBox(height: 2.h),
                   Text(
-                    '400- د.ك',
+                    '400- ج.م',
                     style: getBoldStyle(
                       color: AppColors.primary,
                       fontSize: FontSize.s16,
@@ -218,7 +218,7 @@ class DriverDrawer extends StatelessWidget {
           ),
           contentPadding: EdgeInsets.symmetric(horizontal: Insets.s16),
           onTap: () {
-            Navigator.of(context).pop(); // close drawer
+            Navigator.of(context).pop();
             Navigator.of(context).pushNamed(item.route);
           },
         );

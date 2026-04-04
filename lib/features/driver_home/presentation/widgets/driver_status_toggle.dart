@@ -40,7 +40,9 @@ class _DriverStatusToggleState extends State<DriverStatusToggle> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _toggle,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
         padding: EdgeInsets.symmetric(
           horizontal: Insets.s12,
           vertical: Insets.s8,
@@ -59,7 +61,8 @@ class _DriverStatusToggleState extends State<DriverStatusToggle> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
               width: 10.w,
               height: 10.w,
               decoration: BoxDecoration(
