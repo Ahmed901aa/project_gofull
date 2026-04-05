@@ -8,7 +8,8 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 class EtaBottomPanel extends StatelessWidget {
   final String etaFormatted;
   final double progress;
-  const EtaBottomPanel({super.key, required this.etaFormatted, required this.progress});
+  final String? label;
+  const EtaBottomPanel({super.key, required this.etaFormatted, required this.progress, this.label});
 
   @override
   Widget build(BuildContext context) {

@@ -1,21 +1,16 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
-import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/styles_manager.dart';
-import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/services/order_polling_service.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
+import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
+import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
+import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/eta_bottom_panel.dart';
 import '../widgets/driver_found_body.dart';
 import '../widgets/driver_found_header.dart';
-
-const _mockDriver = {
-  'name': 'احمد احميد',
-  'rating': '4.9',
-  'reviewCount': '541',
-  'plateNumber': 'أ ب م - 3541',
-};
 
 class DriverFoundScreen extends StatefulWidget {
   final DriverFoundArgs? args;
@@ -26,93 +21,111 @@ class DriverFoundScreen extends StatefulWidget {
 }
 
 class _DriverFoundScreenState extends State<DriverFoundScreen> {
-  static const int _total = 15;
-  late int _secondsLeft;
-  Timer? _timer;
+  final _polling = OrderPollingService();
+  late final RequestBloc _requestBloc;
+  bool _navigated = false;
 
-  DriverFoundArgs get _args => widget.args ?? const DriverFoundArgs(
-    title: 'تم العثور على ونش!',
-    vehicleLabel: 'نوع الونش',
-    vehicleValue: 'ونش هيدروليك',
-  );
+  DriverFoundArgs get _args =>
+      widget.args ??
+      const DriverFoundArgs(
+        title: 'تم العثور على ونش!',
+        vehicleLabel: 'نوع الونش',
+        vehicleValue: 'ونش هيدروليك',
+      );
 
   @override
   void initState() {
     super.initState();
-    _secondsLeft = _total;
-    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (!mounted) { t.cancel(); return; }
-      setState(() => _secondsLeft--);
-      if (_secondsLeft <= 0) {
-        t.cancel();
-        if (_args.nextRoute != null) Navigator.pushReplacementNamed(context, _args.nextRoute!, arguments: _args.nextRouteArgs);
-      }
-    });
+    _requestBloc = sl<RequestBloc>();
+
+    // Poll for status changes every 3s
+    if (_args.requestId != null) {
+      _polling.start(
+        interval: const Duration(seconds: 3),
+        callback: () async {
+          if (!_navigated) {
+            _requestBloc.add(LoadRequestDetailsEvent(_args.requestId!));
+          }
+        },
+      );
+    }
   }
 
   @override
-  void dispose() { _timer?.cancel(); super.dispose(); }
+  void dispose() {
+    _polling.dispose();
+    super.dispose();
+  }
 
-  String get _eta => '${(_secondsLeft ~/ 60).toString().padLeft(2, '0')}:${(_secondsLeft % 60).toString().padLeft(2, '0')}';
-  double get _progress => (_total - _secondsLeft) / _total;
+  void _onStatusChanged(RequestState state) {
+    if (_navigated || state is! RequestDetailsLoaded) return;
+    final request = state.request;
+    final isFuel = _args.serviceType == 'fuel_delivery';
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: Column(
-        children: [
-          DriverFoundHeader(showClose: _args.showClose),
-          Expanded(
-            child: DriverFoundBody(
-              imagePath: _args.imagePath ?? 'assets/images/tank_truck.gif',
-              title: _args.title,
-              driverName: _mockDriver['name']!,
-              driverRating: _mockDriver['rating']!,
-              driverReviewCount: _mockDriver['reviewCount']!,
-              driverPlateNumber: _mockDriver['plateNumber']!,
-              vehicleLabel: _args.vehicleLabel,
-              vehicleValue: _args.vehicleValue,
+    // Navigate when status advances beyond 'accepted'
+    if (request.status == 'en_route' ||
+        request.status == 'arrived' ||
+        request.status == 'in_progress' ||
+        request.status == 'completed') {
+      _navigated = true;
+      _polling.stop();
+
+      if (isFuel) {
+        Navigator.pushReplacementNamed(
+          context,
+          Routes.serviceArrived,
+          arguments: ServiceArrivedArgs(requestId: _args.requestId),
+        );
+      } else {
+        Navigator.pushReplacementNamed(
+          context,
+          Routes.towingStarted,
+          arguments: TowingStartedArgs(
+            requestId: _args.requestId,
+            nextRouteArgs: TripInProgressArgs(
+              originAddress: request.driverAddress ?? '',
+              destinationAddress: '',
+              requestId: _args.requestId,
             ),
           ),
-          EtaBottomPanel(etaFormatted: _eta, progress: _progress),
-          // TODO: Remove this mock button — in production, the driver app triggers
-          // navigation when the driver confirms they have arrived at the user's location.
-          if (_args.nextRoute != null)
-            _MockTriggerButton(
-              label: 'محاكاة: وصول مزود الخدمة',
-              onTap: () {
-                _timer?.cancel();
-                Navigator.pushReplacementNamed(context, _args.nextRoute!, arguments: _args.nextRouteArgs);
-              },
-            ),
-          SizedBox(height: MediaQuery.of(context).padding.bottom),
-        ],
-      ),
-    );
+        );
+      }
+    }
   }
-}
-
-// ── Mock trigger button (REMOVE IN PRODUCTION) ────────────────────────────────
-class _MockTriggerButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-  const _MockTriggerButton({required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.white,
-      padding: EdgeInsets.fromLTRB(Insets.s16, 0, Insets.s16, Insets.s12),
-      child: OutlinedButton(
-        onPressed: onTap,
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.warning,
-          side: const BorderSide(color: AppColors.warning),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
-          minimumSize: Size(double.infinity, 44.h),
+    return BlocProvider.value(
+      value: _requestBloc,
+      child: BlocListener<RequestBloc, RequestState>(
+        listener: (context, state) => _onStatusChanged(state),
+        child: Scaffold(
+          backgroundColor: AppColors.white,
+          body: Column(
+            children: [
+              DriverFoundHeader(showClose: _args.showClose),
+              Expanded(
+                child: DriverFoundBody(
+                  imagePath:
+                      _args.imagePath ?? 'assets/images/tank_truck.gif',
+                  title: _args.title,
+                  driverName: _args.providerName ?? 'مزود الخدمة',
+                  driverRating: _args.providerRating ?? '-',
+                  driverReviewCount: '',
+                  driverPlateNumber: '',
+                  vehicleLabel: _args.vehicleLabel,
+                  vehicleValue: _args.vehicleValue,
+                ),
+              ),
+              const EtaBottomPanel(
+                etaFormatted: '...',
+                progress: 0,
+                label: 'في انتظار تحرك مزود الخدمة',
+              ),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
+            ],
+          ),
         ),
-        child: Text(label, style: getBoldStyle(color: AppColors.warning, fontSize: FontSize.s14)),
       ),
     );
   }
