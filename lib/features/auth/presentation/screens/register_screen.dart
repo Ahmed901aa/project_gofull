@@ -11,6 +11,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
+import 'package:project_gofull/features/auth/domain/entities/user_entity.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_event.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_state.dart';
