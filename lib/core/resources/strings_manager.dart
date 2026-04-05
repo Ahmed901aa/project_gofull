@@ -4,22 +4,28 @@ class AppStrings {
   // Auth
   static const String appName = 'GO FULL';
   static const String login = 'تسجيل الدخول';
-  static const String loginSubtitle = 'أدخل رقم جوالك لتصلك رسالة تأكيد الدخول.';
+  static const String loginSubtitle = 'أدخل رقم جوالك وكلمة المرور للدخول.';
   static const String noAccount = 'ليس لديك حساب؟';
   static const String createAccount = 'إنشاء حساب جديد';
   static const String phoneHint = 'أدخل رقم الجوال';
   static const String phoneLabel = 'رقم الجوال';
-  static const String sendOtp = 'إرسال رمز التحقق';
+  static const String passwordLabel = 'كلمة المرور';
+  static const String passwordHint = 'أدخل كلمة المرور';
+  static const String confirmPasswordLabel = 'تأكيد كلمة المرور';
+  static const String confirmPasswordHint = 'أعد إدخال كلمة المرور';
+  static const String loginButton = 'تسجيل الدخول';
   static const String termsText = 'باستمرارك، أنت توافق على شروط الخدمة وسياسة الخصوصية';
 
-  // OTP
-  static const String otpTitle = 'رمز التحقق';
-  static const String otpSubtitle = 'ادخل الكود اللي بعثناه في رسالة نصية (SMS) على الرقم';
-  static const String changeNumber = 'تغيير الرقم';
+  // Register
+  static const String createAccountTitle = 'إنشاء حساب جديد';
+  static const String nameLabel = 'الاسم';
+  static const String nameHint = 'أدخل اسمك الكامل';
+  static const String accountType = 'نوع الحساب';
+  static const String roleDriver = 'سائق';
+  static const String roleProvider = 'مقدم خدمة';
+  static const String registerButton = 'إنشاء الحساب';
+  static const String alreadyHaveAccount = 'لديك حساب بالفعل؟';
   static const String confirm = 'تأكيد';
-  static const String noCode = 'لم يصلك الكود؟';
-  static const String resendIn = 'إعادة الإرسال خلال';
-  static const String resend = 'إعادة الإرسال';
 
   // Home
   static const String welcomePrefix = 'أهلاً،';
