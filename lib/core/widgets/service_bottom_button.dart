@@ -8,7 +8,8 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 class ServiceBottomButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
-  const ServiceBottomButton({super.key, this.label = 'تأكيد', this.onPressed});
+  final bool isLoading;
+  const ServiceBottomButton({super.key, this.label = 'تأكيد', this.onPressed, this.isLoading = false});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,9 @@ class ServiceBottomButton extends StatelessWidget {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
             elevation: 0,
           ),
-          child: Text(label, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+          child: isLoading
+              ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2.5, color: AppColors.white))
+              : Text(label, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
         ),
       ),
     );
