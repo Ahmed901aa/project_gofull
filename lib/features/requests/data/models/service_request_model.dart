@@ -8,7 +8,9 @@ class ServiceRequestModel extends ServiceRequestEntity {
     super.driverAddress, super.fuelType, super.fuelQuantity, super.plateNumber,
     super.notes, super.acceptedAt, super.arrivedAt, super.completedAt,
     super.cancelledAt, super.cancelledBy, super.cancellationReason,
-    super.createdAt, super.providerInfo, super.driverInfo, super.ratingInfo,
+    super.createdAt, super.pricePerLiter, super.subtotal, super.serviceFee,
+    super.total, super.paymentMethod, super.paymentStatus,
+    super.providerInfo, super.driverInfo, super.ratingInfo,
   });
 
   factory ServiceRequestModel.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,12 @@ class ServiceRequestModel extends ServiceRequestEntity {
       cancelledBy: json['cancelled_by'] as String?,
       cancellationReason: json['cancellation_reason'] as String?,
       createdAt: json['created_at'] as String?,
+      pricePerLiter: json['price_per_liter']?.toString(),
+      subtotal: json['subtotal']?.toString(),
+      serviceFee: json['service_fee']?.toString(),
+      total: json['total']?.toString(),
+      paymentMethod: json['payment_method'] as String?,
+      paymentStatus: json['payment_status'] as String?,
       providerInfo: json['provider'] as Map<String, dynamic>?,
       driverInfo: json['driver'] as Map<String, dynamic>?,
       ratingInfo: json['rating'] as Map<String, dynamic>?,

@@ -20,6 +20,14 @@ class ServiceRequestEntity extends Equatable {
   final String? cancelledBy;
   final String? cancellationReason;
   final String? createdAt;
+  // Pricing
+  final String? pricePerLiter;
+  final String? subtotal;
+  final String? serviceFee;
+  final String? total;
+  final String? paymentMethod;
+  final String? paymentStatus;
+  // Relationships
   final Map<String, dynamic>? providerInfo;
   final Map<String, dynamic>? driverInfo;
   final Map<String, dynamic>? ratingInfo;
@@ -44,6 +52,12 @@ class ServiceRequestEntity extends Equatable {
     this.cancelledBy,
     this.cancellationReason,
     this.createdAt,
+    this.pricePerLiter,
+    this.subtotal,
+    this.serviceFee,
+    this.total,
+    this.paymentMethod,
+    this.paymentStatus,
     this.providerInfo,
     this.driverInfo,
     this.ratingInfo,

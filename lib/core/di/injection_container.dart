@@ -31,6 +31,12 @@ import 'package:project_gofull/features/requests/domain/usecases/cancel_request_
 import 'package:project_gofull/features/requests/domain/usecases/rate_provider_usecase.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 
+// App Config
+import 'package:project_gofull/features/app_config/data/datasources/app_config_data_source.dart';
+import 'package:project_gofull/features/app_config/data/repositories/app_config_repository_impl.dart';
+import 'package:project_gofull/features/app_config/domain/repositories/app_config_repository.dart';
+import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
+
 // Provider
 import 'package:project_gofull/features/provider/data/datasources/provider_data_source.dart';
 import 'package:project_gofull/features/provider/data/repositories/provider_repository_impl.dart';
@@ -78,6 +84,17 @@ Future<void> initDependencies() async {
       logoutUseCase: sl(),
       tokenStorage: sl(),
     ),
+  );
+
+  // ── Feature: App Config ──────────────────────────────────
+  sl.registerLazySingleton<AppConfigDataSource>(
+    () => AppConfigRemoteDataSource(sl()),
+  );
+  sl.registerLazySingleton<AppConfigRepository>(
+    () => AppConfigRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton(
+    () => AppConfigBloc(repository: sl()),
   );
 
   // ── Feature: Home ────────────────────────────────────────

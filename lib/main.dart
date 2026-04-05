@@ -8,6 +8,8 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/routes/route_generator.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
+import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,34 +23,40 @@ class GoFullApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => LocationCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => LocationCubit()),
+        BlocProvider(
+          create: (_) =>
+              sl<AppConfigBloc>()..add(const LoadAppConfigEvent()),
+        ),
+      ],
       child: ScreenUtilInit(
-      designSize: const Size(375, 812),
-      minTextAdapt: true,
-      builder: (context, child) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'GoFull',
-        locale: const Locale('ar'),
-        theme: ThemeData(
-          fontFamily: FontConstants.fontFamily,
-          scaffoldBackgroundColor: AppColors.white,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: AppColors.primary,
-            primary: AppColors.primary,
+        designSize: const Size(375, 812),
+        minTextAdapt: true,
+        builder: (context, child) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'GoFull',
+          locale: const Locale('ar'),
+          theme: ThemeData(
+            fontFamily: FontConstants.fontFamily,
+            scaffoldBackgroundColor: AppColors.white,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: AppColors.primary,
+              primary: AppColors.primary,
+            ),
           ),
-        ),
-        builder: (context, child) => GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          behavior: HitTestBehavior.opaque,
-          child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: child!,
+          builder: (context, child) => GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            behavior: HitTestBehavior.opaque,
+            child: Directionality(
+              textDirection: TextDirection.rtl,
+              child: child!,
+            ),
           ),
+          initialRoute: Routes.splash,
+          onGenerateRoute: RouteGenerator.getRoute,
         ),
-        initialRoute: Routes.splash,
-        onGenerateRoute: RouteGenerator.getRoute,
-      ),
       ),
     );
   }
