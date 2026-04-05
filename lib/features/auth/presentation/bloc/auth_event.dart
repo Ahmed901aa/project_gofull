@@ -7,19 +7,43 @@ abstract class AuthEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class SendOtpRequested extends AuthEvent {
-  final String phone;
-  const SendOtpRequested(this.phone);
-
-  @override
-  List<Object?> get props => [phone];
+/// Check if the user is already logged in (splash screen).
+class CheckAuthRequested extends AuthEvent {
+  const CheckAuthRequested();
 }
 
-class VerifyOtpRequested extends AuthEvent {
+/// Phone + Password login.
+class LoginRequested extends AuthEvent {
   final String phone;
-  final String code;
-  const VerifyOtpRequested({required this.phone, required this.code});
+  final String password;
+  const LoginRequested({required this.phone, required this.password});
 
   @override
-  List<Object?> get props => [phone, code];
+  List<Object?> get props => [phone, password];
+}
+
+/// Register a new account.
+class RegisterRequested extends AuthEvent {
+  final String name;
+  final String phone;
+  final String password;
+  final String passwordConfirmation;
+  final String role; // driver | provider
+
+  const RegisterRequested({
+    required this.name,
+    required this.phone,
+    required this.password,
+    required this.passwordConfirmation,
+    required this.role,
+  });
+
+  @override
+  List<Object?> get props =>
+      [name, phone, password, passwordConfirmation, role];
+}
+
+/// Logout and clear session.
+class LogoutRequested extends AuthEvent {
+  const LogoutRequested();
 }

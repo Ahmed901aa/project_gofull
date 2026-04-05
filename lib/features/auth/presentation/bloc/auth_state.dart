@@ -16,20 +16,16 @@ class AuthLoading extends AuthState {
   const AuthLoading();
 }
 
-class OtpSent extends AuthState {
-  final String phone;
-  const OtpSent(this.phone);
-
-  @override
-  List<Object?> get props => [phone];
-}
-
 class AuthAuthenticated extends AuthState {
   final UserEntity user;
   const AuthAuthenticated(this.user);
 
   @override
   List<Object?> get props => [user];
+}
+
+class AuthUnauthenticated extends AuthState {
+  const AuthUnauthenticated();
 }
 
 class AuthFailure extends AuthState {
