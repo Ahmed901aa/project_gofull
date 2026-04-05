@@ -10,27 +10,69 @@ class AuthRepositoryImpl implements AuthRepository {
   const AuthRepositoryImpl(this.dataSource);
 
   @override
-  Future<Either<Failure, void>> sendOtp(String phone) async {
+  Future<Either<Failure, UserEntity>> login(
+      String phone, String password) async {
     try {
-      await dataSource.sendOtp(phone);
-      return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } on NetworkException catch (e) {
-      return Left(NetworkFailure(e.message));
-    }
-  }
-
-  @override
-  Future<Either<Failure, UserEntity>> verifyOtp(
-      String phone, String code) async {
-    try {
-      final user = await dataSource.verifyOtp(phone, code);
+      final user = await dataSource.login(phone, password);
       return Right(user);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
+    } catch (_) {
+      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> register(
+    String name,
+    String phone,
+    String password,
+    String passwordConfirmation,
+    String role,
+  ) async {
+    try {
+      final user = await dataSource.register(
+          name, phone, password, passwordConfirmation, role);
+      return Right(user);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message));
+    } catch (_) {
+      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> logout() async {
+    try {
+      await dataSource.logout();
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (_) {
+      return const Right(null); // Always clear locally
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> changePassword(
+    String currentPassword,
+    String newPassword,
+    String newPasswordConfirmation,
+  ) async {
+    try {
+      final token = await dataSource.changePassword(
+          currentPassword, newPassword, newPasswordConfirmation);
+      return Right(token);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message));
+    } catch (_) {
+      return const Left(ServerFailure('حدث خطأ غير متوقع'));
     }
   }
 }

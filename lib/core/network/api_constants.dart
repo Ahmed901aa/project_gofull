@@ -1,22 +1,40 @@
+import 'package:project_gofull/core/network/app_config.dart';
+
 class ApiConstants {
   const ApiConstants._();
 
-  // Base URL — update when backend is ready
-  static const String baseUrl = 'https://api.gofull.app/api/v1';
-
-  // Timeouts
+  // ── Base ──────────────────────────────────────────────────
+  static const String baseUrl = AppConfig.baseUrl;
   static const Duration connectTimeout = Duration(seconds: 30);
   static const Duration receiveTimeout = Duration(seconds: 30);
 
-  // Auth endpoints
+  // ── Auth ──────────────────────────────────────────────────
+  static const String register = '/auth/register';
   static const String login = '/auth/login';
-  static const String verifyOtp = '/auth/verify-otp';
+  static const String logout = '/auth/logout';
+  static const String changePassword = '/auth/change-password';
 
-  // Service endpoints
-  static const String offers = '/offers';
-  static const String fuelTypes = '/fuel/types';
-  static const String fuelOrders = '/fuel/orders';
-  static const String towingRequests = '/towing/requests';
-  static const String orders = '/orders';
-  static const String profile = '/profile';
+  // ── Driver (Customer) Requests ────────────────────────────
+  static const String driverRequests = '/driver/requests';
+  static const String driverFuelRequest = '/driver/requests/fuel';
+  static const String driverTowingRequest = '/driver/requests/towing';
+  static String driverRequestDetails(int id) => '/driver/requests/$id';
+  static String driverCancelRequest(int id) => '/driver/requests/$id/cancel';
+  static String driverRateProvider(int id) => '/driver/requests/$id/rate';
+
+  // ── Provider ──────────────────────────────────────────────
+  static const String providerProfile = '/provider/profile';
+  static const String providerAvailability = '/provider/profile/availability';
+  static const String providerRequests = '/provider/requests';
+  static const String providerHistory = '/provider/requests/history';
+  static String providerAcceptRequest(int id) =>
+      '/provider/requests/$id/accept';
+  static String providerRejectRequest(int id) =>
+      '/provider/requests/$id/reject';
+  static String providerUpdateStatus(int id) =>
+      '/provider/requests/$id/status';
+  static String providerRateDriver(int id) => '/provider/requests/$id/rate';
+
+  // ── Notifications ─────────────────────────────────────────
+  static const String notifications = '/notifications';
 }
