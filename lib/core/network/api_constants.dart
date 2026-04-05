@@ -35,6 +35,9 @@ class ApiConstants {
       '/provider/requests/$id/status';
   static String providerRateDriver(int id) => '/provider/requests/$id/rate';
 
+  // ── Home ───────────────────────────────────────────────────
+  static const String offers = '/offers'; // placeholder — backend TBD
+
   // ── Notifications ─────────────────────────────────────────
   static const String notifications = '/notifications';
 }
