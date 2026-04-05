@@ -7,7 +7,6 @@ import 'package:project_gofull/core/resources/assets_manager.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
-import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_event.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_state.dart';
@@ -22,17 +21,28 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _phoneController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void dispose() {
     _phoneController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
-  void _onSendOtp(BuildContext context) {
+  void _onLogin(BuildContext context) {
     final phone = _phoneController.text.trim();
+    final password = _passwordController.text;
     if (phone.isEmpty || phone.length < 9) return;
-    context.read<AuthBloc>().add(SendOtpRequested('+218$phone'));
+    if (password.isEmpty || password.length < 6) return;
+    context.read<AuthBloc>().add(
+          LoginRequested(phone: phone, password: password),
+        );
+  }
+
+  void _navigateAfterAuth(UserEntity user) {
+    final route = user.isProvider ? Routes.driverHome : Routes.home;
+    Navigator.of(context).pushNamedAndRemoveUntil(route, (r) => false);
   }
 
   @override
@@ -41,11 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
       create: (_) => sl<AuthBloc>(),
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is OtpSent) {
-            Navigator.of(context).pushNamed(
-              Routes.otp,
-              arguments: OtpArgs(phone: state.phone),
-            );
+          if (state is AuthAuthenticated) {
+            _navigateAfterAuth(state.user);
           }
         },
         child: Builder(
@@ -79,9 +86,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: BlocBuilder<AuthBloc, AuthState>(
                       builder: (context, state) => LoginFormCard(
                         phoneController: _phoneController,
-                        phoneError: state is AuthFailure ? state.message : null,
+                        passwordController: _passwordController,
+                        errorMessage:
+                            state is AuthFailure ? state.message : null,
                         isLoading: state is AuthLoading,
-                        onSendOtp: () => _onSendOtp(context),
+                        onLogin: () => _onLogin(context),
+                        onCreateAccount: () {
+                          Navigator.of(context).pushNamed(Routes.register);
+                        },
                       ),
                     ),
                   ),
