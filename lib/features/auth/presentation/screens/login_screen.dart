@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/assets_manager.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/features/auth/domain/entities/user_entity.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_event.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_state.dart';
