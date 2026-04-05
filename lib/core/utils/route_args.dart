@@ -12,11 +12,6 @@ class RatingArgs {
   const RatingArgs({required this.orderId});
 }
 
-class OtpArgs {
-  final String phone;
-  const OtpArgs({required this.phone});
-}
-
 class LocationSearchArgs {
   final String title;
   final bool showCurrentLocation;

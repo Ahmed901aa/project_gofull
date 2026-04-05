@@ -2,7 +2,7 @@ class Routes {
   const Routes._();
   static const String splash = '/';
   static const String login = '/login';
-  static const String otp = '/otp';
+  static const String register = '/register';
   static const String home = '/home';
   static const String locationSearch = '/location-search';
   static const String locationPicker = '/location-picker';
