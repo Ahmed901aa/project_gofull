@@ -102,6 +102,7 @@ class TripInProgressArgs {
   final double? originLng;
   final double? destinationLat;
   final double? destinationLng;
+  final int? requestId;
   const TripInProgressArgs({
     required this.originAddress,
     required this.destinationAddress,
@@ -109,6 +110,7 @@ class TripInProgressArgs {
     this.originLng,
     this.destinationLat,
     this.destinationLng,
+    this.requestId,
   });
 }
 
@@ -118,12 +120,14 @@ class ServiceArrivedArgs {
   final String imagePath;
   final String vehicleLabel;
   final String vehicleValue;
+  final int? requestId;
   const ServiceArrivedArgs({
     this.title = 'بدء عملية تعبئة الوقود',
     this.subtitle = 'مزود الخدمة متواجد الآن في موقعك وبانتظارك.',
     this.imagePath = 'assets/images/refuel.gif',
     this.vehicleLabel = 'نوع المركبة',
     this.vehicleValue = 'سيارة إمداد وقود',
+    this.requestId,
   });
 }
 
