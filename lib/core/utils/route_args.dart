@@ -37,11 +37,15 @@ class SearchingArgs {
   final String subtitleText;
   final String nextRoute;
   final Object? nextRouteArgs;
+  final int? requestId; // real backend request ID for polling
+  final String serviceType; // 'fuel_delivery' or 'towing'
   const SearchingArgs({
     required this.searchingText,
     required this.subtitleText,
     required this.nextRoute,
     this.nextRouteArgs,
+    this.requestId,
+    this.serviceType = 'fuel_delivery',
   });
 }
 
