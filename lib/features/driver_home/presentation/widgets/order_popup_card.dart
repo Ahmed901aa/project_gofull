@@ -6,15 +6,18 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/strings_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
 
 class OrderPopupCard extends StatefulWidget {
   final VoidCallback onAccept;
   final VoidCallback onReject;
+  final ServiceRequestEntity? request;
 
   const OrderPopupCard({
     super.key,
     required this.onAccept,
     required this.onReject,
+    this.request,
   });
 
   @override
@@ -22,7 +25,7 @@ class OrderPopupCard extends StatefulWidget {
 }
 
 class _OrderPopupCardState extends State<OrderPopupCard> {
-  int _secondsLeft = 16;
+  int _secondsLeft = 30;
   Timer? _timer;
 
   @override
@@ -50,19 +53,22 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
 
   @override
   Widget build(BuildContext context) {
+    final req = widget.request;
+    final isFuel = req?.isFuelDelivery ?? false;
+    final serviceLabel = isFuel ? AppStrings.fuelService : AppStrings.towService;
+    final address = req?.driverAddress ?? 'عنوان العميل';
+    final plateNumber = req?.plateNumber ?? '';
+    final fuelInfo = isFuel
+        ? '${req?.fuelType ?? ''} - ${req?.fuelQuantity ?? ''} لتر'
+        : '';
+
     return Container(
       margin: EdgeInsets.symmetric(horizontal: Insets.s16),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppRadius.s24),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s24)),
         boxShadow: [
-          BoxShadow(
-            color: AppColors.shadow,
-            blurRadius: 20,
-            offset: const Offset(0, -4),
-          ),
+          BoxShadow(color: AppColors.shadow, blurRadius: 20, offset: const Offset(0, -4)),
         ],
       ),
       child: Padding(
@@ -72,33 +78,21 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
           children: [
             // Handle bar
             Container(
-              width: 40.w,
-              height: 4.h,
+              width: 40.w, height: 4.h,
               margin: EdgeInsets.only(bottom: Insets.s12),
-              decoration: BoxDecoration(
-                color: AppColors.neutral600,
-                borderRadius: BorderRadius.circular(2.r),
-              ),
+              decoration: BoxDecoration(color: AppColors.neutral600, borderRadius: BorderRadius.circular(2.r)),
             ),
 
-            // Service type badge + distance
+            // Service type badge
             Row(
               children: [
-                // Distance (left in RTL = visually left)
-                Text(
-                  '${AppStrings.distanceAway} 3.5 ${AppStrings.km}',
-                  style: getRegularStyle(
-                    fontSize: FontSize.s12,
-                    color: AppColors.grey,
+                if (req?.notes != null && req!.notes!.isNotEmpty)
+                  Flexible(
+                    child: Text(req.notes!, style: getRegularStyle(fontSize: FontSize.s12, color: AppColors.grey), maxLines: 1, overflow: TextOverflow.ellipsis),
                   ),
-                ),
                 const Spacer(),
-                // Service badge (right in RTL = visually right)
                 Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: Insets.s12,
-                    vertical: 4.h,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: Insets.s12, vertical: 4.h),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(AppRadius.s16),
@@ -106,19 +100,9 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        Icons.local_shipping_outlined,
-                        size: 16.sp,
-                        color: AppColors.primary,
-                      ),
+                      Icon(isFuel ? Icons.local_gas_station : Icons.local_shipping_outlined, size: 16.sp, color: AppColors.primary),
                       SizedBox(width: 4.w),
-                      Text(
-                        AppStrings.towService,
-                        style: getSemiBoldStyle(
-                          fontSize: FontSize.s12,
-                          color: AppColors.primary,
-                        ),
-                      ),
+                      Text(serviceLabel, style: getSemiBoldStyle(fontSize: FontSize.s12, color: AppColors.primary)),
                     ],
                   ),
                 ),
@@ -127,170 +111,59 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
 
             SizedBox(height: Insets.s16),
 
-            // Route: pickup + delivery with dotted line
-            IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Dotted line with dots
-                  Column(
-                    children: [
-                      Container(
-                        width: 12.w,
-                        height: 12.w,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.success,
-                        ),
-                      ),
-                      Expanded(
-                        child: CustomPaint(
-                          painter: _DottedLinePainter(color: AppColors.grey),
-                          size: Size(1.w, double.infinity),
-                        ),
-                      ),
-                      Container(
-                        width: 12.w,
-                        height: 12.w,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.error,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(width: Insets.s12),
-                  // Addresses
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              AppStrings.departurePoint,
-                              style: getRegularStyle(
-                                fontSize: FontSize.s12,
-                                color: AppColors.grey,
-                              ),
-                            ),
-                            SizedBox(height: 2.h),
-                            Text(
-                              'شارع التحلية، حي العليا، الرياض',
-                              style: getMediumStyle(
-                                fontSize: FontSize.s14,
-                                color: AppColors.black,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: Insets.s12),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              AppStrings.deliveryDestination,
-                              style: getRegularStyle(
-                                fontSize: FontSize.s12,
-                                color: AppColors.grey,
-                              ),
-                            ),
-                            SizedBox(height: 2.h),
-                            Text(
-                              'ورشة الأمانة، حي السلام، الرياض',
-                              style: getMediumStyle(
-                                fontSize: FontSize.s14,
-                                color: AppColors.black,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            SizedBox(height: Insets.s16),
-
-            // Divider
-            const Divider(color: AppColors.divider, height: 1),
-
-            SizedBox(height: Insets.s12),
-
-            // Car type + plate number
+            // Address
             Row(
               children: [
-                Icon(
-                  Icons.directions_car_outlined,
-                  size: 18.sp,
-                  color: AppColors.grey,
-                ),
+                Icon(Icons.location_on_outlined, size: 18.sp, color: AppColors.primary),
                 SizedBox(width: 6.w),
-                Text(
-                  'تويوتا كامري',
-                  style: getMediumStyle(
-                    fontSize: FontSize.s14,
-                    color: AppColors.black,
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: Insets.s8,
-                    vertical: 2.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.neutral400,
-                    borderRadius: BorderRadius.circular(AppRadius.s8),
-                  ),
-                  child: Text(
-                    'ب ك م  1234',
-                    style: getMediumStyle(
-                      fontSize: FontSize.s12,
-                      color: AppColors.darkGrey,
-                    ),
-                  ),
+                Expanded(
+                  child: Text(address, style: getMediumStyle(fontSize: FontSize.s14, color: AppColors.black), maxLines: 2, overflow: TextOverflow.ellipsis),
                 ),
               ],
             ),
 
+            if (isFuel && fuelInfo.isNotEmpty) ...[
+              SizedBox(height: Insets.s8),
+              Row(
+                children: [
+                  Icon(Icons.local_gas_station, size: 18.sp, color: AppColors.grey),
+                  SizedBox(width: 6.w),
+                  Text(fuelInfo, style: getRegularStyle(fontSize: FontSize.s14, color: AppColors.darkGrey)),
+                ],
+              ),
+            ],
+
+            if (plateNumber.isNotEmpty) ...[
+              SizedBox(height: Insets.s8),
+              Row(
+                children: [
+                  Icon(Icons.directions_car_outlined, size: 18.sp, color: AppColors.grey),
+                  SizedBox(width: 6.w),
+                  Text(plateNumber, style: getMediumStyle(fontSize: FontSize.s14, color: AppColors.black)),
+                ],
+              ),
+            ],
+
             SizedBox(height: Insets.s16),
+            const Divider(color: AppColors.divider, height: 1),
+            SizedBox(height: Insets.s12),
 
             // Action buttons
             Row(
               children: [
-                // Reject button
                 SizedBox(
                   height: 48.h,
                   child: OutlinedButton(
                     onPressed: widget.onReject,
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: AppColors.error),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(AppRadius.s12),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s12)),
                       padding: EdgeInsets.symmetric(horizontal: Insets.s16),
                     ),
-                    child: Text(
-                      AppStrings.rejectOrder,
-                      style: getSemiBoldStyle(
-                        fontSize: FontSize.s14,
-                        color: AppColors.error,
-                      ),
-                    ),
+                    child: Text(AppStrings.rejectOrder, style: getSemiBoldStyle(fontSize: FontSize.s14, color: AppColors.error)),
                   ),
                 ),
                 SizedBox(width: Insets.s12),
-                // Accept button with timer
                 Expanded(
                   child: SizedBox(
                     height: 48.h,
@@ -299,61 +172,19 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         foregroundColor: AppColors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(AppRadius.s12),
-                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s12)),
                         elevation: 0,
                       ),
-                      child: Text(
-                        '${AppStrings.acceptOrder} ($_secondsLeft ث)',
-                        style: getSemiBoldStyle(
-                          fontSize: FontSize.s16,
-                          color: AppColors.white,
-                        ),
-                      ),
+                      child: Text('${AppStrings.acceptOrder} ($_secondsLeft ث)', style: getSemiBoldStyle(fontSize: FontSize.s16, color: AppColors.white)),
                     ),
                   ),
                 ),
               ],
             ),
-
             SizedBox(height: Insets.s8),
           ],
         ),
       ),
     );
   }
-}
-
-/// Paints a vertical dotted line between the pickup and delivery dots.
-class _DottedLinePainter extends CustomPainter {
-  final Color color;
-
-  _DottedLinePainter({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1.5
-      ..strokeCap = StrokeCap.round;
-
-    const dashHeight = 4.0;
-    const dashGap = 4.0;
-    double startY = 0;
-    final centerX = size.width / 2;
-
-    while (startY < size.height) {
-      canvas.drawLine(
-        Offset(centerX, startY),
-        Offset(centerX, startY + dashHeight),
-        paint,
-      );
-      startY += dashHeight + dashGap;
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
