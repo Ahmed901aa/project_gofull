@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
+import 'package:project_gofull/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:project_gofull/features/auth/presentation/bloc/auth_event.dart';
+import 'package:project_gofull/features/auth/presentation/bloc/auth_state.dart';
 import '../widgets/confirmation_dialog.dart';
 import '../widgets/profile_menu_item.dart';
 import '../widgets/profile_user_card.dart';
@@ -12,7 +18,22 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final tokenStorage = sl<TokenStorage>();
+    final user = tokenStorage.getUser();
+    final userName = (user?['name'] as String?) ?? 'المستخدم';
+    final userPhone = (user?['phone'] as String?) ?? '';
+    final initials = userName.isNotEmpty ? userName[0] : '؟';
+
+    return BlocProvider(
+      create: (_) => sl<AuthBloc>(),
+      child: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthUnauthenticated) {
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil(Routes.login, (r) => false);
+          }
+        },
+        child: Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       body: Column(
         children: [
@@ -25,9 +46,9 @@ class ProfileScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ProfileUserCard(
-                    name: 'احمد احميد',
-                    phone: '0915909734',
-                    initials: 'أ . ل',
+                    name: userName,
+                    phone: userPhone,
+                    initials: initials,
                     onEdit: () => Navigator.pushNamed(context, Routes.editProfile),
                   ),
                   SizedBox(height: Insets.s16),
@@ -87,21 +108,24 @@ class ProfileScreen extends StatelessWidget {
           ),
         ],
       ),
+        ),
+      ),
     );
   }
 
   void _showLogoutDialog(BuildContext context) {
+    final authBloc = context.read<AuthBloc>();
     showDialog(
       context: context,
-      builder: (_) => ConfirmationDialog(
+      builder: (dialogCtx) => ConfirmationDialog(
         icon: Icons.logout_rounded,
         iconColor: AppColors.primary,
         title: 'تسجيل الخروج؟',
         subtitle: 'متأكد إنك عاوز تخرج من حسابك؟ تقدر ترجع لنا في أي وقت وتكمل توفير.',
         confirmLabel: 'تسجيل الخروج',
         onConfirm: () {
-          Navigator.pop(context);
-          // TODO: handle logout logic
+          Navigator.pop(dialogCtx); // close dialog
+          authBloc.add(const LogoutRequested());
         },
       ),
     );

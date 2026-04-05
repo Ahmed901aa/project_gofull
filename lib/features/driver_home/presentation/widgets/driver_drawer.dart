@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/strings_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/services/token_storage.dart';
 
 class DriverDrawer extends StatelessWidget {
   const DriverDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final user = sl<TokenStorage>().getUser();
+    final driverName = (user?['name'] as String?) ?? 'السائق';
+
     return Drawer(
       backgroundColor: AppColors.white,
       shape: const RoundedRectangleBorder(
@@ -44,7 +49,7 @@ class DriverDrawer extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'محمود عبدالعليم',
+                          driverName,
                           style: getBoldStyle(
                             fontSize: FontSize.s16,
                             color: AppColors.black,
@@ -196,13 +201,16 @@ class DriverDrawer extends StatelessWidget {
               icon: Icons.logout_rounded,
               title: AppStrings.logout,
               color: AppColors.error,
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  Routes.login,
-                  (route) => false,
-                );
+              onTap: () async {
+                Navigator.pop(context); // close drawer
+                await sl<TokenStorage>().clearAll();
+                if (context.mounted) {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    Routes.login,
+                    (route) => false,
+                  );
+                }
               },
             ),
             SizedBox(height: Sizes.s16),
