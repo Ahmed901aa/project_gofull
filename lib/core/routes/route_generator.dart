@@ -3,7 +3,7 @@ import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/auth/presentation/screens/splash_screen.dart';
 import 'package:project_gofull/features/auth/presentation/screens/login_screen.dart';
-import 'package:project_gofull/features/auth/presentation/screens/otp_screen.dart';
+import 'package:project_gofull/features/auth/presentation/screens/register_screen.dart';
 import 'package:project_gofull/features/fuel/presentation/screens/fuel_screen.dart';
 import 'package:project_gofull/features/fuel/presentation/screens/fuel_complete_screen.dart';
 import 'package:project_gofull/features/fuel/presentation/screens/trip_details_screen.dart';
@@ -47,9 +47,8 @@ class RouteGenerator {
         return _buildRoute(const SplashScreen(), settings);
       case Routes.login:
         return _buildRoute(const LoginScreen(), settings);
-      case Routes.otp:
-        final args = settings.arguments as OtpArgs;
-        return _buildRoute(OtpScreen(args: args), settings);
+      case Routes.register:
+        return _buildRoute(const RegisterScreen(), settings);
       case Routes.home:
         return _buildRoute(BottomNavShell(), settings);
       case Routes.fuelType:
