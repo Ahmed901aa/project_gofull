@@ -55,8 +55,12 @@ class DriverFoundArgs {
   final String vehicleValue;
   final bool showClose;
   final String? imagePath;
-  final String? nextRoute; // optional auto-navigate when ETA reaches 0
+  final String? nextRoute;
   final Object? nextRouteArgs;
+  final int? requestId; // real backend request ID for polling
+  final String? providerName;
+  final String? providerRating;
+  final String serviceType;
   const DriverFoundArgs({
     required this.title,
     required this.vehicleLabel,
@@ -65,6 +69,10 @@ class DriverFoundArgs {
     this.imagePath,
     this.nextRoute,
     this.nextRouteArgs,
+    this.requestId,
+    this.providerName,
+    this.providerRating,
+    this.serviceType = 'fuel_delivery',
   });
 }
 
@@ -75,6 +83,7 @@ class TowingStartedArgs {
   final String vehicleLabel;
   final String vehicleValue;
   final Object? nextRouteArgs;
+  final int? requestId;
   const TowingStartedArgs({
     this.title = 'السائق وصل لموقعك.',
     this.subtitle = 'يتم الآن تحميل وتأمين السيارة على الونش لبدء الرحلة إلى وجهتك.',
@@ -82,6 +91,7 @@ class TowingStartedArgs {
     this.vehicleLabel = 'نوع الونش',
     this.vehicleValue = 'ونش هيدروليك',
     this.nextRouteArgs,
+    this.requestId,
   });
 }
 
