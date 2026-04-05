@@ -8,46 +8,84 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
 import 'package:project_gofull/features/auth/presentation/widgets/phone_input_field.dart';
 
-class LoginFormCard extends StatelessWidget {
+class LoginFormCard extends StatefulWidget {
   final TextEditingController phoneController;
-  final String? phoneError;
+  final TextEditingController passwordController;
+  final String? errorMessage;
   final bool isLoading;
-  final VoidCallback onSendOtp;
+  final VoidCallback onLogin;
+  final VoidCallback onCreateAccount;
 
   const LoginFormCard({
     super.key,
     required this.phoneController,
-    required this.phoneError,
-    required this.onSendOtp,
+    required this.passwordController,
+    required this.errorMessage,
+    required this.onLogin,
+    required this.onCreateAccount,
     this.isLoading = false,
   });
 
   @override
+  State<LoginFormCard> createState() => _LoginFormCardState();
+}
+
+class _LoginFormCardState extends State<LoginFormCard> {
+  bool _obscurePassword = true;
+
+  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: Insets.s24, vertical: Insets.s32),
+      padding:
+          EdgeInsets.symmetric(horizontal: Insets.s24, vertical: Insets.s32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(AppStrings.login,
               textAlign: TextAlign.center,
-              style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s24)),
+              style: getBoldStyle(
+                  color: AppColors.black, fontSize: FontSize.s24)),
           SizedBox(height: Sizes.s8),
           Text(AppStrings.loginSubtitle,
               textAlign: TextAlign.center,
-              style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+              style: getRegularStyle(
+                  color: AppColors.grey, fontSize: FontSize.s14)),
           SizedBox(height: Sizes.s8),
           _buildCreateAccountRow(),
-          SizedBox(height: Sizes.s32),
+          SizedBox(height: Sizes.s24),
+
+          // ── Phone ──────────────────────────────────────────
           Text(AppStrings.phoneLabel,
-              style: getMediumStyle(color: AppColors.black, fontSize: FontSize.s16)),
+              style: getMediumStyle(
+                  color: AppColors.black, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
-          PhoneInputField(controller: phoneController, errorText: phoneError),
-          SizedBox(height: Sizes.s32),
+          PhoneInputField(
+              controller: widget.phoneController, errorText: null),
+          SizedBox(height: Sizes.s16),
+
+          // ── Password ───────────────────────────────────────
+          Text(AppStrings.passwordLabel,
+              style: getMediumStyle(
+                  color: AppColors.black, fontSize: FontSize.s16)),
+          SizedBox(height: Sizes.s8),
+          _buildPasswordField(),
+
+          // ── Error ──────────────────────────────────────────
+          if (widget.errorMessage != null) ...[
+            SizedBox(height: Sizes.s12),
+            Text(
+              widget.errorMessage!,
+              textAlign: TextAlign.center,
+              style: getRegularStyle(
+                  color: AppColors.error, fontSize: FontSize.s14),
+            ),
+          ],
+
+          SizedBox(height: Sizes.s24),
           AppButton(
-            text: AppStrings.sendOtp,
-            isLoading: isLoading,
-            onPressed: onSendOtp,
+            text: AppStrings.loginButton,
+            isLoading: widget.isLoading,
+            onPressed: widget.onLogin,
           ),
           SizedBox(height: Sizes.s24),
           Text(AppStrings.termsText,
@@ -58,17 +96,51 @@ class LoginFormCard extends StatelessWidget {
     );
   }
 
+  Widget _buildPasswordField() {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.lightGrey,
+        borderRadius: BorderRadius.circular(AppRadius.s12),
+        border: Border.all(color: AppColors.inputBorder),
+      ),
+      child: TextField(
+        controller: widget.passwordController,
+        obscureText: _obscurePassword,
+        textDirection: TextDirection.ltr,
+        textAlign: TextAlign.right,
+        style: getMediumStyle(color: AppColors.black, fontSize: 16.sp),
+        decoration: InputDecoration(
+          hintText: AppStrings.passwordHint,
+          hintStyle: getRegularStyle(color: AppColors.grey, fontSize: 16.sp),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(
+              horizontal: Insets.s12, vertical: Insets.s12),
+          prefixIcon: IconButton(
+            icon: Icon(
+              _obscurePassword ? Icons.visibility_off : Icons.visibility,
+              color: AppColors.grey,
+              size: 20.sp,
+            ),
+            onPressed: () =>
+                setState(() => _obscurePassword = !_obscurePassword),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildCreateAccountRow() => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           GestureDetector(
-            onTap: () {},
+            onTap: widget.onCreateAccount,
             child: Text(AppStrings.createAccount,
                 style: getSemiBoldStyle(
                     color: AppColors.primary, fontSize: FontSize.s14)),
           ),
           Text(' ${AppStrings.noAccount}',
-              style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+              style: getRegularStyle(
+                  color: AppColors.grey, fontSize: FontSize.s14)),
         ],
       );
 }
