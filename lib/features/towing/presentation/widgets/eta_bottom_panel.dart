@@ -21,12 +21,10 @@ class EtaBottomPanel extends StatelessWidget {
       ),
       padding: EdgeInsets.all(Insets.s16),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        RichText(
+        Text(
+          label ?? 'الوقت المتوقع للوصول: $etaFormatted دقيقة',
+          style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
           textDirection: TextDirection.rtl,
-          text: TextSpan(children: [
-            TextSpan(text: 'الوقت المتوقع للوصول: ', style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
-            TextSpan(text: '$etaFormatted دقيقة', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
-          ]),
         ),
         SizedBox(height: Insets.s8),
         ClipRRect(
