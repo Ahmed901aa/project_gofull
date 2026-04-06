@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/features/provider/domain/entities/provider_profile_entity.dart';
+import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
+import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
+import 'package:project_gofull/features/provider/presentation/bloc/provider_state.dart';
 
 class DriverProfileScreen extends StatelessWidget {
   const DriverProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
+    return BlocProvider(
+      create: (_) => sl<ProviderBloc>()..add(const LoadProfileEvent()),
+      child: Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: AppColors.scaffoldBg,
@@ -18,15 +26,21 @@ class DriverProfileScreen extends StatelessWidget {
           children: [
             _buildHeader(context),
             Expanded(
-              child: SingleChildScrollView(
+              child: BlocBuilder<ProviderBloc, ProviderState>(
+                builder: (context, state) {
+                  if (state is ProviderLoading) {
+                    return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+                  }
+                  final profile = state is ProfileLoaded ? state.profile : null;
+                  return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 padding: EdgeInsets.all(Insets.s16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _ProfileCard(),
+                    _ProfileCard(profile: profile),
                     SizedBox(height: Insets.s16),
-                    _InfoBoxesRow(),
+                    _InfoBoxesRow(profile: profile),
                     SizedBox(height: Insets.s20),
                     _SalarySection(),
                     SizedBox(height: Insets.s20),
