@@ -137,7 +137,7 @@ class _ProfileCard extends StatelessWidget {
                 ),
                 SizedBox(height: 2.h),
                 Text(
-                  'ID-4055',
+                  id,
                   style: getRegularStyle(
                       color: AppColors.white.withValues(alpha: 0.7),
                       fontSize: FontSize.s12),
