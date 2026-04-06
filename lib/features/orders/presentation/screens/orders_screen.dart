@@ -129,7 +129,8 @@ class OrdersScreen extends StatelessWidget {
       location: req.driverAddress,
       fuelType: req.fuelType,
       quantity: req.fuelQuantity != null ? '${req.fuelQuantity} لتر' : null,
-      plateNumber: req.plateNumber,
+      carType: '',
+      plateNumber: req.plateNumber ?? '',
     );
 
     return OrderCard(
