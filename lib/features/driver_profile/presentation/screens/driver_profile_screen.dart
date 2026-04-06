@@ -283,8 +283,14 @@ class _SalarySection extends StatelessWidget {
 // ── Vehicle Section ──────────────────────────────────────
 
 class _VehicleSection extends StatelessWidget {
+  final ProviderProfileEntity? profile;
+  const _VehicleSection({this.profile});
   @override
   Widget build(BuildContext context) {
+    final vehicleName = profile != null
+        ? '${profile!.vehicleMake} ${profile!.vehicleModel}'
+        : '—';
+    final plate = profile?.vehiclePlate ?? '—';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -296,9 +302,9 @@ class _VehicleSection extends StatelessWidget {
         SizedBox(height: Insets.s8),
         Row(
           children: [
-            Expanded(child: _vehicleBadge('نوع الونش', 'ونش هيدروليك')),
+            Expanded(child: _vehicleBadge('نوع المركبة', vehicleName)),
             SizedBox(width: Insets.s8),
-            Expanded(child: _vehicleBadge('رقم الوحدة', 'أ ب م - 3541')),
+            Expanded(child: _vehicleBadge('رقم اللوحة', plate)),
           ],
         ),
         SizedBox(height: Insets.s12),
