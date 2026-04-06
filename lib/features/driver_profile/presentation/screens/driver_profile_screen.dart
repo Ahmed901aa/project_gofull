@@ -42,18 +42,18 @@ class DriverProfileScreen extends StatelessWidget {
                     SizedBox(height: Insets.s16),
                     _InfoBoxesRow(profile: profile),
                     SizedBox(height: Insets.s20),
-                    _SalarySection(),
-                    SizedBox(height: Insets.s20),
-                    _VehicleSection(),
+                    _VehicleSection(profile: profile),
                     SizedBox(height: Insets.s20),
                     _DocumentsSection(),
                     SizedBox(height: Insets.s24),
                   ],
                 ),
-              ),
+              );
+                },
             ),
           ],
         ),
+      ),
       ),
     );
   }
