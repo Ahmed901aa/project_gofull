@@ -10,7 +10,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../widgets/support_phone_card.dart';
 
 class SupportScreen extends StatelessWidget {
-  const SupportScreen({super.key});
+  final bool showBack;
+  const SupportScreen({super.key, this.showBack = true});
 
   static const _phoneNumber = '0915909734';
 
@@ -29,7 +30,7 @@ class SupportScreen extends StatelessWidget {
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
-            const AppHeader(title: 'الدعم الفني'),
+            AppHeader(title: 'الدعم الفني', showBack: showBack),
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
