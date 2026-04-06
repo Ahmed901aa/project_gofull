@@ -51,7 +51,7 @@ class HomeHeader extends StatelessWidget {
                   ],
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.pushNamed(context, '/notifications'),
                   padding: EdgeInsets.zero,
                   constraints: BoxConstraints(minWidth: 24.w, minHeight: 24.w),
                   icon: Icon(Icons.notifications_none_outlined, color: AppColors.white, size: 24.sp),

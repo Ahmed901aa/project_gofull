@@ -31,6 +31,7 @@ class Routes {
   static const String support = '/support';
   static const String privacyPolicy = '/privacy-policy';
   static const String aboutApp = '/about-app';
+  static const String notifications = '/notifications';
 
   // ── Driver App Routes ──────────────────────────────────
   static const String driverHome = '/driver-home';

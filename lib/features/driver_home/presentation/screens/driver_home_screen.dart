@@ -260,7 +260,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                           const Spacer(),
                           DriverStatusToggle(isActive: _isActive, onChanged: _onStatusChanged),
                           const Spacer(),
-                          _MapControlButton(icon: Icons.notifications_outlined, onTap: () {}),
+                          _MapControlButton(icon: Icons.notifications_outlined, onTap: () => Navigator.pushNamed(context, Routes.notifications)),
                         ],
                       ),
                     ),

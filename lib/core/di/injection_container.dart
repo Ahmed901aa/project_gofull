@@ -52,6 +52,10 @@ import 'package:project_gofull/features/provider/domain/usecases/update_status_u
 import 'package:project_gofull/features/provider/domain/usecases/rate_driver_usecase.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 
+// Notifications
+import 'package:project_gofull/features/notifications/data/datasources/notification_data_source.dart';
+import 'package:project_gofull/features/notifications/presentation/bloc/notification_bloc.dart';
+
 final sl = GetIt.instance;
 
 /// Toggle this to switch between mock and real data sources.
@@ -154,6 +158,14 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => RejectRequestUseCase(sl()));
   sl.registerLazySingleton(() => UpdateStatusUseCase(sl()));
   sl.registerLazySingleton(() => RateDriverUseCase(sl()));
+  // ── Feature: Notifications ──────────────────────────────
+  sl.registerLazySingleton<NotificationDataSource>(
+    () => NotificationRemoteDataSource(sl()),
+  );
+  sl.registerFactory(
+    () => NotificationBloc(dataSource: sl()),
+  );
+
   sl.registerFactory(
     () => ProviderBloc(
       getProfile: sl(),

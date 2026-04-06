@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
+import 'package:project_gofull/core/network/api_client.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/strings_manager.dart';
@@ -31,6 +32,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
   GoogleMapController? _mapController;
   Set<Marker> _markers = {};
   Set<Polyline> _polylines = {};
+  Timer? _locationTimer;
 
   LatLng get _destination => LatLng(
         widget.args.lat ?? _defaultLat,
@@ -56,10 +58,32 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
     if (orderId != null && _isToCustomer) {
       sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'en_route'));
     }
+    _startLocationUpdates();
+  }
+
+  void _startLocationUpdates() {
+    _sendCurrentLocation();
+    _locationTimer = Timer.periodic(const Duration(seconds: 15), (_) {
+      _sendCurrentLocation();
+    });
+  }
+
+  Future<void> _sendCurrentLocation() async {
+    try {
+      final pos = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+        timeLimit: const Duration(seconds: 5),
+      );
+      sl<ApiClient>().dio.patch('/provider/profile/location', data: {
+        'latitude': pos.latitude,
+        'longitude': pos.longitude,
+      });
+    } catch (_) {}
   }
 
   @override
   void dispose() {
+    _locationTimer?.cancel();
     _mapController?.dispose();
     super.dispose();
   }
