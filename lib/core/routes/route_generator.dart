@@ -25,6 +25,8 @@ import 'package:project_gofull/features/profile/presentation/screens/faq_screen.
 import 'package:project_gofull/features/profile/presentation/screens/terms_screen.dart';
 import 'package:project_gofull/features/profile/presentation/screens/edit_profile_screen.dart';
 import 'package:project_gofull/features/profile/presentation/screens/support_screen.dart';
+import 'package:project_gofull/features/profile/presentation/screens/privacy_policy_screen.dart';
+import 'package:project_gofull/features/profile/presentation/screens/about_screen.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 // Driver App imports
 import 'package:project_gofull/features/driver_home/presentation/screens/driver_home_screen.dart';
@@ -104,6 +106,10 @@ class RouteGenerator {
         return _buildRoute(const EditProfileScreen(), settings);
       case Routes.support:
         return _buildRoute(const SupportScreen(), settings);
+      case Routes.privacyPolicy:
+        return _buildRoute(const PrivacyPolicyScreen(), settings);
+      case Routes.aboutApp:
+        return _buildRoute(const AboutScreen(), settings);
 
       // ── Driver App Routes ──────────────────────────────
       case Routes.driverHome:

@@ -86,13 +86,13 @@ class ProfileScreen extends StatelessWidget {
                   ProfileMenuItem(
                     icon: Icons.privacy_tip_outlined,
                     label: 'سياسة الخصوصية',
-                    onTap: () {},
+                    onTap: () => Navigator.pushNamed(context, Routes.privacyPolicy),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
                     icon: Icons.info_outline_rounded,
                     label: 'عن Go Full',
-                    onTap: () {},
+                    onTap: () => Navigator.pushNamed(context, Routes.aboutApp),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
