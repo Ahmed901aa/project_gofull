@@ -25,7 +25,7 @@ class _BottomNavShellState extends State<BottomNavShell> {
   final List<Widget> _screens = const [
     HomeScreen(),
     OrdersScreen(),
-    SupportScreen(),
+    SupportScreen(showBack: false),
     ProfileScreen(),
   ];
 
