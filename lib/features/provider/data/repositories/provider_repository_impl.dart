@@ -56,4 +56,8 @@ class ProviderRepositoryImpl implements ProviderRepository {
     required int requestId, required int rating, String? comment,
   }) =>
       _guard(() => dataSource.rateDriver(requestId: requestId, rating: rating, comment: comment));
+
+  @override
+  Future<Either<Failure, ServiceRequestEntity?>> getActiveRequest() =>
+      _guard(() => dataSource.getActiveRequest());
 }

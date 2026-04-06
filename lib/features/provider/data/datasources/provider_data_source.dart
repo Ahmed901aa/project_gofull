@@ -15,6 +15,7 @@ abstract class ProviderDataSource {
   Future<void> rejectRequest(int id);
   Future<ServiceRequestModel> updateStatus(int id, String status);
   Future<RatingModel> rateDriver({required int requestId, required int rating, String? comment});
+  Future<ServiceRequestModel?> getActiveRequest();
 }
 
 // ── Mock ───────────────────────────────────────────────────
@@ -96,6 +97,12 @@ class ProviderMockDataSource implements ProviderDataSource {
   Future<RatingModel> rateDriver({required int requestId, required int rating, String? comment}) async {
     await Future.delayed(const Duration(milliseconds: 500));
     return RatingModel(id: 1, requestId: requestId, rating: rating, comment: comment);
+  }
+
+  @override
+  Future<ServiceRequestModel?> getActiveRequest() async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    return null;
   }
 }
 
@@ -194,6 +201,18 @@ class ProviderRemoteDataSource implements ProviderDataSource {
       return RatingModel.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'فشل إرسال التقييم');
+    }
+  }
+
+  @override
+  Future<ServiceRequestModel?> getActiveRequest() async {
+    try {
+      final response = await apiClient.dio.get(ApiConstants.providerActiveRequest);
+      final data = response.data['data'];
+      if (data == null) return null;
+      return ServiceRequestModel.fromJson(data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'فشل تحميل الطلب النشط');
     }
   }
 }

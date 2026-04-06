@@ -43,6 +43,7 @@ import 'package:project_gofull/features/provider/data/repositories/provider_repo
 import 'package:project_gofull/features/provider/domain/repositories/provider_repository.dart';
 import 'package:project_gofull/features/provider/domain/usecases/get_profile_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/toggle_availability_usecase.dart';
+import 'package:project_gofull/features/provider/domain/usecases/get_active_request_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/get_pending_requests_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/get_history_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/accept_request_usecase.dart';
@@ -146,6 +147,7 @@ Future<void> initDependencies() async {
   );
   sl.registerLazySingleton(() => GetProfileUseCase(sl()));
   sl.registerLazySingleton(() => ToggleAvailabilityUseCase(sl()));
+  sl.registerLazySingleton(() => GetActiveRequestUseCase(sl()));
   sl.registerLazySingleton(() => GetPendingRequestsUseCase(sl()));
   sl.registerLazySingleton(() => GetHistoryUseCase(sl()));
   sl.registerLazySingleton(() => AcceptRequestUseCase(sl()));
@@ -156,6 +158,7 @@ Future<void> initDependencies() async {
     () => ProviderBloc(
       getProfile: sl(),
       toggleAvailability: sl(),
+      getActiveRequest: sl(),
       getPendingRequests: sl(),
       getHistory: sl(),
       acceptRequest: sl(),

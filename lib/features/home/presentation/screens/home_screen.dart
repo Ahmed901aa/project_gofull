@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
@@ -25,11 +26,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Timer? _refreshTimer;
+
   @override
   void initState() {
     super.initState();
     // Load home data (banners + active order) from backend
     context.read<AppConfigBloc>().add(const LoadHomeDataEvent());
+    // Poll every 5s so active order appears when driver accepts
+    _refreshTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+      if (mounted) context.read<AppConfigBloc>().add(const LoadHomeDataEvent());
+    });
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -89,8 +102,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SliverToBoxAdapter(child: ServiceCardsSection()),
                   ),
                   SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
-                  const SliverToBoxAdapter(child: RecentOrdersSection()),
-                  SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
+                  if (!hasActiveOrder) ...[
+                    const SliverToBoxAdapter(child: RecentOrdersSection()),
+                    SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
+                  ],
                   SliverToBoxAdapter(
                     child: banners.isNotEmpty
                         ? OffersSection(

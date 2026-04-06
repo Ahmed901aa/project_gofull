@@ -47,6 +47,10 @@ class UpdateStatusEvent extends ProviderEvent {
   List<Object?> get props => [id, status];
 }
 
+class LoadActiveRequestEvent extends ProviderEvent {
+  const LoadActiveRequestEvent();
+}
+
 class RateDriverEvent extends ProviderEvent {
   final int requestId;
   final int rating;

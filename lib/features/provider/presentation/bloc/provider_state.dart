@@ -70,6 +70,13 @@ class DriverRated extends ProviderState {
   List<Object?> get props => [rating];
 }
 
+class ActiveRequestLoaded extends ProviderState {
+  final ServiceRequestEntity? request;
+  const ActiveRequestLoaded(this.request);
+  @override
+  List<Object?> get props => [request];
+}
+
 class ProviderError extends ProviderState {
   final String message;
   const ProviderError(this.message);

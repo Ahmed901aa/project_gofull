@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/usecases/usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/accept_request_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/get_history_usecase.dart';
+import 'package:project_gofull/features/provider/domain/usecases/get_active_request_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/get_pending_requests_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/get_profile_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/rate_driver_usecase.dart';
@@ -14,6 +15,7 @@ import 'package:project_gofull/features/provider/presentation/bloc/provider_stat
 class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
   final GetProfileUseCase getProfile;
   final ToggleAvailabilityUseCase toggleAvailability;
+  final GetActiveRequestUseCase getActiveRequest;
   final GetPendingRequestsUseCase getPendingRequests;
   final GetHistoryUseCase getHistory;
   final AcceptRequestUseCase acceptRequest;
@@ -24,6 +26,7 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
   ProviderBloc({
     required this.getProfile,
     required this.toggleAvailability,
+    required this.getActiveRequest,
     required this.getPendingRequests,
     required this.getHistory,
     required this.acceptRequest,
@@ -32,6 +35,7 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     required this.rateDriver,
   }) : super(const ProviderInitial()) {
     on<LoadProfileEvent>(_onLoadProfile);
+    on<LoadActiveRequestEvent>(_onLoadActive);
     on<ToggleAvailabilityEvent>(_onToggle);
     on<LoadPendingRequestsEvent>(_onLoadPending);
     on<LoadHistoryEvent>(_onLoadHistory);
@@ -39,6 +43,11 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     on<RejectRequestEvent>(_onReject);
     on<UpdateStatusEvent>(_onUpdateStatus);
     on<RateDriverEvent>(_onRate);
+  }
+
+  Future<void> _onLoadActive(LoadActiveRequestEvent e, Emitter<ProviderState> emit) async {
+    final r = await getActiveRequest(const NoParams());
+    r.fold((_) {}, (req) => emit(ActiveRequestLoaded(req)));
   }
 
   Future<void> _onLoadProfile(LoadProfileEvent e, Emitter<ProviderState> emit) async {
