@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
-import 'package:project_gofull/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:project_gofull/features/auth/presentation/bloc/auth_event.dart';
-import 'package:project_gofull/features/auth/presentation/bloc/auth_state.dart';
 import '../widgets/confirmation_dialog.dart';
 import '../widgets/profile_menu_item.dart';
 import '../widgets/profile_user_card.dart';
@@ -24,16 +20,7 @@ class ProfileScreen extends StatelessWidget {
     final userPhone = (user?['phone'] as String?) ?? '';
     final initials = userName.isNotEmpty ? userName[0] : '؟';
 
-    return BlocProvider(
-      create: (_) => sl<AuthBloc>(),
-      child: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (state is AuthUnauthenticated) {
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil(Routes.login, (r) => false);
-          }
-        },
-        child: Scaffold(
+    return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       body: Column(
         children: [
@@ -49,13 +36,15 @@ class ProfileScreen extends StatelessWidget {
                     name: userName,
                     phone: userPhone,
                     initials: initials,
-                    onEdit: () => Navigator.pushNamed(context, Routes.editProfile),
+                    onEdit: () =>
+                        Navigator.pushNamed(context, Routes.editProfile),
                   ),
                   SizedBox(height: Insets.s16),
                   ProfileMenuItem(
                     icon: Icons.local_offer_outlined,
                     label: 'أكواد الخصم',
-                    onTap: () => Navigator.pushNamed(context, Routes.discountCodes),
+                    onTap: () =>
+                        Navigator.pushNamed(context, Routes.discountCodes),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
@@ -68,7 +57,8 @@ class ProfileScreen extends StatelessWidget {
                   ProfileMenuItem(
                     icon: Icons.headset_mic_outlined,
                     label: 'الدعم الفني',
-                    onTap: () => Navigator.pushNamed(context, Routes.support),
+                    onTap: () =>
+                        Navigator.pushNamed(context, Routes.support),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
@@ -80,19 +70,22 @@ class ProfileScreen extends StatelessWidget {
                   ProfileMenuItem(
                     icon: Icons.description_outlined,
                     label: 'الشروط والأحكام',
-                    onTap: () => Navigator.pushNamed(context, Routes.terms),
+                    onTap: () =>
+                        Navigator.pushNamed(context, Routes.terms),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
                     icon: Icons.privacy_tip_outlined,
                     label: 'سياسة الخصوصية',
-                    onTap: () => Navigator.pushNamed(context, Routes.privacyPolicy),
+                    onTap: () =>
+                        Navigator.pushNamed(context, Routes.privacyPolicy),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
                     icon: Icons.info_outline_rounded,
                     label: 'عن Go Full',
-                    onTap: () => Navigator.pushNamed(context, Routes.aboutApp),
+                    onTap: () =>
+                        Navigator.pushNamed(context, Routes.aboutApp),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
@@ -108,24 +101,26 @@ class ProfileScreen extends StatelessWidget {
           ),
         ],
       ),
-        ),
-      ),
     );
   }
 
   void _showLogoutDialog(BuildContext context) {
-    final authBloc = context.read<AuthBloc>();
     showDialog(
       context: context,
       builder: (dialogCtx) => ConfirmationDialog(
         icon: Icons.logout_rounded,
         iconColor: AppColors.primary,
         title: 'تسجيل الخروج؟',
-        subtitle: 'متأكد إنك عاوز تخرج من حسابك؟ تقدر ترجع لنا في أي وقت وتكمل توفير.',
+        subtitle:
+            'متأكد إنك عاوز تخرج من حسابك؟ تقدر ترجع لنا في أي وقت وتكمل توفير.',
         confirmLabel: 'تسجيل الخروج',
-        onConfirm: () {
+        onConfirm: () async {
           Navigator.pop(dialogCtx); // close dialog
-          authBloc.add(const LogoutRequested());
+          await sl<TokenStorage>().clearAll();
+          if (context.mounted) {
+            Navigator.of(context, rootNavigator: true)
+                .pushNamedAndRemoveUntil(Routes.login, (r) => false);
+          }
         },
       ),
     );
