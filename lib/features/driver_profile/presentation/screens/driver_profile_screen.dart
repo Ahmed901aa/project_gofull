@@ -49,7 +49,8 @@ class DriverProfileScreen extends StatelessWidget {
                   ],
                 ),
               );
-                },
+              },
+              ),
             ),
           ],
         ),
