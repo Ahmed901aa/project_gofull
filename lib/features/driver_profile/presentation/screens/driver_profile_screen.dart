@@ -192,15 +192,18 @@ class _ProfileCard extends StatelessWidget {
 // ── Info Boxes ───────────────────────────────────────────
 
 class _InfoBoxesRow extends StatelessWidget {
+  final ProviderProfileEntity? profile;
+  const _InfoBoxesRow({this.profile});
   @override
   Widget build(BuildContext context) {
+    final rating = profile?.averageRating.toStringAsFixed(1) ?? '-';
     return Row(
       children: [
-        Expanded(child: _infoBox('التقييم', '4.8', Icons.star_rounded)),
+        Expanded(child: _infoBox('التقييم', rating, Icons.star_rounded)),
         SizedBox(width: Insets.s12),
         Expanded(
             child: _infoBox(
-                'تاريخ الانضمام', 'منذ 2024', Icons.calendar_today_rounded)),
+                'إجمالي التقييمات', '${profile?.totalRatings ?? 0}', Icons.reviews_rounded)),
       ],
     );
   }
