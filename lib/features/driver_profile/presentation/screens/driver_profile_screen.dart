@@ -158,7 +158,7 @@ class _ProfileCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppRadius.s16),
                   ),
                   child: Text(
-                    'غير نشط',
+                    isOnline ? 'نشط' : 'غير نشط',
                     style: getMediumStyle(
                         color: AppColors.gold, fontSize: FontSize.s12),
                   ),
