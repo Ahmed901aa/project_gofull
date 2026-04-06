@@ -29,6 +29,8 @@ class Routes {
   static const String terms = '/terms';
   static const String editProfile = '/edit-profile';
   static const String support = '/support';
+  static const String privacyPolicy = '/privacy-policy';
+  static const String aboutApp = '/about-app';
 
   // ── Driver App Routes ──────────────────────────────────
   static const String driverHome = '/driver-home';

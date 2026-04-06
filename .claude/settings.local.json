@@ -46,7 +46,8 @@
       "Bash(kill %1)",
       "Bash(find /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/fuel/presentation -type f -name *.dart)",
       "Bash(find /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/towing/presentation/screens -type f -name *.dart)",
-      "Bash(git worktree:*)"
+      "Bash(git worktree:*)",
+      "Bash(xargs basename:*)"
     ]
   }
 }
