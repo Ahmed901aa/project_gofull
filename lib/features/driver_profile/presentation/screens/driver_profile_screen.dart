@@ -144,7 +144,7 @@ class _ProfileCard extends StatelessWidget {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  'سائق ونش',
+                  role,
                   style: getRegularStyle(
                       color: AppColors.white, fontSize: FontSize.s14),
                 ),
