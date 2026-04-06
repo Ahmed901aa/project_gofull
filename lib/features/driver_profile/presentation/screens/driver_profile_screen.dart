@@ -95,8 +95,14 @@ class DriverProfileScreen extends StatelessWidget {
 // ── Profile Card ─────────────────────────────────────────
 
 class _ProfileCard extends StatelessWidget {
+  final ProviderProfileEntity? profile;
+  const _ProfileCard({this.profile});
   @override
   Widget build(BuildContext context) {
+    final name = profile?.userName ?? 'السائق';
+    final id = profile != null ? 'ID-${profile!.id}' : '';
+    final role = profile?.isTowingProvider == true ? 'سائق ونش' : 'سائق إمداد وقود';
+    final isOnline = profile?.isAvailable ?? false;
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
