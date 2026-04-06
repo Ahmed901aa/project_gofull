@@ -5,28 +5,12 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
-import 'package:project_gofull/core/widgets/app_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DriverSupportScreen extends StatefulWidget {
+class DriverSupportScreen extends StatelessWidget {
   const DriverSupportScreen({super.key});
 
-  @override
-  State<DriverSupportScreen> createState() => _DriverSupportScreenState();
-}
-
-class _DriverSupportScreenState extends State<DriverSupportScreen> {
-  final _phoneController = TextEditingController();
-  final _notesController = TextEditingController();
-  static const _maxNotes = 80;
   static const _supportPhone = '+96545345368';
-
-  @override
-  void dispose() {
-    _phoneController.dispose();
-    _notesController.dispose();
-    super.dispose();
-  }
 
   Future<void> _callSupport() async {
     final uri = Uri.parse('tel:$_supportPhone');
@@ -35,7 +19,7 @@ class _DriverSupportScreenState extends State<DriverSupportScreen> {
     }
   }
 
-  void _copyPhone() {
+  void _copyPhone(BuildContext context) {
     Clipboard.setData(const ClipboardData(text: _supportPhone));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -47,25 +31,6 @@ class _DriverSupportScreenState extends State<DriverSupportScreen> {
         duration: const Duration(seconds: 2),
       ),
     );
-  }
-
-  void _submitInquiry() {
-    // replace with API call
-    if (_notesController.text.trim().isEmpty) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'تم إرسال استفسارك بنجاح',
-          style: getRegularStyle(color: AppColors.white, fontSize: FontSize.s14),
-        ),
-        backgroundColor: AppColors.success,
-        duration: const Duration(seconds: 2),
-      ),
-    );
-    _phoneController.clear();
-    _notesController.clear();
-    setState(() {});
   }
 
   @override
@@ -84,26 +49,12 @@ class _DriverSupportScreenState extends State<DriverSupportScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Illustration placeholder
                     _SupportIllustration(),
                     SizedBox(height: Insets.s24),
-
-                    // ── Direct Call Section ──
                     _DirectCallSection(
                       onCall: _callSupport,
-                      onCopy: _copyPhone,
+                      onCopy: () => _copyPhone(context),
                     ),
-                    SizedBox(height: Insets.s24),
-
-                    // ── Inquiry Form Section ──
-                    _InquiryFormSection(
-                      phoneController: _phoneController,
-                      notesController: _notesController,
-                      maxNotes: _maxNotes,
-                      onNotesChanged: () => setState(() {}),
-                      onSubmit: _submitInquiry,
-                    ),
-
                     SizedBox(height: Insets.s32),
                   ],
                 ),
@@ -267,142 +218,3 @@ class _DirectCallSection extends StatelessWidget {
   }
 }
 
-// ── Inquiry Form Section ─────────────────────────────────
-
-class _InquiryFormSection extends StatelessWidget {
-  final TextEditingController phoneController;
-  final TextEditingController notesController;
-  final int maxNotes;
-  final VoidCallback onNotesChanged;
-  final VoidCallback onSubmit;
-
-  const _InquiryFormSection({
-    required this.phoneController,
-    required this.notesController,
-    required this.maxNotes,
-    required this.onNotesChanged,
-    required this.onSubmit,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // Description
-        Text(
-          'يمكنك أيضاً تفاصيل استفسارات أو الشكوى، وسنقوم بالرد عليك في أقرب وقت ممكن.',
-          style: getRegularStyle(
-              color: AppColors.darkGrey, fontSize: FontSize.s14)
-              .copyWith(height: 1.6),
-        ),
-        SizedBox(height: Insets.s16),
-
-        // Phone input
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.lightGrey,
-            borderRadius: BorderRadius.circular(AppRadius.s12),
-            border: Border.all(color: AppColors.inputBorder),
-          ),
-          child: Row(
-            children: [
-              // Country code
-              Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: Insets.s12, vertical: Insets.s12),
-                decoration: const BoxDecoration(
-                  border: Border(
-                    left: BorderSide(color: AppColors.inputBorder, width: 1),
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '965+',
-                      style: getMediumStyle(
-                          color: AppColors.black, fontSize: FontSize.s16),
-                    ),
-                    SizedBox(width: 6.w),
-                    Text('🇰🇼', style: TextStyle(fontSize: 20.sp)),
-                  ],
-                ),
-              ),
-              // Phone input field
-              Expanded(
-                child: TextField(
-                  controller: phoneController,
-                  keyboardType: TextInputType.phone,
-                  textDirection: TextDirection.ltr,
-                  textAlign: TextAlign.right,
-                  style: getMediumStyle(
-                      color: AppColors.black, fontSize: FontSize.s16),
-                  decoration: InputDecoration(
-                    hintText: 'أدخل رقم الجوال',
-                    hintStyle: getRegularStyle(
-                        color: AppColors.grey, fontSize: FontSize.s16),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(
-                        horizontal: Insets.s12, vertical: Insets.s12),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: Insets.s16),
-
-        // Notes text area
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.lightGrey,
-            borderRadius: BorderRadius.circular(AppRadius.s12),
-            border: Border.all(color: AppColors.inputBorder),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                controller: notesController,
-                maxLines: 4,
-                maxLength: maxNotes,
-                onChanged: (_) => onNotesChanged(),
-                style: getMediumStyle(
-                    color: AppColors.black, fontSize: FontSize.s14),
-                decoration: InputDecoration(
-                  hintText: 'اكتب هنا أي تفاصيل إضافية تود مشاركتها...',
-                  hintStyle: getRegularStyle(
-                      color: AppColors.grey, fontSize: FontSize.s14),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(Insets.s12),
-                  counterText: '',
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                    Insets.s12, 0, Insets.s12, Insets.s8),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '${notesController.text.length}/$maxNotes',
-                    style: getRegularStyle(
-                        color: AppColors.grey, fontSize: FontSize.s12),
-                    textDirection: TextDirection.ltr,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: Insets.s20),
-
-        // Submit button
-        AppButton(
-          text: 'إرسال',
-          onPressed: onSubmit,
-        ),
-      ],
-    );
-  }
-}

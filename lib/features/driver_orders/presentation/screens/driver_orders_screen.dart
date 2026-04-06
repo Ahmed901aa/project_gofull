@@ -138,8 +138,6 @@ class _OrderCard extends StatelessWidget {
           children: [
             Row(children: [
               _ServiceBadge(isTow: isTow),
-              const Spacer(),
-              _StatusBadge(status: request.status, isRated: request.isRated),
             ]),
             SizedBox(height: Insets.s12),
             Row(children: [

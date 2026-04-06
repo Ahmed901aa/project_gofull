@@ -65,8 +65,6 @@ class OrdersScreen extends StatelessWidget {
                   color: AppColors.grey, fontSize: FontSize.s16)));
     }
 
-    final active = requests.where((r) => r.isActive).toList();
-    final past = requests.where((r) => !r.isActive).toList();
     final config = context.read<AppConfigBloc>().state;
     final cur = config.currency;
 
@@ -82,24 +80,11 @@ class OrdersScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (active.isNotEmpty) ...[
-              SizedBox(height: Sizes.s8),
-              _sectionTitle('الطلب الحالي'),
-              SizedBox(height: Sizes.s8),
-              ...active.map((r) => Padding(
-                    padding: EdgeInsets.only(bottom: Insets.s16),
-                    child: _buildCard(context, r, cur),
-                  )),
-            ],
-            if (past.isNotEmpty) ...[
-              SizedBox(height: Sizes.s8),
-              _sectionTitle('الطلبات السابقة'),
-              SizedBox(height: Sizes.s8),
-              ...past.map((r) => Padding(
-                    padding: EdgeInsets.only(bottom: Insets.s16),
-                    child: _buildCard(context, r, cur),
-                  )),
-            ],
+            SizedBox(height: Sizes.s8),
+            ...requests.map((r) => Padding(
+                  padding: EdgeInsets.only(bottom: Insets.s16),
+                  child: _buildCard(context, r, cur),
+                )),
             SizedBox(height: Sizes.s16),
           ],
         ),
@@ -140,11 +125,6 @@ class OrdersScreen extends StatelessWidget {
               TripDetailsArgs(orderId: req.id.toString(), status: status)),
     );
   }
-
-  Widget _sectionTitle(String title) => Text(title,
-      style: getBoldStyle(
-          color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-      textAlign: TextAlign.right);
 
   Widget _buildHeader(BuildContext context) => Container(
         color: AppColors.white,

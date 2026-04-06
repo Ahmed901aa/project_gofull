@@ -165,12 +165,12 @@ class DriverTaskCompleteScreen extends StatelessWidget {
           border: Border(top: BorderSide(color: Color(0xFFF5F5F5))),
         ),
         child: AppButton(
-          text: AppStrings.rateCustomer,
+          text: 'العودة للرئيسية',
           onPressed: () {
-            Navigator.pushReplacementNamed(
+            Navigator.pushNamedAndRemoveUntil(
               context,
-              Routes.driverRateCustomer,
-              arguments: DriverRateArgs(orderId: args.orderId),
+              Routes.driverHome,
+              (route) => false,
             );
           },
         ),

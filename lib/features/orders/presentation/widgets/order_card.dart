@@ -10,7 +10,6 @@ import 'package:project_gofull/features/home/presentation/widgets/order_route_co
 import 'package:project_gofull/features/orders/models/order_data.dart';
 import 'order_detail_row.dart';
 import 'service_badge.dart';
-import 'status_badge.dart';
 
 class OrderCard extends StatelessWidget {
   final OrderData order;
@@ -35,7 +34,7 @@ class OrderCard extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [ServiceBadge(serviceType: order.serviceType), StatusBadge(status: order.status)],
+                children: [ServiceBadge(serviceType: order.serviceType)],
               ),
             ),
             SizedBox(height: Sizes.s8),
