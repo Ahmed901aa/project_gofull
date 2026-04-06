@@ -13,6 +13,7 @@ import 'package:project_gofull/features/home/presentation/widgets/home_header.da
 import 'package:project_gofull/features/home/presentation/widgets/offers_section.dart';
 import 'package:project_gofull/features/home/presentation/widgets/offers_shimmer.dart';
 import 'package:project_gofull/features/home/presentation/widgets/promo_banner.dart';
+import 'package:project_gofull/features/home/presentation/widgets/recent_orders_section.dart';
 import 'package:project_gofull/features/home/presentation/widgets/service_cards_section.dart';
 import 'app_search_screen.dart';
 
@@ -87,6 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     sliver:
                         const SliverToBoxAdapter(child: ServiceCardsSection()),
                   ),
+                  SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
+                  const SliverToBoxAdapter(child: RecentOrdersSection()),
                   SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
                   SliverToBoxAdapter(
                     child: banners.isNotEmpty
