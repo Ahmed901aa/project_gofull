@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/strings_manager.dart';
 import 'package:project_gofull/features/home/presentation/screens/home_screen.dart';
 import 'package:project_gofull/features/orders/presentation/screens/orders_screen.dart';
 import 'package:project_gofull/features/profile/presentation/screens/profile_screen.dart';
+import 'package:project_gofull/features/profile/presentation/screens/support_screen.dart';
 import '../widgets/nav_item.dart';
 
 class BottomNavShell extends StatefulWidget {
@@ -24,6 +25,7 @@ class _BottomNavShellState extends State<BottomNavShell> {
   final List<Widget> _screens = const [
     HomeScreen(),
     OrdersScreen(),
+    SupportScreen(),
     ProfileScreen(),
   ];
 
@@ -40,13 +42,38 @@ class _BottomNavShellState extends State<BottomNavShell> {
         child: SafeArea(
           top: false,
           child: Padding(
-            padding: EdgeInsets.only(top: 12.h, left: 32.w, right: 32.w),
+            padding: EdgeInsets.only(top: 12.h, left: 24.w, right: 24.w),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                NavItem(icon: Icons.home_rounded, label: AppStrings.home, index: 0, currentIndex: _currentIndex, onTap: (i) => setState(() => _currentIndex = i)),
-                NavItem(icon: Icons.receipt_long_rounded, label: AppStrings.myOrders, index: 1, currentIndex: _currentIndex, onTap: (i) => setState(() => _currentIndex = i)),
-                NavItem(icon: Icons.person_outline_rounded, label: AppStrings.myAccount, index: 2, currentIndex: _currentIndex, onTap: (i) => setState(() => _currentIndex = i)),
+                NavItem(
+                  icon: Icons.home_rounded,
+                  label: AppStrings.home,
+                  index: 0,
+                  currentIndex: _currentIndex,
+                  onTap: (i) => setState(() => _currentIndex = i),
+                ),
+                NavItem(
+                  icon: Icons.receipt_long_rounded,
+                  label: AppStrings.myOrders,
+                  index: 1,
+                  currentIndex: _currentIndex,
+                  onTap: (i) => setState(() => _currentIndex = i),
+                ),
+                NavItem(
+                  icon: Icons.headset_mic_outlined,
+                  label: 'الدعم',
+                  index: 2,
+                  currentIndex: _currentIndex,
+                  onTap: (i) => setState(() => _currentIndex = i),
+                ),
+                NavItem(
+                  icon: Icons.person_outline_rounded,
+                  label: AppStrings.myAccount,
+                  index: 3,
+                  currentIndex: _currentIndex,
+                  onTap: (i) => setState(() => _currentIndex = i),
+                ),
               ],
             ),
           ),
