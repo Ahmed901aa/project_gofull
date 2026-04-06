@@ -131,7 +131,7 @@ class _ProfileCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'محمود عبدالعليم',
+                  name,
                   style: getBoldStyle(
                       color: AppColors.white, fontSize: FontSize.s18),
                 ),
