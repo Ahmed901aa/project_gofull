@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/strings_manager.dart';
@@ -10,6 +11,8 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
+import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
+import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 
 class DriverDocumentationScreen extends StatefulWidget {
   final DriverDocumentationArgs args;
@@ -52,7 +55,13 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
   }
 
   void _onContinue() {
+    final orderId = int.tryParse(widget.args.orderId);
+
     if (_isPickup) {
+      // Update status to 'in_progress' after pickup documentation
+      if (orderId != null) {
+        sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'in_progress'));
+      }
       Navigator.pushReplacementNamed(
         context,
         Routes.driverNavigate,
@@ -68,7 +77,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
         Routes.driverCollectPayment,
         arguments: DriverCollectPaymentArgs(
           orderId: widget.args.orderId,
-          amount: 985.00,
+          amount: 0, // will be fetched from request data
         ),
       );
     }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
@@ -8,7 +9,8 @@ import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/rating_notes_section.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/rating_stars_section.dart';
-import 'package:project_gofull/features/orders/services/rating_service.dart';
+import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
+import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 
 class RatingScreen extends StatefulWidget {
   final RatingArgs? args;
@@ -87,10 +89,16 @@ class _RatingScreenState extends State<RatingScreen> {
         child: SizedBox(
           height: 48.h, width: double.infinity,
           child: ElevatedButton(
-            onPressed: _rating == 0 ? null : () async {
-              final orderId = widget.args?.orderId;
-              if (orderId != null) await RatingService.markOrderRated(orderId);
-              if (context.mounted) Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false);
+            onPressed: _rating == 0 ? null : () {
+              final orderId = int.tryParse(widget.args?.orderId ?? '');
+              if (orderId != null) {
+                sl<RequestBloc>().add(RateProviderEvent(
+                  requestId: orderId,
+                  rating: _rating,
+                  comment: _notesController.text.isNotEmpty ? _notesController.text : null,
+                ));
+              }
+              Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary, disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.4),

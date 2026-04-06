@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/strings_manager.dart';
@@ -8,6 +9,8 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
+import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
+import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 
 class DriverCollectPaymentScreen extends StatelessWidget {
   final DriverCollectPaymentArgs args;
@@ -211,6 +214,11 @@ class DriverCollectPaymentScreen extends StatelessWidget {
         child: AppButton(
           text: AppStrings.confirmReceived,
           onPressed: () {
+            // Update status to 'completed'
+            final orderId = int.tryParse(args.orderId);
+            if (orderId != null) {
+              sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'completed'));
+            }
             Navigator.pushReplacementNamed(
               context,
               Routes.driverTaskComplete,

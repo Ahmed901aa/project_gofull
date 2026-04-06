@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/strings_manager.dart';
@@ -11,6 +12,8 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
+import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
+import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DriverNavigateScreen extends StatefulWidget {
@@ -48,6 +51,11 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
   void initState() {
     super.initState();
     _setupMarkers();
+    // Update status to en_route when navigating to customer
+    final orderId = int.tryParse(widget.args.orderId);
+    if (orderId != null && _isToCustomer) {
+      sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'en_route'));
+    }
   }
 
   @override
@@ -99,6 +107,11 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
   }
 
   void _onArrivedTapped() {
+    // Update status to 'arrived'
+    final orderId = int.tryParse(widget.args.orderId);
+    if (orderId != null) {
+      sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'arrived'));
+    }
     Navigator.pushReplacementNamed(
       context,
       Routes.driverDocumentation,
