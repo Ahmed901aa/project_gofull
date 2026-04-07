@@ -10,6 +10,7 @@ import 'driver_details_card.dart';
 class DriverFoundBody extends StatelessWidget {
   final String imagePath;
   final String title;
+  final String subtitle;
   final String driverName;
   final String driverRating;
   final String driverReviewCount;
@@ -21,6 +22,7 @@ class DriverFoundBody extends StatelessWidget {
     super.key,
     required this.imagePath,
     required this.title,
+    this.subtitle = 'وافق السائق على طلبك وهو الآن في طريقه إليك.',
     required this.driverName,
     required this.driverRating,
     required this.driverReviewCount,
@@ -43,7 +45,7 @@ class DriverFoundBody extends StatelessWidget {
               SizedBox(height: Insets.s16),
               Text(title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
               SizedBox(height: 4.h),
-              Text('وافق السائق على طلبك وهو الآن في طريقه إليك.', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.center),
+              Text(subtitle, style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.center),
               SizedBox(height: Insets.s16),
               DriverDetailsCard(
                 name: driverName,
