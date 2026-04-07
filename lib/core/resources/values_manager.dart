@@ -5,6 +5,7 @@ class Insets {
   static double s4 = 4.0.w;
   static double s8 = 8.0.w;
   static double s12 = 12.0.w;
+  static double s14 = 14.0.w;
   static double s16 = 16.0.w;
   static double s20 = 20.0.w;
   static double s24 = 24.0.w;
