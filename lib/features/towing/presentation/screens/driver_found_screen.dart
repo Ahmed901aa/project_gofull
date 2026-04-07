@@ -24,6 +24,7 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
   final _polling = OrderPollingService();
   late final RequestBloc _requestBloc;
   bool _navigated = false;
+  String _panelLabel = 'في انتظار تحرك مزود الخدمة';
 
   DriverFoundArgs get _args =>
       widget.args ??
@@ -62,30 +63,39 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
     final request = state.request;
     final isFuel = _args.serviceType == 'fuel_delivery';
 
+    // Handle cancellation — go back
+    if (request.status == 'cancelled') {
+      _navigated = true;
+      _polling.stop();
+      if (mounted) Navigator.pop(context);
+      return;
+    }
+
     // Navigate when status advances beyond 'accepted'
     if (request.status == 'en_route' ||
         request.status == 'arrived' ||
         request.status == 'in_progress' ||
         request.status == 'completed') {
-      _navigated = true;
-      _polling.stop();
 
       if (isFuel) {
-        // For fuel: if arrived or beyond, go to refueling screen
-        // if en_route, still show service arrived (supplier on the way → refueling)
-        Navigator.pushReplacementNamed(
-          context,
-          Routes.serviceArrived,
-          arguments: ServiceArrivedArgs(
-            requestId: _args.requestId,
-            title: (request.status == 'arrived' || request.status == 'in_progress')
-                ? 'جاري تعبئة الوقود'
-                : 'مزود الوقود في الطريق إليك',
-            subtitle: (request.status == 'arrived' || request.status == 'in_progress')
-                ? 'مزود الخدمة يقوم الآن بتعبئة وقود سيارتك. يرجى الانتظار حتى اكتمال العملية.'
-                : 'مزود الخدمة في طريقه إلى موقعك. يرجى الانتظار.',
-          ),
-        );
+        // en_route: stay on this screen (supplier on the way), keep polling
+        if (request.status == 'en_route') {
+          setState(() => _panelLabel = 'مزود الوقود في الطريق إليك');
+          return;
+        }
+
+        // arrived/in_progress/completed: navigate to refueling or complete
+        _navigated = true;
+        _polling.stop();
+        if (request.status == 'completed') {
+          Navigator.pushReplacementNamed(context, Routes.fuelComplete);
+        } else {
+          Navigator.pushReplacementNamed(
+            context,
+            Routes.serviceArrived,
+            arguments: ServiceArrivedArgs(requestId: _args.requestId),
+          );
+        }
       } else {
         Navigator.pushReplacementNamed(
           context,
@@ -127,10 +137,10 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
                   vehicleValue: _args.vehicleValue,
                 ),
               ),
-              const EtaBottomPanel(
+              EtaBottomPanel(
                 etaFormatted: '...',
                 progress: 0,
-                label: 'في انتظار تحرك مزود الخدمة',
+                label: _panelLabel,
               ),
               SizedBox(height: MediaQuery.of(context).padding.bottom),
             ],

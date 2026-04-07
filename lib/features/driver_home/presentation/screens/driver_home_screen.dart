@@ -100,15 +100,24 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       setState(() => _pendingRequest = state.requests.first);
     } else if (state is RequestAccepted) {
       _polling.stop();
+      final req = state.request;
       setState(() {
-        _activeRequest = state.request;
+        _activeRequest = req;
         _pendingRequest = null;
       });
-      // Navigate to order details with real data
+      // Skip order details — go directly to navigate
       Navigator.pushNamed(
         context,
-        Routes.driverOrderDetails,
-        arguments: _buildOrderDetailsArgs(state.request),
+        Routes.driverNavigate,
+        arguments: DriverNavigateArgs(
+          orderId: req.id.toString(),
+          address: req.driverAddress ?? '',
+          lat: double.tryParse(req.driverLatitude),
+          lng: double.tryParse(req.driverLongitude),
+          navigationType: 'to_customer',
+          serviceType: req.isFuelDelivery ? 'fuel' : 'towing',
+          amount: double.tryParse(req.total ?? '0') ?? 0,
+        ),
       );
     } else if (state is RequestRejected) {
       setState(() => _pendingRequest = null);
@@ -162,8 +171,16 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     final orderId = req.id.toString();
     switch (req.status) {
       case 'accepted':
-        Navigator.pushNamed(context, Routes.driverOrderDetails,
-            arguments: _buildOrderDetailsArgs(req));
+        Navigator.pushNamed(context, Routes.driverNavigate,
+            arguments: DriverNavigateArgs(
+              orderId: orderId,
+              address: req.driverAddress ?? '',
+              lat: double.tryParse(req.driverLatitude),
+              lng: double.tryParse(req.driverLongitude),
+              navigationType: 'to_customer',
+              serviceType: req.isFuelDelivery ? 'fuel' : 'towing',
+              amount: double.tryParse(req.total ?? '0') ?? 0,
+            ));
         break;
       case 'en_route':
         Navigator.pushNamed(context, Routes.driverNavigate,
