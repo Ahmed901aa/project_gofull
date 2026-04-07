@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
-import 'dart:math';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
@@ -50,8 +49,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     _providerBloc = sl<ProviderBloc>();
     // Check for any active/in-progress order (resumes after back navigation)
     _providerBloc.add(const LoadActiveRequestEvent());
-    _activeRequestTimer = Timer.periodic(const Duration(seconds: 10), (_) {
-      if (mounted && _activeRequest != null) {
+    _activeRequestTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+      if (mounted) {
         _providerBloc.add(const LoadActiveRequestEvent());
       }
     });
@@ -105,8 +104,10 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             (route) => route.settings.name == Routes.driverHome || route.isFirst);
         _showCancelledSnackBar();
       }
-    } else if (state is PendingRequestsLoaded && state.requests.isNotEmpty) {
-      setState(() => _pendingRequest = state.requests.first);
+    } else if (state is PendingRequestsLoaded) {
+      setState(() {
+        _pendingRequest = state.requests.isNotEmpty ? state.requests.first : null;
+      });
     } else if (state is RequestAccepted) {
       _polling.stop();
       final req = state.request;
@@ -142,38 +143,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         );
       }
     }
-  }
-
-  double _calcDistance(ServiceRequestEntity req) {
-    final destLat = double.tryParse(req.destinationLatitude ?? '');
-    final destLng = double.tryParse(req.destinationLongitude ?? '');
-    final srcLat = double.tryParse(req.driverLatitude);
-    final srcLng = double.tryParse(req.driverLongitude);
-    if (destLat == null || destLng == null || srcLat == null || srcLng == null) return 0;
-    const r = 6371.0; // Earth radius in km
-    final dLat = (destLat - srcLat) * pi / 180;
-    final dLng = (destLng - srcLng) * pi / 180;
-    final a = sin(dLat / 2) * sin(dLat / 2) +
-        cos(srcLat * pi / 180) * cos(destLat * pi / 180) *
-        sin(dLng / 2) * sin(dLng / 2);
-    return r * 2 * atan2(sqrt(a), sqrt(1 - a));
-  }
-
-  DriverOrderDetailsArgs _buildOrderDetailsArgs(ServiceRequestEntity req) {
-    return DriverOrderDetailsArgs(
-      orderId: req.id.toString(),
-      serviceType: req.isFuelDelivery ? 'fuel' : 'towing',
-      customerName: (req.driverInfo?['name'] as String?) ?? 'العميل',
-      customerPhone: (req.driverInfo?['phone'] as String?) ?? '',
-      pickupAddress: req.driverAddress ?? '',
-      deliveryAddress: req.destinationAddress ?? '',
-      carType: '',
-      plateNumber: req.plateNumber ?? '',
-      distance: _calcDistance(req),
-      amount: double.tryParse(req.total ?? '0') ?? 0,
-      fuelType: req.fuelType,
-      fuelQuantity: req.fuelQuantity,
-    );
   }
 
   void _resumeActiveOrder(ServiceRequestEntity req) {
