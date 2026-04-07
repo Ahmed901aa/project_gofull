@@ -80,7 +80,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       _polling.start(
         interval: const Duration(seconds: 5),
         callback: () async {
-          if (_isActive && _pendingRequest == null) {
+          if (_isActive) {
             _providerBloc.add(const LoadPendingRequestsEvent());
           }
         },
@@ -331,6 +331,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   left: 0, right: 0, bottom: 0,
                   child: _pendingRequest != null
                       ? OrderPopupCard(
+                          key: ValueKey(_pendingRequest!.id),
                           request: _pendingRequest,
                           onAccept: _onAcceptOrder,
                           onReject: _onRejectOrder,

@@ -93,7 +93,10 @@ class _SearchingScreenState extends State<SearchingScreen> {
     if (widget.args.requestId != null) {
       _requestBloc.add(CancelRequestEvent(widget.args.requestId!));
     }
-    Navigator.pop(context);
+    // Small delay so the cancel API call fires before navigating away
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) Navigator.pop(context);
+    });
   }
 
   @override

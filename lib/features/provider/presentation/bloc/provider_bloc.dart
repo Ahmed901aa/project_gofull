@@ -63,9 +63,9 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
   }
 
   Future<void> _onLoadPending(LoadPendingRequestsEvent e, Emitter<ProviderState> emit) async {
-    emit(const ProviderLoading());
+    // No ProviderLoading — silent poll to avoid interfering with other states
     final r = await getPendingRequests(const NoParams());
-    r.fold((f) => emit(ProviderError(f.message)), (l) => emit(PendingRequestsLoaded(l)));
+    r.fold((_) {}, (l) => emit(PendingRequestsLoaded(l)));
   }
 
   Future<void> _onLoadHistory(LoadHistoryEvent e, Emitter<ProviderState> emit) async {

@@ -13,12 +13,14 @@ class PaymentSummary extends StatelessWidget {
   final double? subtotal;
   final double? serviceFee;
   final double? total;
+  final String? note;
 
   const PaymentSummary({
     super.key,
     this.subtotal,
     this.serviceFee,
     this.total,
+    this.note,
   });
 
   @override
@@ -36,6 +38,19 @@ class PaymentSummary extends StatelessWidget {
 
         return Column(
           children: [
+            if (note != null)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(Insets.s12),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary50,
+                    borderRadius: BorderRadius.circular(AppRadius.s8),
+                  ),
+                  child: Text(note!, style: getMediumStyle(color: AppColors.primary, fontSize: FontSize.s14), textAlign: TextAlign.center),
+                ),
+              ),
             _row(label: 'المجموع', amount: subText),
             _serviceFeeRow(feeText),
             Padding(

@@ -214,6 +214,44 @@ class _FuelScreenState extends State<FuelScreen> {
     );
   }
 
+  /// Normalize fuel prices: collapse 91/95 variants into just بنزين + ديزل.
+  List<FuelPriceEntity> _normalizeFuelPrices(List<FuelPriceEntity> raw) {
+    if (raw.isEmpty) return List.of(_fallbackFuelPrices);
+
+    // Try to find gasoline price from backend (any 91/95/gasoline match)
+    FuelPriceEntity? gasoline;
+    FuelPriceEntity? diesel;
+
+    for (final e in raw) {
+      final type = e.fuelType.toLowerCase();
+      final name = e.nameAr;
+      if (gasoline == null &&
+          (type.contains('gasoline') || type.contains('91') ||
+           type.contains('95') || name.contains('بنزين'))) {
+        gasoline = e;
+      }
+      if (diesel == null &&
+          (type.contains('diesel') || name.contains('ديزل'))) {
+        diesel = e;
+      }
+    }
+
+    return [
+      FuelPriceEntity(
+        id: gasoline?.id ?? 1,
+        fuelType: 'gasoline',
+        nameAr: 'بنزين',
+        pricePerLiter: gasoline?.pricePerLiter ?? 0.75,
+      ),
+      FuelPriceEntity(
+        id: diesel?.id ?? 2,
+        fuelType: 'diesel',
+        nameAr: 'ديزل',
+        pricePerLiter: diesel?.pricePerLiter ?? 0.85,
+      ),
+    ];
+  }
+
   Widget _section(String title, {required double gap}) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
