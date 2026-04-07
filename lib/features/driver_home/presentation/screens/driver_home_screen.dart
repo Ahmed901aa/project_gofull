@@ -95,7 +95,16 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
   void _onProviderState(ProviderState state) {
     if (state is ActiveRequestLoaded) {
-      setState(() => _activeRequest = state.request);
+      final req = state.request;
+      final wasCancelled = _activeRequest != null &&
+          (req == null || req.status == 'cancelled');
+      setState(() => _activeRequest = req?.status == 'cancelled' ? null : req);
+      // If the order was cancelled while driver is on a sub-screen, pop back
+      if (wasCancelled && mounted) {
+        Navigator.popUntil(context,
+            (route) => route.settings.name == Routes.driverHome || route.isFirst);
+        _showCancelledSnackBar();
+      }
     } else if (state is PendingRequestsLoaded && state.requests.isNotEmpty) {
       setState(() => _pendingRequest = state.requests.first);
     } else if (state is RequestAccepted) {
@@ -219,6 +228,18 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             ));
         break;
     }
+  }
+
+  void _showCancelledSnackBar() {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('تم إلغاء الطلب من قبل العميل'),
+        backgroundColor: AppColors.error,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    );
   }
 
   // ── Order actions ──
