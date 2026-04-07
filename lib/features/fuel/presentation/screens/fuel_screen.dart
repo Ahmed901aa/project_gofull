@@ -16,6 +16,7 @@ import 'package:project_gofull/core/widgets/service_input_field.dart';
 import 'package:project_gofull/core/widgets/service_location_card.dart';
 import 'package:project_gofull/features/app_config/domain/entities/fuel_price_entity.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
+import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_state.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
@@ -35,6 +36,16 @@ class _FuelScreenState extends State<FuelScreen> {
   final _notesController = TextEditingController();
 
   bool get _isValid => _selectedFuel != null && _selectedQuantity != null;
+
+  @override
+  void initState() {
+    super.initState();
+    // Reload fuel prices if they weren't loaded at startup
+    final config = context.read<AppConfigBloc>().state;
+    if (config.fuelPrices.isEmpty) {
+      context.read<AppConfigBloc>().add(const LoadAppConfigEvent());
+    }
+  }
 
   double get _quantityNum =>
       double.tryParse((_selectedQuantity ?? '').replaceAll(RegExp(r'[^\d.]'), '')) ?? 0;
@@ -112,6 +123,24 @@ class _FuelScreenState extends State<FuelScreen> {
                               ),
                             ),
                             _section('تفاصيل الوقود', gap: 16),
+                            if (config.isLoading && fuelNames.isEmpty)
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                child: Center(child: CircularProgressIndicator()),
+                              )
+                            else if (fuelNames.isEmpty)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: GestureDetector(
+                                  onTap: () => context.read<AppConfigBloc>().add(const LoadAppConfigEvent()),
+                                  child: Text(
+                                    'لم يتم تحميل أنواع الوقود. اضغط لإعادة المحاولة.',
+                                    style: getRegularStyle(color: AppColors.error, fontSize: FontSize.s14),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              )
+                            else
                             FuelDetailsForm(
                               selectedFuelType: _selectedFuel?.nameAr,
                               selectedQuantity: _selectedQuantity,

@@ -178,6 +178,7 @@ class DriverNavigateArgs {
   final double? lat;
   final double? lng;
   final String navigationType; // 'to_customer' or 'to_destination'
+  final String serviceType; // 'fuel' or 'towing'
 
   const DriverNavigateArgs({
     required this.orderId,
@@ -185,7 +186,10 @@ class DriverNavigateArgs {
     this.lat,
     this.lng,
     required this.navigationType,
+    this.serviceType = 'towing',
   });
+
+  bool get isFuel => serviceType == 'fuel';
 }
 
 class DriverDocumentationArgs {

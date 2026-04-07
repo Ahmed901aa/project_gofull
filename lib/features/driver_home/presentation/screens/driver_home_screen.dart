@@ -156,14 +156,24 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               lat: double.tryParse(req.driverLatitude),
               lng: double.tryParse(req.driverLongitude),
               navigationType: 'to_customer',
+              serviceType: req.isFuelDelivery ? 'fuel' : 'towing',
             ));
         break;
       case 'arrived':
-        Navigator.pushNamed(context, Routes.driverDocumentation,
-            arguments: DriverDocumentationArgs(
-              orderId: orderId,
-              documentationType: 'pickup',
-            ));
+        if (req.isFuelDelivery) {
+          // Fuel: skip documentation, go to payment
+          Navigator.pushNamed(context, Routes.driverCollectPayment,
+              arguments: DriverCollectPaymentArgs(
+                orderId: orderId,
+                amount: double.tryParse(req.total ?? '0') ?? 0,
+              ));
+        } else {
+          Navigator.pushNamed(context, Routes.driverDocumentation,
+              arguments: DriverDocumentationArgs(
+                orderId: orderId,
+                documentationType: 'pickup',
+              ));
+        }
         break;
       case 'in_progress':
         Navigator.pushNamed(context, Routes.driverCollectPayment,
