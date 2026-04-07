@@ -26,31 +26,23 @@ class DriverDocumentationScreen extends StatefulWidget {
 class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
   final _picker = ImagePicker();
 
-  static const _labels = [
-    'الجهة الأمامية',
-    'الجهة الخلفية',
-    'الجهة اليمنى',
-    'الجهة اليسرى',
-  ];
+  File? _photo;
 
-  final List<File?> _photos = List.filled(4, null);
-
-  int get _capturedCount => _photos.where((p) => p != null).length;
-  bool get _allCaptured => _capturedCount == 4;
+  bool get _captured => _photo != null;
 
   bool get _isPickup => widget.args.documentationType == 'pickup';
 
   String get _buttonLabel =>
       _isPickup ? AppStrings.startToDestination : AppStrings.collectPayment;
 
-  Future<void> _capturePhoto(int index) async {
+  Future<void> _capturePhoto() async {
     final picked = await _picker.pickImage(
       source: ImageSource.camera,
       imageQuality: 80,
       maxWidth: 1280,
     );
     if (picked != null && mounted) {
-      setState(() => _photos[index] = File(picked.path));
+      setState(() => _photo = File(picked.path));
     }
   }
 
@@ -102,12 +94,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
                   children: [
                     _buildInfoBanner(),
                     SizedBox(height: Insets.s16),
-                    ...List.generate(4, (i) => Padding(
-                      padding: EdgeInsets.only(bottom: Insets.s12),
-                      child: _buildPhotoCard(i),
-                    )),
-                    SizedBox(height: Insets.s8),
-                    _buildProgressIndicator(),
+                    _buildPhotoSection(),
                     SizedBox(height: Insets.s24),
                   ],
                 ),
@@ -181,7 +168,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    AppStrings.mandatoryDocDesc,
+                    'التقط صورة واضحة للمركبة قبل بدء عملية النقل. هذا التوثيق يحمي حقوقك وحقوق العميل.',
                     style: getRegularStyle(
                         color: AppColors.primaryLight,
                         fontSize: FontSize.s12),
@@ -193,164 +180,104 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
         ),
       );
 
-  // ── Photo Card ──────────────────────────────────────────────
+  // ── Photo Section ───────────────────────────────────────────
 
-  Widget _buildPhotoCard(int index) {
-    final hasPhoto = _photos[index] != null;
-
-    return Container(
-      padding: EdgeInsets.all(Insets.s12),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(AppRadius.s12),
-        border: Border.all(
-          color: hasPhoto ? AppColors.success.withOpacity(0.4) : AppColors.inputBorder,
-        ),
-      ),
-      child: Row(
-        children: [
-          // Text side
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 28.w,
-                      height: 28.w,
-                      decoration: BoxDecoration(
-                        color: hasPhoto
-                            ? AppColors.success.withOpacity(0.1)
-                            : AppColors.neutral300,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: hasPhoto
-                            ? Icon(Icons.check_rounded,
-                                size: 16.sp, color: AppColors.success)
-                            : Text(
-                                '${index + 1}',
-                                style: getMediumStyle(
-                                    color: AppColors.neutral800,
-                                    fontSize: FontSize.s12),
-                              ),
-                      ),
-                    ),
-                    SizedBox(width: Insets.s8),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _labels[index],
-                          style: getSemiBoldStyle(
-                              color: const Color(0xFF0E0E0E),
-                              fontSize: FontSize.s14),
-                        ),
-                        Text(
-                          AppStrings.capturePhoto,
-                          style: getRegularStyle(
-                              color: AppColors.neutral800,
-                              fontSize: FontSize.s12),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
+  Widget _buildPhotoSection() {
+    return GestureDetector(
+      onTap: _capturePhoto,
+      child: Container(
+        padding: EdgeInsets.all(Insets.s16),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(AppRadius.s12),
+          border: Border.all(
+            color: _captured
+                ? AppColors.success.withValues(alpha: 0.4)
+                : AppColors.inputBorder,
           ),
-
-          // Photo / capture button side
-          if (hasPhoto)
-            Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(AppRadius.s8),
-                  child: Image.file(
-                    _photos[index]!,
-                    width: 56.w,
-                    height: 56.w,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                SizedBox(width: Insets.s8),
-                GestureDetector(
-                  onTap: () => _capturePhoto(index),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: Insets.s8, vertical: 6.h),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.primary),
-                      borderRadius: BorderRadius.circular(AppRadius.s8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.camera_alt_outlined,
-                            size: 14.sp, color: AppColors.primary),
-                        SizedBox(width: 4.w),
-                        Text(
-                          AppStrings.retake,
-                          style: getMediumStyle(
-                              color: AppColors.primary,
-                              fontSize: FontSize.s12),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            )
-          else
-            GestureDetector(
-              onTap: () => _capturePhoto(index),
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: Insets.s12, vertical: 8.h),
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.primary),
-                  borderRadius: BorderRadius.circular(AppRadius.s8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.camera_alt_outlined,
-                        size: 16.sp, color: AppColors.primary),
-                    SizedBox(width: Insets.s4),
-                    Text(
-                      AppStrings.capture,
-                      style: getMediumStyle(
-                          color: AppColors.primary, fontSize: FontSize.s14),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-        ],
+        ),
+        child: _captured ? _buildCapturedView() : _buildEmptyView(),
       ),
     );
   }
 
-  // ── Progress Indicator ──────────────────────────────────────
-
-  Widget _buildProgressIndicator() => Column(
+  Widget _buildEmptyView() => Column(
         children: [
+          Container(
+            width: 64.w,
+            height: 64.w,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.camera_alt_rounded,
+                size: 32.sp, color: AppColors.primary),
+          ),
+          SizedBox(height: Insets.s12),
           Text(
-            '$_capturedCount / 4',
+            'التقط صورة للمركبة',
             style: getSemiBoldStyle(
                 color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
           ),
-          SizedBox(height: Insets.s8),
+          SizedBox(height: 4.h),
+          Text(
+            'اضغط هنا لفتح الكاميرا والتقاط صورة واضحة',
+            style: getRegularStyle(
+                color: AppColors.neutral800, fontSize: FontSize.s14),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      );
+
+  Widget _buildCapturedView() => Column(
+        children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(AppRadius.s8),
-            child: LinearProgressIndicator(
-              value: _capturedCount / 4,
-              minHeight: 6.h,
-              backgroundColor: AppColors.neutral400,
-              valueColor:
-                  const AlwaysStoppedAnimation<Color>(AppColors.primary),
+            child: Image.file(
+              _photo!,
+              width: double.infinity,
+              height: 200.h,
+              fit: BoxFit.cover,
             ),
+          ),
+          SizedBox(height: Insets.s12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.check_circle_rounded,
+                  size: 20.sp, color: AppColors.success),
+              SizedBox(width: 6.w),
+              Text(
+                'تم التقاط الصورة',
+                style: getSemiBoldStyle(
+                    color: AppColors.success, fontSize: FontSize.s14),
+              ),
+              SizedBox(width: Insets.s16),
+              GestureDetector(
+                onTap: _capturePhoto,
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: Insets.s12, vertical: 6.h),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.primary),
+                    borderRadius: BorderRadius.circular(AppRadius.s8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.camera_alt_outlined,
+                          size: 14.sp, color: AppColors.primary),
+                      SizedBox(width: 4.w),
+                      Text(
+                        AppStrings.retake,
+                        style: getMediumStyle(
+                            color: AppColors.primary, fontSize: FontSize.s12),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       );
@@ -371,11 +298,11 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (!_allCaptured)
+            if (!_captured)
               Padding(
                 padding: EdgeInsets.only(bottom: Insets.s8),
                 child: Text(
-                  AppStrings.captureAllPhotos,
+                  'يرجى التقاط صورة للمركبة للمتابعة',
                   style: getRegularStyle(
                       color: AppColors.neutral800, fontSize: FontSize.s12),
                   textAlign: TextAlign.center,
@@ -383,9 +310,9 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
               ),
             AppButton(
               text: _buttonLabel,
-              onPressed: _allCaptured ? _onContinue : () {},
+              onPressed: _captured ? _onContinue : () {},
               backgroundColor:
-                  _allCaptured ? AppColors.primary : AppColors.neutral600,
+                  _captured ? AppColors.primary : AppColors.neutral600,
             ),
           ],
         ),
