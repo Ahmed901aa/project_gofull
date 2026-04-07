@@ -245,7 +245,7 @@ class SupportScreen extends StatelessWidget {
                   'متاح 24 ساعة - 7 أيام في الأسبوع',
                   style: getRegularStyle(
                     color: AppColors.neutral800,
-                    fontSize: FontSize.s13,
+                    fontSize: FontSize.s12,
                   ),
                 ),
               ],
@@ -341,7 +341,7 @@ class _ContactOptionCard extends StatelessWidget {
                     title,
                     style: getSemiBoldStyle(
                       color: const Color(0xFF0E0E0E),
-                      fontSize: FontSize.s15,
+                      fontSize: FontSize.s14,
                     ),
                   ),
                   SizedBox(height: 2.h),
@@ -349,7 +349,7 @@ class _ContactOptionCard extends StatelessWidget {
                     subtitle,
                     style: getRegularStyle(
                       color: AppColors.neutral800,
-                      fontSize: FontSize.s13,
+                      fontSize: FontSize.s12,
                     ),
                   ),
                 ],
@@ -401,7 +401,7 @@ class _FaqItemState extends State<_FaqItem> {
             onTap: () => setState(() => _expanded = !_expanded),
             behavior: HitTestBehavior.opaque,
             child: Padding(
-              padding: EdgeInsets.all(Insets.s14),
+              padding: EdgeInsets.all(Insets.s12),
               child: Row(
                 children: [
                   Expanded(
@@ -431,12 +431,12 @@ class _FaqItemState extends State<_FaqItem> {
             secondChild: Container(
               width: double.infinity,
               padding: EdgeInsets.fromLTRB(
-                  Insets.s14, 0, Insets.s14, Insets.s14),
+                  Insets.s12, 0, Insets.s12, Insets.s12),
               child: Text(
                 widget.answer,
                 style: getRegularStyle(
                   color: AppColors.neutral800,
-                  fontSize: FontSize.s13,
+                  fontSize: FontSize.s12,
                 ),
               ),
             ),
