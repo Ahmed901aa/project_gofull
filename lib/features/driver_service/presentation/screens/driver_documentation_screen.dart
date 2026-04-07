@@ -69,6 +69,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
           orderId: widget.args.orderId,
           address: '',
           navigationType: 'to_destination',
+          amount: widget.args.amount,
         ),
       );
     } else {
@@ -77,7 +78,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
         Routes.driverCollectPayment,
         arguments: DriverCollectPaymentArgs(
           orderId: widget.args.orderId,
-          amount: 0, // will be fetched from request data
+          amount: widget.args.amount,
         ),
       );
     }

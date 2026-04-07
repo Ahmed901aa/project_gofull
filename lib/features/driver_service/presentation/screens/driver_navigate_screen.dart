@@ -157,6 +157,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
         arguments: DriverDocumentationArgs(
           orderId: widget.args.orderId,
           documentationType: _isToCustomer ? 'pickup' : 'delivery',
+          amount: widget.args.amount,
         ),
       );
     }

@@ -197,10 +197,12 @@ class DriverNavigateArgs {
 class DriverDocumentationArgs {
   final String orderId;
   final String documentationType; // 'pickup' or 'delivery'
+  final double amount;
 
   const DriverDocumentationArgs({
     required this.orderId,
     required this.documentationType,
+    this.amount = 0,
   });
 }
 

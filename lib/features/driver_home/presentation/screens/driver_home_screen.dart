@@ -173,6 +173,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               arguments: DriverDocumentationArgs(
                 orderId: orderId,
                 documentationType: 'pickup',
+                amount: double.tryParse(req.total ?? '0') ?? 0,
               ));
         }
         break;

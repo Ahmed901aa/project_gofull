@@ -497,6 +497,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
           address: args.pickupAddress,
           navigationType: 'to_customer',
           serviceType: args.serviceType,
+          amount: args.amount,
         ),
       );
     }

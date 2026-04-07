@@ -19,14 +19,18 @@ class BottomNavShell extends StatefulWidget {
 
 class _BottomNavShellState extends State<BottomNavShell> {
   int _currentIndex = 0;
+  Key _ordersKey = UniqueKey();
 
-  void switchTo(int index) => setState(() => _currentIndex = index);
+  void switchTo(int index) {
+    if (index == 1) _ordersKey = UniqueKey(); // refresh orders on tab switch
+    setState(() => _currentIndex = index);
+  }
 
-  final List<Widget> _screens = const [
-    HomeScreen(),
-    OrdersScreen(),
-    SupportScreen(showBack: false),
-    ProfileScreen(),
+  List<Widget> get _screens => [
+    const HomeScreen(),
+    KeyedSubtree(key: _ordersKey, child: const OrdersScreen()),
+    const SupportScreen(showBack: false),
+    const ProfileScreen(),
   ];
 
   @override
