@@ -41,7 +41,7 @@ class _FuelScreenState extends State<FuelScreen> {
     FuelPriceEntity(id: 2, fuelType: 'diesel', nameAr: 'ديزل', pricePerLiter: 0.85),
   ];
 
-  bool get _isValid => _selectedFuel != null && _selectedQuantity != null;
+  bool get _isValid => _selectedFuel != null && _selectedQuantity != null && (_isFullTank || _quantityNum > 0);
 
   @override
   void initState() {
@@ -69,13 +69,17 @@ class _FuelScreenState extends State<FuelScreen> {
     final loc = context.read<LocationCubit>().state;
     if (loc.lat == null || loc.lng == null) return;
 
+    final notes = _notesController.text.isNotEmpty ? _notesController.text : null;
+    final fullTankNote = _isFullTank ? 'تعبئة كاملة' : null;
+    final combinedNotes = [if (fullTankNote != null) fullTankNote, if (notes != null) notes].join(' - ');
+
     blocContext.read<RequestBloc>().add(CreateFuelRequestEvent(
           latitude: loc.lat!,
           longitude: loc.lng!,
           address: loc.address,
           fuelType: _selectedFuel!.fuelType,
-          fuelQuantity: _quantityNum,
-          notes: _notesController.text.isNotEmpty ? _notesController.text : null,
+          fuelQuantity: _isFullTank ? 0 : _quantityNum,
+          notes: combinedNotes.isNotEmpty ? combinedNotes : null,
         ));
   }
 
@@ -185,8 +189,9 @@ class _FuelScreenState extends State<FuelScreen> {
                             ),
                             _section('ملخص الدفع', gap: 16),
                             PaymentSummary(
-                              subtotal: _isValid ? _subtotal : null,
+                              subtotal: _isValid && !_isFullTank ? _subtotal : null,
                               serviceFee: config.serviceFee,
+                              note: _isValid && _isFullTank ? 'سيتم تحديد السعر بعد التعبئة' : null,
                             ),
                             const SizedBox(height: 16),
                           ],
