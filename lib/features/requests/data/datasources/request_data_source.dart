@@ -13,6 +13,7 @@ abstract class RequestDataSource {
   });
   Future<ServiceRequestModel> createTowingRequest({
     required double latitude, required double longitude, String? address,
+    double? destinationLatitude, double? destinationLongitude, String? destinationAddress,
     required String plateNumber, String? notes,
   });
   Future<ServiceRequestModel> getRequestDetails(int id);
@@ -62,13 +63,18 @@ class RequestMockDataSource implements RequestDataSource {
   @override
   Future<ServiceRequestModel> createTowingRequest({
     required double latitude, required double longitude, String? address,
+    double? destinationLatitude, double? destinationLongitude, String? destinationAddress,
     required String plateNumber, String? notes,
   }) async {
     await Future.delayed(const Duration(milliseconds: 800));
     return ServiceRequestModel(
       id: 11, driverId: 1, serviceType: 'towing', status: 'pending',
       driverLatitude: latitude.toString(), driverLongitude: longitude.toString(),
-      driverAddress: address, plateNumber: plateNumber, notes: notes,
+      driverAddress: address,
+      destinationLatitude: destinationLatitude?.toString(),
+      destinationLongitude: destinationLongitude?.toString(),
+      destinationAddress: destinationAddress,
+      plateNumber: plateNumber, notes: notes,
     );
   }
 
@@ -151,6 +157,7 @@ class RequestRemoteDataSource implements RequestDataSource {
   @override
   Future<ServiceRequestModel> createTowingRequest({
     required double latitude, required double longitude, String? address,
+    double? destinationLatitude, double? destinationLongitude, String? destinationAddress,
     required String plateNumber, String? notes,
   }) async {
     try {
@@ -160,6 +167,9 @@ class RequestRemoteDataSource implements RequestDataSource {
           'driver_latitude': latitude,
           'driver_longitude': longitude,
           'driver_address': address,
+          if (destinationLatitude != null) 'destination_latitude': destinationLatitude,
+          if (destinationLongitude != null) 'destination_longitude': destinationLongitude,
+          if (destinationAddress != null) 'destination_address': destinationAddress,
           'plate_number': plateNumber,
           if (notes != null) 'notes': notes,
         },

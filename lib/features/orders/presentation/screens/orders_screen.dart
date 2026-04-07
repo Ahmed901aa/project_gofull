@@ -110,7 +110,7 @@ class OrdersScreen extends StatelessWidget {
       price: price,
       isRated: req.isRated,
       fromAddress: req.driverAddress,
-      toAddress: null,
+      toAddress: req.destinationAddress,
       location: req.driverAddress,
       fuelType: req.fuelType,
       quantity: req.fuelQuantity != null ? '${req.fuelQuantity} لتر' : null,

@@ -71,7 +71,7 @@ class _ServiceArrivedScreenState extends State<ServiceArrivedScreen> {
     });
 
     // Navigate on status change
-    if (req.status == 'in_progress' || req.status == 'completed') {
+    if (req.status == 'completed') {
       _navigated = true;
       _polling.stop();
       Navigator.pushReplacementNamed(context, Routes.fuelComplete,
@@ -136,7 +136,7 @@ class _ServiceArrivedScreenState extends State<ServiceArrivedScreen> {
                       onTap: () => Navigator.pop(context),
                       child: Icon(Icons.close_rounded,
                           size: 24.sp, color: const Color(0xFF0E0E0E))),
-                  Text('وصل مزود الخدمة',
+                  Text('جاري التعبئة',
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20)),

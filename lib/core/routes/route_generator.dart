@@ -39,6 +39,7 @@ import 'package:project_gofull/features/driver_support/presentation/screens/driv
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_order_details_screen.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_navigate_screen.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_documentation_screen.dart';
+import 'package:project_gofull/features/driver_service/presentation/screens/driver_refueling_screen.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_collect_payment_screen.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_task_complete_screen.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_rate_customer_screen.dart';
@@ -134,6 +135,9 @@ class RouteGenerator {
       case Routes.driverDocumentation:
         final args = settings.arguments as DriverDocumentationArgs;
         return _buildRoute(DriverDocumentationScreen(args: args), settings);
+      case Routes.driverRefueling:
+        final args = settings.arguments as DriverRefuelingArgs;
+        return _buildRoute(DriverRefuelingScreen(args: args), settings);
       case Routes.driverCollectPayment:
         final args = settings.arguments as DriverCollectPaymentArgs;
         return _buildRoute(DriverCollectPaymentScreen(args: args), settings);

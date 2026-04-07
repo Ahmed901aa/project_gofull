@@ -71,10 +71,20 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
       _polling.stop();
 
       if (isFuel) {
+        // For fuel: if arrived or beyond, go to refueling screen
+        // if en_route, still show service arrived (supplier on the way → refueling)
         Navigator.pushReplacementNamed(
           context,
           Routes.serviceArrived,
-          arguments: ServiceArrivedArgs(requestId: _args.requestId),
+          arguments: ServiceArrivedArgs(
+            requestId: _args.requestId,
+            title: (request.status == 'arrived' || request.status == 'in_progress')
+                ? 'جاري تعبئة الوقود'
+                : 'مزود الوقود في الطريق إليك',
+            subtitle: (request.status == 'arrived' || request.status == 'in_progress')
+                ? 'مزود الخدمة يقوم الآن بتعبئة وقود سيارتك. يرجى الانتظار حتى اكتمال العملية.'
+                : 'مزود الخدمة في طريقه إلى موقعك. يرجى الانتظار.',
+          ),
         );
       } else {
         Navigator.pushReplacementNamed(

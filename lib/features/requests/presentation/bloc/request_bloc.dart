@@ -62,7 +62,11 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     emit(const RequestLoading());
     final result = await createTowing(CreateTowingRequestParams(
       latitude: event.latitude, longitude: event.longitude,
-      address: event.address, plateNumber: event.plateNumber, notes: event.notes,
+      address: event.address,
+      destinationLatitude: event.destinationLatitude,
+      destinationLongitude: event.destinationLongitude,
+      destinationAddress: event.destinationAddress,
+      plateNumber: event.plateNumber, notes: event.notes,
     ));
     result.fold(
       (f) => emit(RequestError(f.message)),

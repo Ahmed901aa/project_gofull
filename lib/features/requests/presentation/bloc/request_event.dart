@@ -31,11 +31,15 @@ class CreateTowingRequestEvent extends RequestEvent {
   final double latitude;
   final double longitude;
   final String? address;
+  final double? destinationLatitude;
+  final double? destinationLongitude;
+  final String? destinationAddress;
   final String plateNumber;
   final String? notes;
 
   const CreateTowingRequestEvent({
     required this.latitude, required this.longitude, this.address,
+    this.destinationLatitude, this.destinationLongitude, this.destinationAddress,
     required this.plateNumber, this.notes,
   });
 

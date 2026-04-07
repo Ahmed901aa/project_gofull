@@ -44,9 +44,9 @@ class FuelCompleteScreen extends StatelessWidget {
                   SizedBox(height: Insets.s16),
                   const Center(child: DottedCircleContainer(imagePath: 'assets/images/shield.gif')),
                   SizedBox(height: Insets.s16),
-                  Text('تم تزويد سيارتك بالوقود بنجاح', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
+                  Text('تمت تعبئة سيارتك بالوقود بنجاح!', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
                   SizedBox(height: 6.h),
-                  Text('تم إنزال السيارة في وجهة التوصيل المحددة. يرجى التأكد من سلامة السيارة قبل إتمام الدفع.', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.center),
+                  Text('تم تعبئة الوقود بنجاح. يرجى التأكد من إغلاق غطاء الوقود وسلامة السيارة.', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.center),
                   SizedBox(height: Insets.s24),
                   const FuelCompleteSafetySection(items: _safetyItems),
                   SizedBox(height: Insets.s16),
@@ -72,7 +72,7 @@ class FuelCompleteScreen extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.close_rounded, size: 24.sp, color: const Color(0xFF0E0E0E))),
-              Text('اكتملت عملية التعبئة', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
+              Text('تمت التعبئة بنجاح', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
               Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
             ]),
           ),
@@ -89,7 +89,7 @@ class FuelCompleteScreen extends StatelessWidget {
               arguments: const TripDetailsArgs(orderId: 'fuel_active', status: OrderStatus.completed, isRated: false)),
           style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: AppColors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
-          child: Text('تقييم الخدمة', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+          child: Text('تقييم الرحلة', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
         )),
       );
 }

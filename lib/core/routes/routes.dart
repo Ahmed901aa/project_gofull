@@ -42,6 +42,7 @@ class Routes {
   static const String driverOrderDetails = '/driver-order-details';
   static const String driverNavigate = '/driver-navigate';
   static const String driverDocumentation = '/driver-documentation';
+  static const String driverRefueling = '/driver-refueling';
   static const String driverCollectPayment = '/driver-collect-payment';
   static const String driverTaskComplete = '/driver-task-complete';
   static const String driverRateCustomer = '/driver-rate-customer';

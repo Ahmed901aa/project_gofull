@@ -9,6 +9,9 @@ class ServiceRequestEntity extends Equatable {
   final String driverLatitude;
   final String driverLongitude;
   final String? driverAddress;
+  final String? destinationLatitude;
+  final String? destinationLongitude;
+  final String? destinationAddress;
   final String? fuelType;
   final String? fuelQuantity;
   final String? plateNumber;
@@ -41,6 +44,9 @@ class ServiceRequestEntity extends Equatable {
     required this.driverLatitude,
     required this.driverLongitude,
     this.driverAddress,
+    this.destinationLatitude,
+    this.destinationLongitude,
+    this.destinationAddress,
     this.fuelType,
     this.fuelQuantity,
     this.plateNumber,

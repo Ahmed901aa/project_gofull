@@ -13,6 +13,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
+import 'package:project_gofull/features/driver_service/presentation/screens/driver_refueling_screen.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -134,14 +135,14 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
     final orderId = int.tryParse(widget.args.orderId);
 
     if (widget.args.isFuel) {
-      // Fuel delivery: skip documentation, go straight to payment
+      // Fuel delivery: go to refueling screen
       if (orderId != null) {
-        sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'in_progress'));
+        sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'arrived'));
       }
       Navigator.pushReplacementNamed(
         context,
-        Routes.driverCollectPayment,
-        arguments: DriverCollectPaymentArgs(
+        Routes.driverRefueling,
+        arguments: DriverRefuelingArgs(
           orderId: widget.args.orderId,
           amount: widget.args.amount,
         ),
@@ -404,7 +405,9 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
 
             // Arrived button
             AppButton(
-              text: AppStrings.arrivedStartDoc,
+              text: _isToCustomer && widget.args.isFuel
+                  ? 'وصلت - بدء التعبئة'
+                  : AppStrings.arrivedStartDoc,
               onPressed: _onArrivedTapped,
             ),
           ],

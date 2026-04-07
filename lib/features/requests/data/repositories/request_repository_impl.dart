@@ -48,11 +48,15 @@ class RequestRepositoryImpl implements RequestRepository {
   @override
   Future<Either<Failure, ServiceRequestEntity>> createTowingRequest({
     required double latitude, required double longitude, String? address,
+    double? destinationLatitude, double? destinationLongitude, String? destinationAddress,
     required String plateNumber, String? notes,
   }) async {
     try {
       final result = await dataSource.createTowingRequest(
         latitude: latitude, longitude: longitude, address: address,
+        destinationLatitude: destinationLatitude,
+        destinationLongitude: destinationLongitude,
+        destinationAddress: destinationAddress,
         plateNumber: plateNumber, notes: notes,
       );
       return Right(result);

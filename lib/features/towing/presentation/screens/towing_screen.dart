@@ -61,6 +61,9 @@ class _TowingScreenState extends State<TowingScreen> {
           latitude: loc.lat!,
           longitude: loc.lng!,
           address: loc.address,
+          destinationLatitude: _destinationLat,
+          destinationLongitude: _destinationLng,
+          destinationAddress: _destinationAddress != 'وجهة سحب السيارة' ? _destinationAddress : null,
           plateNumber: _plateCtrl.text.trim(),
           notes:
               _notesCtrl.text.isNotEmpty ? _notesCtrl.text : null,

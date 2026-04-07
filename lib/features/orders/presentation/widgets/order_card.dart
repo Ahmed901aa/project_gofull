@@ -4,9 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
-import 'package:project_gofull/features/home/presentation/widgets/order_address_column.dart';
 import 'package:project_gofull/features/home/presentation/widgets/order_price_row.dart';
-import 'package:project_gofull/features/home/presentation/widgets/order_route_connector.dart';
 import 'package:project_gofull/features/orders/models/order_data.dart';
 import 'order_detail_row.dart';
 import 'service_badge.dart';
@@ -62,9 +60,15 @@ class OrderCard extends StatelessWidget {
           boxShadow: [BoxShadow(color: AppColors.shadow, blurRadius: 4, offset: const Offset(0, 1))],
         ),
         child: Row(children: [
-          Expanded(child: OrderAddressColumn(label: 'وجهة التوصيل', address: order.toAddress ?? '')),
-          const OrderRouteConnector(),
-          Expanded(child: OrderAddressColumn(label: 'نقطة الانطلاق', address: order.fromAddress ?? '')),
+          Icon(Icons.location_on_rounded, size: 20.sp, color: AppColors.primary),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+              Text('وجهة التوصيل', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12)),
+              SizedBox(height: 2.h),
+              Text(order.toAddress ?? '', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12), maxLines: 2, overflow: TextOverflow.ellipsis),
+            ]),
+          ),
         ]),
       );
 
@@ -76,9 +80,31 @@ class OrderCard extends StatelessWidget {
           boxShadow: [BoxShadow(color: AppColors.shadow, blurRadius: 4, offset: const Offset(0, 1))],
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-          Text('موقع السيارة', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12)),
-          SizedBox(height: 2.h),
-          Text(order.location ?? '', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12), maxLines: 2, overflow: TextOverflow.ellipsis),
+          Row(children: [
+            Icon(Icons.location_on_rounded, size: 20.sp, color: AppColors.primary),
+            SizedBox(width: 8.w),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                Text('موقع السيارة', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12)),
+                SizedBox(height: 2.h),
+                Text(order.location ?? '', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12), maxLines: 2, overflow: TextOverflow.ellipsis),
+              ]),
+            ),
+          ]),
+          if (order.fuelType != null && order.fuelType!.isNotEmpty) ...[
+            Divider(color: AppColors.neutral500, height: 16.h),
+            Row(children: [
+              Icon(Icons.local_gas_station_rounded, size: 20.sp, color: AppColors.primary),
+              SizedBox(width: 8.w),
+              Text('نوع الوقود: ', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12)),
+              Text(order.fuelType!, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12)),
+              if (order.quantity != null && order.quantity!.isNotEmpty) ...[
+                SizedBox(width: 12.w),
+                Text('الكمية: ', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12)),
+                Text(order.quantity!, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12)),
+              ],
+            ]),
+          ],
         ]),
       );
 

@@ -122,8 +122,8 @@ class ServiceArrivedArgs {
   final String vehicleValue;
   final int? requestId;
   const ServiceArrivedArgs({
-    this.title = 'بدء عملية تعبئة الوقود',
-    this.subtitle = 'مزود الخدمة متواجد الآن في موقعك وبانتظارك.',
+    this.title = 'جاري تعبئة الوقود',
+    this.subtitle = 'مزود الخدمة يقوم الآن بتعبئة وقود سيارتك. يرجى الانتظار حتى اكتمال العملية.',
     this.imagePath = 'assets/images/refuel.gif',
     this.vehicleLabel = 'نوع المركبة',
     this.vehicleValue = 'سيارة إمداد وقود',

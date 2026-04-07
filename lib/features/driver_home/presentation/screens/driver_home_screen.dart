@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
+import 'dart:math';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
@@ -13,6 +14,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/order_polling_service.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
+import 'package:project_gofull/features/driver_service/presentation/screens/driver_refueling_screen.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_state.dart';
@@ -124,6 +126,21 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     }
   }
 
+  double _calcDistance(ServiceRequestEntity req) {
+    final destLat = double.tryParse(req.destinationLatitude ?? '');
+    final destLng = double.tryParse(req.destinationLongitude ?? '');
+    final srcLat = double.tryParse(req.driverLatitude);
+    final srcLng = double.tryParse(req.driverLongitude);
+    if (destLat == null || destLng == null || srcLat == null || srcLng == null) return 0;
+    const r = 6371.0; // Earth radius in km
+    final dLat = (destLat - srcLat) * pi / 180;
+    final dLng = (destLng - srcLng) * pi / 180;
+    final a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(srcLat * pi / 180) * cos(destLat * pi / 180) *
+        sin(dLng / 2) * sin(dLng / 2);
+    return r * 2 * atan2(sqrt(a), sqrt(1 - a));
+  }
+
   DriverOrderDetailsArgs _buildOrderDetailsArgs(ServiceRequestEntity req) {
     return DriverOrderDetailsArgs(
       orderId: req.id.toString(),
@@ -131,10 +148,10 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       customerName: (req.driverInfo?['name'] as String?) ?? 'العميل',
       customerPhone: (req.driverInfo?['phone'] as String?) ?? '',
       pickupAddress: req.driverAddress ?? '',
-      deliveryAddress: '',
+      deliveryAddress: req.destinationAddress ?? '',
       carType: '',
       plateNumber: req.plateNumber ?? '',
-      distance: 0,
+      distance: _calcDistance(req),
       amount: double.tryParse(req.total ?? '0') ?? 0,
       fuelType: req.fuelType,
       fuelQuantity: req.fuelQuantity,
@@ -162,9 +179,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         break;
       case 'arrived':
         if (req.isFuelDelivery) {
-          // Fuel: skip documentation, go to payment
-          Navigator.pushNamed(context, Routes.driverCollectPayment,
-              arguments: DriverCollectPaymentArgs(
+          // Fuel: go to refueling screen
+          Navigator.pushNamed(context, Routes.driverRefueling,
+              arguments: DriverRefuelingArgs(
                 orderId: orderId,
                 amount: double.tryParse(req.total ?? '0') ?? 0,
               ));
@@ -372,9 +389,9 @@ class _ActiveOrderCard extends StatelessWidget {
   String get _statusLabel {
     switch (request.status) {
       case 'accepted':  return 'تم القبول';
-      case 'en_route':  return 'في الطريق';
-      case 'arrived':   return 'وصلت';
-      case 'in_progress': return 'قيد التنفيذ';
+      case 'en_route':  return 'في الطريق للعميل';
+      case 'arrived':   return request.isFuelDelivery ? 'جاري التعبئة' : 'وصلت';
+      case 'in_progress': return request.isFuelDelivery ? 'تحصيل المبلغ' : 'قيد التنفيذ';
       default: return request.status;
     }
   }
