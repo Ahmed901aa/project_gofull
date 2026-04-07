@@ -143,7 +143,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
         Routes.driverCollectPayment,
         arguments: DriverCollectPaymentArgs(
           orderId: widget.args.orderId,
-          amount: 0,
+          amount: widget.args.amount,
         ),
       );
     } else {

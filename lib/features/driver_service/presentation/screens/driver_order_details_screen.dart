@@ -33,8 +33,6 @@ class DriverOrderDetailsScreen extends StatelessWidget {
                   children: [
                     _buildCustomerInfo(),
                     SizedBox(height: Insets.s16),
-                    _buildCarPhotos(),
-                    SizedBox(height: Insets.s16),
                     _buildTripRoute(),
                     SizedBox(height: Insets.s16),
                     if (args.customerNotes != null &&

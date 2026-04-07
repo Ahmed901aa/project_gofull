@@ -157,6 +157,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               lng: double.tryParse(req.driverLongitude),
               navigationType: 'to_customer',
               serviceType: req.isFuelDelivery ? 'fuel' : 'towing',
+              amount: double.tryParse(req.total ?? '0') ?? 0,
             ));
         break;
       case 'arrived':
