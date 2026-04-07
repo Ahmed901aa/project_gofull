@@ -42,15 +42,19 @@ class DriverDetailsCard extends StatelessWidget {
           child: Row(
             mainAxisAlignment: showActionIcons ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
             children: [
-              Row(children: [
-                const DriverAvatar(),
-                SizedBox(width: Insets.s12),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(name, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
-                  SizedBox(height: 4.h),
-                  RatingBadge(rating: rating, reviewCount: reviewCount),
+              Expanded(
+                child: Row(children: [
+                  const DriverAvatar(),
+                  SizedBox(width: Insets.s12),
+                  Flexible(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(name, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), maxLines: 1, overflow: TextOverflow.ellipsis),
+                      SizedBox(height: 4.h),
+                      RatingBadge(rating: rating, reviewCount: reviewCount),
+                    ]),
+                  ),
                 ]),
-              ]),
+              ),
               if (showActionIcons)
                 Row(children: [
                   _ActionIcon(icon: Icons.call_rounded),
