@@ -32,8 +32,14 @@ class FuelScreen extends StatefulWidget {
 class _FuelScreenState extends State<FuelScreen> {
   FuelPriceEntity? _selectedFuel;
   String? _selectedQuantity;
-  final _quantities = ['20 لتر', '30 لتر', '40 لتر', '50 لتر'];
+  final _quantities = ['20 لتر', '30 لتر', '40 لتر', '50 لتر', 'تعبئة كاملة'];
   final _notesController = TextEditingController();
+
+  // Fallback fuel types when backend has no data or has old 91/95 types
+  static const _fallbackFuelPrices = [
+    FuelPriceEntity(id: 1, fuelType: 'gasoline', nameAr: 'بنزين', pricePerLiter: 0.75),
+    FuelPriceEntity(id: 2, fuelType: 'diesel', nameAr: 'ديزل', pricePerLiter: 0.85),
+  ];
 
   bool get _isValid => _selectedFuel != null && _selectedQuantity != null;
 
@@ -47,10 +53,17 @@ class _FuelScreenState extends State<FuelScreen> {
     }
   }
 
-  double get _quantityNum =>
-      double.tryParse((_selectedQuantity ?? '').replaceAll(RegExp(r'[^\d.]'), '')) ?? 0;
+  bool get _isFullTank => _selectedQuantity == 'تعبئة كاملة';
 
-  double get _subtotal => (_selectedFuel?.pricePerLiter ?? 0) * _quantityNum;
+  double get _quantityNum {
+    if (_isFullTank) return 0; // full tank — price calculated by driver
+    return double.tryParse((_selectedQuantity ?? '').replaceAll(RegExp(r'[^\d.]'), '')) ?? 0;
+  }
+
+  double get _subtotal {
+    if (_isFullTank) return 0; // will be determined after filling
+    return (_selectedFuel?.pricePerLiter ?? 0) * _quantityNum;
+  }
 
   void _onSubmit(BuildContext blocContext) {
     final loc = context.read<LocationCubit>().state;
@@ -75,7 +88,9 @@ class _FuelScreenState extends State<FuelScreen> {
   @override
   Widget build(BuildContext context) {
     final config = context.watch<AppConfigBloc>().state;
-    final fuelNames = config.fuelPrices.map((e) => e.nameAr).toList();
+    // Normalize: only show بنزين and ديزل (no 91/95 variants)
+    final fuelPrices = _normalizeFuelPrices(config.fuelPrices);
+    final fuelNames = fuelPrices.map((e) => e.nameAr).toList();
 
     return BlocProvider(
       create: (_) => sl<RequestBloc>(),
@@ -148,7 +163,7 @@ class _FuelScreenState extends State<FuelScreen> {
                               quantities: _quantities,
                               onFuelTypeChanged: (v) {
                                 setState(() {
-                                  _selectedFuel = config.fuelPrices.firstWhere((e) => e.nameAr == v);
+                                  _selectedFuel = fuelPrices.firstWhere((e) => e.nameAr == v);
                                 });
                               },
                               onQuantityChanged: (v) => setState(() => _selectedQuantity = v),
