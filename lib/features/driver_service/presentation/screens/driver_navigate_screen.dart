@@ -131,20 +131,35 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
   }
 
   void _onArrivedTapped() {
-    // Update status to 'arrived'
     final orderId = int.tryParse(widget.args.orderId);
-    if (orderId != null) {
-      sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'arrived'));
+
+    if (widget.args.isFuel) {
+      // Fuel delivery: skip documentation, go straight to payment
+      if (orderId != null) {
+        sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'in_progress'));
+      }
+      Navigator.pushReplacementNamed(
+        context,
+        Routes.driverCollectPayment,
+        arguments: DriverCollectPaymentArgs(
+          orderId: widget.args.orderId,
+          amount: 0,
+        ),
+      );
+    } else {
+      // Towing: go to documentation
+      if (orderId != null) {
+        sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'arrived'));
+      }
+      Navigator.pushReplacementNamed(
+        context,
+        Routes.driverDocumentation,
+        arguments: DriverDocumentationArgs(
+          orderId: widget.args.orderId,
+          documentationType: _isToCustomer ? 'pickup' : 'delivery',
+        ),
+      );
     }
-    Navigator.pushReplacementNamed(
-      context,
-      Routes.driverDocumentation,
-      arguments: DriverDocumentationArgs(
-        orderId: widget.args.orderId,
-        documentationType:
-            _isToCustomer ? 'pickup' : 'delivery',
-      ),
-    );
   }
 
   @override
