@@ -95,10 +95,20 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   void _onProviderState(ProviderState state) {
     if (state is ActiveRequestLoaded) {
       final req = state.request;
+
+      // Only treat as cancelled if the API explicitly returns 'cancelled' status
       final wasCancelled = _activeRequest != null &&
-          (req == null || req.status == 'cancelled');
-      setState(() => _activeRequest = req?.status == 'cancelled' ? null : req);
-      // If the order was cancelled while driver is on a sub-screen, pop back
+          req != null &&
+          req.status == 'cancelled';
+
+      // Update state: clear if cancelled or null (completed/no order)
+      if (req == null || req.status == 'cancelled' || req.status == 'completed') {
+        setState(() => _activeRequest = null);
+      } else {
+        setState(() => _activeRequest = req);
+      }
+
+      // Show cancellation message only for actual cancellations
       if (wasCancelled && mounted) {
         Navigator.popUntil(context,
             (route) => route.settings.name == Routes.driverHome || route.isFirst);

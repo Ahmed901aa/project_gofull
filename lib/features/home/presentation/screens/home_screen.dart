@@ -91,6 +91,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     SliverToBoxAdapter(
                       child: ActiveOrderCard(
                         activeOrder: config.activeOrder,
+                        onCancelled: () {
+                          context.read<AppConfigBloc>().add(const LoadHomeDataEvent());
+                        },
                       ),
                     ),
                     SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),

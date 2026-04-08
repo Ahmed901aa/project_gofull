@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
@@ -34,6 +35,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
   Set<Marker> _markers = {};
   Set<Polyline> _polylines = {};
   Timer? _locationTimer;
+  String _remainingDistance = '';
 
   LatLng get _destination => LatLng(
         widget.args.lat ?? _defaultLat,
@@ -79,7 +81,23 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
         'latitude': pos.latitude,
         'longitude': pos.longitude,
       });
+      // Update remaining distance
+      if (mounted) {
+        final km = _haversine(pos.latitude, pos.longitude,
+            _destination.latitude, _destination.longitude);
+        setState(() => _remainingDistance = '${km.toStringAsFixed(1)} كم');
+      }
     } catch (_) {}
+  }
+
+  double _haversine(double lat1, double lng1, double lat2, double lng2) {
+    const r = 6371.0;
+    final dLat = (lat2 - lat1) * pi / 180;
+    final dLng = (lng2 - lng1) * pi / 180;
+    final a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(lat1 * pi / 180) * cos(lat2 * pi / 180) *
+        sin(dLng / 2) * sin(dLng / 2);
+    return r * 2 * atan2(sqrt(a), sqrt(1 - a));
   }
 
   @override
@@ -371,6 +389,30 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
                 ),
               ],
             ),
+            // Distance indicator
+            if (_remainingDistance.isNotEmpty) ...[
+              SizedBox(height: Insets.s12),
+              Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: Insets.s12, vertical: Insets.s8),
+                decoration: BoxDecoration(
+                  color: AppColors.primary50,
+                  borderRadius: BorderRadius.circular(AppRadius.s8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.straighten_rounded,
+                        size: 18.sp, color: AppColors.primary),
+                    SizedBox(width: 6.w),
+                    Text('المسافة المتبقية: $_remainingDistance',
+                        style: getMediumStyle(
+                            color: AppColors.primary,
+                            fontSize: FontSize.s14)),
+                  ],
+                ),
+              ),
+            ],
             SizedBox(height: Insets.s16),
 
             // Google Maps button + Call button

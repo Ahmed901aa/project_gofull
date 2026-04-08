@@ -37,6 +37,7 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
   String _providerName = 'مزود الخدمة';
   String _providerRating = '-';
   String _providerPlate = '';
+  String _destinationAddress = '';
 
   TowingStartedArgs get _args => widget.args ?? const TowingStartedArgs();
 
@@ -73,6 +74,7 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
           (req.providerInfo?['average_rating']?.toString()) ?? '-';
       _providerPlate =
           (req.providerInfo?['vehicle_plate'] as String?) ?? '';
+      _destinationAddress = req.destinationAddress ?? '';
     });
 
     if (req.status == 'in_progress' || req.status == 'completed') {
@@ -81,12 +83,15 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
       Navigator.pushReplacementNamed(
         context,
         Routes.tripInProgress,
-        arguments: _args.nextRouteArgs ??
-            TripInProgressArgs(
-              originAddress: req.driverAddress ?? '',
-              destinationAddress: '',
-              requestId: _args.requestId,
-            ),
+        arguments: TripInProgressArgs(
+          originAddress: req.driverAddress ?? '',
+          destinationAddress: req.destinationAddress ?? '',
+          originLat: double.tryParse(req.driverLatitude),
+          originLng: double.tryParse(req.driverLongitude),
+          destinationLat: double.tryParse(req.destinationLatitude ?? ''),
+          destinationLng: double.tryParse(req.destinationLongitude ?? ''),
+          requestId: _args.requestId,
+        ),
       );
     }
   }
@@ -121,6 +126,10 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
                           fontSize: FontSize.s14),
                       textAlign: TextAlign.center),
                   SizedBox(height: Insets.s16),
+                  if (_destinationAddress.isNotEmpty) ...[
+                    _buildDestinationCard(),
+                    SizedBox(height: Insets.s16),
+                  ],
                   const SafetySection(items: _safetyItems),
                   SizedBox(height: Insets.s16),
                   _buildDriverSection(),
@@ -154,6 +163,35 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
                 ]),
           ),
           const Divider(height: 1, color: Color(0xFFF5F5F5)),
+        ]),
+      );
+
+  Widget _buildDestinationCard() => Container(
+        padding: EdgeInsets.all(Insets.s16),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(AppRadius.s12),
+          border: Border.all(color: AppColors.neutral500),
+        ),
+        child: Row(children: [
+          Icon(Icons.location_on_rounded, size: 22.sp, color: AppColors.primary),
+          SizedBox(width: Insets.s12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('وجهة التوصيل',
+                    style: getRegularStyle(
+                        color: AppColors.neutral800, fontSize: FontSize.s12)),
+                SizedBox(height: 2.h),
+                Text(_destinationAddress,
+                    style: getMediumStyle(
+                        color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis),
+              ],
+            ),
+          ),
         ]),
       );
 

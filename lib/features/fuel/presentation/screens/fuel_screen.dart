@@ -73,12 +73,15 @@ class _FuelScreenState extends State<FuelScreen> {
     final fullTankNote = _isFullTank ? 'تعبئة كاملة' : null;
     final combinedNotes = [if (fullTankNote != null) fullTankNote, if (notes != null) notes].join(' - ');
 
+    // Map fuel type to backend values: gasoline → petrol, diesel → diesel
+    final apiFuelType = _selectedFuel!.fuelType == 'gasoline' ? 'petrol' : 'diesel';
+
     blocContext.read<RequestBloc>().add(CreateFuelRequestEvent(
           latitude: loc.lat!,
           longitude: loc.lng!,
           address: loc.address,
-          fuelType: _selectedFuel!.fuelType,
-          fuelQuantity: _isFullTank ? 0 : _quantityNum,
+          fuelType: apiFuelType,
+          fuelQuantity: _isFullTank ? 60 : _quantityNum,
           notes: combinedNotes.isNotEmpty ? combinedNotes : null,
         ));
   }
@@ -110,7 +113,10 @@ class _FuelScreenState extends State<FuelScreen> {
                 serviceType: 'fuel_delivery',
               ));
           } else if (state is RequestError) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            final msg = state.message.contains('active')
+                ? 'لديك طلب نشط بالفعل. يرجى إلغاؤه من الصفحة الرئيسية أولاً.'
+                : state.message;
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
           }
         },
         child: Builder(

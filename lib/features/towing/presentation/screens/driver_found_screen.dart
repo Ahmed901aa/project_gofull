@@ -109,11 +109,6 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
           Routes.towingStarted,
           arguments: TowingStartedArgs(
             requestId: _args.requestId,
-            nextRouteArgs: TripInProgressArgs(
-              originAddress: request.driverAddress ?? '',
-              destinationAddress: request.destinationAddress ?? '',
-              requestId: _args.requestId,
-            ),
           ),
         );
       }

@@ -103,8 +103,11 @@ class _TowingScreenState extends State<TowingScreen> {
               ),
             );
           } else if (state is RequestError) {
+            final msg = state.message.contains('active')
+                ? 'لديك طلب نشط بالفعل. يرجى إلغاؤه من الصفحة الرئيسية أولاً.'
+                : state.message;
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+              SnackBar(content: Text(msg)),
             );
           }
         },
