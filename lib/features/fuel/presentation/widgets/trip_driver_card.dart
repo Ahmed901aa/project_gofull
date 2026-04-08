@@ -5,15 +5,21 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 
-// replace with API data later
-const _name = 'محمود عبدالعليم';
-const _rating = '4.9';
-const _reviews = '541';
-const _plate = 'أ ب م - 3541';
-const _vehicle = 'ونش هيدروليك';
-
 class TripDriverCard extends StatelessWidget {
-  const TripDriverCard({super.key});
+  final String name;
+  final String rating;
+  final String reviewCount;
+  final String plateNumber;
+  final String vehicleType;
+
+  const TripDriverCard({
+    super.key,
+    this.name = '—',
+    this.rating = '—',
+    this.reviewCount = '',
+    this.plateNumber = '—',
+    this.vehicleType = '—',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +36,9 @@ class TripDriverCard extends StatelessWidget {
           SizedBox(height: Insets.s12),
           Row(
             children: [
-              Expanded(child: _InfoChip(label: 'رقم اللوحة', value: _plate)),
+              Expanded(child: _InfoChip(label: 'رقم اللوحة', value: plateNumber)),
               SizedBox(width: Insets.s16),
-              Expanded(child: _InfoChip(label: 'نوع الونش', value: _vehicle)),
+              Expanded(child: _InfoChip(label: 'نوع المركبة', value: vehicleType)),
             ],
           ),
         ],
@@ -54,9 +60,9 @@ class TripDriverCard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(_name, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
+                Text(name, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
                 SizedBox(height: 2.h),
-                _RatingBadge(),
+                _RatingBadge(rating: rating, reviewCount: reviewCount),
               ],
             ),
           ],
@@ -65,6 +71,10 @@ class TripDriverCard extends StatelessWidget {
 }
 
 class _RatingBadge extends StatelessWidget {
+  final String rating;
+  final String reviewCount;
+  const _RatingBadge({required this.rating, required this.reviewCount});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -77,11 +87,13 @@ class _RatingBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(_rating, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+          Text(rating, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
           const SizedBox(width: 2),
           Icon(Icons.star_rounded, size: 14.sp, color: const Color(0xFFFFB800)),
-          const SizedBox(width: 2),
-          Text('($_reviews)', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14)),
+          if (reviewCount.isNotEmpty) ...[
+            const SizedBox(width: 2),
+            Text('($reviewCount)', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14)),
+          ],
         ],
       ),
     );

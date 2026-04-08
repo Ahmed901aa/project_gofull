@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
 import '../widgets/confirmation_dialog.dart';
@@ -16,10 +18,21 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  final _nameController = TextEditingController(text: 'Ahmed Elamrity');
-  final _phoneController = TextEditingController(text: '0915909734');
+  late final TextEditingController _nameController;
+  late final TextEditingController _phoneController;
   bool _phoneVerified = true;
-  String _savedPhone = '0915909734';
+  late String _savedPhone;
+
+  @override
+  void initState() {
+    super.initState();
+    final user = sl<TokenStorage>().getUser();
+    final name = (user?['name'] as String?) ?? '';
+    final phone = (user?['phone'] as String?) ?? '';
+    _nameController = TextEditingController(text: name);
+    _phoneController = TextEditingController(text: phone);
+    _savedPhone = phone;
+  }
 
   @override
   void dispose() {

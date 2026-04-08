@@ -1,26 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DriverSupportScreen extends StatelessWidget {
   const DriverSupportScreen({super.key});
 
-  static const _supportPhone = '+96545345368';
+  String _getPhone(BuildContext context) {
+    try {
+      return context.read<AppConfigBloc>().state.supportPhone;
+    } catch (_) {
+      return '0915909734';
+    }
+  }
 
-  Future<void> _callSupport() async {
-    final uri = Uri.parse('tel:$_supportPhone');
+  Future<void> _callSupport(String phone) async {
+    final uri = Uri.parse('tel:$phone');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     }
   }
 
-  void _copyPhone(BuildContext context) {
-    Clipboard.setData(const ClipboardData(text: _supportPhone));
+  void _copyPhone(BuildContext context, String phone) {
+    Clipboard.setData(ClipboardData(text: phone));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -51,10 +59,14 @@ class DriverSupportScreen extends StatelessWidget {
                   children: [
                     _SupportIllustration(),
                     SizedBox(height: Insets.s24),
-                    _DirectCallSection(
-                      onCall: _callSupport,
-                      onCopy: () => _copyPhone(context),
-                    ),
+                    Builder(builder: (ctx) {
+                      final phone = _getPhone(ctx);
+                      return _DirectCallSection(
+                        phone: phone,
+                        onCall: () => _callSupport(phone),
+                        onCopy: () => _copyPhone(ctx, phone),
+                      );
+                    }),
                     SizedBox(height: Insets.s32),
                   ],
                 ),
@@ -133,10 +145,11 @@ class _SupportIllustration extends StatelessWidget {
 // ── Direct Call Section ──────────────────────────────────
 
 class _DirectCallSection extends StatelessWidget {
+  final String phone;
   final VoidCallback onCall;
   final VoidCallback onCopy;
 
-  const _DirectCallSection({required this.onCall, required this.onCopy});
+  const _DirectCallSection({required this.phone, required this.onCall, required this.onCopy});
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +199,7 @@ class _DirectCallSection extends StatelessWidget {
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      '+965 4534 5368',
+                      phone,
                       style: getSemiBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s16),

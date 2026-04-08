@@ -1,28 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
+import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SupportScreen extends StatelessWidget {
   final bool showBack;
   const SupportScreen({super.key, this.showBack = true});
 
-  static const _phoneNumber = '0915909734';
-  static const _whatsapp = '966915909734';
-  static const _email = 'support@gofull.sa';
+  static const _email = 'support@gofull.ly';
 
-  Future<void> _makeCall() async {
-    final uri = Uri(scheme: 'tel', path: _phoneNumber);
+  String _getPhone(BuildContext context) {
+    try {
+      return context.read<AppConfigBloc>().state.supportPhone;
+    } catch (_) {
+      return '0915909734';
+    }
+  }
+
+  Future<void> _makeCall(String phone) async {
+    final uri = Uri(scheme: 'tel', path: phone);
     if (await canLaunchUrl(uri)) await launchUrl(uri);
   }
 
-  Future<void> _openWhatsApp() async {
-    final uri = Uri.parse('https://wa.me/$_whatsapp');
+  Future<void> _openWhatsApp(String phone) async {
+    final cleaned = phone.replaceAll(RegExp(r'[^0-9]'), '');
+    final uri = Uri.parse('https://wa.me/218$cleaned');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
@@ -69,21 +78,26 @@ class SupportScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 12.h),
-                          _ContactOptionCard(
-                            icon: Icons.phone_rounded,
-                            iconBgColor: AppColors.primary,
-                            title: 'اتصال مباشر',
-                            subtitle: _phoneNumber,
-                            onTap: _makeCall,
-                          ),
-                          SizedBox(height: 10.h),
-                          _ContactOptionCard(
-                            icon: Icons.chat_rounded,
-                            iconBgColor: const Color(0xFF25D366),
-                            title: 'واتساب',
-                            subtitle: 'محادثة فورية مع فريق الدعم',
-                            onTap: _openWhatsApp,
-                          ),
+                          Builder(builder: (ctx) {
+                            final phone = _getPhone(ctx);
+                            return Column(children: [
+                              _ContactOptionCard(
+                                icon: Icons.phone_rounded,
+                                iconBgColor: AppColors.primary,
+                                title: 'اتصال مباشر',
+                                subtitle: phone,
+                                onTap: () => _makeCall(phone),
+                              ),
+                              SizedBox(height: 10.h),
+                              _ContactOptionCard(
+                                icon: Icons.chat_rounded,
+                                iconBgColor: const Color(0xFF25D366),
+                                title: 'واتساب',
+                                subtitle: 'محادثة فورية مع فريق الدعم',
+                                onTap: () => _openWhatsApp(phone),
+                              ),
+                            ]);
+                          }),
                           SizedBox(height: 10.h),
                           _ContactOptionCard(
                             icon: Icons.email_rounded,

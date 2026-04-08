@@ -5,13 +5,17 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 
-// replace with API data later
-const _subtotal = '940.00 ج.م';
-const _fee = '15.00 ج.م';
-const _total = '985.00 ج.م';
-
 class TripPaymentCard extends StatelessWidget {
-  const TripPaymentCard({super.key});
+  final String subtotal;
+  final String serviceFee;
+  final String total;
+
+  const TripPaymentCard({
+    super.key,
+    this.subtotal = '—',
+    this.serviceFee = '—',
+    this.total = '—',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +27,7 @@ class TripPaymentCard extends StatelessWidget {
       ),
       child: Column(children: [
         SizedBox(height: Insets.s8),
-        _payRow('المجموع', _subtotal),
+        _payRow('المجموع', subtotal),
         _feeRow(),
         const Divider(height: 1, color: AppColors.neutral500),
         SizedBox(height: Insets.s8),
@@ -51,7 +55,7 @@ class TripPaymentCard extends StatelessWidget {
             Icon(Icons.info_outline_rounded, size: 16, color: AppColors.primary),
           ]),
           const Spacer(),
-          Text(_fee, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
+          Text(serviceFee, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
         ]),
       );
 
@@ -71,7 +75,7 @@ class TripPaymentCard extends StatelessWidget {
             ),
           ]),
           const Spacer(),
-          Text(_total, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
+          Text(total, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
         ]),
       );
 }

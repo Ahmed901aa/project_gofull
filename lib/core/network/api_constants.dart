@@ -34,6 +34,7 @@ class ApiConstants {
   static String providerUpdateStatus(int id) =>
       '/provider/requests/$id/status';
   static String providerRateDriver(int id) => '/provider/requests/$id/rate';
+  static String providerRequestDetails(int id) => '/provider/requests/$id';
   static const String providerActiveRequest = '/provider/requests/active';
 
   // ── Home & Content ─────────────────────────────────────────

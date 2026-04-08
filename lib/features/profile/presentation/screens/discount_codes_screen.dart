@@ -9,11 +9,9 @@ import 'package:project_gofull/features/profile/presentation/widgets/discount_co
 import 'package:project_gofull/features/profile/presentation/widgets/discount_tabs.dart';
 import 'package:project_gofull/features/profile/presentation/widgets/expired_coupon_card.dart';
 
-// replace with API data later
-const _mockCoupons = [
-  {'title': 'خصم 50 ج.م', 'expiry': 'ينتهي 3 يناير 2025'},
-  {'title': 'خصم 50 ج.م', 'expiry': 'ينتهي 3 يناير 2025'},
-];
+// TODO: Connect to coupons API when backend endpoint is available
+const List<Map<String, String>> _activeCoupons = [];
+const List<Map<String, String>> _expiredCoupons = [];
 
 class DiscountCodesScreen extends StatefulWidget {
   const DiscountCodesScreen({super.key});
@@ -46,10 +44,20 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
                 SizedBox(height: Insets.s16),
                 DiscountTabs(selectedTab: _selectedTab, onTabChanged: (i) => setState(() => _selectedTab = i)),
                 SizedBox(height: Insets.s16),
+                if (_selectedTab == 0 && _activeCoupons.isEmpty)
+                  Padding(
+                    padding: EdgeInsets.only(top: Insets.s24),
+                    child: Center(child: Text('لا توجد كوبونات نشطة', style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14))),
+                  ),
                 if (_selectedTab == 0)
-                  ..._mockCoupons.map((c) => Padding(padding: EdgeInsets.only(bottom: Sizes.s12), child: CouponCard(title: c['title']!, expiry: c['expiry']!))),
+                  ..._activeCoupons.map((c) => Padding(padding: EdgeInsets.only(bottom: Sizes.s12), child: CouponCard(title: c['title']!, expiry: c['expiry']!))),
+                if (_selectedTab == 1 && _expiredCoupons.isEmpty)
+                  Padding(
+                    padding: EdgeInsets.only(top: Insets.s24),
+                    child: Center(child: Text('لا توجد كوبونات منتهية', style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14))),
+                  ),
                 if (_selectedTab == 1)
-                  ..._mockCoupons.map((c) => Padding(padding: EdgeInsets.only(bottom: Sizes.s12), child: ExpiredCouponCard(title: c['title']!, expiry: 'انتهي 3 يناير 2025'))),
+                  ..._expiredCoupons.map((c) => Padding(padding: EdgeInsets.only(bottom: Sizes.s12), child: ExpiredCouponCard(title: c['title']!, expiry: c['expiry']!))),
                 SizedBox(height: Sizes.s16),
               ]),
             ),

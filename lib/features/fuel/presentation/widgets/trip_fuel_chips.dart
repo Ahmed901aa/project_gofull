@@ -5,12 +5,15 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 
-// replace with API data later
-const _quantity = '20 لتر';
-const _fuelType = 'بنزين 95';
-
 class TripFuelChips extends StatelessWidget {
-  const TripFuelChips({super.key});
+  final String fuelType;
+  final String quantity;
+
+  const TripFuelChips({
+    super.key,
+    this.fuelType = '—',
+    this.quantity = '—',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +26,9 @@ class TripFuelChips extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Expanded(child: _Chip(label: 'نوع الوقود', value: _fuelType)),
+          Expanded(child: _Chip(label: 'نوع الوقود', value: fuelType)),
           SizedBox(width: Insets.s16),
-          Expanded(child: _Chip(label: 'الكمية المطلوبة', value: _quantity)),
+          Expanded(child: _Chip(label: 'الكمية المطلوبة', value: quantity)),
         ],
       ),
     );

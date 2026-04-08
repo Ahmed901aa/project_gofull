@@ -427,8 +427,12 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
                 ),
                 SizedBox(width: Insets.s8),
                 GestureDetector(
-                  onTap: () =>
-                      launchUrl(Uri.parse('tel:+966500000000')),
+                  onTap: () {
+                    final phone = widget.args.customerPhone;
+                    if (phone != null && phone.isNotEmpty) {
+                      launchUrl(Uri.parse('tel:$phone'));
+                    }
+                  },
                   child: Container(
                     width: Sizes.s48,
                     height: Sizes.s48,
