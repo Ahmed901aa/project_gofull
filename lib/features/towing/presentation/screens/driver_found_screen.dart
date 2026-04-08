@@ -94,7 +94,8 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
 
       if (isFuel) {
         if (request.status == 'completed') {
-          Navigator.pushReplacementNamed(context, Routes.fuelComplete);
+          Navigator.pushReplacementNamed(context, Routes.fuelComplete,
+              arguments: _args.requestId);
         } else {
           Navigator.pushReplacementNamed(
             context,

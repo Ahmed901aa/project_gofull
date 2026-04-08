@@ -69,7 +69,8 @@ class RouteGenerator {
         final args = settings.arguments as ServiceArrivedArgs?;
         return _buildRoute(ServiceArrivedScreen(args: args), settings);
       case Routes.fuelComplete:
-        return _buildRoute(const FuelCompleteScreen(), settings);
+        final requestId = settings.arguments as int?;
+        return _buildRoute(FuelCompleteScreen(requestId: requestId), settings);
       case Routes.tripDetails:
         final args = settings.arguments as TripDetailsArgs?;
         return _buildRoute(TripDetailsScreen(args: args), settings);
