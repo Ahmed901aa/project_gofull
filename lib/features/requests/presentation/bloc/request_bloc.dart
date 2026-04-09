@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/usecases/usecase.dart';
 import 'package:project_gofull/features/requests/domain/usecases/cancel_request_usecase.dart';
@@ -28,7 +29,9 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     on<LoadRequestsEvent>(_onLoadRequests);
     on<CreateFuelRequestEvent>(_onCreateFuel);
     on<CreateTowingRequestEvent>(_onCreateTowing);
-    on<LoadRequestDetailsEvent>(_onLoadDetails);
+    // Drop concurrent polls — only process the latest. Prevents racing
+    // between overlapping GET /driver/requests/{id} calls.
+    on<LoadRequestDetailsEvent>(_onLoadDetails, transformer: droppable());
     on<CancelRequestEvent>(_onCancel);
     on<RateProviderEvent>(_onRate);
   }
