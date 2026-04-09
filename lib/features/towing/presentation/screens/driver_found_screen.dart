@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,7 +17,6 @@ import 'package:project_gofull/features/requests/domain/entities/service_request
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
-import 'package:project_gofull/features/towing/presentation/widgets/eta_bottom_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/driver_found_header.dart';
 
@@ -32,8 +33,8 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
   late final RequestBloc _requestBloc;
   bool _navigated = false;
   bool _isEnRoute = false;
-  String _panelLabel = 'في انتظار تحرك مزود الخدمة';
   ServiceRequestEntity? _request;
+  bool _isCancelling = false;
 
   DriverFoundArgs get _args =>
       widget.args ??
@@ -48,7 +49,6 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
     super.initState();
     _requestBloc = sl<RequestBloc>();
 
-    // Poll for status changes every 3s
     if (_args.requestId != null) {
       _polling.start(
         interval: const Duration(seconds: 3),
@@ -67,43 +67,71 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
     super.dispose();
   }
 
-  void _onStatusChanged(RequestState state) {
-    if (_navigated || state is! RequestDetailsLoaded) return;
-    final request = state.request;
-    final isFuel = _args.serviceType == 'fuel_delivery';
+  void _onStatusChanged(BuildContext context, RequestState state) {
+    if (_navigated) return;
 
-    // Update provider info in state
-    setState(() => _request = request);
-
-    // Handle cancellation — go back
-    if (request.status == 'cancelled') {
+    if (state is RequestCancelled) {
+      // Our own cancel call succeeded
       _navigated = true;
       _polling.stop();
-      if (mounted) Navigator.pop(context);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم إلغاء الطلب بنجاح')),
+        );
+        Navigator.popUntil(context, (r) => r.isFirst);
+      }
       return;
     }
 
-    // Navigate when status advances beyond 'accepted'
-    if (request.status == 'en_route' ||
-        request.status == 'arrived' ||
-        request.status == 'in_progress' ||
-        request.status == 'completed') {
+    if (state is RequestError && _isCancelling) {
+      setState(() => _isCancelling = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(state.message)),
+      );
+      return;
+    }
 
-      if (request.status == 'en_route') {
-        setState(() {
-          _isEnRoute = true;
-          _panelLabel = isFuel
-              ? 'مزود الوقود في الطريق إليك'
-              : 'سائق الونش في الطريق إليك';
-        });
-        return;
+    if (state is! RequestDetailsLoaded) return;
+
+    final request = state.request;
+    final status = request.status.trim().toLowerCase();
+    final isFuel = _args.serviceType == 'fuel_delivery';
+
+    setState(() => _request = request);
+
+    developer.log(
+      'DriverFoundScreen → status="$status"',
+      name: 'DriverFoundScreen',
+    );
+
+    // Handle cancellation from provider side — pop back to home
+    if (status == 'cancelled') {
+      _navigated = true;
+      _polling.stop();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم إلغاء الطلب')),
+        );
+        Navigator.popUntil(context, (r) => r.isFirst);
       }
+      return;
+    }
 
+    // en_route: stay on this screen, just update UI
+    if (status == 'en_route') {
+      if (!_isEnRoute) setState(() => _isEnRoute = true);
+      return;
+    }
+
+    // Status advanced past en_route → navigate forward
+    if (status == 'arrived' ||
+        status == 'in_progress' ||
+        status == 'completed') {
       _navigated = true;
       _polling.stop();
 
       if (isFuel) {
-        if (request.status == 'completed') {
+        if (status == 'completed') {
           Navigator.pushReplacementNamed(context, Routes.fuelComplete,
               arguments: _args.requestId);
         } else {
@@ -117,9 +145,7 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
         Navigator.pushReplacementNamed(
           context,
           Routes.towingStarted,
-          arguments: TowingStartedArgs(
-            requestId: _args.requestId,
-          ),
+          arguments: TowingStartedArgs(requestId: _args.requestId),
         );
       }
     }
@@ -134,12 +160,42 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
     }
   }
 
+  Future<void> _confirmCancel() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: AlertDialog(
+          title: const Text('إلغاء الطلب'),
+          content: const Text(
+              'هل أنت متأكد من رغبتك في إلغاء هذا الطلب؟ سيتم إعلام مزود الخدمة.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('تراجع'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text('نعم، إلغاء',
+                  style: TextStyle(color: AppColors.error)),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (confirmed == true && _args.requestId != null && mounted) {
+      setState(() => _isCancelling = true);
+      _requestBloc.add(CancelRequestEvent(_args.requestId!));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: _requestBloc,
       child: BlocListener<RequestBloc, RequestState>(
-        listener: (context, state) => _onStatusChanged(state),
+        listener: _onStatusChanged,
         child: Scaffold(
           backgroundColor: AppColors.scaffoldBg,
           body: Column(
@@ -156,7 +212,8 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
                         child: DottedCircleContainer(
                           imagePath: _isEnRoute
                               ? 'assets/images/magnifying_glass.gif'
-                              : (_args.imagePath ?? 'assets/images/tank_truck.gif'),
+                              : (_args.imagePath ??
+                                  'assets/images/tank_truck.gif'),
                         ),
                       ),
                       SizedBox(height: Insets.s16),
@@ -191,12 +248,42 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
                   ),
                 ),
               ),
-              EtaBottomPanel(
-                etaFormatted: '...',
-                progress: _isEnRoute ? 0.4 : 0,
-                label: _panelLabel,
+              // Cancel button — always visible while on this screen
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: Insets.s16, vertical: Insets.s12),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 48.h,
+                    child: OutlinedButton(
+                      onPressed: _isCancelling ? null : _confirmCancel,
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: AppColors.error),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppRadius.s12),
+                        ),
+                      ),
+                      child: _isCancelling
+                          ? SizedBox(
+                              width: 20.w,
+                              height: 20.w,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                color: AppColors.error,
+                              ),
+                            )
+                          : Text(
+                              'إلغاء الطلب',
+                              style: getSemiBoldStyle(
+                                  color: AppColors.error,
+                                  fontSize: FontSize.s16),
+                            ),
+                    ),
+                  ),
+                ),
               ),
-              SizedBox(height: MediaQuery.of(context).padding.bottom),
             ],
           ),
         ),
