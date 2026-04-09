@@ -14,8 +14,6 @@ class SupportScreen extends StatelessWidget {
   final bool showBack;
   const SupportScreen({super.key, this.showBack = true});
 
-  static const _email = 'support@gofull.ly';
-
   String _getPhone(BuildContext context) {
     try {
       return context.read<AppConfigBloc>().state.supportPhone;
@@ -35,15 +33,6 @@ class SupportScreen extends StatelessWidget {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
-  }
-
-  Future<void> _sendEmail() async {
-    final uri = Uri(
-      scheme: 'mailto',
-      path: _email,
-      queryParameters: {'subject': 'طلب دعم فني - تطبيق GoFull'},
-    );
-    if (await canLaunchUrl(uri)) await launchUrl(uri);
   }
 
   @override
@@ -98,14 +87,6 @@ class SupportScreen extends StatelessWidget {
                               ),
                             ]);
                           }),
-                          SizedBox(height: 10.h),
-                          _ContactOptionCard(
-                            icon: Icons.email_rounded,
-                            iconBgColor: AppColors.info,
-                            title: 'البريد الإلكتروني',
-                            subtitle: _email,
-                            onTap: _sendEmail,
-                          ),
                         ],
                       ),
                     ),
