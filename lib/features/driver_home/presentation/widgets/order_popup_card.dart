@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
@@ -61,7 +62,15 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
 
     // Extract real customer info from driverInfo (populated by backend `with('driver')`)
     final driverInfo = req?.driverInfo ?? {};
-    final customerName = (driverInfo['name'] as String?) ?? 'عميل';
+    final rawName = driverInfo['name'] as String?;
+    final customerName = (rawName != null && rawName.isNotEmpty) ? rawName : 'عميل';
+    final customerPhone = driverInfo['phone'] as String?;
+
+    // Debug log (visible in `flutter logs`)
+    developer.log(
+      'OrderPopupCard — request #${req?.id}, driverInfo: $driverInfo, name="$rawName"',
+      name: 'OrderPopupCard',
+    );
 
     final fuelInfo = isFuel
         ? '${req?.fuelType ?? ''} - ${req?.fuelQuantity ?? ''} لتر'
@@ -118,8 +127,9 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
                         ),
                         SizedBox(height: 2.h),
                         Text(
-                          'طلب جديد',
+                          customerPhone ?? 'طلب جديد',
                           style: getRegularStyle(fontSize: FontSize.s12, color: AppColors.grey),
+                          textDirection: TextDirection.ltr,
                         ),
                       ],
                     ),

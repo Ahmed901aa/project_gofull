@@ -78,5 +78,13 @@ class ServiceRequestEntity extends Equatable {
   bool get isRated => ratingInfo != null;
 
   @override
-  List<Object?> get props => [id, status];
+  List<Object?> get props => [
+        id,
+        status,
+        providerId,
+        acceptedAt,
+        arrivedAt,
+        completedAt,
+        cancelledAt,
+      ];
 }

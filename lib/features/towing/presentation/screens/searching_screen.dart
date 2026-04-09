@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
@@ -31,15 +33,29 @@ class _SearchingScreenState extends State<SearchingScreen> {
     super.initState();
     _requestBloc = sl<RequestBloc>();
 
+    developer.log(
+      'SearchingScreen initState — requestId=${widget.args.requestId}, serviceType=${widget.args.serviceType}',
+      name: 'SearchingScreen',
+    );
+
     // Start polling for status changes every 3 seconds
     if (widget.args.requestId != null) {
       _polling.start(
         interval: const Duration(seconds: 3),
         callback: () async {
           if (!_navigated) {
+            developer.log(
+              'Polling → LoadRequestDetailsEvent(${widget.args.requestId})',
+              name: 'SearchingScreen',
+            );
             _requestBloc.add(LoadRequestDetailsEvent(widget.args.requestId!));
           }
         },
+      );
+    } else {
+      developer.log(
+        '⚠️ No requestId — polling NOT started!',
+        name: 'SearchingScreen',
       );
     }
   }
@@ -50,41 +66,84 @@ class _SearchingScreenState extends State<SearchingScreen> {
     super.dispose();
   }
 
-  void _onStatusChanged(RequestState state) {
-    if (_navigated) return;
+  void _onStatusChanged(BuildContext context, RequestState state) {
+    if (_navigated || !mounted) return;
 
-    if (state is RequestDetailsLoaded) {
-      final request = state.request;
+    developer.log(
+      'State changed → ${state.runtimeType}',
+      name: 'SearchingScreen',
+    );
 
-      // When a provider accepts → navigate to DriverFound
-      if (request.status != 'pending') {
-        _navigated = true;
-        _polling.stop();
+    if (state is RequestError) {
+      developer.log(
+        '⚠️ Polling error: ${state.message}',
+        name: 'SearchingScreen',
+      );
+      return; // don't stop polling, try again next tick
+    }
 
-        final isFuel = widget.args.serviceType == 'fuel_delivery';
-        final providerName =
-            (request.providerInfo?['user'] as Map?)?['name'] as String? ??
-                'مزود الخدمة';
+    if (state is! RequestDetailsLoaded) return;
 
-        Navigator.pushReplacementNamed(
-          context,
-          Routes.driverFound,
-          arguments: DriverFoundArgs(
-            title: isFuel ? 'تم العثور على مزود وقود!' : 'تم العثور على ونش!',
-            vehicleLabel: isFuel ? 'نوع المركبة' : 'نوع الونش',
-            vehicleValue: isFuel ? 'سيارة إمداد وقود' : 'ونش هيدروليك',
-            showClose: true,
-            imagePath: isFuel
-                ? 'assets/images/tank_truck.gif'
-                : 'assets/images/magnifying_glass.gif',
-            nextRoute:
-                isFuel ? Routes.serviceArrived : Routes.towingStarted,
-            requestId: request.id,
-            providerName: providerName,
-            serviceType: widget.args.serviceType,
-          ),
-        );
-      }
+    final request = state.request;
+    final status = request.status.trim().toLowerCase();
+
+    developer.log(
+      'Request #${request.id} status="$status"',
+      name: 'SearchingScreen',
+    );
+
+    // Stay on searching while pending
+    if (status == 'pending') return;
+
+    // Handle cancellation (from elsewhere)
+    if (status == 'cancelled') {
+      _navigated = true;
+      _polling.stop();
+      if (mounted) Navigator.pop(context);
+      return;
+    }
+
+    // Status advanced — navigate to DriverFoundScreen
+    _navigated = true;
+    _polling.stop();
+
+    final isFuel = widget.args.serviceType == 'fuel_delivery';
+    final providerUser =
+        (request.providerInfo?['user'] as Map<String, dynamic>?) ?? {};
+    final providerName =
+        (providerUser['name'] as String?) ?? 'مزود الخدمة';
+    final providerRating =
+        request.providerInfo?['average_rating']?.toString();
+
+    developer.log(
+      'Navigating → driverFound with providerName="$providerName"',
+      name: 'SearchingScreen',
+    );
+
+    try {
+      Navigator.pushReplacementNamed(
+        context,
+        Routes.driverFound,
+        arguments: DriverFoundArgs(
+          title: isFuel ? 'تم العثور على مزود وقود!' : 'تم العثور على ونش!',
+          vehicleLabel: isFuel ? 'نوع المركبة' : 'نوع الونش',
+          vehicleValue: isFuel ? 'سيارة إمداد وقود' : 'ونش هيدروليك',
+          showClose: true,
+          imagePath: isFuel
+              ? 'assets/images/tank_truck.gif'
+              : 'assets/images/magnifying_glass.gif',
+          nextRoute: isFuel ? Routes.serviceArrived : Routes.towingStarted,
+          requestId: request.id,
+          providerName: providerName,
+          providerRating: providerRating,
+          serviceType: widget.args.serviceType,
+        ),
+      );
+    } catch (e, stack) {
+      developer.log(
+        '❌ Navigation error: $e\n$stack',
+        name: 'SearchingScreen',
+      );
     }
   }
 
@@ -104,7 +163,7 @@ class _SearchingScreenState extends State<SearchingScreen> {
     return BlocProvider.value(
       value: _requestBloc,
       child: BlocListener<RequestBloc, RequestState>(
-        listener: (context, state) => _onStatusChanged(state),
+        listener: _onStatusChanged,
         child: PopScope(
           canPop: false,
           onPopInvokedWithResult: (didPop, _) {
