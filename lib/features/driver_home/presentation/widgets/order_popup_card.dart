@@ -58,131 +58,204 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
     final serviceLabel = isFuel ? AppStrings.fuelService : AppStrings.towService;
     final address = req?.driverAddress ?? 'عنوان العميل';
     final plateNumber = req?.plateNumber ?? '';
+
+    // Extract real customer info from driverInfo (populated by backend `with('driver')`)
+    final driverInfo = req?.driverInfo ?? {};
+    final customerName = (driverInfo['name'] as String?) ?? 'عميل';
+
     final fuelInfo = isFuel
         ? '${req?.fuelType ?? ''} - ${req?.fuelQuantity ?? ''} لتر'
         : '';
 
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: Insets.s16),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s24)),
-        boxShadow: [
-          BoxShadow(color: AppColors.shadow, blurRadius: 20, offset: const Offset(0, -4)),
-        ],
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(Insets.s16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Handle bar
-            Container(
-              width: 40.w, height: 4.h,
-              margin: EdgeInsets.only(bottom: Insets.s12),
-              decoration: BoxDecoration(color: AppColors.neutral600, borderRadius: BorderRadius.circular(2.r)),
-            ),
-
-            // Service type badge
-            Row(
-              children: [
-                if (req?.notes != null && req!.notes!.isNotEmpty)
-                  Flexible(
-                    child: Text(req.notes!, style: getRegularStyle(fontSize: FontSize.s12, color: AppColors.grey), maxLines: 1, overflow: TextOverflow.ellipsis),
-                  ),
-                const Spacer(),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: Insets.s12, vertical: 4.h),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(AppRadius.s16),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(isFuel ? Icons.local_gas_station : Icons.local_shipping_outlined, size: 16.sp, color: AppColors.primary),
-                      SizedBox(width: 4.w),
-                      Text(serviceLabel, style: getSemiBoldStyle(fontSize: FontSize.s12, color: AppColors.primary)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: Insets.s16),
-
-            // Address
-            Row(
-              children: [
-                Icon(Icons.location_on_outlined, size: 18.sp, color: AppColors.primary),
-                SizedBox(width: 6.w),
-                Expanded(
-                  child: Text(address, style: getMediumStyle(fontSize: FontSize.s14, color: AppColors.black), maxLines: 2, overflow: TextOverflow.ellipsis),
-                ),
-              ],
-            ),
-
-            if (isFuel && fuelInfo.isNotEmpty) ...[
-              SizedBox(height: Insets.s8),
-              Row(
-                children: [
-                  Icon(Icons.local_gas_station, size: 18.sp, color: AppColors.grey),
-                  SizedBox(width: 6.w),
-                  Text(fuelInfo, style: getRegularStyle(fontSize: FontSize.s14, color: AppColors.darkGrey)),
-                ],
-              ),
-            ],
-
-            if (plateNumber.isNotEmpty) ...[
-              SizedBox(height: Insets.s8),
-              Row(
-                children: [
-                  Icon(Icons.directions_car_outlined, size: 18.sp, color: AppColors.grey),
-                  SizedBox(width: 6.w),
-                  Text(plateNumber, style: getMediumStyle(fontSize: FontSize.s14, color: AppColors.black)),
-                ],
-              ),
-            ],
-
-            SizedBox(height: Insets.s16),
-            const Divider(color: AppColors.divider, height: 1),
-            SizedBox(height: Insets.s12),
-
-            // Action buttons
-            Row(
-              children: [
-                SizedBox(
-                  height: 48.h,
-                  child: OutlinedButton(
-                    onPressed: widget.onReject,
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: AppColors.error),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s12)),
-                      padding: EdgeInsets.symmetric(horizontal: Insets.s16),
-                    ),
-                    child: Text(AppStrings.rejectOrder, style: getSemiBoldStyle(fontSize: FontSize.s14, color: AppColors.error)),
-                  ),
-                ),
-                SizedBox(width: Insets.s12),
-                Expanded(
-                  child: SizedBox(
-                    height: 48.h,
-                    child: ElevatedButton(
-                      onPressed: widget.onAccept,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: AppColors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s12)),
-                        elevation: 0,
-                      ),
-                      child: Text('${AppStrings.acceptOrder} ($_secondsLeft ث)', style: getSemiBoldStyle(fontSize: FontSize.s16, color: AppColors.white)),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: Insets.s8),
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: Insets.s16),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s24)),
+          boxShadow: [
+            BoxShadow(color: AppColors.shadow, blurRadius: 20, offset: const Offset(0, -4)),
           ],
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(Insets.s16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Handle bar
+              Container(
+                width: 40.w, height: 4.h,
+                margin: EdgeInsets.only(bottom: Insets.s12),
+                decoration: BoxDecoration(color: AppColors.neutral600, borderRadius: BorderRadius.circular(2.r)),
+              ),
+
+              // Top row: customer name (right in RTL = "start") + service badge (left in RTL = "end" visually top-right in original direction)
+              // In RTL layout: Row start = right side of screen. Use Align to push badge to top-right.
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Customer avatar + name (right side in RTL)
+                  Container(
+                    width: 44.w,
+                    height: 44.w,
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.person_rounded, size: 22.sp, color: AppColors.primary),
+                  ),
+                  SizedBox(width: Insets.s10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          customerName,
+                          style: getBoldStyle(fontSize: FontSize.s16, color: AppColors.black),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 2.h),
+                        Text(
+                          'طلب جديد',
+                          style: getRegularStyle(fontSize: FontSize.s12, color: AppColors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Service type badge — positioned in top-right (= end of RTL row)
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: Insets.s12, vertical: 6.h),
+                    decoration: BoxDecoration(
+                      color: isFuel
+                          ? const Color(0xFFE8F5E9)
+                          : const Color(0xFFFFF3E0),
+                      borderRadius: BorderRadius.circular(AppRadius.s16),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          isFuel ? Icons.local_gas_station : Icons.local_shipping_outlined,
+                          size: 14.sp,
+                          color: isFuel ? const Color(0xFF2E7D32) : const Color(0xFFE65100),
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          serviceLabel,
+                          style: getSemiBoldStyle(
+                            fontSize: FontSize.s12,
+                            color: isFuel ? const Color(0xFF2E7D32) : const Color(0xFFE65100),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: Insets.s16),
+              const Divider(color: AppColors.divider, height: 1),
+              SizedBox(height: Insets.s12),
+
+              // Address
+              Row(
+                children: [
+                  Icon(Icons.location_on_outlined, size: 18.sp, color: AppColors.primary),
+                  SizedBox(width: 6.w),
+                  Expanded(
+                    child: Text(
+                      address,
+                      style: getMediumStyle(fontSize: FontSize.s14, color: AppColors.black),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+
+              if (isFuel && fuelInfo.isNotEmpty) ...[
+                SizedBox(height: Insets.s8),
+                Row(
+                  children: [
+                    Icon(Icons.local_gas_station, size: 18.sp, color: AppColors.grey),
+                    SizedBox(width: 6.w),
+                    Text(fuelInfo, style: getRegularStyle(fontSize: FontSize.s14, color: AppColors.darkGrey)),
+                  ],
+                ),
+              ],
+
+              if (plateNumber.isNotEmpty) ...[
+                SizedBox(height: Insets.s8),
+                Row(
+                  children: [
+                    Icon(Icons.directions_car_outlined, size: 18.sp, color: AppColors.grey),
+                    SizedBox(width: 6.w),
+                    Text(plateNumber, style: getMediumStyle(fontSize: FontSize.s14, color: AppColors.black)),
+                  ],
+                ),
+              ],
+
+              if (req?.notes != null && req!.notes!.isNotEmpty) ...[
+                SizedBox(height: Insets.s8),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.sticky_note_2_outlined, size: 18.sp, color: AppColors.grey),
+                    SizedBox(width: 6.w),
+                    Expanded(
+                      child: Text(
+                        req.notes!,
+                        style: getRegularStyle(fontSize: FontSize.s12, color: AppColors.grey),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+
+              SizedBox(height: Insets.s16),
+              const Divider(color: AppColors.divider, height: 1),
+              SizedBox(height: Insets.s12),
+
+              // Action buttons
+              Row(
+                children: [
+                  SizedBox(
+                    height: 48.h,
+                    child: OutlinedButton(
+                      onPressed: widget.onReject,
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: AppColors.error),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s12)),
+                        padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+                      ),
+                      child: Text(AppStrings.rejectOrder, style: getSemiBoldStyle(fontSize: FontSize.s14, color: AppColors.error)),
+                    ),
+                  ),
+                  SizedBox(width: Insets.s12),
+                  Expanded(
+                    child: SizedBox(
+                      height: 48.h,
+                      child: ElevatedButton(
+                        onPressed: widget.onAccept,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: AppColors.white,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s12)),
+                          elevation: 0,
+                        ),
+                        child: Text('${AppStrings.acceptOrder} ($_secondsLeft ث)', style: getSemiBoldStyle(fontSize: FontSize.s16, color: AppColors.white)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: Insets.s8),
+            ],
+          ),
         ),
       ),
     );

@@ -32,8 +32,20 @@ class _TowingScreenState extends State<TowingScreen> {
   double? _destinationLat;
   double? _destinationLng;
 
-  bool get _isValid =>
-      _selectedCarType != null && _plateCtrl.text.trim().isNotEmpty;
+  bool _hasLocation(BuildContext context) {
+    final loc = context.read<LocationCubit>().state;
+    return loc.lat != null && loc.lng != null;
+  }
+
+  bool get _isFormValid => _plateCtrl.text.trim().isNotEmpty;
+
+  bool _isValid(BuildContext context) => _isFormValid && _hasLocation(context);
+
+  String? _getValidationError(BuildContext context) {
+    if (_plateCtrl.text.trim().isEmpty) return 'الرجاء إدخال رقم اللوحة';
+    if (!_hasLocation(context)) return 'الرجاء تحديد موقعك';
+    return null;
+  }
 
   Future<void> _onDestinationTap() async {
     final cubit = context.read<LocationCubit>();
@@ -162,11 +174,23 @@ class _TowingScreenState extends State<TowingScreen> {
                     ),
                   ),
                   BlocBuilder<RequestBloc, RequestState>(
-                    builder: (context, state) => ServiceBottomButton(
-                      isLoading: state is RequestLoading,
-                      onPressed:
-                          _isValid ? () => _onSubmit(blocContext) : null,
-                    ),
+                    builder: (context, state) {
+                      final isValid = _isValid(context);
+                      return ServiceBottomButton(
+                        isLoading: state is RequestLoading,
+                        isEnabled: isValid,
+                        onPressed: isValid
+                            ? () => _onSubmit(blocContext)
+                            : () {
+                                final err = _getValidationError(context);
+                                if (err != null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(err)),
+                                  );
+                                }
+                              },
+                      );
+                    },
                   ),
                 ],
               ),

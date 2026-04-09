@@ -148,13 +148,6 @@ class SupportScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(height: 24.h),
-
-                    // Working hours
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Insets.s16),
-                      child: _buildWorkingHours(),
-                    ),
                     SizedBox(height: 32.h),
                   ],
                 ),
@@ -205,7 +198,7 @@ class SupportScreen extends StatelessWidget {
           ),
           SizedBox(height: 6.h),
           Text(
-            'فريقنا جاهز لخدمتك على مدار الساعة',
+            'فريقنا جاهز لخدمتك',
             style: getRegularStyle(
               color: AppColors.neutral800,
               fontSize: FontSize.s14,
@@ -216,87 +209,6 @@ class SupportScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWorkingHours() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(Insets.s16),
-      decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.15),
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 44.w,
-            height: 44.w,
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.access_time_rounded,
-              size: 22.sp,
-              color: AppColors.primary,
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'ساعات العمل',
-                  style: getSemiBoldStyle(
-                    color: const Color(0xFF0E0E0E),
-                    fontSize: FontSize.s14,
-                  ),
-                ),
-                SizedBox(height: 2.h),
-                Text(
-                  'متاح 24 ساعة - 7 أيام في الأسبوع',
-                  style: getRegularStyle(
-                    color: AppColors.neutral800,
-                    fontSize: FontSize.s12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-            decoration: BoxDecoration(
-              color: AppColors.success.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 6.w,
-                  height: 6.w,
-                  decoration: const BoxDecoration(
-                    color: AppColors.success,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                SizedBox(width: 4.w),
-                Text(
-                  'متاح الآن',
-                  style: getMediumStyle(
-                    color: AppColors.success,
-                    fontSize: FontSize.s12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 // ── Contact Option Card ──────────────────────────────────────

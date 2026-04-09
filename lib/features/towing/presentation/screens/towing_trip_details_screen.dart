@@ -8,6 +8,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
+import 'package:project_gofull/core/widgets/provider_info_card.dart';
 import 'package:project_gofull/core/widgets/service_location_card.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/orders/models/order_data.dart';
@@ -16,7 +17,6 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/detail_chip.dart';
-import 'package:project_gofull/features/towing/presentation/widgets/driver_details_card.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/trip_payment_section.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/trip_rating_bottom_bar.dart';
 
@@ -83,15 +83,6 @@ class TowingTripDetailsScreen extends StatelessWidget {
   Widget _buildContent(BuildContext context, ServiceRequestEntity req) {
     final config = context.read<AppConfigBloc>().state;
     final cur = config.currency;
-    final provUser =
-        (req.providerInfo?['user'] as Map<String, dynamic>?) ?? {};
-    final provName = (provUser['name'] as String?) ?? '—';
-    final provRating =
-        (req.providerInfo?['average_rating']?.toString()) ?? '—';
-    final provPlate =
-        (req.providerInfo?['vehicle_plate'] as String?) ?? '';
-    final provModel =
-        (req.providerInfo?['vehicle_model'] as String?) ?? 'ونش';
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -120,15 +111,8 @@ class TowingTripDetailsScreen extends StatelessWidget {
               ])),
           SizedBox(height: Insets.s16),
           _section(
-              'تفاصيل السائق',
-              DriverDetailsCard(
-                name: provName,
-                rating: provRating,
-                reviewCount: '',
-                plateNumber: provPlate,
-                vehicleLabel: 'نوع الونش',
-                vehicleValue: provModel,
-              )),
+              'تفاصيل مزود الخدمة',
+              ProviderInfoCard.fromRequest(req)),
           SizedBox(height: Insets.s16),
           _section(
               'ملخص الدفع',

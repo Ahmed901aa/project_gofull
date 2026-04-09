@@ -33,10 +33,8 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
   final _polling = OrderPollingService();
   late final RequestBloc _requestBloc;
   bool _navigated = false;
+  ServiceRequestEntity? _request;
 
-  String _providerName = 'مزود الخدمة';
-  String _providerRating = '-';
-  String _providerPlate = '';
   String _destinationAddress = '';
 
   TowingStartedArgs get _args => widget.args ?? const TowingStartedArgs();
@@ -66,14 +64,8 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
   void _onState(RequestState state) {
     if (_navigated || state is! RequestDetailsLoaded) return;
     final req = state.request;
-    final provUser =
-        (req.providerInfo?['user'] as Map<String, dynamic>?) ?? {};
     setState(() {
-      _providerName = (provUser['name'] as String?) ?? 'مزود الخدمة';
-      _providerRating =
-          (req.providerInfo?['average_rating']?.toString()) ?? '-';
-      _providerPlate =
-          (req.providerInfo?['vehicle_plate'] as String?) ?? '';
+      _request = req;
       _destinationAddress = req.destinationAddress ?? '';
     });
 
@@ -198,20 +190,12 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
   Widget _buildDriverSection() => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('تفاصيل السائق',
+          Text('تفاصيل مزود الخدمة',
               style: getBoldStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
               textAlign: TextAlign.right),
           SizedBox(height: Insets.s8),
-          DriverDetailsCard(
-            name: _providerName,
-            rating: _providerRating,
-            reviewCount: '',
-            plateNumber: _providerPlate,
-            vehicleLabel: _args.vehicleLabel,
-            vehicleValue: _args.vehicleValue,
-            showActionIcons: true,
-          ),
+          ProviderInfoCard.fromRequest(_request),
         ],
       );
 }

@@ -10,11 +10,13 @@ import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/order_polling_service.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
+import 'package:project_gofull/core/widgets/provider_info_card.dart';
+import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
-import 'package:project_gofull/features/towing/presentation/widgets/driver_details_card.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/safety_section.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ServiceArrivedScreen extends StatefulWidget {
   final ServiceArrivedArgs? args;
@@ -28,11 +30,7 @@ class _ServiceArrivedScreenState extends State<ServiceArrivedScreen> {
   final _polling = OrderPollingService();
   late final RequestBloc _requestBloc;
   bool _navigated = false;
-
-  // Real data from API
-  String _providerName = 'مزود الخدمة';
-  String _providerRating = '-';
-  String _providerPlate = '';
+  ServiceRequestEntity? _request;
 
   ServiceArrivedArgs get _args => widget.args ?? const ServiceArrivedArgs();
 
@@ -62,20 +60,22 @@ class _ServiceArrivedScreenState extends State<ServiceArrivedScreen> {
     if (_navigated || state is! RequestDetailsLoaded) return;
     final req = state.request;
 
-    // Update driver info from real data
-    final provUser = (req.providerInfo?['user'] as Map<String, dynamic>?) ?? {};
-    setState(() {
-      _providerName = (provUser['name'] as String?) ?? 'مزود الخدمة';
-      _providerRating = (req.providerInfo?['average_rating']?.toString()) ?? '-';
-      _providerPlate = (req.providerInfo?['vehicle_plate'] as String?) ?? '';
-    });
+    setState(() => _request = req);
 
-    // Navigate on status change
     if (req.status == 'completed') {
       _navigated = true;
       _polling.stop();
       Navigator.pushReplacementNamed(context, Routes.fuelComplete,
           arguments: _args.requestId);
+    }
+  }
+
+  void _callProvider() {
+    final userInfo =
+        (_request?.providerInfo?['user'] as Map<String, dynamic>?) ?? {};
+    final phone = userInfo['phone'] as String?;
+    if (phone != null && phone.isNotEmpty) {
+      launchUrl(Uri.parse('tel:$phone'));
     }
   }
 
@@ -93,27 +93,33 @@ class _ServiceArrivedScreenState extends State<ServiceArrivedScreen> {
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 padding: EdgeInsets.all(Insets.s16),
-                child: Column(children: [
-                  SizedBox(height: Insets.s16),
-                  DottedCircleContainer(imagePath: _args.imagePath),
-                  SizedBox(height: Insets.s16),
-                  Text(_args.title,
-                      style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
-                          fontSize: FontSize.s18),
-                      textAlign: TextAlign.center),
-                  SizedBox(height: 4.h),
-                  Text(_args.subtitle,
-                      style: getRegularStyle(
-                          color: AppColors.neutral800,
-                          fontSize: FontSize.s14),
-                      textAlign: TextAlign.center),
-                  SizedBox(height: Insets.s16),
-                  const SafetySection(),
-                  SizedBox(height: Insets.s16),
-                  _buildDriverSection(),
-                  SizedBox(height: Insets.s16),
-                ]),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: Insets.s16),
+                    Center(child: DottedCircleContainer(imagePath: _args.imagePath)),
+                    SizedBox(height: Insets.s16),
+                    Text(_args.title,
+                        style: getBoldStyle(
+                            color: const Color(0xFF0E0E0E),
+                            fontSize: FontSize.s18),
+                        textAlign: TextAlign.center),
+                    SizedBox(height: 4.h),
+                    Text(_args.subtitle,
+                        style: getRegularStyle(
+                            color: AppColors.neutral800,
+                            fontSize: FontSize.s14),
+                        textAlign: TextAlign.center),
+                    SizedBox(height: Insets.s16),
+                    const SafetySection(),
+                    SizedBox(height: Insets.s16),
+                    ProviderInfoCard.fromRequest(
+                      _request,
+                      onCall: _callProvider,
+                    ),
+                    SizedBox(height: Insets.s16),
+                  ],
+                ),
               ),
             ),
           ]),
@@ -146,25 +152,5 @@ class _ServiceArrivedScreenState extends State<ServiceArrivedScreen> {
           ),
           const Divider(height: 1, color: Color(0xFFF5F5F5)),
         ]),
-      );
-
-  Widget _buildDriverSection() => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text('تفاصيل السائق',
-              style: getBoldStyle(
-                  color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-              textAlign: TextAlign.right),
-          SizedBox(height: Insets.s8),
-          DriverDetailsCard(
-            name: _providerName,
-            rating: _providerRating,
-            reviewCount: '',
-            plateNumber: _providerPlate,
-            vehicleLabel: _args.vehicleLabel,
-            vehicleValue: _args.vehicleValue,
-            showActionIcons: true,
-          ),
-        ],
       );
 }

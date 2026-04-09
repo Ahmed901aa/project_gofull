@@ -8,8 +8,8 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
+import 'package:project_gofull/core/widgets/provider_info_card.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
-import 'package:project_gofull/features/fuel/presentation/widgets/trip_driver_card.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/trip_fuel_chips.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/trip_location_card.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/trip_payment_card.dart';
@@ -81,19 +81,6 @@ class TripDetailsScreen extends StatelessWidget {
     final config = context.read<AppConfigBloc>().state;
     final cur = config.currency;
 
-    // Provider info
-    final provUser =
-        (req.providerInfo?['user'] as Map<String, dynamic>?) ?? {};
-    final provName = (provUser['name'] as String?) ?? '—';
-    final provRating =
-        (req.providerInfo?['average_rating']?.toString()) ?? '—';
-    final provTotalRatings =
-        (req.providerInfo?['total_ratings']?.toString()) ?? '';
-    final provPlate =
-        (req.providerInfo?['vehicle_plate'] as String?) ?? '—';
-    final provVehicle =
-        (req.providerInfo?['vehicle_model'] as String?) ?? '—';
-
     // Fuel info
     final fuelTypeMap = {'petrol': 'بنزين', 'diesel': 'ديزل'};
     final fuelType = fuelTypeMap[req.fuelType] ?? req.fuelType ?? '—';
@@ -115,14 +102,8 @@ class TripDetailsScreen extends StatelessWidget {
           _section('تفاصيل الوقود', TripFuelChips(fuelType: fuelType, quantity: quantity)),
           SizedBox(height: Insets.s16),
           _section(
-            'تفاصيل السائق',
-            TripDriverCard(
-              name: provName,
-              rating: provRating,
-              reviewCount: provTotalRatings,
-              plateNumber: provPlate,
-              vehicleType: provVehicle,
-            ),
+            'تفاصيل مزود الخدمة',
+            ProviderInfoCard.fromRequest(req),
           ),
           SizedBox(height: Insets.s16),
           _section(

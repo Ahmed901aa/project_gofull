@@ -11,12 +11,12 @@ import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/order_polling_service.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
+import 'package:project_gofull/core/widgets/provider_info_card.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
-import 'package:project_gofull/features/app_config/presentation/bloc/app_config_state.dart';
+import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
-import '../widgets/driver_details_card.dart';
 import '../widgets/trip_photo_placeholder.dart';
 import '../widgets/trip_route_card.dart';
 import '../widgets/trip_payment_section.dart';
@@ -47,11 +47,8 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
   final _polling = OrderPollingService();
   late final RequestBloc _requestBloc;
   bool _navigated = false;
+  ServiceRequestEntity? _request;
 
-  String _providerName = 'مزود الخدمة';
-  String _providerRating = '-';
-  String _providerPlate = '';
-  String _providerVehicle = 'ونش هيدروليك';
   String? _subtotal;
   String? _serviceFee;
   String? _total;
@@ -80,16 +77,8 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
   void _onState(RequestState state) {
     if (_navigated || state is! RequestDetailsLoaded) return;
     final req = state.request;
-    final provUser =
-        (req.providerInfo?['user'] as Map<String, dynamic>?) ?? {};
     setState(() {
-      _providerName = (provUser['name'] as String?) ?? 'مزود الخدمة';
-      _providerRating =
-          (req.providerInfo?['average_rating']?.toString()) ?? '-';
-      _providerPlate =
-          (req.providerInfo?['vehicle_plate'] as String?) ?? '';
-      _providerVehicle =
-          (req.providerInfo?['vehicle_model'] as String?) ?? 'ونش هيدروليك';
+      _request = req;
       _subtotal = req.subtotal;
       _serviceFee = req.serviceFee;
       _total = req.total;
@@ -245,20 +234,12 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
   Widget _buildDriverDetails() => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('تفاصيل السائق',
+          Text('تفاصيل مزود الخدمة',
               style: getBoldStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
               textAlign: TextAlign.right),
           SizedBox(height: Insets.s8),
-          DriverDetailsCard(
-            name: _providerName,
-            rating: _providerRating,
-            reviewCount: '',
-            plateNumber: _providerPlate,
-            vehicleLabel: 'نوع الونش',
-            vehicleValue: _providerVehicle,
-            showActionIcons: true,
-          ),
+          ProviderInfoCard.fromRequest(_request),
         ],
       );
 }

@@ -41,7 +41,25 @@ class _FuelScreenState extends State<FuelScreen> {
     FuelPriceEntity(id: 2, fuelType: 'diesel', nameAr: 'ديزل', pricePerLiter: 0.85),
   ];
 
-  bool get _isValid => _selectedFuel != null && _selectedQuantity != null && (_isFullTank || _quantityNum > 0);
+  bool _hasLocation(BuildContext context) {
+    final loc = context.read<LocationCubit>().state;
+    return loc.lat != null && loc.lng != null;
+  }
+
+  bool get _isFormValid =>
+      _selectedFuel != null &&
+      _selectedQuantity != null &&
+      (_isFullTank || _quantityNum > 0);
+
+  bool _isValid(BuildContext context) => _isFormValid && _hasLocation(context);
+
+  String? _getValidationError(BuildContext context) {
+    if (_selectedFuel == null) return 'الرجاء اختيار نوع الوقود';
+    if (_selectedQuantity == null) return 'الرجاء اختيار الكمية';
+    if (!_isFullTank && _quantityNum <= 0) return 'الرجاء اختيار كمية صحيحة';
+    if (!_hasLocation(context)) return 'الرجاء تحديد موقعك';
+    return null;
+  }
 
   @override
   void initState() {
@@ -195,9 +213,9 @@ class _FuelScreenState extends State<FuelScreen> {
                             ),
                             _section('ملخص الدفع', gap: 16),
                             PaymentSummary(
-                              subtotal: _isValid && !_isFullTank ? _subtotal : null,
+                              subtotal: _isFormValid && !_isFullTank ? _subtotal : null,
                               serviceFee: config.serviceFee,
-                              note: _isValid && _isFullTank ? 'سيتم تحديد السعر بعد التعبئة' : null,
+                              note: _isFormValid && _isFullTank ? 'سيتم تحديد السعر بعد التعبئة' : null,
                             ),
                             const SizedBox(height: 16),
                           ],
@@ -206,9 +224,24 @@ class _FuelScreenState extends State<FuelScreen> {
                     ),
                   ),
                   BlocBuilder<RequestBloc, RequestState>(
-                    builder: (context, state) => ServiceBottomButton(
-                      isLoading: state is RequestLoading,
-                      onPressed: _isValid ? () => _onSubmit(blocContext) : null,
+                    builder: (context, state) => BlocBuilder<LocationCubit, LocationState>(
+                      builder: (context, loc) {
+                        final isValid = _isValid(context);
+                        return ServiceBottomButton(
+                          isLoading: state is RequestLoading,
+                          isEnabled: isValid,
+                          onPressed: isValid
+                              ? () => _onSubmit(blocContext)
+                              : () {
+                                  final err = _getValidationError(context);
+                                  if (err != null) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(err)),
+                                    );
+                                  }
+                                },
+                        );
+                      },
                     ),
                   ),
                 ],

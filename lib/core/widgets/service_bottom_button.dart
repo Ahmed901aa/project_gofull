@@ -9,7 +9,14 @@ class ServiceBottomButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
   final bool isLoading;
-  const ServiceBottomButton({super.key, this.label = 'تأكيد', this.onPressed, this.isLoading = false});
+  final bool isEnabled;
+  const ServiceBottomButton({
+    super.key,
+    this.label = 'تأكيد',
+    this.onPressed,
+    this.isLoading = false,
+    this.isEnabled = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +31,9 @@ class ServiceBottomButton extends StatelessWidget {
         height: 48.h,
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: onPressed,
+          onPressed: isLoading ? null : onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
+            backgroundColor: isEnabled ? AppColors.primary : const Color(0xFFD9DADB),
             disabledBackgroundColor: const Color(0xFFD9DADB),
             foregroundColor: AppColors.white,
             disabledForegroundColor: AppColors.white,
