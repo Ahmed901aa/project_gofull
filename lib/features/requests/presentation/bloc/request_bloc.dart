@@ -79,7 +79,11 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
 
   Future<void> _onLoadDetails(
       LoadRequestDetailsEvent event, Emitter<RequestState> emit) async {
-    emit(const RequestLoading());
+    // Only emit Loading for the VERY FIRST fetch (initial state).
+    // Subsequent polls should not disrupt the UI with a Loading state.
+    if (state is RequestInitial) {
+      emit(const RequestLoading());
+    }
     final result = await getDetails(GetRequestDetailsParams(id: event.id));
     result.fold(
       (f) => emit(RequestError(f.message)),
