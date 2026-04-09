@@ -10,10 +10,11 @@ import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/order_polling_service.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
+import 'package:project_gofull/core/widgets/provider_info_card.dart';
+import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
-import 'package:project_gofull/features/towing/presentation/widgets/driver_details_card.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/safety_section.dart';
 
 const _safetyItems = [

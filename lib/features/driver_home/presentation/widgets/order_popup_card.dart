@@ -105,7 +105,7 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
                     ),
                     child: Icon(Icons.person_rounded, size: 22.sp, color: AppColors.primary),
                   ),
-                  SizedBox(width: Insets.s10),
+                  SizedBox(width: Insets.s8),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

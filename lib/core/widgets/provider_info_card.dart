@@ -214,7 +214,7 @@ class _InfoItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(Insets.s10),
+      padding: EdgeInsets.all(Insets.s8),
       decoration: BoxDecoration(
         color: AppColors.scaffoldBg,
         borderRadius: BorderRadius.circular(AppRadius.s12),
@@ -231,7 +231,7 @@ class _InfoItem extends StatelessWidget {
                 label,
                 style: getRegularStyle(
                   color: AppColors.neutral800,
-                  fontSize: FontSize.s11,
+                  fontSize: FontSize.s12,
                 ),
               ),
             ],

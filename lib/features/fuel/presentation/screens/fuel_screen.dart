@@ -17,7 +17,6 @@ import 'package:project_gofull/core/widgets/service_location_card.dart';
 import 'package:project_gofull/features/app_config/domain/entities/fuel_price_entity.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
-import 'package:project_gofull/features/app_config/presentation/bloc/app_config_state.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
