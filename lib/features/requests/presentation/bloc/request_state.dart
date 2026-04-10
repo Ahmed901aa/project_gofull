@@ -41,6 +41,17 @@ class RequestCancelled extends RequestState {
   const RequestCancelled();
 }
 
+class UnratedOrderFound extends RequestState {
+  final ServiceRequestEntity request;
+  const UnratedOrderFound(this.request);
+  @override
+  List<Object?> get props => [request];
+}
+
+class NoUnratedOrder extends RequestState {
+  const NoUnratedOrder();
+}
+
 class ProviderRated extends RequestState {
   final RatingEntity rating;
   const ProviderRated(this.rating);

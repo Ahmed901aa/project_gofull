@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
+import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
@@ -34,6 +35,8 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
   @override
   void initState() {
     super.initState();
+    // Customer is IN the app when they see the arrival/completion screen
+    BottomNavShell.markCompletedInApp();
     _requestBloc = sl<RequestBloc>();
     final reqId = widget.args?.requestId;
     if (reqId != null) {

@@ -16,6 +16,7 @@ class ApiConstants {
 
   // ── Driver (Customer) Requests ────────────────────────────
   static const String driverRequests = '/driver/requests';
+  static const String driverUnratedRequest = '/driver/requests/unrated';
   static const String driverFuelRequest = '/driver/requests/fuel';
   static const String driverTowingRequest = '/driver/requests/towing';
   static String driverRequestDetails(int id) => '/driver/requests/$id';

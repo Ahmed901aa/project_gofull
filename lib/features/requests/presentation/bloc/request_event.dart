@@ -61,6 +61,10 @@ class CancelRequestEvent extends RequestEvent {
   List<Object?> get props => [id];
 }
 
+class CheckUnratedOrderEvent extends RequestEvent {
+  const CheckUnratedOrderEvent();
+}
+
 class RateProviderEvent extends RequestEvent {
   final int requestId;
   final int rating;

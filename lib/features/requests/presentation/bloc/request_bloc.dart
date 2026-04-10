@@ -7,6 +7,7 @@ import 'package:project_gofull/features/requests/domain/usecases/create_towing_r
 import 'package:project_gofull/features/requests/domain/usecases/get_request_details_usecase.dart';
 import 'package:project_gofull/features/requests/domain/usecases/get_requests_usecase.dart';
 import 'package:project_gofull/features/requests/domain/usecases/rate_provider_usecase.dart';
+import 'package:project_gofull/features/requests/domain/repositories/request_repository.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 
@@ -17,6 +18,7 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
   final GetRequestDetailsUseCase getDetails;
   final CancelRequestUseCase cancelRequest;
   final RateProviderUseCase rateProvider;
+  final RequestRepository repository;
 
   RequestBloc({
     required this.createFuel,
@@ -25,6 +27,7 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     required this.getDetails,
     required this.cancelRequest,
     required this.rateProvider,
+    required this.repository,
   }) : super(const RequestInitial()) {
     on<LoadRequestsEvent>(_onLoadRequests);
     on<CreateFuelRequestEvent>(_onCreateFuel);
@@ -33,6 +36,7 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     // between overlapping GET /driver/requests/{id} calls.
     on<LoadRequestDetailsEvent>(_onLoadDetails, transformer: droppable());
     on<CancelRequestEvent>(_onCancel);
+    on<CheckUnratedOrderEvent>(_onCheckUnrated);
     on<RateProviderEvent>(_onRate);
   }
 
@@ -98,6 +102,17 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     result.fold(
       (f) => emit(RequestError(f.message)),
       (_) => emit(const RequestCancelled()),
+    );
+  }
+
+  Future<void> _onCheckUnrated(
+      CheckUnratedOrderEvent event, Emitter<RequestState> emit) async {
+    final result = await repository.getUnratedOrder();
+    result.fold(
+      (_) => emit(const NoUnratedOrder()),
+      (req) => req != null
+          ? emit(UnratedOrderFound(req))
+          : emit(const NoUnratedOrder()),
     );
   }
 

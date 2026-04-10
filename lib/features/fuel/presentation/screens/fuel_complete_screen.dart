@@ -7,13 +7,12 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
-import 'package:project_gofull/core/utils/route_args.dart';
+import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/fuel_complete_payment_section.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/fuel_complete_safety_section.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/fuel_service_details.dart';
-import 'package:project_gofull/features/orders/models/order_data.dart';
 import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
@@ -40,6 +39,8 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
   @override
   void initState() {
     super.initState();
+    // Customer is IN the app when they see the completion screen
+    BottomNavShell.markCompletedInApp();
     _requestBloc = sl<RequestBloc>();
     if (widget.requestId != null) {
       _requestBloc.add(LoadRequestDetailsEvent(widget.requestId!));
@@ -128,17 +129,16 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
       );
 
   Widget _buildBottomButton(BuildContext context) {
-    final orderId = widget.requestId?.toString() ?? _request?.id.toString() ?? '';
     return Container(
       decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
         boxShadow: [BoxShadow(color: const Color(0xFFCCCCCC).withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2))]),
       padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s16),
       child: SizedBox(height: 48.h, width: double.infinity, child: ElevatedButton(
-        onPressed: () => Navigator.pushReplacementNamed(context, Routes.tripDetails,
-            arguments: TripDetailsArgs(orderId: orderId, status: OrderStatus.completed, isRated: false)),
+        onPressed: () => Navigator.pushNamedAndRemoveUntil(
+            context, Routes.home, (route) => false),
         style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: AppColors.white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
-        child: Text('تقييم الرحلة', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+        child: Text('العودة للرئيسية', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
       )),
     );
   }

@@ -28,14 +28,15 @@ class ArrivedBottomAction extends StatelessWidget {
               width: double.infinity,
               height: 48.h,
               child: ElevatedButton(
-                onPressed: () => Navigator.pushReplacementNamed(context, Routes.rating),
+                onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                    context, Routes.home, (route) => false),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   foregroundColor: AppColors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
                   elevation: 0,
                 ),
-                child: Text('تقييم الرحلة', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+                child: Text('العودة للرئيسية', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
               ),
             ),
           ),

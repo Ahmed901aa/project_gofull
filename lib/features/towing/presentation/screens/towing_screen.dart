@@ -4,6 +4,7 @@ import 'package:project_gofull/core/cubits/location_cubit.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/payment_summary.dart';
 import 'package:project_gofull/core/widgets/safety_notice_card.dart';
@@ -102,6 +103,7 @@ class _TowingScreenState extends State<TowingScreen> {
       child: BlocListener<RequestBloc, RequestState>(
         listener: (context, state) {
           if (state is RequestCreated) {
+            BottomNavShell.markOrderActive(state.request.id);
             Navigator.pushNamed(
               context,
               Routes.searchingDriver,

@@ -85,6 +85,18 @@ class RequestRepositoryImpl implements RequestRepository {
   }
 
   @override
+  Future<Either<Failure, ServiceRequestEntity?>> getUnratedOrder() async {
+    try {
+      final result = await dataSource.getUnratedOrder();
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (_) {
+      return const Right(null);
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> cancelRequest(int id) async {
     try {
       await dataSource.cancelRequest(id);

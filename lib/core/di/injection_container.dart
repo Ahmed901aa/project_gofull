@@ -137,6 +137,7 @@ Future<void> initDependencies() async {
       getDetails: sl(),
       cancelRequest: sl(),
       rateProvider: sl(),
+      repository: sl(),
     ),
   );
 

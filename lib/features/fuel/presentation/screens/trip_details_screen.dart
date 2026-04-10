@@ -6,9 +6,9 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
-import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/provider_info_card.dart';
+import 'package:project_gofull/core/widgets/rating_bottom_sheet.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/trip_fuel_chips.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/trip_location_card.dart';
@@ -41,38 +41,38 @@ class TripDetailsScreen extends StatelessWidget {
       },
       child: Scaffold(
         backgroundColor: AppColors.scaffoldBg,
-        body: Column(children: [
-          _buildHeader(context),
-          Expanded(
-            child: BlocBuilder<RequestBloc, RequestState>(
-              builder: (context, state) {
-                if (state is RequestLoading) {
-                  return const Center(
-                      child: CircularProgressIndicator(color: AppColors.primary));
-                }
-                if (state is RequestDetailsLoaded) {
-                  return _buildContent(context, state.request);
-                }
-                if (state is RequestError) {
-                  return Center(
-                      child: Text(state.message,
-                          style: getRegularStyle(
-                              color: AppColors.grey, fontSize: FontSize.s14)));
-                }
-                return const SizedBox.shrink();
-              },
-            ),
-          ),
-          if (_showRatingButton)
-            TripRatingBottomBar(
-              label: 'تقييم الرحلة',
-              onPressed: () => Navigator.pushNamed(context, Routes.rating,
-                  arguments: args != null
-                      ? RatingArgs(orderId: args!.orderId)
-                      : null),
-            ),
-          if (_showAlreadyRatedText) const AlreadyRatedBar(),
-        ]),
+        body: BlocBuilder<RequestBloc, RequestState>(
+          builder: (context, state) {
+            ServiceRequestEntity? loadedRequest;
+            Widget body;
+            if (state is RequestLoading) {
+              body = const Center(
+                  child: CircularProgressIndicator(color: AppColors.primary));
+            } else if (state is RequestDetailsLoaded) {
+              loadedRequest = state.request;
+              body = _buildContent(context, state.request);
+            } else if (state is RequestError) {
+              body = Center(
+                  child: Text(state.message,
+                      style: getRegularStyle(
+                          color: AppColors.grey, fontSize: FontSize.s14)));
+            } else {
+              body = const SizedBox.shrink();
+            }
+
+            return Column(children: [
+              _buildHeader(context),
+              Expanded(child: body),
+              if (_showRatingButton && loadedRequest != null)
+                TripRatingBottomBar(
+                  label: 'تقييم الرحلة',
+                  onPressed: () =>
+                      showRatingBottomSheet(context, loadedRequest!),
+                ),
+              if (_showAlreadyRatedText) const AlreadyRatedBar(),
+            ]);
+          },
+        ),
       ),
     );
   }

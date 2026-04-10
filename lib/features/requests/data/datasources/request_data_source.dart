@@ -17,6 +17,7 @@ abstract class RequestDataSource {
     required String plateNumber, String? notes,
   });
   Future<ServiceRequestModel> getRequestDetails(int id);
+  Future<ServiceRequestModel?> getUnratedOrder();
   Future<void> cancelRequest(int id);
   Future<RatingModel> rateProvider({
     required int requestId, required int rating, String? comment,
@@ -87,6 +88,12 @@ class RequestMockDataSource implements RequestDataSource {
       driverLatitude: '32.8872', driverLongitude: '13.1913',
       driverAddress: 'طرابلس، ليبيا',
     );
+  }
+
+  @override
+  Future<ServiceRequestModel?> getUnratedOrder() async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return null;
   }
 
   @override
@@ -194,6 +201,19 @@ class RequestRemoteDataSource implements RequestDataSource {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
               'فشل تحميل تفاصيل الطلب');
+    }
+  }
+
+  @override
+  Future<ServiceRequestModel?> getUnratedOrder() async {
+    try {
+      final response =
+          await apiClient.dio.get(ApiConstants.driverUnratedRequest);
+      final data = response.data['data'];
+      if (data == null) return null;
+      return ServiceRequestModel.fromJson(data as Map<String, dynamic>);
+    } on DioException catch (_) {
+      return null;
     }
   }
 
