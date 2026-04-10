@@ -9,6 +9,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/services/noti_service.dart';
 import 'package:project_gofull/core/services/order_polling_service.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
@@ -34,7 +35,6 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
   bool _navigated = false;
   bool _isEnRoute = false;
   ServiceRequestEntity? _request;
-  bool _isCancelling = false;
 
   DriverFoundArgs get _args =>
       widget.args ??
@@ -70,27 +70,6 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
   void _onStatusChanged(BuildContext context, RequestState state) {
     if (_navigated) return;
 
-    if (state is RequestCancelled) {
-      // Our own cancel call succeeded
-      _navigated = true;
-      _polling.stop();
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم إلغاء الطلب بنجاح')),
-        );
-        Navigator.popUntil(context, (r) => r.isFirst);
-      }
-      return;
-    }
-
-    if (state is RequestError && _isCancelling) {
-      setState(() => _isCancelling = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.message)),
-      );
-      return;
-    }
-
     if (state is! RequestDetailsLoaded) return;
 
     final request = state.request;
@@ -117,18 +96,36 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
       return;
     }
 
-    // en_route: stay on this screen, just update UI
+    // en_route: stay on this screen, just update UI + notify
     if (status == 'en_route') {
-      if (!_isEnRoute) setState(() => _isEnRoute = true);
+      if (!_isEnRoute) {
+        setState(() => _isEnRoute = true);
+        NotiService().showNotification(
+          id: request.id,
+          title: 'مزود الخدمة في الطريق',
+          body: isFuel ? 'مزود الوقود تحرك إلى موقعك' : 'سائق الونش تحرك إلى موقعك',
+        );
+      }
       return;
     }
 
-    // Status advanced past en_route → navigate forward
+    // Status advanced past en_route → notify + navigate forward
     if (status == 'arrived' ||
         status == 'in_progress' ||
         status == 'completed') {
       _navigated = true;
       _polling.stop();
+
+      final statusMessages = {
+        'arrived': 'مزود الخدمة وصل إلى موقعك',
+        'in_progress': 'بدأت الخدمة',
+        'completed': 'تمت الخدمة بنجاح',
+      };
+      NotiService().showNotification(
+        id: request.id,
+        title: 'GoFull',
+        body: statusMessages[status] ?? 'تحديث حالة الطلب',
+      );
 
       if (isFuel) {
         if (status == 'completed') {
@@ -157,36 +154,6 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
     final phone = userInfo['phone'] as String?;
     if (phone != null && phone.isNotEmpty) {
       launchUrl(Uri.parse('tel:$phone'));
-    }
-  }
-
-  Future<void> _confirmCancel() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: AlertDialog(
-          title: const Text('إلغاء الطلب'),
-          content: const Text(
-              'هل أنت متأكد من رغبتك في إلغاء هذا الطلب؟ سيتم إعلام مزود الخدمة.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('تراجع'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text('نعم، إلغاء',
-                  style: TextStyle(color: AppColors.error)),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    if (confirmed == true && _args.requestId != null && mounted) {
-      setState(() => _isCancelling = true);
-      _requestBloc.add(CancelRequestEvent(_args.requestId!));
     }
   }
 
@@ -248,41 +215,9 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
                   ),
                 ),
               ),
-              // Cancel button — always visible while on this screen
               SafeArea(
                 top: false,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: Insets.s16, vertical: Insets.s12),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 48.h,
-                    child: OutlinedButton(
-                      onPressed: _isCancelling ? null : _confirmCancel,
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: AppColors.error),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppRadius.s12),
-                        ),
-                      ),
-                      child: _isCancelling
-                          ? SizedBox(
-                              width: 20.w,
-                              height: 20.w,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.5,
-                                color: AppColors.error,
-                              ),
-                            )
-                          : Text(
-                              'إلغاء الطلب',
-                              style: getSemiBoldStyle(
-                                  color: AppColors.error,
-                                  fontSize: FontSize.s16),
-                            ),
-                    ),
-                  ),
-                ),
+                child: SizedBox(height: Insets.s12),
               ),
             ],
           ),

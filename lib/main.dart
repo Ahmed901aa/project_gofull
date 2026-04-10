@@ -8,6 +8,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/routes/route_generator.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/services/noti_service.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
 
@@ -15,6 +16,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await initDependencies();
+  await NotiService().initNotification();
   runApp(const GoFullApp());
 }
 

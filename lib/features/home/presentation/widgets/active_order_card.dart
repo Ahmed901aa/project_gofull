@@ -33,6 +33,9 @@ class ActiveOrderCard extends StatelessWidget {
         ? '${double.tryParse(order.total!)?.toStringAsFixed(2) ?? '—'} $cur'
         : '—';
     final isFuel = order.isFuelDelivery;
+    // Only allow cancel while the order is still pending.
+    // Once the driver has accepted, the customer must let the service proceed.
+    final canCancel = order.status.trim().toLowerCase() == 'pending';
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: Insets.s16),
@@ -149,24 +152,27 @@ class ActiveOrderCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(width: Insets.s8),
-                      SizedBox(
-                        height: 42.h,
-                        child: OutlinedButton(
-                          onPressed: () => _confirmCancel(context, order.id),
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: AppColors.error),
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(AppRadius.s12),
+                      if (canCancel) ...[
+                        SizedBox(width: Insets.s8),
+                        SizedBox(
+                          height: 42.h,
+                          child: OutlinedButton(
+                            onPressed: () =>
+                                _confirmCancel(context, order.id),
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: AppColors.error),
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(AppRadius.s12),
+                              ),
                             ),
+                            child: Text('إلغاء',
+                                style: getSemiBoldStyle(
+                                    color: AppColors.error,
+                                    fontSize: FontSize.s14)),
                           ),
-                          child: Text('إلغاء',
-                              style: getSemiBoldStyle(
-                                  color: AppColors.error,
-                                  fontSize: FontSize.s14)),
                         ),
-                      ),
+                      ],
                     ],
                   ),
                 ],

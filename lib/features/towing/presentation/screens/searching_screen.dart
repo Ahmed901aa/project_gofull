@@ -8,6 +8,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/services/noti_service.dart';
 import 'package:project_gofull/core/services/order_polling_service.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
@@ -103,7 +104,7 @@ class _SearchingScreenState extends State<SearchingScreen> {
       return;
     }
 
-    // Status advanced — navigate to DriverFoundScreen
+    // Status advanced — notify + navigate to DriverFoundScreen
     _navigated = true;
     _polling.stop();
 
@@ -112,6 +113,13 @@ class _SearchingScreenState extends State<SearchingScreen> {
         (request.providerInfo?['user'] as Map<String, dynamic>?) ?? {};
     final providerName =
         (providerUser['name'] as String?) ?? 'مزود الخدمة';
+
+    // Fire a local notification so the user sees it even if app is backgrounded
+    NotiService().showNotification(
+      id: request.id,
+      title: isFuel ? 'تم قبول طلب الوقود' : 'تم قبول طلب السحب',
+      body: 'مزود الخدمة $providerName في طريقه إليك',
+    );
     final providerRating =
         request.providerInfo?['average_rating']?.toString();
 
