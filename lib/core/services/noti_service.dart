@@ -67,6 +67,7 @@ class NotiService {
           importance: Importance.high,
           priority: Priority.high,
           icon: '@mipmap/ic_launcher',
+          largeIcon: DrawableResourceAndroidBitmap('notification_logo'),
         ),
         iOS: DarwinNotificationDetails(
           presentAlert: true,

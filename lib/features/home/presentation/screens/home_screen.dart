@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
-
+import 'package:project_gofull/core/services/noti_service.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
@@ -27,13 +27,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Timer? _refreshTimer;
+  String? _lastOrderStatus;
+  int? _lastOrderId;
 
   @override
   void initState() {
     super.initState();
     // Load home data (banners + active order) from backend
     context.read<AppConfigBloc>().add(const LoadHomeDataEvent());
-    // Poll every 5s so active order appears when driver accepts
+    // Poll every 5s so active order status updates + notifications fire
     _refreshTimer = Timer.periodic(const Duration(seconds: 5), (_) {
       if (mounted) context.read<AppConfigBloc>().add(const LoadHomeDataEvent());
     });
@@ -46,7 +48,62 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onConfigChanged(BuildContext context, AppConfigState config) {
-    // Active order state is handled by the ActiveOrderCard widget
+    final order = config.activeOrder;
+    if (order == null) {
+      // Order finished or doesn't exist — reset tracking
+      if (_lastOrderStatus != null && _lastOrderId != null) {
+        // The order just disappeared (completed or cancelled)
+        _lastOrderStatus = null;
+        _lastOrderId = null;
+      }
+      return;
+    }
+
+    final newStatus = order.status.trim().toLowerCase();
+    final orderId = order.id;
+
+    // Only fire notification when status actually CHANGES
+    if (newStatus != _lastOrderStatus || orderId != _lastOrderId) {
+      final oldStatus = _lastOrderStatus;
+      _lastOrderStatus = newStatus;
+      _lastOrderId = orderId;
+
+      // Don't notify on the first load (oldStatus == null means first time seeing it)
+      if (oldStatus == null) return;
+
+      // Fire notification for the new status
+      final messages = <String, Map<String, String>>{
+        'accepted': {
+          'title': 'تم قبول طلبك',
+          'body': 'مزود الخدمة وافق على طلبك وسيتحرك إليك قريباً',
+        },
+        'en_route': {
+          'title': 'مزود الخدمة في الطريق',
+          'body': 'مزود الخدمة تحرك إلى موقعك',
+        },
+        'arrived': {
+          'title': 'مزود الخدمة وصل',
+          'body': 'مزود الخدمة وصل إلى موقعك',
+        },
+        'in_progress': {
+          'title': 'بدأت الخدمة',
+          'body': order.isFuelDelivery ? 'جاري تعبئة الوقود' : 'جاري سحب السيارة',
+        },
+        'completed': {
+          'title': 'تمت الخدمة بنجاح',
+          'body': order.isFuelDelivery ? 'تم تعبئة الوقود بنجاح' : 'تم توصيل السيارة بنجاح',
+        },
+      };
+
+      final msg = messages[newStatus];
+      if (msg != null) {
+        NotiService().showNotification(
+          id: orderId,
+          title: msg['title']!,
+          body: msg['body']!,
+        );
+      }
+    }
   }
 
   @override
