@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
+import 'package:project_gofull/core/network/api_client.dart';
+import 'package:project_gofull/core/network/api_constants.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/core/resources/font_manager.dart';
+import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
@@ -9,8 +14,36 @@ import '../widgets/confirmation_dialog.dart';
 import '../widgets/profile_menu_item.dart';
 import '../widgets/profile_user_card.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  Map<String, dynamic>? _profileData;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    try {
+      final response = await sl<ApiClient>().dio.get(ApiConstants.profile);
+      if (mounted) {
+        setState(() {
+          _profileData = response.data['data'] as Map<String, dynamic>?;
+          _isLoading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +52,10 @@ class ProfileScreen extends StatelessWidget {
     final userName = (user?['name'] as String?) ?? 'المستخدم';
     final userPhone = (user?['phone'] as String?) ?? '';
     final initials = userName.isNotEmpty ? userName[0] : '؟';
+
+    final completedOrders = _profileData?['completed_orders'] as int? ?? 0;
+    final averageRating = (_profileData?['average_rating'] as num?)?.toDouble() ?? 0.0;
+    final totalRatings = _profileData?['total_ratings'] as int? ?? 0;
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
@@ -40,6 +77,14 @@ class ProfileScreen extends StatelessWidget {
                         Navigator.pushNamed(context, Routes.editProfile),
                   ),
                   SizedBox(height: Insets.s16),
+                  // ── Stats: Rating & Completed Orders ──
+                  if (!_isLoading)
+                    _ProfileStatsRow(
+                      averageRating: averageRating,
+                      totalRatings: totalRatings,
+                      completedOrders: completedOrders,
+                    ),
+                  if (!_isLoading) SizedBox(height: Insets.s16),
                   ProfileMenuItem(
                     icon: Icons.local_offer_outlined,
                     label: 'أكواد الخصم',
@@ -122,6 +167,60 @@ class ProfileScreen extends StatelessWidget {
                 .pushNamedAndRemoveUntil(Routes.login, (r) => false);
           }
         },
+      ),
+    );
+  }
+}
+
+// ── Stats Row Widget ────────────────────────────────────────
+
+class _ProfileStatsRow extends StatelessWidget {
+  final double averageRating;
+  final int totalRatings;
+  final int completedOrders;
+
+  const _ProfileStatsRow({
+    required this.averageRating,
+    required this.totalRatings,
+    required this.completedOrders,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(child: _statBox('التقييم', averageRating > 0 ? averageRating.toStringAsFixed(1) : '-', Icons.star_rounded, AppColors.gold)),
+        SizedBox(width: Insets.s8),
+        Expanded(child: _statBox('التقييمات', '$totalRatings', Icons.reviews_rounded, AppColors.info)),
+        SizedBox(width: Insets.s8),
+        Expanded(child: _statBox('المكتملة', '$completedOrders', Icons.check_circle_rounded, AppColors.success)),
+      ],
+    );
+  }
+
+  Widget _statBox(String label, String value, IconData icon, Color iconColor) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: Insets.s12, horizontal: Insets.s8),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(AppRadius.s16),
+        border: Border.all(color: AppColors.neutral500),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 22.sp, color: iconColor),
+          SizedBox(height: 6.h),
+          Text(
+            value,
+            style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+          ),
+          SizedBox(height: 2.h),
+          Text(
+            label,
+            style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s12),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

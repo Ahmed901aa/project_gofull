@@ -6,14 +6,15 @@ class ProviderProfileModel extends ProviderProfileEntity {
     required super.vehicleMake, required super.vehicleModel,
     required super.vehicleYear, required super.vehiclePlate,
     super.vehicleColor, super.isAvailable, super.verificationStatus,
-    super.averageRating, super.totalRatings, super.userName, super.userPhone,
+    super.averageRating, super.totalRatings, super.completedOrders,
+    super.userName, super.userPhone,
   });
 
   factory ProviderProfileModel.fromJson(Map<String, dynamic> json) {
     final user = json['user'] as Map<String, dynamic>?;
     return ProviderProfileModel(
       id: json['id'] as int,
-      userId: json['user_id'] as int,
+      userId: json['user_id'] as int? ?? json['id'] as int,
       serviceType: json['service_type'] as String,
       vehicleMake: json['vehicle_make'] as String,
       vehicleModel: json['vehicle_model'] as String,
@@ -26,6 +27,7 @@ class ProviderProfileModel extends ProviderProfileEntity {
       averageRating:
           (json['average_rating'] as num?)?.toDouble() ?? 0,
       totalRatings: json['total_ratings'] as int? ?? 0,
+      completedOrders: json['completed_orders'] as int? ?? 0,
       userName: user?['name'] as String? ?? json['name'] as String?,
       userPhone: user?['phone'] as String? ?? json['phone'] as String?,
     );

@@ -196,13 +196,19 @@ class _InfoBoxesRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rating = profile?.averageRating.toStringAsFixed(1) ?? '-';
-    return Row(
+    return Column(
       children: [
-        Expanded(child: _infoBox('التقييم', rating, Icons.star_rounded)),
-        SizedBox(width: Insets.s12),
-        Expanded(
-            child: _infoBox(
-                'إجمالي التقييمات', '${profile?.totalRatings ?? 0}', Icons.reviews_rounded)),
+        Row(
+          children: [
+            Expanded(child: _infoBox('التقييم', rating, Icons.star_rounded)),
+            SizedBox(width: Insets.s12),
+            Expanded(
+                child: _infoBox(
+                    'إجمالي التقييمات', '${profile?.totalRatings ?? 0}', Icons.reviews_rounded)),
+          ],
+        ),
+        SizedBox(height: Insets.s12),
+        _infoBox('الطلبات المكتملة', '${profile?.completedOrders ?? 0}', Icons.check_circle_rounded),
       ],
     );
   }

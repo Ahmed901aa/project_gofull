@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:project_gofull/core/di/injection_container.dart';
+import 'package:project_gofull/core/network/api_client.dart';
+import 'package:project_gofull/core/network/api_constants.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
@@ -8,12 +11,71 @@ import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 
-class DriverTripDetailsScreen extends StatelessWidget {
+class DriverTripDetailsScreen extends StatefulWidget {
   final DriverTripDetailsArgs args;
 
   const DriverTripDetailsScreen({super.key, required this.args});
 
-  bool get _isTow => args.serviceType == 'tow';
+  @override
+  State<DriverTripDetailsScreen> createState() =>
+      _DriverTripDetailsScreenState();
+}
+
+class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
+  Map<String, dynamic>? _order;
+  bool _isLoading = true;
+
+  bool get _isTow => widget.args.serviceType == 'tow' || widget.args.serviceType == 'towing';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadOrderDetails();
+  }
+
+  Future<void> _loadOrderDetails() async {
+    try {
+      final response = await sl<ApiClient>()
+          .dio
+          .get(ApiConstants.providerRequestDetails(int.parse(widget.args.orderId)));
+      if (mounted) {
+        setState(() {
+          _order = response.data['data'] as Map<String, dynamic>?;
+          _isLoading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  // ── Helpers to extract data safely ──
+  String get _driverAddress => (_order?['driver_address'] as String?) ?? 'غير محدد';
+  String get _destinationAddress => (_order?['destination_address'] as String?) ?? 'غير محدد';
+  String get _fuelQuantity => (_order?['fuel_quantity'] as String?) ?? '-';
+  String get _fuelType {
+    final t = _order?['fuel_type'] as String?;
+    if (t == 'petrol' || t == 'gasoline') return 'بنزين';
+    if (t == 'diesel') return 'ديزل';
+    return t ?? '-';
+  }
+  String get _pricePerLiter => (_order?['price_per_liter'] as String?) ?? '-';
+  String get _plateNumber => (_order?['plate_number'] as String?) ?? '-';
+  String get _subtotal => (_order?['subtotal'] as String?) ?? '0.00';
+  String get _serviceFee => (_order?['service_fee'] as String?) ?? '0.00';
+  String get _total => (_order?['total'] as String?) ?? '0.00';
+  String get _paymentMethod {
+    final m = _order?['payment_method'] as String?;
+    return m == 'cash' ? 'كاش' : (m ?? 'كاش');
+  }
+  String get _customerName {
+    final driver = _order?['driver'] as Map<String, dynamic>?;
+    return (driver?['name'] as String?) ?? 'العميل';
+  }
+  String get _customerPhone {
+    final driver = _order?['driver'] as Map<String, dynamic>?;
+    return (driver?['phone'] as String?) ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +87,28 @@ class DriverTripDetailsScreen extends StatelessWidget {
           children: [
             _buildHeader(context),
             Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.all(Insets.s16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _isTow ? _towSections() : _fuelSections(),
-                ),
-              ),
+              child: _isLoading
+                  ? const Center(
+                      child:
+                          CircularProgressIndicator(color: AppColors.primary))
+                  : _order == null
+                      ? Center(
+                          child: Text('فشل تحميل تفاصيل الرحلة',
+                              style: getRegularStyle(
+                                  color: AppColors.grey,
+                                  fontSize: FontSize.s14)))
+                      : SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          padding: EdgeInsets.all(Insets.s16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children:
+                                _isTow ? _towSections() : _fuelSections(),
+                          ),
+                        ),
             ),
-            if (!args.isRated) _buildBottomButton(context),
+            if (!widget.args.isRated && !_isLoading && _order != null)
+              _buildBottomButton(context),
           ],
         ),
       ),
@@ -95,7 +169,8 @@ class DriverTripDetailsScreen extends StatelessWidget {
           child: AppButton(
             text: 'تقييم الرحلة',
             onPressed: () =>
-                Navigator.pushNamed(context, Routes.driverRateCustomer),
+                Navigator.pushNamed(context, Routes.driverRateCustomer,
+                    arguments: DriverRateArgs(orderId: widget.args.orderId)),
           ),
         ),
       );
@@ -105,26 +180,23 @@ class DriverTripDetailsScreen extends StatelessWidget {
   List<Widget> _towSections() => [
         _sectionTitle('مسار الرحلة'),
         SizedBox(height: Insets.s8),
-        _TripRouteTimeline(),
+        _TripRouteTimeline(
+          pickupAddress: _driverAddress,
+          deliveryAddress: _destinationAddress,
+        ),
         SizedBox(height: Insets.s20),
         _sectionTitle('تفاصيل السيارة'),
         SizedBox(height: Insets.s8),
-        _CarDetailsSection(),
+        _CarDetailsSection(plateNumber: _plateNumber),
         SizedBox(height: Insets.s20),
         _sectionTitle('معلومات العميل'),
         SizedBox(height: Insets.s8),
-        _CustomerInfoSection(),
+        _CustomerInfoSection(name: _customerName, phone: _customerPhone),
         SizedBox(height: Insets.s20),
         _sectionTitle('ملخص الدفع'),
         SizedBox(height: Insets.s8),
-        _PaymentSummarySection(),
-        SizedBox(height: Insets.s20),
-        _PhotoLogExpandable(
-          sections: [
-            _PhotoGroup(title: 'صور الاستلام', count: 4),
-            _PhotoGroup(title: 'صور التسليم', count: 4),
-          ],
-        ),
+        _PaymentSummarySection(
+            total: _total, paymentMethod: _paymentMethod),
         SizedBox(height: Insets.s16),
       ];
 
@@ -133,29 +205,24 @@ class DriverTripDetailsScreen extends StatelessWidget {
   List<Widget> _fuelSections() => [
         _sectionTitle('الموقع'),
         SizedBox(height: Insets.s8),
-        _LocationSection(),
+        _LocationSection(address: _driverAddress),
         SizedBox(height: Insets.s20),
         _sectionTitle('تفاصيل الوقود'),
         SizedBox(height: Insets.s8),
-        _FuelDetailsSection(),
-        SizedBox(height: Insets.s20),
-        _sectionTitle('تفاصيل السيارة'),
-        SizedBox(height: Insets.s8),
-        _CarDetailsSection(),
+        _FuelDetailsSection(
+          quantity: '$_fuelQuantity لتر',
+          fuelType: _fuelType,
+          pricePerLiter: '$_pricePerLiter د.ل',
+        ),
         SizedBox(height: Insets.s20),
         _sectionTitle('معلومات العميل'),
         SizedBox(height: Insets.s8),
-        _CustomerInfoSection(),
+        _CustomerInfoSection(name: _customerName, phone: _customerPhone),
         SizedBox(height: Insets.s20),
         _sectionTitle('ملخص الدفع'),
         SizedBox(height: Insets.s8),
-        _PaymentSummarySection(),
-        SizedBox(height: Insets.s20),
-        _PhotoLogExpandable(
-          sections: [
-            _PhotoGroup(title: 'سجل الصور', count: 4),
-          ],
-        ),
+        _PaymentSummarySection(
+            total: _total, paymentMethod: _paymentMethod),
         SizedBox(height: Insets.s16),
       ];
 
@@ -169,6 +236,10 @@ class DriverTripDetailsScreen extends StatelessWidget {
 // ── Trip Route Timeline ──────────────────────────────────
 
 class _TripRouteTimeline extends StatelessWidget {
+  final String pickupAddress;
+  final String deliveryAddress;
+  const _TripRouteTimeline({required this.pickupAddress, required this.deliveryAddress});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -182,16 +253,11 @@ class _TripRouteTimeline extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Timeline dots + line
             Column(
               children: [
                 Container(
-                  width: 12.w,
-                  height: 12.w,
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary,
-                    shape: BoxShape.circle,
-                  ),
+                  width: 12.w, height: 12.w,
+                  decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
                 ),
                 Expanded(
                   child: CustomPaint(
@@ -200,46 +266,27 @@ class _TripRouteTimeline extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  width: 12.w,
-                  height: 12.w,
-                  decoration: const BoxDecoration(
-                    color: AppColors.gold,
-                    shape: BoxShape.circle,
-                  ),
+                  width: 12.w, height: 12.w,
+                  decoration: const BoxDecoration(color: AppColors.gold, shape: BoxShape.circle),
                 ),
               ],
             ),
             SizedBox(width: Insets.s12),
-            // Addresses
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'نقطة الانطلاق',
-                    style: getRegularStyle(
-                        color: AppColors.grey, fontSize: FontSize.s12),
-                  ),
+                  Text('نقطة الانطلاق',
+                      style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s12)),
                   SizedBox(height: 2.h),
-                  Text(
-                    'المنصورة، مدينة مبارك، شارع مكة',
-                    style: getMediumStyle(
-                        color: const Color(0xFF0E0E0E),
-                        fontSize: FontSize.s14),
-                  ),
+                  Text(pickupAddress,
+                      style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
                   SizedBox(height: Insets.s20),
-                  Text(
-                    'وجهة التوصيل',
-                    style: getRegularStyle(
-                        color: AppColors.grey, fontSize: FontSize.s12),
-                  ),
+                  Text('وجهة التوصيل',
+                      style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s12)),
                   SizedBox(height: 2.h),
-                  Text(
-                    'الرياض، حي النزهة، شارع الأمير',
-                    style: getMediumStyle(
-                        color: const Color(0xFF0E0E0E),
-                        fontSize: FontSize.s14),
-                  ),
+                  Text(deliveryAddress,
+                      style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
                 ],
               ),
             ),
@@ -282,6 +329,9 @@ class _DottedLinePainter extends CustomPainter {
 // ── Location Section (Fuel) ──────────────────────────────
 
 class _LocationSection extends StatelessWidget {
+  final String address;
+  const _LocationSection({required this.address});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -299,17 +349,11 @@ class _LocationSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'موقع السيارة',
-                  style: getRegularStyle(
-                      color: AppColors.grey, fontSize: FontSize.s12),
-                ),
+                Text('موقع السيارة',
+                    style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s12)),
                 SizedBox(height: 2.h),
-                Text(
-                  'المنصورة، مدينة مبارك، شارع مكة',
-                  style: getMediumStyle(
-                      color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
-                ),
+                Text(address,
+                    style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
               ],
             ),
           ),
@@ -322,6 +366,15 @@ class _LocationSection extends StatelessWidget {
 // ── Fuel Details Section ─────────────────────────────────
 
 class _FuelDetailsSection extends StatelessWidget {
+  final String quantity;
+  final String fuelType;
+  final String pricePerLiter;
+  const _FuelDetailsSection({
+    required this.quantity,
+    required this.fuelType,
+    required this.pricePerLiter,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -333,11 +386,11 @@ class _FuelDetailsSection extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _detailRow('الكمية المطلوبة', '20 لتر'),
+          _detailRow('الكمية المطلوبة', quantity),
           SizedBox(height: Insets.s12),
-          _detailRow('نوع الوقود', 'بنزين 95'),
+          _detailRow('نوع الوقود', fuelType),
           SizedBox(height: Insets.s12),
-          _detailRow('سعر لتر اليوم', '12.50 ج.م'),
+          _detailRow('سعر لتر اليوم', pricePerLiter),
         ],
       ),
     );
@@ -345,17 +398,11 @@ class _FuelDetailsSection extends StatelessWidget {
 
   Widget _detailRow(String label, String value) => Row(
         children: [
-          Text(
-            label,
-            style: getRegularStyle(
-                color: AppColors.neutral900, fontSize: FontSize.s14),
-          ),
+          Text(label,
+              style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14)),
           const Spacer(),
-          Text(
-            value,
-            style: getSemiBoldStyle(
-                color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
-          ),
+          Text(value,
+              style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
         ],
       );
 }
@@ -363,47 +410,14 @@ class _FuelDetailsSection extends StatelessWidget {
 // ── Car Details Section ──────────────────────────────────
 
 class _CarDetailsSection extends StatelessWidget {
+  final String plateNumber;
+  const _CarDetailsSection({required this.plateNumber});
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Row(
       children: [
-        Row(
-          children: [
-            Expanded(child: _badgeCard('نوع السيارة', 'نيسان صني')),
-            SizedBox(width: Insets.s8),
-            Expanded(child: _badgeCard('رقم اللوحة', 'أ ب م - 3541')),
-          ],
-        ),
-        SizedBox(height: Insets.s12),
-        // Car images placeholder
-        Container(
-          height: 160.h,
-          decoration: BoxDecoration(
-            color: AppColors.neutral400,
-            borderRadius: BorderRadius.circular(AppRadius.s16),
-            border: Border.all(color: AppColors.neutral500),
-          ),
-          child: Row(
-            children: List.generate(
-              2,
-              (i) => Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(Insets.s8),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral200,
-                      borderRadius: BorderRadius.circular(AppRadius.s12),
-                      border: Border.all(color: AppColors.neutral500),
-                    ),
-                    child: Icon(Icons.directions_car_rounded,
-                        size: 40.sp, color: AppColors.neutral600),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+        Expanded(child: _badgeCard('رقم اللوحة', plateNumber)),
       ],
     );
   }
@@ -418,17 +432,11 @@ class _CarDetailsSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              label,
-              style: getRegularStyle(
-                  color: AppColors.grey, fontSize: FontSize.s12),
-            ),
+            Text(label,
+                style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s12)),
             SizedBox(height: 4.h),
-            Text(
-              value,
-              style: getSemiBoldStyle(
-                  color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
-            ),
+            Text(value,
+                style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
           ],
         ),
       );
@@ -437,6 +445,10 @@ class _CarDetailsSection extends StatelessWidget {
 // ── Customer Info Section ────────────────────────────────
 
 class _CustomerInfoSection extends StatelessWidget {
+  final String name;
+  final String phone;
+  const _CustomerInfoSection({required this.name, required this.phone});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -448,55 +460,28 @@ class _CustomerInfoSection extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Avatar
           Container(
-            width: 48.w,
-            height: 48.w,
+            width: 48.w, height: 48.w,
             decoration: BoxDecoration(
               color: AppColors.primary50,
               shape: BoxShape.circle,
               border: Border.all(color: AppColors.primary200, width: 1.5),
             ),
             alignment: Alignment.center,
-            child: Icon(Icons.person_rounded,
-                size: 24.sp, color: AppColors.primary),
+            child: Icon(Icons.person_rounded, size: 24.sp, color: AppColors.primary),
           ),
           SizedBox(width: Insets.s12),
-          // Name & phone
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'أحمد محمد',
-                  style: getSemiBoldStyle(
-                      color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
-                ),
+                Text(name,
+                    style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
                 SizedBox(height: 2.h),
-                Text(
-                  '+965 5534 5368',
-                  style: getRegularStyle(
-                      color: AppColors.grey, fontSize: FontSize.s12),
-                  textDirection: TextDirection.ltr,
-                ),
+                Text(phone,
+                    style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s12),
+                    textDirection: TextDirection.ltr),
               ],
-            ),
-          ),
-          // Call button
-          GestureDetector(
-            onTap: () {
-              // replace with url_launcher call
-            },
-            child: Container(
-              width: 40.w,
-              height: 40.w,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: Icon(Icons.phone_rounded,
-                  size: 20.sp, color: AppColors.white),
             ),
           ),
         ],
@@ -508,6 +493,10 @@ class _CustomerInfoSection extends StatelessWidget {
 // ── Payment Summary ──────────────────────────────────────
 
 class _PaymentSummarySection extends StatelessWidget {
+  final String total;
+  final String paymentMethod;
+  const _PaymentSummarySection({required this.total, required this.paymentMethod});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -519,133 +508,21 @@ class _PaymentSummarySection extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Text(
-            'الإجمالي',
-            style: getRegularStyle(
-                color: AppColors.neutral900, fontSize: FontSize.s16),
-          ),
+          Text('الإجمالي',
+              style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
           SizedBox(width: Insets.s8),
           Container(
-            padding:
-                EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
+            padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
             decoration: BoxDecoration(
               color: AppColors.primary50,
               borderRadius: BorderRadius.circular(AppRadius.s16),
             ),
-            child: Text('كاش',
-                style: getRegularStyle(
-                    color: AppColors.primary, fontSize: FontSize.s12)),
+            child: Text(paymentMethod,
+                style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12)),
           ),
           const Spacer(),
-          Text(
-            '985.00 ج.م',
-            style: getBoldStyle(
-                color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Photo Log Expandable ─────────────────────────────────
-
-class _PhotoGroup {
-  final String title;
-  final int count;
-  const _PhotoGroup({required this.title, required this.count});
-}
-
-class _PhotoLogExpandable extends StatefulWidget {
-  final List<_PhotoGroup> sections;
-  const _PhotoLogExpandable({required this.sections});
-
-  @override
-  State<_PhotoLogExpandable> createState() => _PhotoLogExpandableState();
-}
-
-class _PhotoLogExpandableState extends State<_PhotoLogExpandable> {
-  bool _isExpanded = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.neutral400,
-        borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          GestureDetector(
-            onTap: () => setState(() => _isExpanded = !_isExpanded),
-            behavior: HitTestBehavior.opaque,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: Insets.s16, vertical: Insets.s12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  AnimatedRotation(
-                    turns: _isExpanded ? 0.5 : 0.0,
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(Icons.keyboard_arrow_down_rounded,
-                        size: 24.sp, color: const Color(0xFF0E0E0E)),
-                  ),
-                  Text(
-                    'سجل الصور',
-                    style: getBoldStyle(
-                        color: const Color(0xFF0E0E0E),
-                        fontSize: FontSize.s16),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          if (_isExpanded) ...[
-            const Divider(color: AppColors.neutral500, height: 1, thickness: 1),
-            Padding(
-              padding: EdgeInsets.all(Insets.s12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: widget.sections.map((group) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        group.title,
-                        style: getMediumStyle(
-                            color: AppColors.darkGrey, fontSize: FontSize.s14),
-                      ),
-                      SizedBox(height: Insets.s8),
-                      Wrap(
-                        spacing: Insets.s8,
-                        runSpacing: Insets.s8,
-                        children: List.generate(
-                          group.count,
-                          (_) => Container(
-                            width:
-                                (MediaQuery.of(context).size.width - 80.w) / 3,
-                            height: 80.h,
-                            decoration: BoxDecoration(
-                              color: AppColors.neutral200,
-                              borderRadius:
-                                  BorderRadius.circular(AppRadius.s12),
-                              border: Border.all(color: AppColors.neutral500),
-                            ),
-                            child: Icon(Icons.image_outlined,
-                                size: 28.sp, color: AppColors.neutral600),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: Insets.s12),
-                    ],
-                  );
-                }).toList(),
-              ),
-            ),
-          ],
+          Text('$total د.ل',
+              style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
         ],
       ),
     );

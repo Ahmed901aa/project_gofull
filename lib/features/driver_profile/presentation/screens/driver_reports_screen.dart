@@ -2,6 +2,9 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:project_gofull/core/di/injection_container.dart';
+import 'package:project_gofull/core/network/api_client.dart';
+import 'package:project_gofull/core/network/api_constants.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
@@ -15,17 +18,78 @@ class DriverReportsScreen extends StatefulWidget {
 }
 
 class _DriverReportsScreenState extends State<DriverReportsScreen> {
-  String _productivityFilter = 'يومي';
-  String _responseFilter = 'يومي';
+  bool _isLoading = true;
+  String? _error;
 
-  final _filterOptions = const [
-    'اليوم',
-    'يومي',
-    'هذا الإسبوع',
-    'هذا الشهر',
-    'ستة أشهر',
-    'سنوياً',
-  ];
+  // Stats
+  int _totalOrders = 0;
+  double _totalIncome = 0;
+  double _averageRating = 0;
+  int _totalRatings = 0;
+  int _todayOrders = 0;
+  double _todayIncome = 0;
+  int _ordersChange = 0;
+  int _incomeChange = 0;
+
+  // Chart data
+  Map<String, double> _barData = {};
+  List<_ChartPoint> _areaData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAnalytics();
+  }
+
+  Future<void> _loadAnalytics() async {
+    try {
+      final response =
+          await sl<ApiClient>().dio.get(ApiConstants.providerAnalytics);
+      final data = response.data['data'] as Map<String, dynamic>;
+
+      if (mounted) {
+        setState(() {
+          _totalOrders = data['total_orders'] as int? ?? 0;
+          _totalIncome = (data['total_income'] as num?)?.toDouble() ?? 0;
+          _todayOrders = data['today_orders'] as int? ?? 0;
+          _todayIncome = (data['today_income'] as num?)?.toDouble() ?? 0;
+          _ordersChange = data['orders_change'] as int? ?? 0;
+          _incomeChange = data['income_change'] as int? ?? 0;
+          _averageRating =
+              (data['average_rating'] as num?)?.toDouble() ?? 0;
+          _totalRatings = data['total_ratings'] as int? ?? 0;
+
+          // Parse weekly orders for bar chart
+          final weeklyOrders =
+              data['weekly_orders'] as List<dynamic>? ?? [];
+          _barData = {
+            for (final item in weeklyOrders)
+              (item['day'] as String):
+                  (item['count'] as num).toDouble(),
+          };
+
+          // Parse weekly acceptance for area chart
+          final weeklyAcceptance =
+              data['weekly_acceptance'] as List<dynamic>? ?? [];
+          _areaData = weeklyAcceptance
+              .map((item) => _ChartPoint(
+                    label: (item['day'] as String).substring(0, 1),
+                    value: (item['rate'] as num).toDouble(),
+                  ))
+              .toList();
+
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = 'تعذّر تحميل التقارير';
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,84 +101,114 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
           children: [
             _buildHeader(context),
             Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.all(Insets.s16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _StatCard(
-                      icon: Icons.access_time_rounded,
-                      iconBg: AppColors.primary50,
-                      iconColor: AppColors.primary,
-                      title: 'ساعات العمل',
-                      value: '255',
-                      changePercent: '10%',
-                      changeLabel: 'من أمس',
-                      isPositive: true,
-                    ),
-                    SizedBox(height: Insets.s12),
-                    _StatCard(
-                      icon: Icons.route_rounded,
-                      iconBg: AppColors.gold.withValues(alpha: 0.1),
-                      iconColor: AppColors.gold,
-                      title: 'إجمالي الرحلات',
-                      value: '2500.5 ج.م',
-                      changePercent: '10%',
-                      changeLabel: 'من أمس',
-                      isPositive: false,
-                    ),
-                    SizedBox(height: Insets.s12),
-                    _StatCard(
-                      icon: Icons.star_rounded,
-                      iconBg: AppColors.gold.withValues(alpha: 0.1),
-                      iconColor: AppColors.gold,
-                      title: 'متوسط التقييم',
-                      value: '4.25 / 5',
-                      changePercent: '10%',
-                      changeLabel: 'من أمس',
-                      isPositive: true,
-                    ),
-                    SizedBox(height: Insets.s12),
-                    _StatCard(
-                      icon: Icons.straighten_rounded,
-                      iconBg: AppColors.info.withValues(alpha: 0.1),
-                      iconColor: AppColors.info,
-                      title: 'المسافة المقطوعة',
-                      value: '250 كم',
-                      changePercent: '10%',
-                      changeLabel: 'من أمس',
-                      isPositive: true,
-                    ),
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _error != null
+                      ? Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.error_outline_rounded,
+                                  size: 48.sp, color: AppColors.grey),
+                              SizedBox(height: Insets.s8),
+                              Text(_error!,
+                                  style: getRegularStyle(
+                                      color: AppColors.grey,
+                                      fontSize: FontSize.s16)),
+                              SizedBox(height: Insets.s16),
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isLoading = true;
+                                    _error = null;
+                                  });
+                                  _loadAnalytics();
+                                },
+                                child: const Text('إعادة المحاولة'),
+                              ),
+                            ],
+                          ),
+                        )
+                      : SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          padding: EdgeInsets.all(Insets.s16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              _StatCard(
+                                icon: Icons.route_rounded,
+                                iconBg: AppColors.primary50,
+                                iconColor: AppColors.primary,
+                                title: 'إجمالي الطلبات',
+                                value: '$_totalOrders',
+                                changePercent: '${_ordersChange.abs()}%',
+                                changeLabel: 'من أمس',
+                                isPositive: _ordersChange >= 0,
+                              ),
+                              SizedBox(height: Insets.s12),
+                              _StatCard(
+                                icon: Icons.account_balance_wallet_rounded,
+                                iconBg:
+                                    AppColors.gold.withValues(alpha: 0.1),
+                                iconColor: AppColors.gold,
+                                title: 'إجمالي الدخل',
+                                value:
+                                    '${_totalIncome.toStringAsFixed(2)} د.ل',
+                                changePercent: '${_incomeChange.abs()}%',
+                                changeLabel: 'من أمس',
+                                isPositive: _incomeChange >= 0,
+                              ),
+                              SizedBox(height: Insets.s12),
+                              _StatCard(
+                                icon: Icons.star_rounded,
+                                iconBg:
+                                    AppColors.gold.withValues(alpha: 0.1),
+                                iconColor: AppColors.gold,
+                                title: 'متوسط التقييم',
+                                value: _averageRating > 0
+                                    ? '${_averageRating.toStringAsFixed(1)} / 5'
+                                    : '—',
+                                changePercent: '$_totalRatings',
+                                changeLabel: 'تقييم',
+                                isPositive: true,
+                              ),
+                              SizedBox(height: Insets.s12),
+                              _StatCard(
+                                icon: Icons.today_rounded,
+                                iconBg:
+                                    AppColors.info.withValues(alpha: 0.1),
+                                iconColor: AppColors.info,
+                                title: 'دخل اليوم',
+                                value:
+                                    '${_todayIncome.toStringAsFixed(2)} د.ل',
+                                changePercent: '$_todayOrders',
+                                changeLabel: 'طلب اليوم',
+                                isPositive: true,
+                              ),
 
-                    SizedBox(height: Insets.s24),
+                              SizedBox(height: Insets.s24),
 
-                    // ── Task Productivity Chart ──
-                    _ChartSection(
-                      title: 'إنتاجية المهام',
-                      selectedFilter: _productivityFilter,
-                      filters: _filterOptions,
-                      onFilterChanged: (v) =>
-                          setState(() => _productivityFilter = v),
-                      child: _BarChart(),
-                    ),
+                              // ── Task Productivity Chart ──
+                              if (_barData.isNotEmpty)
+                                _ChartSection(
+                                  title: 'الطلبات الأسبوعية',
+                                  child: _BarChart(data: _barData),
+                                ),
 
-                    SizedBox(height: Insets.s24),
+                              if (_barData.isNotEmpty)
+                                SizedBox(height: Insets.s24),
 
-                    // ── Response Rate Chart ──
-                    _ChartSection(
-                      title: 'معدل الاستجابة',
-                      selectedFilter: _responseFilter,
-                      filters: _filterOptions,
-                      onFilterChanged: (v) =>
-                          setState(() => _responseFilter = v),
-                      child: _AreaChart(),
-                    ),
+                              // ── Response Rate Chart ──
+                              if (_areaData.isNotEmpty)
+                                _ChartSection(
+                                  title: 'معدل القبول',
+                                  child: _AreaChart(data: _areaData),
+                                ),
 
-                    SizedBox(height: Insets.s24),
-                  ],
-                ),
-              ),
+                              SizedBox(height: Insets.s24),
+                            ],
+                          ),
+                        ),
             ),
           ],
         ),
@@ -156,6 +250,14 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
       );
 }
 
+// ── Chart Point ─────────────────────────────────────────
+
+class _ChartPoint {
+  final String label;
+  final double value;
+  const _ChartPoint({required this.label, required this.value});
+}
+
 // ── Stat Card ────────────────────────────────────────────
 
 class _StatCard extends StatelessWidget {
@@ -190,7 +292,6 @@ class _StatCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Icon
           Container(
             width: 48.w,
             height: 48.w,
@@ -202,7 +303,6 @@ class _StatCard extends StatelessWidget {
             child: Icon(icon, size: 24.sp, color: iconColor),
           ),
           SizedBox(width: Insets.s12),
-          // Title + change
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,7 +335,6 @@ class _StatCard extends StatelessWidget {
               ],
             ),
           ),
-          // Value
           Text(
             value,
             style: getBoldStyle(
@@ -251,16 +350,10 @@ class _StatCard extends StatelessWidget {
 
 class _ChartSection extends StatelessWidget {
   final String title;
-  final String selectedFilter;
-  final List<String> filters;
-  final ValueChanged<String> onFilterChanged;
   final Widget child;
 
   const _ChartSection({
     required this.title,
-    required this.selectedFilter,
-    required this.filters,
-    required this.onFilterChanged,
     required this.child,
   });
 
@@ -276,20 +369,10 @@ class _ChartSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Text(
-                title,
-                style: getBoldStyle(
-                    color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
-              ),
-              const Spacer(),
-              _FilterDropdown(
-                value: selectedFilter,
-                items: filters,
-                onChanged: onFilterChanged,
-              ),
-            ],
+          Text(
+            title,
+            style: getBoldStyle(
+                color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
           ),
           SizedBox(height: Insets.s16),
           child,
@@ -299,76 +382,26 @@ class _ChartSection extends StatelessWidget {
   }
 }
 
-// ── Filter Dropdown ──────────────────────────────────────
-
-class _FilterDropdown extends StatelessWidget {
-  final String value;
-  final List<String> items;
-  final ValueChanged<String> onChanged;
-
-  const _FilterDropdown({
-    required this.value,
-    required this.items,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
-      decoration: BoxDecoration(
-        color: AppColors.neutral400,
-        borderRadius: BorderRadius.circular(AppRadius.s8),
-        border: Border.all(color: AppColors.neutral500),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          isDense: true,
-          icon: Icon(Icons.keyboard_arrow_down_rounded,
-              size: 18.sp, color: AppColors.darkGrey),
-          style: getMediumStyle(
-              color: AppColors.darkGrey, fontSize: FontSize.s12),
-          items: items
-              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-              .toList(),
-          onChanged: (v) {
-            if (v != null) onChanged(v);
-          },
-        ),
-      ),
-    );
-  }
-}
-
-// ── Bar Chart (Task Productivity) ────────────────────────
-
-// replace with API data later
-const _barData = <String, double>{
-  'السبت': 28,
-  'الأحد': 42,
-  'الاثنين': 35,
-  'الثلاثاء': 55,
-  'الأربعاء': 48,
-  'الخميس': 30,
-  'الجمعة': 20,
-};
+// ── Bar Chart (Weekly Orders) ───────────────────────────
 
 class _BarChart extends StatelessWidget {
+  final Map<String, double> data;
+  const _BarChart({required this.data});
+
   @override
   Widget build(BuildContext context) {
-    final maxVal =
-        _barData.values.reduce((a, b) => a > b ? a : b);
-    final peakEntry =
-        _barData.entries.reduce((a, b) => a.value > b.value ? a : b);
+    if (data.isEmpty) return const SizedBox.shrink();
+
+    final maxVal = data.values.reduce((a, b) => a > b ? a : b);
+    final peakEntry = data.entries.reduce((a, b) => a.value > b.value ? a : b);
 
     return SizedBox(
       height: 200.h,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
-        children: _barData.entries.map((entry) {
+        children: data.entries.map((entry) {
           final isPeak = entry.key == peakEntry.key;
-          final ratio = entry.value / maxVal;
+          final ratio = maxVal > 0 ? entry.value / maxVal : 0.0;
 
           return Expanded(
             child: Padding(
@@ -376,7 +409,7 @@ class _BarChart extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  if (isPeak) ...[
+                  if (isPeak && entry.value > 0) ...[
                     Container(
                       padding: EdgeInsets.symmetric(
                           horizontal: Insets.s4, vertical: 2.h),
@@ -393,7 +426,7 @@ class _BarChart extends StatelessWidget {
                     SizedBox(height: 4.h),
                   ],
                   Container(
-                    height: (160.h * ratio).clamp(8.0, 160.h),
+                    height: (160.h * ratio).clamp(4.0, 160.h),
                     decoration: BoxDecoration(
                       color: isPeak ? AppColors.primary : AppColors.primary200,
                       borderRadius: BorderRadius.vertical(
@@ -404,8 +437,8 @@ class _BarChart extends StatelessWidget {
                   SizedBox(height: 6.h),
                   Text(
                     entry.key,
-                    style: getRegularStyle(
-                        color: AppColors.grey, fontSize: 9.sp),
+                    style:
+                        getRegularStyle(color: AppColors.grey, fontSize: 9.sp),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -419,19 +452,20 @@ class _BarChart extends StatelessWidget {
   }
 }
 
-// ── Area Chart (Response Rate) ───────────────────────────
-
-// replace with API data later
-const _areaValues = [30.0, 45.0, 38.0, 60.0, 52.0, 70.0, 55.0];
-const _areaLabels = ['س', 'أ', 'إ', 'ث', 'أ', 'خ', 'ج'];
+// ── Area Chart (Acceptance Rate) ────────────────────────
 
 class _AreaChart extends StatelessWidget {
+  final List<_ChartPoint> data;
+  const _AreaChart({required this.data});
+
   @override
   Widget build(BuildContext context) {
+    final values = data.map((e) => e.value).toList();
+    final labels = data.map((e) => e.label).toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Badge
         Align(
           alignment: Alignment.centerRight,
           child: Container(
@@ -448,7 +482,7 @@ class _AreaChart extends StatelessWidget {
                     size: 14.sp, color: AppColors.success),
                 SizedBox(width: 4.w),
                 Text(
-                  'أعلى معدل قبول',
+                  'معدل القبول الأسبوعي',
                   style: getMediumStyle(
                       color: AppColors.success, fontSize: FontSize.s12),
                 ),
@@ -461,7 +495,7 @@ class _AreaChart extends StatelessWidget {
           height: 160.h,
           child: CustomPaint(
             painter: _AreaChartPainter(
-              values: _areaValues,
+              values: values,
               lineColor: AppColors.primary,
               fillColor: AppColors.primary.withValues(alpha: 0.1),
             ),
@@ -471,7 +505,7 @@ class _AreaChart extends StatelessWidget {
         SizedBox(height: Insets.s8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: _areaLabels
+          children: labels
               .map((l) => Text(
                     l,
                     style: getRegularStyle(
@@ -508,11 +542,11 @@ class _AreaChartPainter extends CustomPainter {
 
     for (var i = 0; i < values.length; i++) {
       final x = i * stepX;
-      final y = size.height - ((values[i] - minVal) / range) * size.height * 0.85;
+      final y =
+          size.height - ((values[i] - minVal) / range) * size.height * 0.85;
       points.add(Offset(x, y));
     }
 
-    // Fill path
     final fillPath = Path()..moveTo(0, size.height);
     for (final p in points) {
       fillPath.lineTo(p.dx, p.dy);
@@ -520,12 +554,8 @@ class _AreaChartPainter extends CustomPainter {
     fillPath.lineTo(size.width, size.height);
     fillPath.close();
 
-    canvas.drawPath(
-      fillPath,
-      Paint()..color = fillColor,
-    );
+    canvas.drawPath(fillPath, Paint()..color = fillColor);
 
-    // Line
     final linePath = Path()..moveTo(points.first.dx, points.first.dy);
     for (var i = 1; i < points.length; i++) {
       linePath.lineTo(points[i].dx, points[i].dy);
@@ -540,18 +570,9 @@ class _AreaChartPainter extends CustomPainter {
         ..strokeJoin = StrokeJoin.round,
     );
 
-    // Dots
     for (final p in points) {
-      canvas.drawCircle(
-        p,
-        4,
-        Paint()..color = lineColor,
-      );
-      canvas.drawCircle(
-        p,
-        2,
-        Paint()..color = Colors.white,
-      );
+      canvas.drawCircle(p, 4, Paint()..color = lineColor);
+      canvas.drawCircle(p, 2, Paint()..color = Colors.white);
     }
   }
 
