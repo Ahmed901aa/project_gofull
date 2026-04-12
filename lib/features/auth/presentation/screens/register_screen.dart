@@ -29,7 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  String _selectedRole = 'driver';
+  final String _selectedRole = 'driver';
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
 
@@ -136,14 +136,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           _buildLoginRow(),
           SizedBox(height: Sizes.s20),
 
-          // ── Role selector ──────────────────────────────────
-          Text(AppStrings.accountType,
-              style: getMediumStyle(
-                  color: AppColors.black, fontSize: FontSize.s16)),
-          SizedBox(height: Sizes.s8),
-          _buildRoleSelector(),
-          SizedBox(height: Sizes.s16),
-
           // ── Name ───────────────────────────────────────────
           Text(AppStrings.nameLabel,
               style: getMediumStyle(
@@ -206,48 +198,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             onPressed: () => _onRegister(context),
           ),
         ],
-      ),
-    );
-  }
-
-  // ── Role Toggle ────────────────────────────────────────────
-
-  Widget _buildRoleSelector() {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.lightGrey,
-        borderRadius: BorderRadius.circular(AppRadius.s12),
-      ),
-      child: Row(
-        children: [
-          _roleOption('driver', AppStrings.roleDriver),
-          _roleOption('provider', AppStrings.roleProvider),
-        ],
-      ),
-    );
-  }
-
-  Widget _roleOption(String value, String label) {
-    final isSelected = _selectedRole == value;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() => _selectedRole = value),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: EdgeInsets.symmetric(vertical: Insets.s12),
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(AppRadius.s12),
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            label,
-            style: getSemiBoldStyle(
-              color: isSelected ? AppColors.white : AppColors.grey,
-              fontSize: FontSize.s14,
-            ),
-          ),
-        ),
       ),
     );
   }
