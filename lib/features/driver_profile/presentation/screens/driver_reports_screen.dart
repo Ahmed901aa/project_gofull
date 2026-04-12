@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
@@ -77,6 +78,21 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                   ))
               .toList();
 
+          _isLoading = false;
+        });
+      }
+    } on DioException catch (e) {
+      if (mounted) {
+        final statusCode = e.response?.statusCode;
+        final message = (e.response?.data as Map?)?['message'] as String?;
+        setState(() {
+          if (statusCode == 403) {
+            _error = message ?? 'حسابك قيد المراجعة، يرجى انتظار موافقة الإدارة';
+          } else if (statusCode == 404) {
+            _error = 'لم يتم العثور على بيانات التحليلات';
+          } else {
+            _error = 'تعذّر تحميل التقارير';
+          }
           _isLoading = false;
         });
       }

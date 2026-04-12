@@ -71,10 +71,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final initials = userName.isNotEmpty ? userName[0] : '؟';
     final isProvider = userRole == 'provider';
 
-    final completedOrders = int.tryParse('${_profileData?['completed_orders'] ?? ''}') ?? 0;
-    final averageRating = double.tryParse('${_profileData?['average_rating'] ?? ''}') ?? 0.0;
-    final totalRatings = int.tryParse('${_profileData?['total_ratings'] ?? ''}') ?? 0;
-
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       body: Column(
@@ -113,14 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               'pending',
                     ),
                   if (!_isLoading && isProvider) SizedBox(height: Insets.s16),
-                  // ── Stats: Rating & Completed Orders ──
-                  if (!_isLoading)
-                    _ProfileStatsRow(
-                      averageRating: averageRating,
-                      totalRatings: totalRatings,
-                      completedOrders: completedOrders,
-                    ),
-                  if (!_isLoading) SizedBox(height: Insets.s16),
+                  SizedBox(height: Insets.s16),
                   ProfileMenuItem(
                     icon: Icons.local_offer_outlined,
                     label: 'أكواد الخصم',
@@ -203,60 +192,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 .pushNamedAndRemoveUntil(Routes.login, (r) => false);
           }
         },
-      ),
-    );
-  }
-}
-
-// ── Stats Row Widget ────────────────────────────────────────
-
-class _ProfileStatsRow extends StatelessWidget {
-  final double averageRating;
-  final int totalRatings;
-  final int completedOrders;
-
-  const _ProfileStatsRow({
-    required this.averageRating,
-    required this.totalRatings,
-    required this.completedOrders,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(child: _statBox('التقييم', averageRating > 0 ? averageRating.toStringAsFixed(1) : '-', Icons.star_rounded, AppColors.gold)),
-        SizedBox(width: Insets.s8),
-        Expanded(child: _statBox('التقييمات', '$totalRatings', Icons.reviews_rounded, AppColors.info)),
-        SizedBox(width: Insets.s8),
-        Expanded(child: _statBox('المكتملة', '$completedOrders', Icons.check_circle_rounded, AppColors.success)),
-      ],
-    );
-  }
-
-  Widget _statBox(String label, String value, IconData icon, Color iconColor) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: Insets.s12, horizontal: Insets.s8),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, size: 22.sp, color: iconColor),
-          SizedBox(height: 6.h),
-          Text(
-            value,
-            style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
-          ),
-          SizedBox(height: 2.h),
-          Text(
-            label,
-            style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s12),
-            textAlign: TextAlign.center,
-          ),
-        ],
       ),
     );
   }

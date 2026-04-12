@@ -55,20 +55,22 @@ class DriverSupportScreen extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.all(Insets.s16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _SupportIllustration(),
                     SizedBox(height: Insets.s24),
-                    Builder(builder: (ctx) {
-                      final phone = _getPhone(ctx);
-                      return _DirectCallSection(
-                        phone: phone,
-                        onCall: () => _callSupport(phone),
-                        onCopy: () => _copyPhone(ctx, phone),
-                      );
-                    }),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+                      child: Builder(builder: (ctx) {
+                        final phone = _getPhone(ctx);
+                        return _DirectCallSection(
+                          phone: phone,
+                          onCall: () => _callSupport(phone),
+                          onCopy: () => _copyPhone(ctx, phone),
+                        );
+                      }),
+                    ),
                     SizedBox(height: Insets.s32),
                   ],
                 ),
@@ -119,12 +121,13 @@ class DriverSupportScreen extends StatelessWidget {
 class _SupportIllustration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
         SvgPicture.asset(
           SvgAssets.helpUser,
-          height: 180.h,
-          fit: BoxFit.contain,
+          width: screenWidth,
+          fit: BoxFit.cover,
         ),
         SizedBox(height: Insets.s12),
         Text(

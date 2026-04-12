@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:project_gofull/core/resources/assets_manager.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
@@ -141,35 +143,16 @@ class SupportScreen extends StatelessWidget {
   }
 
   Widget _buildHeroSection() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 28.h),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            AppColors.primary.withValues(alpha: 0.08),
-            AppColors.scaffoldBg,
-          ],
-        ),
-      ),
-      child: Column(
+    return Builder(builder: (context) {
+      final screenWidth = MediaQuery.of(context).size.width;
+      return Column(
         children: [
-          Container(
-            width: 80.w,
-            height: 80.w,
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.headset_mic_rounded,
-              size: 40.sp,
-              color: AppColors.primary,
-            ),
+          SvgPicture.asset(
+            SvgAssets.helpUser,
+            width: screenWidth,
+            fit: BoxFit.cover,
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 12.h),
           Text(
             'كيف يمكننا مساعدتك؟',
             style: getBoldStyle(
@@ -186,8 +169,8 @@ class SupportScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
+      );
+    });
   }
 
 }
