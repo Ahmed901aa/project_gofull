@@ -25,8 +25,7 @@ class TowingScreen extends StatefulWidget {
 }
 
 class _TowingScreenState extends State<TowingScreen> {
-  String? _selectedCarType;
-  final _carTypes = ['سيدان', 'SUV', 'بيك أب', 'شاحنة', 'هاتشباك'];
+  final _carTypeCtrl = TextEditingController();
   final _plateCtrl = TextEditingController();
   final _notesCtrl = TextEditingController();
   String _destinationAddress = 'وجهة سحب السيارة';
@@ -42,7 +41,7 @@ class _TowingScreenState extends State<TowingScreen> {
 
   bool get _isFormValid =>
       _plateCtrl.text.trim().isNotEmpty &&
-      _selectedCarType != null &&
+      _carTypeCtrl.text.trim().isNotEmpty &&
       _hasDestination;
 
   bool _isValid(BuildContext context) => _isFormValid && _hasLocation(context);
@@ -50,7 +49,7 @@ class _TowingScreenState extends State<TowingScreen> {
   String? _getValidationError(BuildContext context) {
     if (!_hasLocation(context)) return 'الرجاء تحديد موقعك';
     if (!_hasDestination) return 'الرجاء تحديد وجهة التوصيل';
-    if (_selectedCarType == null) return 'الرجاء اختيار نوع السيارة';
+    if (_carTypeCtrl.text.trim().isEmpty) return 'الرجاء إدخال نوع السيارة';
     if (_plateCtrl.text.trim().isEmpty) return 'الرجاء إدخال رقم اللوحة';
     return null;
   }
@@ -77,7 +76,7 @@ class _TowingScreenState extends State<TowingScreen> {
     final loc = context.read<LocationCubit>().state;
     if (loc.lat == null || loc.lng == null) return;
     if (_destinationLat == null || _destinationLng == null) return;
-    if (_selectedCarType == null) return;
+    if (_carTypeCtrl.text.trim().isEmpty) return;
 
     blocContext.read<RequestBloc>().add(CreateTowingRequestEvent(
           latitude: loc.lat!,
@@ -87,7 +86,7 @@ class _TowingScreenState extends State<TowingScreen> {
           destinationLongitude: _destinationLng!,
           destinationAddress: _destinationAddress != 'وجهة سحب السيارة' ? _destinationAddress : null,
           plateNumber: _plateCtrl.text.trim(),
-          carType: _selectedCarType!,
+          carType: _carTypeCtrl.text.trim(),
           notes:
               _notesCtrl.text.isNotEmpty ? _notesCtrl.text : null,
         ));
@@ -96,11 +95,13 @@ class _TowingScreenState extends State<TowingScreen> {
   @override
   void initState() {
     super.initState();
+    _carTypeCtrl.addListener(() => setState(() {}));
     _plateCtrl.addListener(() => setState(() {}));
   }
 
   @override
   void dispose() {
+    _carTypeCtrl.dispose();
     _plateCtrl.dispose();
     _notesCtrl.dispose();
     super.dispose();
@@ -162,11 +163,8 @@ class _TowingScreenState extends State<TowingScreen> {
                             const ServiceSectionHeader(
                                 title: 'تفاصيل السيارة', gap: 16),
                             TowingCarDetailsForm(
-                                selectedCarType: _selectedCarType,
-                                carTypes: _carTypes,
-                                plateCtrl: _plateCtrl,
-                                onCarTypeChanged: (v) =>
-                                    setState(() => _selectedCarType = v)),
+                                carTypeCtrl: _carTypeCtrl,
+                                plateCtrl: _plateCtrl),
                             const ServiceSectionHeader(
                                 title: 'ملاحظات إضافية', gap: 8),
                             Padding(
