@@ -134,7 +134,15 @@ class _NotificationCard extends StatelessWidget {
               color: AppColors.primary50,
               borderRadius: BorderRadius.circular(AppRadius.s12),
             ),
-            child: Icon(Icons.notifications_rounded, size: 20.sp, color: AppColors.primary),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.s12),
+              child: Image.asset(
+                'assets/images/logo_1.png',
+                width: 40.w,
+                height: 40.w,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
           SizedBox(width: Insets.s12),
           Expanded(

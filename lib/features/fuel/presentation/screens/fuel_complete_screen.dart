@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
@@ -133,13 +134,27 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
       decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
         boxShadow: [BoxShadow(color: const Color(0xFFCCCCCC).withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2))]),
       padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s16),
-      child: SizedBox(height: 48.h, width: double.infinity, child: ElevatedButton(
-        onPressed: () => Navigator.pushNamedAndRemoveUntil(
-            context, Routes.home, (route) => false),
-        style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: AppColors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
-        child: Text('العودة للرئيسية', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
-      )),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(height: 48.h, width: double.infinity, child: ElevatedButton(
+            onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                context, Routes.rating, (route) => false,
+                arguments: RatingArgs(orderId: (widget.requestId ?? 0).toString())),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: AppColors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
+            child: Text('تقييم الخدمة', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+          )),
+          SizedBox(height: 8.h),
+          SizedBox(height: 48.h, width: double.infinity, child: TextButton(
+            onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                context, Routes.home, (route) => false),
+            style: TextButton.styleFrom(foregroundColor: AppColors.grey,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16))),
+            child: Text('تخطي', style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+          )),
+        ],
+      ),
     );
   }
 }

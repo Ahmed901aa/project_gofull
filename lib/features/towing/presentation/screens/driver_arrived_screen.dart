@@ -105,7 +105,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
                   ),
                 ),
               ),
-              const ArrivedBottomAction(),
+              ArrivedBottomAction(requestId: widget.args?.requestId),
             ],
           ),
         ),
