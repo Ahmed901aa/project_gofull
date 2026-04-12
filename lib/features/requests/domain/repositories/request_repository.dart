@@ -11,8 +11,8 @@ abstract class RequestRepository {
   });
   Future<Either<Failure, ServiceRequestEntity>> createTowingRequest({
     required double latitude, required double longitude, String? address,
-    double? destinationLatitude, double? destinationLongitude, String? destinationAddress,
-    required String plateNumber, String? notes,
+    required double destinationLatitude, required double destinationLongitude, String? destinationAddress,
+    required String plateNumber, required String carType, String? notes,
   });
   Future<Either<Failure, ServiceRequestEntity>> getRequestDetails(int id);
   Future<Either<Failure, ServiceRequestEntity?>> getUnratedOrder();

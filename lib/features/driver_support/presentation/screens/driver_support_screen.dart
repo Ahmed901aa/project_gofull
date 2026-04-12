@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:project_gofull/core/resources/assets_manager.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
@@ -117,27 +119,20 @@ class DriverSupportScreen extends StatelessWidget {
 class _SupportIllustration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 160.h,
-      decoration: BoxDecoration(
-        color: AppColors.primary50,
-        borderRadius: BorderRadius.circular(AppRadius.s24),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.headset_mic_rounded,
-                size: 56.sp, color: AppColors.primary),
-            SizedBox(height: Insets.s8),
-            Text(
-              'فريق الدعم متاح لمساعدتك',
-              style: getMediumStyle(
-                  color: AppColors.primary, fontSize: FontSize.s14),
-            ),
-          ],
+    return Column(
+      children: [
+        SvgPicture.asset(
+          SvgAssets.helpUser,
+          height: 180.h,
+          fit: BoxFit.contain,
         ),
-      ),
+        SizedBox(height: Insets.s12),
+        Text(
+          'فريق الدعم متاح لمساعدتك',
+          style: getMediumStyle(
+              color: AppColors.primary, fontSize: FontSize.s16),
+        ),
+      ],
     );
   }
 }

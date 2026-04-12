@@ -38,13 +38,20 @@ class _TowingScreenState extends State<TowingScreen> {
     return loc.lat != null && loc.lng != null;
   }
 
-  bool get _isFormValid => _plateCtrl.text.trim().isNotEmpty;
+  bool get _hasDestination => _destinationLat != null && _destinationLng != null;
+
+  bool get _isFormValid =>
+      _plateCtrl.text.trim().isNotEmpty &&
+      _selectedCarType != null &&
+      _hasDestination;
 
   bool _isValid(BuildContext context) => _isFormValid && _hasLocation(context);
 
   String? _getValidationError(BuildContext context) {
-    if (_plateCtrl.text.trim().isEmpty) return 'الرجاء إدخال رقم اللوحة';
     if (!_hasLocation(context)) return 'الرجاء تحديد موقعك';
+    if (!_hasDestination) return 'الرجاء تحديد وجهة التوصيل';
+    if (_selectedCarType == null) return 'الرجاء اختيار نوع السيارة';
+    if (_plateCtrl.text.trim().isEmpty) return 'الرجاء إدخال رقم اللوحة';
     return null;
   }
 
@@ -69,15 +76,18 @@ class _TowingScreenState extends State<TowingScreen> {
   void _onSubmit(BuildContext blocContext) {
     final loc = context.read<LocationCubit>().state;
     if (loc.lat == null || loc.lng == null) return;
+    if (_destinationLat == null || _destinationLng == null) return;
+    if (_selectedCarType == null) return;
 
     blocContext.read<RequestBloc>().add(CreateTowingRequestEvent(
           latitude: loc.lat!,
           longitude: loc.lng!,
           address: loc.address,
-          destinationLatitude: _destinationLat,
-          destinationLongitude: _destinationLng,
+          destinationLatitude: _destinationLat!,
+          destinationLongitude: _destinationLng!,
           destinationAddress: _destinationAddress != 'وجهة سحب السيارة' ? _destinationAddress : null,
           plateNumber: _plateCtrl.text.trim(),
+          carType: _selectedCarType!,
           notes:
               _notesCtrl.text.isNotEmpty ? _notesCtrl.text : null,
         ));

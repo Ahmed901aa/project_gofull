@@ -15,6 +15,7 @@ class ServiceRequestEntity extends Equatable {
   final String? fuelType;
   final String? fuelQuantity;
   final String? plateNumber;
+  final String? carType;
   final String? notes;
   final String? acceptedAt;
   final String? arrivedAt;
@@ -50,6 +51,7 @@ class ServiceRequestEntity extends Equatable {
     this.fuelType,
     this.fuelQuantity,
     this.plateNumber,
+    this.carType,
     this.notes,
     this.acceptedAt,
     this.arrivedAt,

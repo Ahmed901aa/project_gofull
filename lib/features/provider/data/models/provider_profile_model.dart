@@ -7,7 +7,7 @@ class ProviderProfileModel extends ProviderProfileEntity {
     required super.vehicleYear, required super.vehiclePlate,
     super.vehicleColor, super.isAvailable, super.verificationStatus,
     super.averageRating, super.totalRatings, super.completedOrders,
-    super.userName, super.userPhone,
+    super.totalIncome, super.userName, super.userPhone,
   });
 
   factory ProviderProfileModel.fromJson(Map<String, dynamic> json) {
@@ -18,16 +18,16 @@ class ProviderProfileModel extends ProviderProfileEntity {
       serviceType: json['service_type'] as String,
       vehicleMake: json['vehicle_make'] as String,
       vehicleModel: json['vehicle_model'] as String,
-      vehicleYear: json['vehicle_year'] as int,
+      vehicleYear: int.tryParse('${json['vehicle_year'] ?? ''}') ?? 0,
       vehiclePlate: json['vehicle_plate'] as String,
       vehicleColor: json['vehicle_color'] as String?,
       isAvailable: json['is_available'] as bool? ?? false,
       verificationStatus:
           (json['verification_status'] as String?) ?? 'pending',
-      averageRating:
-          (json['average_rating'] as num?)?.toDouble() ?? 0,
-      totalRatings: json['total_ratings'] as int? ?? 0,
-      completedOrders: json['completed_orders'] as int? ?? 0,
+      averageRating: double.tryParse('${json['average_rating'] ?? ''}') ?? 0,
+      totalRatings: int.tryParse('${json['total_ratings'] ?? ''}') ?? 0,
+      completedOrders: int.tryParse('${json['completed_orders'] ?? ''}') ?? 0,
+      totalIncome: double.tryParse('${json['total_income'] ?? ''}') ?? 0,
       userName: user?['name'] as String? ?? json['name'] as String?,
       userPhone: user?['phone'] as String? ?? json['phone'] as String?,
     );

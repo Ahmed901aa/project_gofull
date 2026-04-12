@@ -18,6 +18,7 @@ class SvgAssets {
   static const String accountIcon = '$_path/account_icon.svg';
   static const String locationPin = '$_path/location_pin.svg';
   static const String notificationBell = '$_path/notification_bell.svg';
+  static const String helpUser = '$_path/help_user.svg';
 }
 
 class IconAssets {

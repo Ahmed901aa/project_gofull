@@ -73,7 +73,8 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
       destinationLatitude: event.destinationLatitude,
       destinationLongitude: event.destinationLongitude,
       destinationAddress: event.destinationAddress,
-      plateNumber: event.plateNumber, notes: event.notes,
+      plateNumber: event.plateNumber, carType: event.carType,
+      notes: event.notes,
     ));
     result.fold(
       (f) => emit(RequestError(f.message)),

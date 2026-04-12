@@ -49,15 +49,14 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
 
       if (mounted) {
         setState(() {
-          _totalOrders = data['total_orders'] as int? ?? 0;
-          _totalIncome = (data['total_income'] as num?)?.toDouble() ?? 0;
-          _todayOrders = data['today_orders'] as int? ?? 0;
-          _todayIncome = (data['today_income'] as num?)?.toDouble() ?? 0;
-          _ordersChange = data['orders_change'] as int? ?? 0;
-          _incomeChange = data['income_change'] as int? ?? 0;
-          _averageRating =
-              (data['average_rating'] as num?)?.toDouble() ?? 0;
-          _totalRatings = data['total_ratings'] as int? ?? 0;
+          _totalOrders = int.tryParse('${data['total_orders'] ?? ''}') ?? 0;
+          _totalIncome = double.tryParse('${data['total_income'] ?? ''}') ?? 0;
+          _todayOrders = int.tryParse('${data['today_orders'] ?? ''}') ?? 0;
+          _todayIncome = double.tryParse('${data['today_income'] ?? ''}') ?? 0;
+          _ordersChange = int.tryParse('${data['orders_change'] ?? ''}') ?? 0;
+          _incomeChange = int.tryParse('${data['income_change'] ?? ''}') ?? 0;
+          _averageRating = double.tryParse('${data['average_rating'] ?? ''}') ?? 0;
+          _totalRatings = int.tryParse('${data['total_ratings'] ?? ''}') ?? 0;
 
           // Parse weekly orders for bar chart
           final weeklyOrders =
@@ -65,7 +64,7 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
           _barData = {
             for (final item in weeklyOrders)
               (item['day'] as String):
-                  (item['count'] as num).toDouble(),
+                  double.tryParse('${item['count'] ?? 0}') ?? 0,
           };
 
           // Parse weekly acceptance for area chart
@@ -73,8 +72,8 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
               data['weekly_acceptance'] as List<dynamic>? ?? [];
           _areaData = weeklyAcceptance
               .map((item) => _ChartPoint(
-                    label: (item['day'] as String).substring(0, 1),
-                    value: (item['rate'] as num).toDouble(),
+                    label: ('${item['day'] ?? ''}').isNotEmpty ? '${item['day']}'.substring(0, 1) : '',
+                    value: double.tryParse('${item['rate'] ?? 0}') ?? 0,
                   ))
               .toList();
 
@@ -129,8 +128,17 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                             ],
                           ),
                         )
-                      : SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
+                      : RefreshIndicator(
+                          onRefresh: () async {
+                            setState(() {
+                              _isLoading = true;
+                              _error = null;
+                            });
+                            await _loadAnalytics();
+                          },
+                          child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(
+                              parent: BouncingScrollPhysics()),
                           padding: EdgeInsets.all(Insets.s16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -208,6 +216,7 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                               SizedBox(height: Insets.s24),
                             ],
                           ),
+                        ),
                         ),
             ),
           ],

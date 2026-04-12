@@ -29,7 +29,7 @@ class ProviderMockDataSource implements ProviderDataSource {
       vehicleMake: 'تويوتا', vehicleModel: 'هايلكس', vehicleYear: 2020,
       vehiclePlate: 'أ ب م - 3541', vehicleColor: 'أبيض',
       isAvailable: true, verificationStatus: 'approved',
-      averageRating: 4.8, totalRatings: 15, completedOrders: 42,
+      averageRating: 4.8, totalRatings: 15, completedOrders: 42, totalIncome: 0,
       userName: 'محمد حسن', userPhone: '218913456789',
     );
   }
