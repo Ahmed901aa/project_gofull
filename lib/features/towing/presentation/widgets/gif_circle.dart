@@ -15,7 +15,7 @@ class GifCircle extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xFF004B3B), Color(0xFF8AACA5)],
+          colors: [Color(0xFF336F62), Color(0xFF8AACA5)],
         ),
       ),
       child: Padding(

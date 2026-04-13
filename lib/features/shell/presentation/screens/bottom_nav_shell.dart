@@ -100,6 +100,9 @@ class _BottomNavShellState extends State<BottomNavShell>
     // Extra safety: only show for the order that was active when user left
     if (activeOrderId != null && activeOrderId != order.id) return;
 
+    // Fuel orders use inline rating on fuel_complete_screen — skip bottom sheet
+    if (order.isFuelDelivery) return;
+
     _ratingSheetShown = true;
     // Delay so the home screen is visible first
     Future.delayed(const Duration(milliseconds: 800), () {

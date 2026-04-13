@@ -178,7 +178,9 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
                       Center(
                         child: DottedCircleContainer(
                           imagePath: _isEnRoute
-                              ? 'assets/images/magnifying_glass.gif'
+                              ? (_args.serviceType == 'fuel_delivery'
+                                  ? 'assets/images/tank_truck.gif'
+                                  : 'assets/images/magnifying_glass.gif')
                               : (_args.imagePath ??
                                   'assets/images/tank_truck.gif'),
                         ),

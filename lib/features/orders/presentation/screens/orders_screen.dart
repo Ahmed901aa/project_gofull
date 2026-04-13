@@ -121,8 +121,10 @@ class OrdersScreen extends StatelessWidget {
     return OrderCard(
       order: order,
       onTap: () => Navigator.pushNamed(context, route,
-          arguments:
-              TripDetailsArgs(orderId: req.id.toString(), status: status)),
+          arguments: TripDetailsArgs(
+              orderId: req.id.toString(),
+              status: status,
+              isRated: req.isRated)),
     );
   }
 

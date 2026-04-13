@@ -135,6 +135,12 @@ class _HomeScreenState extends State<HomeScreen> {
       body: order.isFuelDelivery ? 'تم تعبئة الوقود بنجاح' : 'تم توصيل السيارة بنجاح',
     );
 
+    // Fuel orders use inline rating on fuel_complete_screen — skip bottom sheet
+    if (order.isFuelDelivery) {
+      _ratingShown = false;
+      return;
+    }
+
     // Delay slightly so the user sees the home screen first
     Future.delayed(const Duration(milliseconds: 800), () {
       if (!mounted) return;

@@ -33,7 +33,7 @@ class DottedCircleContainer extends StatelessWidget {
             height: size,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFF004B3B),
+              color: Color(0xFF336F62),
             ),
           ),
 

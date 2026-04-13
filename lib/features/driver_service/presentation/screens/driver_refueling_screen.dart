@@ -8,6 +8,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
+import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 
@@ -25,24 +26,7 @@ class DriverRefuelingScreen extends StatefulWidget {
   State<DriverRefuelingScreen> createState() => _DriverRefuelingScreenState();
 }
 
-class _DriverRefuelingScreenState extends State<DriverRefuelingScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _pulseController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _pulseController.dispose();
-    super.dispose();
-  }
+class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
 
   void _onRefuelingDone() {
     final orderId = int.tryParse(widget.args.orderId);
@@ -77,7 +61,8 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen>
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       SizedBox(height: Insets.s16),
-                      _buildFuelAnimation(),
+                      const DottedCircleContainer(
+                          imagePath: 'assets/images/refuel.gif'),
                       SizedBox(height: Insets.s24),
                       Text(
                         'جاري تعبئة الوقود',
@@ -142,39 +127,6 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen>
             const Divider(height: 1, color: Color(0xFFF5F5F5)),
           ],
         ),
-      );
-
-  Widget _buildFuelAnimation() => AnimatedBuilder(
-        animation: _pulseController,
-        builder: (context, child) {
-          final scale = 1.0 + (_pulseController.value * 0.08);
-          return Transform.scale(
-            scale: scale,
-            child: Container(
-              width: 120.w,
-              height: 120.w,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Container(
-                  width: 80.w,
-                  height: 80.w,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.15),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.local_gas_station_rounded,
-                    size: 44.sp,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
       );
 
   Widget _buildInstructionsCard() => Container(
