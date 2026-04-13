@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
+import 'package:project_gofull/core/services/noti_service.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
@@ -86,6 +87,17 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
           requestId: _args.requestId,
         ),
       );
+    }
+
+    if (req.status == 'cancelled') {
+      _navigated = true;
+      _polling.stop();
+      NotiService().showNotification(
+        id: req.id,
+        title: 'تم إلغاء الطلب',
+        body: 'تم إلغاء طلبك من قبل مزود الخدمة',
+      );
+      Navigator.pushReplacementNamed(context, Routes.home);
     }
   }
 

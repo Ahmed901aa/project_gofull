@@ -68,11 +68,24 @@ class _ServiceArrivedScreenState extends State<ServiceArrivedScreen> {
       _polling.stop();
       NotiService().showNotification(
         id: req.id,
-        title: 'تمت التعبئة بنجاح',
-        body: 'تم تعبئة سيارتك بالوقود بنجاح',
+        title: 'تمت الخدمة بنجاح',
+        body: req.isFuelDelivery
+            ? 'تم تعبئة سيارتك بالوقود بنجاح'
+            : 'تم سحب سيارتك بنجاح',
       );
       Navigator.pushReplacementNamed(context, Routes.fuelComplete,
           arguments: _args.requestId);
+    }
+
+    if (req.status == 'cancelled') {
+      _navigated = true;
+      _polling.stop();
+      NotiService().showNotification(
+        id: req.id,
+        title: 'تم إلغاء الطلب',
+        body: 'تم إلغاء طلبك من قبل مزود الخدمة',
+      );
+      Navigator.pushReplacementNamed(context, Routes.home);
     }
   }
 

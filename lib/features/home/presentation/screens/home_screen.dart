@@ -60,8 +60,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (order == null) {
       // Order disappeared — it either completed or was cancelled.
-      // If we were tracking one, check if it completed and needs rating.
-      if (_lastOrderId != null && _lastOrderStatus != null && !_ratingShown) {
+      // Only check for completed-unrated if the last known status suggests
+      // the order actually finished (in_progress / completed). If it was
+      // cancelled or still early, skip the check to avoid false positives.
+      if (_lastOrderId != null &&
+          _lastOrderStatus != null &&
+          !_ratingShown &&
+          (_lastOrderStatus == 'in_progress' || _lastOrderStatus == 'completed')) {
         _checkForCompletedUnrated();
       }
       _lastOrderStatus = null;
@@ -99,6 +104,10 @@ class _HomeScreenState extends State<HomeScreen> {
           'body': order.isFuelDelivery
               ? 'جاري تعبئة الوقود'
               : 'جاري سحب السيارة',
+        },
+        'cancelled': {
+          'title': 'تم إلغاء الطلب',
+          'body': 'تم إلغاء طلبك من قبل مزود الخدمة',
         },
       };
 
