@@ -8,6 +8,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
+import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
 
 class DriverTaskCompleteScreen extends StatelessWidget {
   final DriverTaskCompleteArgs args;
@@ -89,19 +90,9 @@ class DriverTaskCompleteScreen extends StatelessWidget {
 
   // ── Success Icon ────────────────────────────────────────────
 
-  Widget _buildSuccessIcon() => Center(
-        child: Container(
-          width: 100.w,
-          height: 100.w,
-          decoration: BoxDecoration(
-            color: AppColors.success.withOpacity(0.12),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            Icons.verified_rounded,
-            size: 60.sp,
-            color: AppColors.success,
-          ),
+  Widget _buildSuccessIcon() => const Center(
+        child: DottedCircleContainer(
+          imagePath: 'assets/images/shield.gif',
         ),
       );
 
