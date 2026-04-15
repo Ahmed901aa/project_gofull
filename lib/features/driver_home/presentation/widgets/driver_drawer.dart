@@ -48,7 +48,7 @@ class _DriverDrawerState extends State<DriverDrawer> {
       case 'fuel_delivery':
         return 'سائق توصيل وقود';
       case 'towing':
-        return 'سائق ونش';
+        return 'سائق ساحبة';
       default:
         return type ?? AppStrings.towDriver;
     }

@@ -116,7 +116,7 @@ class _RecentOrderCard extends StatelessWidget {
                   ),
                   SizedBox(width: 4.w),
                   Text(
-                    isTow ? 'خدمة ونش' : 'إمداد وقود',
+                    isTow ? 'خدمة ساحبة' : 'إمداد وقود',
                     style: getMediumStyle(
                         color: const Color(0xFF0E0E0E),
                         fontSize: FontSize.s14),

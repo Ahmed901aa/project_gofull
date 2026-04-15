@@ -100,7 +100,7 @@ class _ProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final name = profile?.userName ?? 'السائق';
     final id = profile != null ? 'ID-${profile!.id}' : '';
-    final role = profile?.isTowingProvider == true ? 'سائق ونش' : 'سائق إمداد وقود';
+    final role = profile?.isTowingProvider == true ? 'سائق ساحبة' : 'سائق إمداد وقود';
     final isOnline = profile?.isAvailable ?? false;
     return Container(
       padding: EdgeInsets.all(Insets.s16),

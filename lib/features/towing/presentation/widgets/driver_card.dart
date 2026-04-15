@@ -18,7 +18,7 @@ class DriverCard extends StatelessWidget {
     this.driverName = '—',
     this.ratingValue = '—',
     this.reviewCount = '',
-    this.vehicleLabel = 'نوع الونش',
+    this.vehicleLabel = 'نوع الساحبة',
     this.vehicleValue = '—',
     this.plateNumber = '—',
   });

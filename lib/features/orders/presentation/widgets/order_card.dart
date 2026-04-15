@@ -114,7 +114,7 @@ class OrderCard extends StatelessWidget {
 
   Widget _buildDetailRows() {
     final rows = order.serviceType == ServiceType.tow
-        ? [OrderDetailRow(label: 'نوع السيارة', value: order.carType), OrderDetailRow(label: 'رقم اللوحة', value: order.plateNumber), OrderDetailRow(label: 'نوع الونش', value: order.winchType ?? '')]
+        ? [OrderDetailRow(label: 'نوع السيارة', value: order.carType), OrderDetailRow(label: 'رقم اللوحة', value: order.plateNumber), OrderDetailRow(label: 'نوع الساحبة', value: order.winchType ?? '')]
         : [OrderDetailRow(label: 'نوع الوقود', value: order.fuelType ?? ''), OrderDetailRow(label: 'الكمية', value: order.quantity ?? ''), OrderDetailRow(label: 'نوع المركبة', value: order.carType), OrderDetailRow(label: 'رقم اللوحة', value: order.plateNumber)];
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: rows);
   }

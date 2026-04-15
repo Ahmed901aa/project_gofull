@@ -25,7 +25,7 @@ class OrderBadgesRow extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('خدمة ونش', style: getMediumStyle(color: AppColors.primary, fontSize: FontSize.s12)),
+                Text('خدمة ساحبة', style: getMediumStyle(color: AppColors.primary, fontSize: FontSize.s12)),
                 SizedBox(width: 4.w),
                 Icon(Icons.local_shipping_outlined, size: 14.sp, color: AppColors.primary),
               ],

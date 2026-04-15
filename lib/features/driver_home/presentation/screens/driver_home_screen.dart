@@ -440,7 +440,7 @@ class _ActiveOrderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  request.isFuelDelivery ? 'طلب وقود نشط' : 'طلب ونش نشط',
+                  request.isFuelDelivery ? 'طلب وقود نشط' : 'طلب ساحبة نشط',
                   style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
                 ),
                 SizedBox(height: 2.h),

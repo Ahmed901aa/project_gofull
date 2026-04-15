@@ -213,7 +213,7 @@ class _ServiceBadge extends StatelessWidget {
             size: 14.sp,
             color: isTow ? AppColors.primary : AppColors.gold),
         SizedBox(width: 4.w),
-        Text(isTow ? 'خدمة ونش' : 'خدمة وقود',
+        Text(isTow ? 'خدمة ساحبة' : 'خدمة وقود',
             style: getMediumStyle(
                 color: isTow ? AppColors.primary : AppColors.gold,
                 fontSize: FontSize.s12)),

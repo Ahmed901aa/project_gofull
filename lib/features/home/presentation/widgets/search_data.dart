@@ -3,7 +3,7 @@ import 'package:project_gofull/core/routes/routes.dart';
 
 const searchableItems = [
   {'title': 'إمداد وقود', 'subtitle': 'توصيل الوقود لموقعك', 'icon': Icons.local_gas_station_outlined, 'route': Routes.fuelType, 'category': 'خدمات'},
-  {'title': 'ونش', 'subtitle': 'خدمة سحب السيارات', 'icon': Icons.fire_truck_outlined, 'route': Routes.towingRequest, 'category': 'خدمات'},
+  {'title': 'ساحبة', 'subtitle': 'خدمة سحب السيارات', 'icon': Icons.fire_truck_outlined, 'route': Routes.towingRequest, 'category': 'خدمات'},
   {'title': 'طلباتي', 'subtitle': 'عرض الطلبات الحالية والسابقة', 'icon': Icons.receipt_long_outlined, 'route': '_orders', 'category': 'التطبيق'},
   {'title': 'أكواد الخصم', 'subtitle': 'إدخال وعرض أكواد الخصم', 'icon': Icons.local_offer_outlined, 'route': Routes.discountCodes, 'category': 'التطبيق'},
   {'title': 'الأسئلة الشائعة', 'subtitle': 'إجابات على الأسئلة المتكررة', 'icon': Icons.help_outline_rounded, 'route': Routes.faq, 'category': 'التطبيق'},
@@ -14,7 +14,7 @@ const searchableItems = [
 
 const searchKeywords = {
   'إمداد وقود': ['وقود', 'بنزين', 'ديزل', 'تعبئة', 'طلب وقود'],
-  'ونش': ['ونش', 'سحب', 'نقل', 'طلب ونش', 'سيارة'],
+  'ساحبة': ['ساحبة', 'سحب', 'نقل', 'طلب ساحبة', 'سيارة'],
   'طلباتي': ['طلبات', 'طلب', 'سجل', 'تاريخ'],
   'أكواد الخصم': ['كود', 'خصم', 'عرض', 'تخفيض', 'كوبون'],
   'الأسئلة الشائعة': ['سؤال', 'أسئلة', 'مساعدة', 'كيف'],
@@ -25,7 +25,7 @@ const searchKeywords = {
 
 const quickShortcuts = [
   {'title': 'إمداد وقود', 'icon': Icons.local_gas_station_outlined, 'route': Routes.fuelType},
-  {'title': 'ونش', 'icon': Icons.fire_truck_outlined, 'route': Routes.towingRequest},
+  {'title': 'ساحبة', 'icon': Icons.fire_truck_outlined, 'route': Routes.towingRequest},
   {'title': 'طلباتي', 'icon': Icons.receipt_long_outlined, 'route': '_orders'},
   {'title': 'الدعم', 'icon': Icons.headset_mic_outlined, 'route': '_support'},
 ];

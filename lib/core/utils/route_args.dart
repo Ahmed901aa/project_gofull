@@ -86,10 +86,10 @@ class TowingStartedArgs {
   final int? requestId;
   const TowingStartedArgs({
     this.title = 'السائق وصل لموقعك.',
-    this.subtitle = 'يتم الآن تحميل وتأمين السيارة على الونش لبدء الرحلة إلى وجهتك.',
+    this.subtitle = 'يتم الآن تحميل وتأمين السيارة على الساحبة لبدء الرحلة إلى وجهتك.',
     this.imagePath = 'assets/images/service_tools.gif',
-    this.vehicleLabel = 'نوع الونش',
-    this.vehicleValue = 'ونش هيدروليك',
+    this.vehicleLabel = 'نوع الساحبة',
+    this.vehicleValue = 'ساحبة هيدروليك',
     this.nextRouteArgs,
     this.requestId,
   });

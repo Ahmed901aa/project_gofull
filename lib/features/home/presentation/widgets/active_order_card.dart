@@ -83,7 +83,7 @@ class ActiveOrderCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(AppRadius.s16),
                         ),
                         child: Text(
-                          isFuel ? 'خدمة وقود' : 'خدمة ونش',
+                          isFuel ? 'خدمة وقود' : 'خدمة ساحبة',
                           style: getSemiBoldStyle(
                               color: AppColors.primary,
                               fontSize: FontSize.s12),
@@ -132,14 +132,8 @@ class ActiveOrderCard extends StatelessWidget {
                       Expanded(
                         child: SizedBox(
                           height: 42.h,
-                          child: ElevatedButton.icon(
+                          child: ElevatedButton(
                             onPressed: () => _resumeOrder(context, order),
-                            icon: Icon(Icons.play_arrow_rounded,
-                                size: 20.sp),
-                            label: Text('متابعة الطلب',
-                                style: getSemiBoldStyle(
-                                    color: AppColors.white,
-                                    fontSize: FontSize.s14)),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
                               foregroundColor: AppColors.white,
@@ -148,6 +142,21 @@ class ActiveOrderCard extends StatelessWidget {
                                 borderRadius:
                                     BorderRadius.circular(AppRadius.s12),
                               ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('متابعة الطلب',
+                                    style: getSemiBoldStyle(
+                                        color: AppColors.white,
+                                        fontSize: FontSize.s14)),
+                                SizedBox(width: 6.w),
+                                Icon(Icons.chevron_left_rounded,
+                                    size: 22.sp,
+                                    color: AppColors.white,
+                                    textDirection: TextDirection.ltr),
+                              ],
                             ),
                           ),
                         ),
@@ -197,10 +206,10 @@ class ActiveOrderCard extends StatelessWidget {
           arguments: SearchingArgs(
             searchingText: isFuel
                 ? 'جاري البحث عن أقرب مزود وقود'
-                : 'جاري البحث عن أقرب سائق ونش',
+                : 'جاري البحث عن أقرب سائق ساحبة',
             subtitleText: isFuel
                 ? 'نقوم الآن بمطابقة طلبك مع أقرب سيارة إمداد.'
-                : 'نقوم الآن بمطابقة طلبك مع أقرب سيارة ونش.',
+                : 'نقوم الآن بمطابقة طلبك مع أقرب سيارة ساحبة.',
             nextRoute: Routes.driverFound,
             requestId: order.id,
             serviceType:
@@ -217,9 +226,9 @@ class ActiveOrderCard extends StatelessWidget {
           arguments: DriverFoundArgs(
             title: isFuel
                 ? 'تم العثور على مزود وقود!'
-                : 'تم العثور على ونش!',
-            vehicleLabel: isFuel ? 'نوع المركبة' : 'نوع الونش',
-            vehicleValue: isFuel ? 'سيارة إمداد وقود' : 'ونش هيدروليك',
+                : 'تم العثور على ساحبة!',
+            vehicleLabel: isFuel ? 'نوع المركبة' : 'نوع الساحبة',
+            vehicleValue: isFuel ? 'سيارة إمداد وقود' : 'ساحبة هيدروليك',
             showClose: true,
             imagePath: isFuel
                 ? 'assets/images/tank_truck.gif'

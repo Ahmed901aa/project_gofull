@@ -20,7 +20,7 @@ class HomeMockDataSource implements HomeDataSource {
       ),
       OfferModel(
         id: 'offer-2',
-        title: 'خصم 20% على أول طلب ونش',
+        title: 'خصم 20% على أول طلب ساحبة',
         code: 'GO20',
         colorValue: 0xFF006B52,
       ),

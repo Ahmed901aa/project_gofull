@@ -66,7 +66,7 @@ class AboutScreen extends StatelessWidget {
                     SizedBox(height: 12.h),
                     _buildCard(
                       icon: Icons.fire_truck_rounded,
-                      title: 'خدمة ونش',
+                      title: 'خدمة ساحبة',
                       description:
                           'سحب وإنقاذ سريع لسيارتك. فريق متخصص ومجهز لنقل مركبتك بأمان.',
                     ),

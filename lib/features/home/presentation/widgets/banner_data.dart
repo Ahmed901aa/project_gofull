@@ -25,7 +25,7 @@ const bannerSlides = [
   ),
   BannerData(
     gradientColors: [Color(0xFF1A6B54), Color(0xFF004B3B), Color(0xFF003329)],
-    headline: 'خدمة الونش على مدار ',
+    headline: 'خدمة الساحبة على مدار ',
     headlineAccent: '24 ساعة',
     badge: 'استجابة سريعة في أي وقت',
     tag: 'متاح الآن',

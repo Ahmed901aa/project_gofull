@@ -119,9 +119,9 @@ class _TowingScreenState extends State<TowingScreen> {
               context,
               Routes.searchingDriver,
               arguments: SearchingArgs(
-                searchingText: 'جاري البحث عن أقرب سائق ونش',
+                searchingText: 'جاري البحث عن أقرب سائق ساحبة',
                 subtitleText:
-                    'نقوم الآن بمطابقة طلبك مع أقرب سيارة ونش متاحة في منطقتك.',
+                    'نقوم الآن بمطابقة طلبك مع أقرب سيارة ساحبة متاحة في منطقتك.',
                 nextRoute: Routes.driverFound,
                 requestId: state.request.id,
                 serviceType: 'towing',
@@ -143,7 +143,7 @@ class _TowingScreenState extends State<TowingScreen> {
               top: false,
               child: Column(
                 children: [
-                  const ServiceHeader(title: 'خدمة ونش'),
+                  const ServiceHeader(title: 'خدمة ساحبة'),
                   Expanded(
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),

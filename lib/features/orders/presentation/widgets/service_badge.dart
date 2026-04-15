@@ -13,7 +13,7 @@ class ServiceBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = serviceType == ServiceType.tow ? 'خدمة ونش' : 'إمداد وقود';
+    final label = serviceType == ServiceType.tow ? 'خدمة ساحبة' : 'إمداد وقود';
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Insets.s12, vertical: 4.h),
       decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(AppRadius.s16)),

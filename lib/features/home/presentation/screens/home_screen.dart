@@ -85,6 +85,13 @@ class _HomeScreenState extends State<HomeScreen> {
       // Don't notify on first load
       if (oldStatus == null) return;
 
+      // Don't notify if home isn't the currently visible route —
+      // the detail/tracking screen on top handles its own notifications.
+      // This prevents duplicate notifications when the user taps
+      // "متابعة الطلب" and both screens poll the same status change.
+      final route = ModalRoute.of(context);
+      if (route != null && !route.isCurrent) return;
+
       // Fire local notification for status change
       final messages = <String, Map<String, String>>{
         'accepted': {

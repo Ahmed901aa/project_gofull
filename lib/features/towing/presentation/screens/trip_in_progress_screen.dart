@@ -136,7 +136,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
                         textAlign: TextAlign.center),
                     SizedBox(height: 4.h),
                     Text(
-                        'يتم الآن نقل السيارة على الونش إلى وجهتك.',
+                        'يتم الآن نقل السيارة على الساحبة إلى وجهتك.',
                         style: getRegularStyle(
                             color: AppColors.neutral800,
                             fontSize: FontSize.s14),

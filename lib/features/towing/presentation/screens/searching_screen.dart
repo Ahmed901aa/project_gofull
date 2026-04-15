@@ -133,9 +133,9 @@ class _SearchingScreenState extends State<SearchingScreen> {
         context,
         Routes.driverFound,
         arguments: DriverFoundArgs(
-          title: isFuel ? 'تم العثور على مزود وقود!' : 'تم العثور على ونش!',
-          vehicleLabel: isFuel ? 'نوع المركبة' : 'نوع الونش',
-          vehicleValue: isFuel ? 'سيارة إمداد وقود' : 'ونش هيدروليك',
+          title: isFuel ? 'تم العثور على مزود وقود!' : 'تم العثور على ساحبة!',
+          vehicleLabel: isFuel ? 'نوع المركبة' : 'نوع الساحبة',
+          vehicleValue: isFuel ? 'سيارة إمداد وقود' : 'ساحبة هيدروليك',
           showClose: true,
           imagePath: isFuel
               ? 'assets/images/tank_truck.gif'

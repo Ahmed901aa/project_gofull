@@ -34,6 +34,9 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
   late final RequestBloc _requestBloc;
   bool _navigated = false;
   bool _isEnRoute = false;
+  // Track if this is the very first poll — used to suppress resume
+  // notifications when the user re-enters this screen from home.
+  bool _firstPoll = true;
   ServiceRequestEntity? _request;
 
   DriverFoundArgs get _args =>
@@ -76,7 +79,17 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
     final status = request.status.trim().toLowerCase();
     final isFuel = _args.serviceType == 'fuel_delivery';
 
+    // On the very first poll we're just catching up to the current status,
+    // not watching a transition — so skip notifications and only sync UI.
+    final isResuming = _firstPoll;
+    _firstPoll = false;
+
     setState(() => _request = request);
+
+    // If we're resuming on en_route, remember that so we don't fire later.
+    if (isResuming && status == 'en_route') {
+      _isEnRoute = true;
+    }
 
     developer.log(
       'DriverFoundScreen → status="$status"',
@@ -103,7 +116,7 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
         NotiService().showNotification(
           id: request.id,
           title: 'مزود الخدمة في الطريق',
-          body: isFuel ? 'مزود الوقود تحرك إلى موقعك' : 'سائق الونش تحرك إلى موقعك',
+          body: isFuel ? 'مزود الوقود تحرك إلى موقعك' : 'سائق الساحبة تحرك إلى موقعك',
         );
       }
       return;
@@ -116,16 +129,19 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
       _navigated = true;
       _polling.stop();
 
-      final statusMessages = {
-        'arrived': 'مزود الخدمة وصل إلى موقعك',
-        'in_progress': 'بدأت الخدمة',
-        'completed': 'تمت الخدمة بنجاح',
-      };
-      NotiService().showNotification(
-        id: request.id,
-        title: 'GoFull',
-        body: statusMessages[status] ?? 'تحديث حالة الطلب',
-      );
+      // Only notify on a real transition (not a resume catch-up).
+      if (!isResuming) {
+        final statusMessages = {
+          'arrived': 'مزود الخدمة وصل إلى موقعك',
+          'in_progress': 'بدأت الخدمة',
+          'completed': 'تمت الخدمة بنجاح',
+        };
+        NotiService().showNotification(
+          id: request.id,
+          title: 'GoFull',
+          body: statusMessages[status] ?? 'تحديث حالة الطلب',
+        );
+      }
 
       if (isFuel) {
         if (status == 'completed') {
@@ -190,7 +206,7 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
                         _isEnRoute
                             ? (_args.serviceType == 'fuel_delivery'
                                 ? 'مزود الوقود في الطريق إليك'
-                                : 'سائق الونش في الطريق إليك')
+                                : 'سائق الساحبة في الطريق إليك')
                             : _args.title,
                         style: getBoldStyle(
                             color: const Color(0xFF0E0E0E),
