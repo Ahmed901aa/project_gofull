@@ -31,7 +31,7 @@ class OfferCard extends StatelessWidget {
                 height: 120.h,
                 width: double.infinity,
                 color: Colors.white,
-                child: Image.asset(ImageAssets.offerBanner, fit: BoxFit.cover),
+                child: Transform.scale(scaleX: -1, child: Image.asset(ImageAssets.offerBanner, fit: BoxFit.cover)),
               ),
             ),
             Padding(

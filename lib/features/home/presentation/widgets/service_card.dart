@@ -11,6 +11,7 @@ class ServiceCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback onTap;
+  final bool flipIcon;
 
   const ServiceCard({
     super.key,
@@ -18,6 +19,7 @@ class ServiceCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.onTap,
+    this.flipIcon = false,
   });
 
   @override
@@ -36,7 +38,9 @@ class ServiceCard extends StatelessWidget {
           children: [
             SizedBox(
               width: 72.w, height: 48.h,
-              child: SvgPicture.asset(svgAsset, fit: BoxFit.contain, colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn)),
+              child: flipIcon
+                  ? Transform.scale(scaleX: -1, child: SvgPicture.asset(svgAsset, fit: BoxFit.contain, colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn)))
+                  : SvgPicture.asset(svgAsset, fit: BoxFit.contain, colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn)),
             ),
             SizedBox(height: Insets.s8),
             Text(title, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.center),
