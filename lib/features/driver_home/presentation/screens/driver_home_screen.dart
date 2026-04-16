@@ -39,6 +39,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   late final ProviderBloc _providerBloc;
 
   bool _isActive = false;
+  String _serviceType = 'fuel_delivery'; // default, updated from profile
   ServiceRequestEntity? _pendingRequest; // real request from backend
   ServiceRequestEntity? _activeRequest;  // accepted/en_route/arrived/in_progress
   Timer? _activeRequestTimer;
@@ -47,6 +48,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   void initState() {
     super.initState();
     _providerBloc = sl<ProviderBloc>();
+    // Load provider profile to determine service type
+    _providerBloc.add(const LoadProfileEvent());
     // Check for any active/in-progress order (resumes after back navigation)
     _providerBloc.add(const LoadActiveRequestEvent());
     _activeRequestTimer = Timer.periodic(const Duration(seconds: 5), (_) {
@@ -93,6 +96,10 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   // ── Handle polling results ──
 
   void _onProviderState(ProviderState state) {
+    if (state is ProfileLoaded) {
+      setState(() => _serviceType = state.profile.serviceType);
+      return;
+    }
     if (state is ActiveRequestLoaded) {
       final req = state.request;
 
@@ -346,7 +353,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                           onAccept: _onAcceptOrder,
                           onReject: _onRejectOrder,
                         )
-                      : _SearchingPanel(isActive: _isActive),
+                      : _SearchingPanel(isActive: _isActive, serviceType: _serviceType),
                 ),
               ],
             ),
@@ -361,7 +368,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
 class _SearchingPanel extends StatelessWidget {
   final bool isActive;
-  const _SearchingPanel({required this.isActive});
+  final String serviceType;
+  const _SearchingPanel({required this.isActive, required this.serviceType});
 
   @override
   Widget build(BuildContext context) {
@@ -384,7 +392,7 @@ class _SearchingPanel extends StatelessWidget {
             SizedBox(height: 4.h),
             Text(AppStrings.searchingSubtitle, style: getRegularStyle(fontSize: FontSize.s14, color: AppColors.grey), textAlign: TextAlign.center),
           ] else ...[
-            Icon(Icons.local_shipping_outlined, size: 40.sp, color: AppColors.grey),
+            Icon(serviceType == 'towing' ? Icons.fire_truck_rounded : Icons.local_gas_station_rounded, size: 40.sp, color: AppColors.grey),
             SizedBox(height: Insets.s12),
             Text(AppStrings.inactive, style: getSemiBoldStyle(fontSize: FontSize.s16, color: AppColors.darkGrey), textAlign: TextAlign.center),
             SizedBox(height: 4.h),

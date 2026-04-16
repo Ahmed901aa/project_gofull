@@ -24,7 +24,7 @@ class _PromoBannerState extends State<PromoBanner> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _pageController = PageController(viewportFraction: 0.88);
     _timer = Timer.periodic(_interval, (_) {
       final next = (_currentPage + 1) % _totalPages;
       _pageController.animateToPage(
@@ -47,21 +47,54 @@ class _PromoBannerState extends State<PromoBanner> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(AppRadius.s16),
-          child: SizedBox(
-            height: 140.h,
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: _totalPages,
-              onPageChanged: (i) => setState(() => _currentPage = i),
-              itemBuilder: (_, i) => PromoBannerCard(index: i),
-            ),
+        SizedBox(
+          height: 140.h,
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: _totalPages,
+            onPageChanged: (i) => setState(() => _currentPage = i),
+            itemBuilder: (_, i) {
+              return AnimatedBuilder(
+                listenable: _pageController,
+                builder: (context, child) {
+                  double scale = 1.0;
+                  if (_pageController.position.haveDimensions) {
+                    final page = _pageController.page ?? _currentPage.toDouble();
+                    scale = (1 - (page - i).abs() * 0.05).clamp(0.9, 1.0);
+                  }
+                  return Transform.scale(
+                    scale: scale,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4.w),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(AppRadius.s16),
+                        child: PromoBannerCard(index: i),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
           ),
         ),
         SizedBox(height: Insets.s12),
         PromoDotsIndicator(totalPages: _totalPages, currentPage: _currentPage, activeColor: AppColors.primary),
       ],
     );
+  }
+}
+
+class AnimatedBuilder extends AnimatedWidget {
+  final Widget Function(BuildContext, Widget?) builder;
+
+  const AnimatedBuilder({
+    super.key,
+    required super.listenable,
+    required this.builder,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return builder(context, null);
   }
 }
