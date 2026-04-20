@@ -41,6 +41,7 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
       arguments: DriverCollectPaymentArgs(
         orderId: widget.args.orderId,
         amount: widget.args.amount,
+        customerPhone: widget.args.customerPhone,
       ),
     );
   }
@@ -122,7 +123,24 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(width: 24.sp),
+                  GestureDetector(
+                    onTap: () {
+                      final phone = widget.args.customerPhone;
+                      if (phone != null && phone.isNotEmpty) {
+                        launchUrl(Uri.parse('tel:$phone'));
+                      }
+                    },
+                    child: Container(
+                      width: 36.w,
+                      height: 36.w,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(Icons.phone_rounded,
+                          size: 20.sp, color: AppColors.primary),
+                    ),
+                  ),
                 ],
               ),
             ),
