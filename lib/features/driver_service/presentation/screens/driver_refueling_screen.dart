@@ -11,11 +11,13 @@ import 'package:project_gofull/core/widgets/app_button.dart';
 import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DriverRefuelingArgs {
   final String orderId;
   final double amount;
-  const DriverRefuelingArgs({required this.orderId, required this.amount});
+  final String? customerPhone;
+  const DriverRefuelingArgs({required this.orderId, required this.amount, this.customerPhone});
 }
 
 class DriverRefuelingScreen extends StatefulWidget {

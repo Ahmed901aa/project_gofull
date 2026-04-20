@@ -22,6 +22,7 @@ import '../widgets/trip_photo_placeholder.dart';
 import '../widgets/trip_route_card.dart';
 import '../widgets/trip_payment_section.dart';
 import '../widgets/trip_safety_section.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 String _calcDistance(double lat1, double lng1, double lat2, double lng2) {
   const r = 6371.0;
@@ -101,6 +102,15 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
         body: 'تم إلغاء طلبك من قبل مزود الخدمة',
       );
       Navigator.pushReplacementNamed(context, Routes.home);
+    }
+  }
+
+  void _callProvider() {
+    final userInfo =
+        (_request?.providerInfo?['user'] as Map<String, dynamic>?) ?? {};
+    final phone = userInfo['phone'] as String?;
+    if (phone != null && phone.isNotEmpty) {
+      launchUrl(Uri.parse('tel:$phone'));
     }
   }
 
@@ -251,7 +261,10 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
               textAlign: TextAlign.right),
           SizedBox(height: Insets.s8),
-          ProviderInfoCard.fromRequest(_request),
+          ProviderInfoCard.fromRequest(
+            _request,
+            onCall: _callProvider,
+          ),
         ],
       );
 }

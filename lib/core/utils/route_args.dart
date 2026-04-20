@@ -200,11 +200,13 @@ class DriverDocumentationArgs {
   final String orderId;
   final String documentationType; // 'pickup' or 'delivery'
   final double amount;
+  final String? customerPhone;
 
   const DriverDocumentationArgs({
     required this.orderId,
     required this.documentationType,
     this.amount = 0,
+    this.customerPhone,
   });
 }
 
@@ -212,11 +214,13 @@ class DriverCollectPaymentArgs {
   final String orderId;
   final double amount;
   final String paymentMethod;
+  final String? customerPhone;
 
   const DriverCollectPaymentArgs({
     required this.orderId,
     required this.amount,
     this.paymentMethod = 'كاش',
+    this.customerPhone,
   });
 }
 

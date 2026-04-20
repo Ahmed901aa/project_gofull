@@ -9,7 +9,16 @@ class EtaBottomPanel extends StatelessWidget {
   final String etaFormatted;
   final double progress;
   final String? label;
-  const EtaBottomPanel({super.key, required this.etaFormatted, required this.progress, this.label});
+  final VoidCallback? onCall;
+  final VoidCallback? onMessage;
+  const EtaBottomPanel({
+    super.key,
+    required this.etaFormatted,
+    required this.progress,
+    this.label,
+    this.onCall,
+    this.onMessage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +47,21 @@ class EtaBottomPanel extends StatelessWidget {
         ),
         SizedBox(height: Insets.s16),
         Row(children: [
-          Expanded(child: _ActionButton(label: 'اتصال بالسائق', icon: Icons.call_rounded)),
+          Expanded(
+            child: _ActionButton(
+              label: 'اتصال بالسائق',
+              icon: Icons.call_rounded,
+              onPressed: onCall,
+            ),
+          ),
           SizedBox(width: Insets.s12),
-          Expanded(child: _ActionButton(label: 'إرسال رسالة', icon: Icons.chat_bubble_outline_rounded)),
+          Expanded(
+            child: _ActionButton(
+              label: 'إرسال رسالة',
+              icon: Icons.chat_bubble_outline_rounded,
+              onPressed: onMessage,
+            ),
+          ),
         ]),
       ]),
     );
@@ -50,14 +71,15 @@ class EtaBottomPanel extends StatelessWidget {
 class _ActionButton extends StatelessWidget {
   final String label;
   final IconData icon;
-  const _ActionButton({required this.label, required this.icon});
+  final VoidCallback? onPressed;
+  const _ActionButton({required this.label, required this.icon, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 48.h,
       child: OutlinedButton.icon(
-        onPressed: () {}, // placeholder — wire up with real call/chat later
+        onPressed: onPressed,
         icon: Icon(icon, size: 20.sp, color: AppColors.primary),
         label: Text(label, style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s16)),
         style: OutlinedButton.styleFrom(

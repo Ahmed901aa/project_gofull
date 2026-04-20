@@ -17,6 +17,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/safety_section.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const _safetyItems = [
   'إغلاق النوافذ: تأكد من إغلاق جميع نوافذ السيارة وفتحاتها.',
@@ -98,6 +99,15 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
         body: 'تم إلغاء طلبك من قبل مزود الخدمة',
       );
       Navigator.pushReplacementNamed(context, Routes.home);
+    }
+  }
+
+  void _callProvider() {
+    final userInfo =
+        (_request?.providerInfo?['user'] as Map<String, dynamic>?) ?? {};
+    final phone = userInfo['phone'] as String?;
+    if (phone != null && phone.isNotEmpty) {
+      launchUrl(Uri.parse('tel:$phone'));
     }
   }
 
@@ -208,7 +218,10 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
               textAlign: TextAlign.right),
           SizedBox(height: Insets.s8),
-          ProviderInfoCard.fromRequest(_request),
+          ProviderInfoCard.fromRequest(
+            _request,
+            onCall: _callProvider,
+          ),
         ],
       );
 }

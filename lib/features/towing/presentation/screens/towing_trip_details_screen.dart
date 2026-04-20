@@ -16,6 +16,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_event
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/detail_chip.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/trip_payment_section.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TowingTripDetailsScreen extends StatelessWidget {
   final TripDetailsArgs? args;
@@ -100,7 +101,17 @@ class TowingTripDetailsScreen extends StatelessWidget {
           SizedBox(height: Insets.s16),
           _section(
             'تفاصيل مزود الخدمة',
-            ProviderInfoCard.fromRequest(req),
+            ProviderInfoCard.fromRequest(
+              req,
+              onCall: () {
+                final userInfo =
+                    (req.providerInfo?['user'] as Map<String, dynamic>?) ?? {};
+                final phone = userInfo['phone'] as String?;
+                if (phone != null && phone.isNotEmpty) {
+                  launchUrl(Uri.parse('tel:$phone'));
+                }
+              },
+            ),
           ),
           SizedBox(height: Insets.s16),
           _section(

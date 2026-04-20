@@ -16,6 +16,8 @@ class DriverDetailsCard extends StatelessWidget {
   final String vehicleLabel;
   final String vehicleValue;
   final bool showActionIcons;
+  final VoidCallback? onCall;
+  final VoidCallback? onMessage;
 
   const DriverDetailsCard({
     super.key,
@@ -26,6 +28,8 @@ class DriverDetailsCard extends StatelessWidget {
     required this.vehicleLabel,
     required this.vehicleValue,
     this.showActionIcons = false,
+    this.onCall,
+    this.onMessage,
   });
 
   @override
@@ -57,9 +61,15 @@ class DriverDetailsCard extends StatelessWidget {
               ),
               if (showActionIcons)
                 Row(children: [
-                  _ActionIcon(icon: Icons.call_rounded),
+                  GestureDetector(
+                    onTap: onCall,
+                    child: const _ActionIcon(icon: Icons.call_rounded),
+                  ),
                   SizedBox(width: Insets.s12),
-                  _ActionIcon(icon: Icons.chat_bubble_outline_rounded),
+                  GestureDetector(
+                    onTap: onMessage,
+                    child: const _ActionIcon(icon: Icons.chat_bubble_outline_rounded),
+                  ),
                 ]),
             ],
           ),
