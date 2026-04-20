@@ -11,6 +11,7 @@ import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DriverCollectPaymentScreen extends StatelessWidget {
   final DriverCollectPaymentArgs args;
@@ -73,8 +74,24 @@ class DriverCollectPaymentScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  Icon(Icons.info_outline_rounded,
-                      size: 24.sp, color: const Color(0xFF0E0E0E)),
+                  GestureDetector(
+                    onTap: () {
+                      final phone = args.customerPhone;
+                      if (phone != null && phone.isNotEmpty) {
+                        launchUrl(Uri.parse('tel:$phone'));
+                      }
+                    },
+                    child: Container(
+                      width: 36.w,
+                      height: 36.w,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(Icons.phone_rounded,
+                          size: 20.sp, color: AppColors.primary),
+                    ),
+                  ),
                 ],
               ),
             ),
