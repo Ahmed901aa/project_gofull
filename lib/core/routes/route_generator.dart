@@ -43,6 +43,7 @@ import 'package:project_gofull/features/driver_service/presentation/screens/driv
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_collect_payment_screen.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_task_complete_screen.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_rate_customer_screen.dart';
+import 'package:project_gofull/features/driver_profile/presentation/screens/driver_privacy_policy_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -152,9 +153,7 @@ class RouteGenerator {
         final args = settings.arguments as DriverTripDetailsArgs;
         return _buildRoute(DriverTripDetailsScreen(args: args), settings);
       case Routes.driverPrivacyPolicy:
-        return _buildRoute(const Scaffold(
-          body: Center(child: Text('سياسة الخصوصية')),
-        ), settings);
+        return _buildRoute(const DriverPrivacyPolicyScreen(), settings);
 
       default:
         return _undefinedRoute();
