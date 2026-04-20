@@ -6,12 +6,16 @@ class BannerData {
   final String headlineAccent;
   final String badge;
   final String tag;
+  final IconData icon;
+  final String ctaLabel;
   const BannerData({
     required this.gradientColors,
     required this.headline,
     required this.headlineAccent,
     required this.badge,
     required this.tag,
+    required this.icon,
+    this.ctaLabel = 'تعرف أكثر',
   });
 }
 
@@ -22,6 +26,8 @@ const bannerSlides = [
     headlineAccent: 'اشتراك واحد',
     badge: 'قسائم مجانية + خصومات حصرية',
     tag: 'عرض حصري',
+    icon: Icons.workspace_premium_rounded,
+    ctaLabel: 'اشترك الآن',
   ),
   BannerData(
     gradientColors: [Color(0xFF1A6B54), Color(0xFF004B3B), Color(0xFF003329)],
@@ -29,6 +35,8 @@ const bannerSlides = [
     headlineAccent: '24 ساعة',
     badge: 'استجابة سريعة في أي وقت',
     tag: 'متاح الآن',
+    icon: Icons.fire_truck_rounded,
+    ctaLabel: 'اطلب الآن',
   ),
   BannerData(
     gradientColors: [Color(0xFF2979FF), Color(0xFF1565C0), Color(0xFF0D47A1)],
@@ -36,5 +44,7 @@ const bannerSlides = [
     headlineAccent: '20%',
     badge: 'استخدم الكود: GO20',
     tag: 'لفترة محدودة',
+    icon: Icons.local_offer_rounded,
+    ctaLabel: 'استخدم الكود',
   ),
 ];

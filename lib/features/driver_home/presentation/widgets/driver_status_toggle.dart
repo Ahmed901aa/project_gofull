@@ -20,47 +20,62 @@ class DriverStatusToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onChanged(!isActive),
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
         padding: EdgeInsets.symmetric(
-          horizontal: Insets.s12,
-          vertical: 6.h,
+          horizontal: 14.w,
+          vertical: 8.h,
         ),
         decoration: BoxDecoration(
           color: isActive
               ? AppColors.success.withValues(alpha: 0.1)
-              : AppColors.error.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(AppRadius.s24),
+              : Colors.white,
+          borderRadius: BorderRadius.circular(14.r),
           border: Border.all(
             color: isActive
                 ? AppColors.success.withValues(alpha: 0.3)
-                : AppColors.error.withValues(alpha: 0.3),
-            width: 1,
+                : const Color(0xFFe5e7eb),
+            width: 1.5,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: isActive
+                  ? AppColors.success.withValues(alpha: 0.15)
+                  : Colors.black.withValues(alpha: 0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
               width: 10.w,
               height: 10.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isActive ? AppColors.success : AppColors.error,
+                color: isActive ? AppColors.success : const Color(0xFF9ca3af),
+                boxShadow: isActive
+                    ? [
+                        BoxShadow(
+                          color: AppColors.success.withValues(alpha: 0.5),
+                          blurRadius: 6,
+                          spreadRadius: 1,
+                        ),
+                      ]
+                    : [],
               ),
             ),
-            SizedBox(width: 6.w),
+            SizedBox(width: 8.w),
             Text(
               isActive ? AppStrings.active : AppStrings.inactive,
               style: getSemiBoldStyle(
                 fontSize: FontSize.s14,
-                color: isActive ? AppColors.success : AppColors.error,
+                color: isActive ? AppColors.success : const Color(0xFF6b7280),
               ),
-            ),
-            SizedBox(width: 4.w),
-            Icon(
-              Icons.keyboard_arrow_down_rounded,
-              size: 18.sp,
-              color: isActive ? AppColors.success : AppColors.error,
             ),
           ],
         ),
