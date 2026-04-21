@@ -50,7 +50,11 @@
       "Bash(xargs basename:*)",
       "Bash(grep -E \"\\\\.\\(dart|swift\\)$\")",
       "Bash(flutter test:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(rm /Users/usermac/Desktop/project_Gofull/project_gofull/.git/index.lock)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }
