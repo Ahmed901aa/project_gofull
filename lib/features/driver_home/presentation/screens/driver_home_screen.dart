@@ -133,6 +133,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         _pendingRequest = null;
       });
       // Skip order details — go directly to navigate
+      final customerPhone = (req.driverInfo?['phone'] as String?) ?? '';
       Navigator.pushNamed(
         context,
         Routes.driverNavigate,
@@ -144,6 +145,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           navigationType: 'to_customer',
           serviceType: req.isFuelDelivery ? 'fuel' : 'towing',
           amount: double.tryParse(req.total ?? '0') ?? 0,
+          customerPhone: customerPhone,
         ),
       );
     } else if (state is RequestRejected) {
@@ -164,6 +166,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
   void _resumeActiveOrder(ServiceRequestEntity req) {
     final orderId = req.id.toString();
+    final customerPhone = (req.driverInfo?['phone'] as String?) ?? '';
     switch (req.status) {
       case 'accepted':
         Navigator.pushNamed(context, Routes.driverNavigate,
@@ -175,6 +178,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               navigationType: 'to_customer',
               serviceType: req.isFuelDelivery ? 'fuel' : 'towing',
               amount: double.tryParse(req.total ?? '0') ?? 0,
+              customerPhone: customerPhone,
             ));
         break;
       case 'en_route':
@@ -187,15 +191,16 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               navigationType: 'to_customer',
               serviceType: req.isFuelDelivery ? 'fuel' : 'towing',
               amount: double.tryParse(req.total ?? '0') ?? 0,
+              customerPhone: customerPhone,
             ));
         break;
       case 'arrived':
         if (req.isFuelDelivery) {
-          // Fuel: go to refueling screen
           Navigator.pushNamed(context, Routes.driverRefueling,
               arguments: DriverRefuelingArgs(
                 orderId: orderId,
                 amount: double.tryParse(req.total ?? '0') ?? 0,
+                customerPhone: customerPhone,
               ));
         } else {
           Navigator.pushNamed(context, Routes.driverDocumentation,
@@ -203,6 +208,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 orderId: orderId,
                 documentationType: 'pickup',
                 amount: double.tryParse(req.total ?? '0') ?? 0,
+                customerPhone: customerPhone,
               ));
         }
         break;
@@ -211,6 +217,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             arguments: DriverCollectPaymentArgs(
               orderId: orderId,
               amount: double.tryParse(req.total ?? '0') ?? 0,
+              customerPhone: customerPhone,
             ));
         break;
     }

@@ -163,6 +163,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
         arguments: DriverRefuelingArgs(
           orderId: widget.args.orderId,
           amount: widget.args.amount,
+          customerPhone: widget.args.customerPhone,
         ),
       );
     } else {
@@ -177,6 +178,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
           orderId: widget.args.orderId,
           documentationType: _isToCustomer ? 'pickup' : 'delivery',
           amount: widget.args.amount,
+          customerPhone: widget.args.customerPhone,
         ),
       );
     }
