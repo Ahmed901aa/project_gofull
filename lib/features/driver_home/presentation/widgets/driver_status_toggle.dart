@@ -8,18 +8,20 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 
 class DriverStatusToggle extends StatelessWidget {
   final bool isActive;
-  final ValueChanged<bool> onChanged;
+  final ValueChanged<bool>? onChanged;
 
   const DriverStatusToggle({
     super.key,
     required this.isActive,
-    required this.onChanged,
+    this.onChanged,
   });
+
+  bool get _locked => onChanged == null;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onChanged(!isActive),
+      onTap: _locked ? null : () => onChanged!(!isActive),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,

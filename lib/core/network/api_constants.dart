@@ -32,6 +32,8 @@ class ApiConstants {
       '/provider/requests/$id/accept';
   static String providerRejectRequest(int id) =>
       '/provider/requests/$id/reject';
+  static String providerCancelRequest(int id) =>
+      '/provider/requests/$id/cancel';
   static String providerUpdateStatus(int id) =>
       '/provider/requests/$id/status';
   static String providerRateDriver(int id) => '/provider/requests/$id/rate';

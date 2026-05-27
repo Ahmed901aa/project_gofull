@@ -50,6 +50,7 @@ import 'package:project_gofull/features/provider/domain/usecases/accept_request_
 import 'package:project_gofull/features/provider/domain/usecases/reject_request_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/update_status_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/rate_driver_usecase.dart';
+import 'package:project_gofull/features/provider/domain/usecases/cancel_order_usecase.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 
 // Notifications
@@ -159,6 +160,7 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => RejectRequestUseCase(sl()));
   sl.registerLazySingleton(() => UpdateStatusUseCase(sl()));
   sl.registerLazySingleton(() => RateDriverUseCase(sl()));
+  sl.registerLazySingleton(() => CancelOrderUseCase(sl()));
   // ── Feature: Notifications ──────────────────────────────
   sl.registerLazySingleton<NotificationDataSource>(
     () => NotificationRemoteDataSource(sl()),
@@ -178,6 +180,7 @@ Future<void> initDependencies() async {
       rejectRequest: sl(),
       updateStatus: sl(),
       rateDriver: sl(),
+      cancelOrder: sl(),
     ),
   );
 }

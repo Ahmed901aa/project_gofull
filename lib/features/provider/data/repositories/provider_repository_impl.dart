@@ -60,4 +60,8 @@ class ProviderRepositoryImpl implements ProviderRepository {
   @override
   Future<Either<Failure, ServiceRequestEntity?>> getActiveRequest() =>
       _guard(() => dataSource.getActiveRequest());
+
+  @override
+  Future<Either<Failure, void>> cancelOrder(int id, {String? reason}) =>
+      _guard(() => dataSource.cancelOrder(id, reason: reason));
 }

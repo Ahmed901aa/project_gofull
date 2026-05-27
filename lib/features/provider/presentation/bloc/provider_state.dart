@@ -77,6 +77,10 @@ class ActiveRequestLoaded extends ProviderState {
   List<Object?> get props => [request];
 }
 
+class OrderCancelledByProvider extends ProviderState {
+  const OrderCancelledByProvider();
+}
+
 class ProviderError extends ProviderState {
   final String message;
   const ProviderError(this.message);

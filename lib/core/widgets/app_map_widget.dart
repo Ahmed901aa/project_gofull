@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../config/api_keys.dart';
 import '../resources/values_manager.dart';
 import 'app_map/map_suggestion.dart';
 import 'app_map/map_search_bar.dart';
@@ -33,9 +34,9 @@ class AppMapWidget extends StatefulWidget {
 }
 
 class _AppMapWidgetState extends State<AppMapWidget> {
-  static const _apiKey = 'AIzaSyDZ_ZezX058d36aMTOc9E--MbyWqCdOI9I';
-  static const _defaultLat = 24.7136;
-  static const _defaultLng = 46.6753;
+  static const _apiKey = ApiKeys.googleMaps;
+  static const _defaultLat = 32.1194;
+  static const _defaultLng = 20.0868;
 
   GoogleMapController? _mapController;
   Set<Marker> _markers = {};

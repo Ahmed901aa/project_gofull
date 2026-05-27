@@ -28,14 +28,20 @@ class DriverNavigateScreen extends StatefulWidget {
 }
 
 class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
-  static const _defaultLat = 24.7136;
-  static const _defaultLng = 46.6753;
+  // Default: Tripoli, Libya (not Riyadh)
+  static const _defaultLat = 32.8872;
+  static const _defaultLng = 13.1913;
 
   GoogleMapController? _mapController;
-  Set<Marker> _markers = {};
-  Set<Polyline> _polylines = {};
   Timer? _locationTimer;
   String _remainingDistance = '';
+
+  // Provider's live position (updated every few seconds)
+  LatLng? _providerPosition;
+
+  // Cached map objects — only rebuilt when position actually changes
+  Set<Marker> _cachedMarkers = {};
+  Set<Polyline> _cachedPolylines = {};
 
   LatLng get _destination => LatLng(
         widget.args.lat ?? _defaultLat,
@@ -55,18 +61,45 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
   @override
   void initState() {
     super.initState();
-    _setupMarkers();
     // Update status to en_route when navigating to customer
     final orderId = int.tryParse(widget.args.orderId);
     if (orderId != null && _isToCustomer) {
       sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'en_route'));
     }
+    _rebuildMapObjects(); // show destination marker immediately
+    _initLocation();
+  }
+
+  /// Get initial position then start periodic updates
+  Future<void> _initLocation() async {
+    try {
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        _startLocationUpdates();
+        return;
+      }
+      final pos = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+        timeLimit: const Duration(seconds: 8),
+      );
+      if (mounted) {
+        _providerPosition = LatLng(pos.latitude, pos.longitude);
+        _rebuildMapObjects();
+        setState(() {});
+        // Fit both markers on screen
+        _fitBounds();
+      }
+    } catch (_) {}
     _startLocationUpdates();
   }
 
   void _startLocationUpdates() {
     _sendCurrentLocation();
-    _locationTimer = Timer.periodic(const Duration(seconds: 15), (_) {
+    _locationTimer = Timer.periodic(const Duration(seconds: 10), (_) {
       _sendCurrentLocation();
     });
   }
@@ -77,16 +110,30 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
         desiredAccuracy: LocationAccuracy.high,
         timeLimit: const Duration(seconds: 5),
       );
+
+      // Send to API
       sl<ApiClient>().dio.patch('/provider/profile/location', data: {
         'latitude': pos.latitude,
         'longitude': pos.longitude,
       });
-      // Update remaining distance
-      if (mounted) {
-        final km = _haversine(pos.latitude, pos.longitude,
-            _destination.latitude, _destination.longitude);
-        setState(() => _remainingDistance = '${km.toStringAsFixed(1)} كم');
-      }
+
+      if (!mounted) return;
+
+      final providerLatLng = LatLng(pos.latitude, pos.longitude);
+      final km = _haversine(
+        pos.latitude, pos.longitude,
+        _destination.latitude, _destination.longitude,
+      );
+
+      _providerPosition = providerLatLng;
+      _remainingDistance = '${km.toStringAsFixed(1)} كم';
+      _rebuildMapObjects();
+      setState(() {});
+
+      // Smoothly move camera to follow provider
+      _mapController?.animateCamera(
+        CameraUpdate.newLatLng(providerLatLng),
+      );
     } catch (_) {}
   }
 
@@ -100,6 +147,24 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
     return r * 2 * atan2(sqrt(a), sqrt(1 - a));
   }
 
+  /// Fit camera to show both provider and destination markers
+  void _fitBounds() {
+    if (_providerPosition == null || _mapController == null) return;
+    final bounds = LatLngBounds(
+      southwest: LatLng(
+        min(_providerPosition!.latitude, _destination.latitude),
+        min(_providerPosition!.longitude, _destination.longitude),
+      ),
+      northeast: LatLng(
+        max(_providerPosition!.latitude, _destination.latitude),
+        max(_providerPosition!.longitude, _destination.longitude),
+      ),
+    );
+    _mapController?.animateCamera(
+      CameraUpdate.newLatLngBounds(bounds, 80),
+    );
+  }
+
   @override
   void dispose() {
     _locationTimer?.cancel();
@@ -107,20 +172,53 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
     super.dispose();
   }
 
-  void _setupMarkers() {
-    _markers = {
+  /// Rebuild markers & polyline — called only when position changes
+  void _rebuildMapObjects() {
+    final markers = <Marker>{
       Marker(
         markerId: const MarkerId('destination'),
         position: _destination,
-        infoWindow: InfoWindow(title: widget.args.address),
-        icon: BitmapDescriptor.defaultMarkerWithHue(
-          BitmapDescriptor.hueGreen,
+        infoWindow: InfoWindow(
+          title: _isToCustomer ? 'موقع العميل' : 'نقطة التسليم',
+          snippet: widget.args.address,
         ),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
       ),
     };
+
+    var polylines = <Polyline>{};
+
+    if (_providerPosition != null) {
+      markers.add(
+        Marker(
+          markerId: const MarkerId('provider'),
+          position: _providerPosition!,
+          infoWindow: const InfoWindow(title: 'موقعي'),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        ),
+      );
+      // Solid line — dash patterns cause memory leaks on iOS
+      polylines = {
+        Polyline(
+          polylineId: const PolylineId('route'),
+          points: [_providerPosition!, _destination],
+          color: AppColors.primary.withOpacity(0.5),
+          width: 3,
+        ),
+      };
+    }
+
+    _cachedMarkers = markers;
+    _cachedPolylines = polylines;
   }
 
   Future<void> _moveToCurrentLocation() async {
+    if (_providerPosition != null) {
+      _mapController?.animateCamera(
+        CameraUpdate.newLatLngZoom(_providerPosition!, 15),
+      );
+      return;
+    }
     try {
       var permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
@@ -134,8 +232,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
       );
       if (!mounted) return;
       _mapController?.animateCamera(
-        CameraUpdate.newLatLngZoom(
-            LatLng(pos.latitude, pos.longitude), 15),
+        CameraUpdate.newLatLngZoom(LatLng(pos.latitude, pos.longitude), 15),
       );
     } catch (_) {}
   }
@@ -149,11 +246,44 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
     }
   }
 
+  void _onCancelOrder() {
+    showDialog(
+      context: context,
+      builder: (ctx) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+          title: Text('إلغاء الطلب', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
+          content: Text(
+            'هل أنت متأكد من إلغاء هذا الطلب؟\nسيتم إبلاغ العميل بالإلغاء.',
+            style: getRegularStyle(color: const Color(0xFF6B7280), fontSize: FontSize.s14),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text('تراجع', style: getMediumStyle(color: const Color(0xFF6B7280), fontSize: FontSize.s14)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                final orderId = int.tryParse(widget.args.orderId);
+                if (orderId != null) {
+                  sl<ProviderBloc>().add(CancelOrderEvent(id: orderId));
+                }
+                Navigator.pop(context); // back to home
+              },
+              child: Text('إلغاء الطلب', style: getMediumStyle(color: AppColors.error, fontSize: FontSize.s14)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _onArrivedTapped() {
     final orderId = int.tryParse(widget.args.orderId);
 
     if (widget.args.isFuel) {
-      // Fuel delivery: go to refueling screen
       if (orderId != null) {
         sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'arrived'));
       }
@@ -167,7 +297,6 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
         ),
       );
     } else {
-      // Towing: go to documentation
       if (orderId != null) {
         sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'arrived'));
       }
@@ -199,9 +328,13 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
               ),
               onMapCreated: (controller) {
                 _mapController = controller;
+                // Once map is ready, fit to show both points
+                if (_providerPosition != null) {
+                  Future.delayed(const Duration(milliseconds: 500), _fitBounds);
+                }
               },
-              markers: _markers,
-              polylines: _polylines,
+              markers: _cachedMarkers,
+              polylines: _cachedPolylines,
               myLocationEnabled: true,
               myLocationButtonEnabled: false,
               zoomControlsEnabled: false,
@@ -211,19 +344,16 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
             // Header
             _buildHeader(context),
 
-            // Side action buttons (refresh + my location)
+            // Side action buttons
             Positioned(
               left: Insets.s16,
               bottom: 280.h,
               child: Column(
                 children: [
+                  // Fit both markers
                   _buildSideButton(
-                    icon: Icons.refresh_rounded,
-                    onTap: () {
-                      _mapController?.animateCamera(
-                        CameraUpdate.newLatLngZoom(_destination, 14),
-                      );
-                    },
+                    icon: Icons.zoom_out_map_rounded,
+                    onTap: _fitBounds,
                   ),
                   SizedBox(height: Insets.s8),
                   _buildSideButton(
@@ -457,6 +587,23 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
                   ? 'وصلت - بدء التعبئة'
                   : AppStrings.arrivedStartDoc,
               onPressed: _onArrivedTapped,
+            ),
+            SizedBox(height: Insets.s8),
+            // Cancel order
+            GestureDetector(
+              onTap: _onCancelOrder,
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 10.h),
+                alignment: Alignment.center,
+                child: Text(
+                  'إلغاء الطلب',
+                  style: getMediumStyle(
+                    color: AppColors.error,
+                    fontSize: FontSize.s14,
+                  ),
+                ),
+              ),
             ),
           ],
         ),

@@ -8,6 +8,7 @@ import 'package:project_gofull/features/provider/domain/usecases/get_profile_use
 import 'package:project_gofull/features/provider/domain/usecases/rate_driver_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/reject_request_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/toggle_availability_usecase.dart';
+import 'package:project_gofull/features/provider/domain/usecases/cancel_order_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/update_status_usecase.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_state.dart';
@@ -22,6 +23,7 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
   final RejectRequestUseCase rejectRequest;
   final UpdateStatusUseCase updateStatus;
   final RateDriverUseCase rateDriver;
+  final CancelOrderUseCase cancelOrder;
 
   ProviderBloc({
     required this.getProfile,
@@ -33,6 +35,7 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     required this.rejectRequest,
     required this.updateStatus,
     required this.rateDriver,
+    required this.cancelOrder,
   }) : super(const ProviderInitial()) {
     on<LoadProfileEvent>(_onLoadProfile);
     on<LoadActiveRequestEvent>(_onLoadActive);
@@ -43,6 +46,7 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     on<RejectRequestEvent>(_onReject);
     on<UpdateStatusEvent>(_onUpdateStatus);
     on<RateDriverEvent>(_onRate);
+    on<CancelOrderEvent>(_onCancel);
   }
 
   Future<void> _onLoadActive(LoadActiveRequestEvent e, Emitter<ProviderState> emit) async {
@@ -96,5 +100,11 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
     emit(const ProviderLoading());
     final r = await rateDriver(RateDriverParams(requestId: e.requestId, rating: e.rating, comment: e.comment));
     r.fold((f) => emit(ProviderError(f.message)), (rat) => emit(DriverRated(rat)));
+  }
+
+  Future<void> _onCancel(CancelOrderEvent e, Emitter<ProviderState> emit) async {
+    emit(const ProviderLoading());
+    final r = await cancelOrder(CancelOrderParams(id: e.id, reason: e.reason));
+    r.fold((f) => emit(ProviderError(f.message)), (_) => emit(const OrderCancelledByProvider()));
   }
 }

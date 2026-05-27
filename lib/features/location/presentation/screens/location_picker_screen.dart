@@ -21,7 +21,7 @@ class LocationPickerScreen extends StatefulWidget {
 
 class _LocationPickerScreenState extends State<LocationPickerScreen> {
   GoogleMapController? _ctrl;
-  LatLng _center = const LatLng(24.7136, 46.6753);
+  LatLng _center = const LatLng(32.1194, 20.0868);
   String _address = '';
   bool _loadingAddr = false, _searching = false, _loadingSugg = false;
   List<NominatimResult> _suggestions = [];

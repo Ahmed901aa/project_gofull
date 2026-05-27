@@ -30,10 +30,10 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-        <!-- Google Maps API Key — replace with your actual key -->
+        <!-- Google Maps API Key — injected from android/local.properties at build time -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDZ_ZezX058d36aMTOc9E--MbyWqCdOI9I" />
+            android:value="${MAPS_API_KEY}" />
     </application>
     <!-- Required for all HTTP/HTTPS calls (Dio, Google APIs) -->
     <uses-permission android:name="android.permission.INTERNET" />

@@ -325,7 +325,7 @@ class _VehicleSection extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.fire_truck_rounded,
+                Icon(Icons.directions_car_rounded,
                     size: 56.sp, color: AppColors.neutral600),
                 SizedBox(height: Insets.s8),
                 Text(

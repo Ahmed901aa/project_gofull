@@ -14,4 +14,5 @@ abstract class ProviderRepository {
   Future<Either<Failure, ServiceRequestEntity>> updateStatus(int id, String status);
   Future<Either<Failure, RatingEntity>> rateDriver({required int requestId, required int rating, String? comment});
   Future<Either<Failure, ServiceRequestEntity?>> getActiveRequest();
+  Future<Either<Failure, void>> cancelOrder(int id, {String? reason});
 }

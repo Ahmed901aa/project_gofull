@@ -30,8 +30,8 @@ class DriverHomeScreen extends StatefulWidget {
 }
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
-  static const _defaultLat = 24.7136;
-  static const _defaultLng = 46.6753;
+  static const _defaultLat = 32.1194;
+  static const _defaultLng = 20.0868;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   GoogleMapController? _mapController;
@@ -67,19 +67,26 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     super.dispose();
   }
 
+  // ── Auto-status rule ──
+  // When the officer has an active order, status is forced to "active" and the
+  // toggle is disabled. When the order ends, it restores the previous state.
+  bool get _effectivelyActive => _activeRequest != null || _isActive;
+  bool get _statusLocked => _activeRequest != null;
+
   // ── Status toggle ──
 
   void _onStatusChanged(bool active) {
+    // Block manual toggle while an order is in progress
+    if (_statusLocked) return;
+
     setState(() {
       _isActive = active;
       _pendingRequest = null;
     });
 
-    // Toggle availability on backend
     _providerBloc.add(ToggleAvailabilityEvent(active));
 
     if (active) {
-      // Start polling for pending requests every 5 seconds
       _polling.start(
         interval: const Duration(seconds: 5),
         callback: () async {
@@ -97,7 +104,41 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
   void _onProviderState(ProviderState state) {
     if (state is ProfileLoaded) {
-      setState(() => _serviceType = state.profile.serviceType);
+      setState(() {
+        _serviceType = state.profile.serviceType;
+        // Sync the toggle with the backend availability
+        _isActive = state.profile.isAvailable;
+      });
+      // If already active, start polling for orders
+      if (_isActive && _activeRequest == null) {
+        _polling.start(
+          interval: const Duration(seconds: 5),
+          callback: () async {
+            if (_isActive && _pendingRequest == null) {
+              _providerBloc.add(const LoadPendingRequestsEvent());
+            }
+          },
+        );
+      }
+      return;
+    }
+    if (state is OrderCancelledByProvider) {
+      setState(() {
+        _activeRequest = null;
+        _pendingRequest = null;
+      });
+      // Reload profile to get the restored availability
+      _providerBloc.add(const LoadProfileEvent());
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('تم إلغاء الطلب بنجاح'),
+            backgroundColor: AppColors.primary,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        );
+      }
       return;
     }
     if (state is ActiveRequestLoaded) {
@@ -251,6 +292,36 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     setState(() => _pendingRequest = null);
   }
 
+  void _onCancelActiveOrder(ServiceRequestEntity request) {
+    showDialog(
+      context: context,
+      builder: (ctx) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+          title: Text('إلغاء الطلب', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
+          content: Text(
+            'هل أنت متأكد من إلغاء هذا الطلب؟\nسيتم إبلاغ العميل بالإلغاء.',
+            style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text('تراجع', style: getMediumStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                _providerBloc.add(CancelOrderEvent(id: request.id));
+              },
+              child: Text('إلغاء الطلب', style: getMediumStyle(color: AppColors.error, fontSize: FontSize.s14)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   // ── Map controls ──
 
   Future<void> _moveToMyLocation() async {
@@ -318,7 +389,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                         children: [
                           _MapControlButton(icon: Icons.menu_rounded, onTap: () => _scaffoldKey.currentState?.openDrawer()),
                           const Spacer(),
-                          DriverStatusToggle(isActive: _isActive, onChanged: _onStatusChanged),
+                          DriverStatusToggle(isActive: _effectivelyActive, onChanged: _statusLocked ? null : _onStatusChanged),
                           const Spacer(),
                           _MapControlButton(icon: Icons.notifications_outlined, onTap: () => Navigator.pushNamed(context, Routes.notifications)),
                         ],
@@ -330,7 +401,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 // ── Map control buttons ──
                 Positioned(
                   left: Insets.s16,
-                  bottom: _pendingRequest != null ? 380.h : 160.h,
+                  bottom: _pendingRequest != null
+                      ? 380.h
+                      : _effectivelyActive ? 280.h : 140.h,
                   child: Column(
                     children: [
                       _MapControlButton(icon: Icons.refresh_rounded, onTap: _refreshMap),
@@ -347,25 +420,30 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                     child: _ActiveOrderCard(
                       request: _activeRequest!,
                       onResume: () => _resumeActiveOrder(_activeRequest!),
+                      onCancel: () => _onCancelActiveOrder(_activeRequest!),
                     ),
                   ),
 
-                // ── Bottom panel: searching or order popup ──
-                Positioned(
-                  left: 0, right: 0, bottom: 0,
-                  child: _pendingRequest != null
-                      ? OrderPopupCard(
-                          key: ValueKey(_pendingRequest!.id),
-                          request: _pendingRequest,
-                          onAccept: _onAcceptOrder,
-                          onReject: _onRejectOrder,
-                        )
-                      : _SearchingPanel(
-                          isActive: _isActive,
-                          serviceType: _serviceType,
-                          onActivate: () => _onStatusChanged(true),
-                        ),
-                ),
+                // ── Bottom panel ──
+                if (_pendingRequest != null)
+                  Positioned(
+                    left: 0, right: 0, bottom: 0,
+                    child: OrderPopupCard(
+                      key: ValueKey(_pendingRequest!.id),
+                      request: _pendingRequest,
+                      onAccept: _onAcceptOrder,
+                      onReject: _onRejectOrder,
+                    ),
+                  )
+                else
+                  Positioned(
+                    left: 0, right: 0, bottom: 0,
+                    child: _ProviderBottomPanel(
+                      isActive: _effectivelyActive,
+                      serviceType: _serviceType,
+                      onToggle: _statusLocked ? null : () => _onStatusChanged(!_isActive),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -375,27 +453,25 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   }
 }
 
-// ── Searching panel shown when no orders ──
+// ── Provider bottom panel (inactive / active searching) ──
 
-class _SearchingPanel extends StatefulWidget {
+class _ProviderBottomPanel extends StatefulWidget {
   final bool isActive;
   final String serviceType;
-  final VoidCallback onActivate;
-  const _SearchingPanel({
+  final VoidCallback? onToggle;
+  const _ProviderBottomPanel({
     required this.isActive,
     required this.serviceType,
-    required this.onActivate,
+    this.onToggle,
   });
 
   @override
-  State<_SearchingPanel> createState() => _SearchingPanelState();
+  State<_ProviderBottomPanel> createState() => _ProviderBottomPanelState();
 }
 
-class _SearchingPanelState extends State<_SearchingPanel>
+class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
     with TickerProviderStateMixin {
   late final AnimationController _radarController;
-  late final AnimationController _fadeController;
-  late final Animation<double> _fadeAnimation;
 
   @override
   void initState() {
@@ -404,20 +480,11 @@ class _SearchingPanelState extends State<_SearchingPanel>
       vsync: this,
       duration: const Duration(milliseconds: 2200),
     )..repeat();
-    _fadeController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    )..forward();
-    _fadeAnimation = CurvedAnimation(
-      parent: _fadeController,
-      curve: Curves.easeOutCubic,
-    );
   }
 
   @override
   void dispose() {
     _radarController.dispose();
-    _fadeController.dispose();
     super.dispose();
   }
 
@@ -431,235 +498,221 @@ class _SearchingPanelState extends State<_SearchingPanel>
         ? const Color(0xFF2A9D6E)
         : const Color(0xFF2979FF);
 
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.10),
-              blurRadius: 30,
-              offset: const Offset(0, -6),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeOutCubic,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 24,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Handle bar
+          Container(
+            width: 40.w,
+            height: 4.h,
+            margin: EdgeInsets.only(top: 12.h, bottom: 16.h),
+            decoration: BoxDecoration(
+              color: const Color(0xFFDCDFE3),
+              borderRadius: BorderRadius.circular(2.r),
             ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Handle bar
-            Container(
-              width: 40.w,
-              height: 4.h,
-              margin: EdgeInsets.only(top: 12.h, bottom: 14.h),
-              decoration: BoxDecoration(
-                color: const Color(0xFFDCDFE3),
-                borderRadius: BorderRadius.circular(2.r),
+          ),
+
+          if (widget.isActive) ...[
+            // ── Active: searching for orders ──
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                      accentColor.withValues(alpha: 0.06),
+                      accentLight.withValues(alpha: 0.02),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(20.r),
+                  border: Border.all(
+                    color: accentColor.withValues(alpha: 0.1),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    _RadarSearchAnimation(
+                      controller: _radarController,
+                      color: accentColor,
+                      icon: isFuel
+                          ? Icons.local_gas_station_rounded
+                          : Icons.fire_truck_rounded,
+                    ),
+                    SizedBox(height: 12.h),
+                    Text(
+                      isFuel
+                          ? 'جارٍ البحث عن طلبات الوقود...'
+                          : 'جارٍ البحث عن طلبات السحب...',
+                      style: getSemiBoldStyle(
+                        fontSize: FontSize.s15,
+                        color: const Color(0xFF111827),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      AppStrings.searchingSubtitle,
+                      style: getRegularStyle(
+                        fontSize: FontSize.s12,
+                        color: AppColors.grey,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             ),
+            SizedBox(height: 12.h),
 
-            if (widget.isActive) ...[
-              // ── Active: Searching state ──
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+            // Stop button
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+              child: GestureDetector(
+                onTap: widget.onToggle,
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 12.h),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomLeft,
-                      colors: [
-                        accentColor.withValues(alpha: 0.06),
-                        accentLight.withValues(alpha: 0.03),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(20.r),
+                    color: const Color(0xFFFEE2E2),
+                    borderRadius: BorderRadius.circular(14.r),
                     border: Border.all(
-                      color: accentColor.withValues(alpha: 0.1),
+                      color: const Color(0xFFFCA5A5),
+                      width: 1,
                     ),
                   ),
-                  child: Column(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _RadarSearchAnimation(
-                        controller: _radarController,
-                        color: accentColor,
-                        icon: isFuel
-                            ? Icons.local_gas_station_rounded
-                            : Icons.fire_truck_rounded,
-                      ),
-                      SizedBox(height: 14.h),
+                      Icon(Icons.stop_circle_outlined,
+                          size: 20.sp, color: const Color(0xFFDC2626)),
+                      SizedBox(width: 6.w),
                       Text(
-                        isFuel
-                            ? 'جارٍ البحث عن طلبات الوقود...'
-                            : 'جارٍ البحث عن طلبات السحب...',
+                        'إيقاف الدورية',
                         style: getSemiBoldStyle(
-                          fontSize: FontSize.s16,
-                          color: const Color(0xFF111827),
+                          color: const Color(0xFFDC2626),
+                          fontSize: FontSize.s14,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 4.h),
-                      Text(
-                        AppStrings.searchingSubtitle,
-                        style: getRegularStyle(
-                          fontSize: FontSize.s13,
-                          color: AppColors.grey,
-                        ),
-                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 12.h),
-              // Status chips row
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+            ),
+          ] else ...[
+            // ── Inactive: ready to start ──
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+              child: Container(
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [accentColor, accentLight],
+                  ),
+                  borderRadius: BorderRadius.circular(20.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: accentColor.withValues(alpha: 0.25),
+                      blurRadius: 16,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
                 child: Row(
                   children: [
-                    // Live chip
-                    _StatusChip(
-                      dotColor: AppColors.success,
-                      label: 'متصل ونشط',
-                      labelColor: AppColors.success,
-                      bgColor: AppColors.success.withValues(alpha: 0.08),
-                    ),
-                    SizedBox(width: 8.w),
-                    // Service type chip
-                    _StatusChip(
-                      dotColor: accentColor,
-                      label: isFuel ? 'إمداد وقود' : 'خدمة ساحبة',
-                      labelColor: accentColor,
-                      bgColor: accentColor.withValues(alpha: 0.08),
-                    ),
-                  ],
-                ),
-              ),
-            ] else ...[
-              // ── Inactive: Banner + Slide to activate ──
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: Insets.s16),
-                child: Column(
-                  children: [
-                    // Service info banner
+                    // Service icon
                     Container(
-                      padding: EdgeInsets.all(14.w),
+                      width: 48.w,
+                      height: 48.w,
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topRight,
-                          end: Alignment.bottomLeft,
-                          colors: [accentColor, accentLight],
-                        ),
-                        borderRadius: BorderRadius.circular(18.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: accentColor.withValues(alpha: 0.25),
-                            blurRadius: 16,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(14.r),
                       ),
-                      child: Row(
+                      child: Icon(
+                        isFuel
+                            ? Icons.local_gas_station_rounded
+                            : Icons.fire_truck_rounded,
+                        color: Colors.white,
+                        size: 24.sp,
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    // Text
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Icon container
-                          Container(
-                            width: 50.w,
-                            height: 50.w,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.18),
-                              borderRadius: BorderRadius.circular(14.r),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.25),
-                              ),
-                            ),
-                            child: Icon(
-                              isFuel
-                                  ? Icons.local_gas_station_rounded
-                                  : Icons.fire_truck_rounded,
+                          Text(
+                            isFuel ? 'دورية إمداد الوقود' : 'دورية الساحبة',
+                            style: getBoldStyle(
                               color: Colors.white,
-                              size: 26.sp,
+                              fontSize: FontSize.s15,
                             ),
                           ),
-                          SizedBox(width: 12.w),
-                          // Text
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  isFuel ? 'خدمة إمداد الوقود' : 'خدمة الساحبة',
-                                  style: getBoldStyle(
-                                    color: Colors.white,
-                                    fontSize: FontSize.s15,
-                                  ),
-                                ),
-                                SizedBox(height: 3.h),
-                                Text(
-                                  'فعّل حالتك لبدء استقبال الطلبات',
-                                  style: getRegularStyle(
-                                    color: Colors.white.withValues(alpha: 0.8),
-                                    fontSize: FontSize.s12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // Status indicator
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 7.w,
-                                  height: 7.w,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFFFB400),
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color(0xFFFFB400).withValues(alpha: 0.6),
-                                        blurRadius: 4,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(width: 5.w),
-                                Text(
-                                  'غير نشط',
-                                  style: getMediumStyle(
-                                    color: Colors.white,
-                                    fontSize: FontSize.s11,
-                                  ),
-                                ),
-                              ],
+                          SizedBox(height: 2.h),
+                          Text(
+                            'اضغط للبدء باستقبال الطلبات',
+                            style: getRegularStyle(
+                              color: Colors.white.withValues(alpha: 0.85),
+                              fontSize: FontSize.s12,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 16.h),
-                    // Slide to activate
-                    SlideToActivate(
-                      onActivate: widget.onActivate,
-                      label: 'اسحب للتفعيل',
-                      icon: isFuel
-                          ? Icons.local_gas_station_rounded
-                          : Icons.fire_truck_rounded,
-                      gradientColors: [accentColor, accentLight],
+                    // Start button
+                    GestureDetector(
+                      onTap: widget.onToggle,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 10.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          'ابدأ',
+                          style: getBoldStyle(
+                            color: accentColor,
+                            fontSize: FontSize.s14,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
-            ],
-            SizedBox(height: 18.h),
+            ),
           ],
-        ),
+          SizedBox(height: 16.h),
+        ],
       ),
     );
   }
@@ -797,7 +850,8 @@ class _RadarSearchAnimation extends StatelessWidget {
 class _ActiveOrderCard extends StatefulWidget {
   final ServiceRequestEntity request;
   final VoidCallback onResume;
-  const _ActiveOrderCard({required this.request, required this.onResume});
+  final VoidCallback onCancel;
+  const _ActiveOrderCard({required this.request, required this.onResume, required this.onCancel});
 
   @override
   State<_ActiveOrderCard> createState() => _ActiveOrderCardState();
@@ -966,8 +1020,26 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                 ],
               ),
               SizedBox(height: 12.h),
-              // Resume button
-              GestureDetector(
+              // Resume + Cancel buttons
+              Row(
+                children: [
+                  // Cancel button
+                  GestureDetector(
+                    onTap: widget.onCancel,
+                    child: Container(
+                      width: 48.w,
+                      height: 48.w,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFEE2E2),
+                        borderRadius: BorderRadius.circular(14.r),
+                        border: Border.all(color: const Color(0xFFFCA5A5)),
+                      ),
+                      child: Icon(Icons.close_rounded, size: 22.sp, color: const Color(0xFFDC2626)),
+                    ),
+                  ),
+                  SizedBox(width: 10.w),
+                  // Resume button
+                  Expanded(child: GestureDetector(
                 onTap: widget.onResume,
                 child: Container(
                   width: double.infinity,
@@ -1001,7 +1073,9 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                     ],
                   ),
                 ),
-              ),
+              )), // close Expanded + GestureDetector
+                ],
+              ), // close Row
             ],
           ),
         );

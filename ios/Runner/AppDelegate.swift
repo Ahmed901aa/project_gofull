@@ -9,8 +9,11 @@ import flutter_local_notifications
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    // Google Maps
-    GMSServices.provideAPIKey("AIzaSyDZ_ZezX058d36aMTOc9E--MbyWqCdOI9I")
+    // Google Maps — key injected from ios/Flutter/Secrets.xcconfig via Info.plist
+    if let mapsKey = Bundle.main.object(forInfoDictionaryKey: "GMSApiKey") as? String,
+       !mapsKey.isEmpty {
+      GMSServices.provideAPIKey(mapsKey)
+    }
 
     // flutter_local_notifications: register callback for background isolates
     FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { (registry) in

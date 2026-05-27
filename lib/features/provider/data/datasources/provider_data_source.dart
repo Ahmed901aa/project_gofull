@@ -16,6 +16,7 @@ abstract class ProviderDataSource {
   Future<ServiceRequestModel> updateStatus(int id, String status);
   Future<RatingModel> rateDriver({required int requestId, required int rating, String? comment});
   Future<ServiceRequestModel?> getActiveRequest();
+  Future<void> cancelOrder(int id, {String? reason});
 }
 
 // ── Mock ───────────────────────────────────────────────────
@@ -103,6 +104,11 @@ class ProviderMockDataSource implements ProviderDataSource {
   Future<ServiceRequestModel?> getActiveRequest() async {
     await Future.delayed(const Duration(milliseconds: 400));
     return null;
+  }
+
+  @override
+  Future<void> cancelOrder(int id, {String? reason}) async {
+    await Future.delayed(const Duration(milliseconds: 400));
   }
 }
 
@@ -213,6 +219,18 @@ class ProviderRemoteDataSource implements ProviderDataSource {
       return ServiceRequestModel.fromJson(data as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'فشل تحميل الطلب النشط');
+    }
+  }
+
+  @override
+  Future<void> cancelOrder(int id, {String? reason}) async {
+    try {
+      await apiClient.dio.patch(
+        ApiConstants.providerCancelRequest(id),
+        data: {if (reason != null) 'reason': reason},
+      );
+    } on DioException catch (e) {
+      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'فشل إلغاء الطلب');
     }
   }
 }
