@@ -18,6 +18,7 @@ import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_state.dart';
 import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
 import '../widgets/driver_drawer.dart';
 import '../widgets/driver_status_toggle.dart';
 import '../widgets/order_popup_card.dart';
@@ -130,14 +131,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       // Reload profile to get the restored availability
       _providerBloc.add(const LoadProfileEvent());
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('تم إلغاء الطلب بنجاح'),
-            backgroundColor: AppColors.primary,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-        );
+        AppSnackbar.success(context, 'تم إلغاء الطلب بنجاح');
       }
       return;
     }
@@ -266,14 +260,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
   void _showCancelledSnackBar() {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('تم إلغاء الطلب من قبل العميل'),
-        backgroundColor: AppColors.error,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-    );
+    AppSnackbar.warning(context, 'تم إلغاء الطلب من قبل العميل');
   }
 
   // ── Order actions ──
@@ -292,34 +279,20 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     setState(() => _pendingRequest = null);
   }
 
-  void _onCancelActiveOrder(ServiceRequestEntity request) {
-    showDialog(
-      context: context,
-      builder: (ctx) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-          title: Text('إلغاء الطلب', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
-          content: Text(
-            'هل أنت متأكد من إلغاء هذا الطلب؟\nسيتم إبلاغ العميل بالإلغاء.',
-            style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text('تراجع', style: getMediumStyle(color: AppColors.grey, fontSize: FontSize.s14)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-                _providerBloc.add(CancelOrderEvent(id: request.id));
-              },
-              child: Text('إلغاء الطلب', style: getMediumStyle(color: AppColors.error, fontSize: FontSize.s14)),
-            ),
-          ],
-        ),
-      ),
+  void _onCancelActiveOrder(ServiceRequestEntity request) async {
+    final confirmed = await AppConfirmDialog.show(
+      context,
+      icon: Icons.cancel_rounded,
+      iconColor: AppColors.error,
+      title: 'إلغاء الطلب',
+      subtitle: 'هل أنت متأكد من إلغاء هذا الطلب؟\nسيتم إبلاغ العميل بالإلغاء.',
+      confirmLabel: 'إلغاء الطلب',
+      cancelLabel: 'تراجع',
+      destructive: true,
     );
+    if (confirmed) {
+      _providerBloc.add(CancelOrderEvent(id: request.id));
+    }
   }
 
   // ── Map controls ──

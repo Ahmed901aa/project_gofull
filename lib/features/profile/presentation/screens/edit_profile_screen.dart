@@ -3,8 +3,8 @@ import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
-import '../widgets/confirmation_dialog.dart';
 import '../widgets/edit_profile_avatar.dart';
 import '../widgets/edit_profile_bottom_buttons.dart';
 import '../widgets/edit_profile_fields.dart';
@@ -56,27 +56,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void _saveChanges() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('تم حفظ التغييرات')),
-    );
+    AppSnackbar.success(context, 'تم حفظ التغييرات بنجاح');
     Navigator.pop(context);
   }
 
-  void _deleteAccount() {
-    showDialog(
-      context: context,
-      builder: (_) => ConfirmationDialog(
-        icon: Icons.person_remove_outlined,
-        iconColor: const Color(0xFFE63946),
-        title: 'حذف الحساب؟',
-        subtitle: 'حذف الحساب يعني خسارة جميع بياناتك، سجل طلباتك. هل أنت متأكد؟',
-        confirmLabel: 'تأكيد الحذف',
-        onConfirm: () {
-          Navigator.pop(context);
-          // TODO: handle delete account logic
-        },
-      ),
+  void _deleteAccount() async {
+    final confirmed = await AppConfirmDialog.show(
+      context,
+      icon: Icons.person_remove_outlined,
+      iconColor: AppColors.error,
+      title: 'حذف الحساب؟',
+      subtitle: 'حذف الحساب يعني خسارة جميع بياناتك وسجل طلباتك. هذا الإجراء لا يمكن التراجع عنه.',
+      confirmLabel: 'تأكيد الحذف',
+      cancelLabel: 'تراجع',
+      destructive: true,
     );
+    if (confirmed) {
+      // TODO: handle delete account logic
+    }
   }
 
   @override

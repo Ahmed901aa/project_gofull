@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
 import '../widgets/camera_actions_bar.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -39,11 +40,9 @@ class _CameraScreenState extends State<CameraScreen> {
     if (!mounted) return;
     setState(() => _saving = false);
     Navigator.pop(context, _photo);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('تم حفظ الصورة في المعرض', style: getRegularStyle(color: AppColors.white, fontSize: FontSize.s14), textAlign: TextAlign.right),
-      backgroundColor: AppColors.primary, behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s12)),
-    ));
+    if (mounted) {
+      AppSnackbar.success(context, 'تم حفظ الصورة في المعرض');
+    }
   }
 
   @override

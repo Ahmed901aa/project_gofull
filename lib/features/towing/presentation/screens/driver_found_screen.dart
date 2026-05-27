@@ -18,6 +18,7 @@ import 'package:project_gofull/features/requests/domain/entities/service_request
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/driver_found_header.dart';
 
@@ -101,9 +102,7 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
       _navigated = true;
       _polling.stop();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم إلغاء الطلب')),
-        );
+        AppSnackbar.warning(context, 'تم إلغاء الطلب من قبل مزود الخدمة. سنبحث لك عن مزود آخر');
         Navigator.popUntil(context, (r) => r.isFirst);
       }
       return;

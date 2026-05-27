@@ -14,6 +14,7 @@ import 'package:project_gofull/core/widgets/service_input_field.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
 import '../widgets/service_section_header.dart';
 import '../widgets/towing_car_details_form.dart';
 import '../widgets/towing_route_section.dart';
@@ -128,12 +129,11 @@ class _TowingScreenState extends State<TowingScreen> {
               ),
             );
           } else if (state is RequestError) {
-            final msg = state.message.contains('active')
-                ? 'لديك طلب نشط بالفعل. يرجى إلغاؤه من الصفحة الرئيسية أولاً.'
-                : state.message;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(msg)),
-            );
+            if (state.message.contains('active')) {
+              AppSnackbar.warning(context, 'لديك طلب نشط بالفعل. أكمله أو ألغه من الصفحة الرئيسية قبل تقديم طلب جديد');
+            } else {
+              AppSnackbar.error(context, state.message);
+            }
           }
         },
         child: Builder(
@@ -194,9 +194,7 @@ class _TowingScreenState extends State<TowingScreen> {
                             : () {
                                 final err = _getValidationError(context);
                                 if (err != null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(err)),
-                                  );
+                                  AppSnackbar.warning(context, err);
                                 }
                               },
                       );

@@ -10,7 +10,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
-import '../widgets/confirmation_dialog.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
 import '../widgets/profile_menu_item.dart';
 import '../widgets/profile_user_card.dart';
 
@@ -174,26 +174,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (dialogCtx) => ConfirmationDialog(
-        icon: Icons.logout_rounded,
-        iconColor: AppColors.primary,
-        title: 'تسجيل الخروج؟',
-        subtitle:
-            'متأكد إنك عاوز تخرج من حسابك؟ تقدر ترجع لنا في أي وقت وتكمل توفير.',
-        confirmLabel: 'تسجيل الخروج',
-        onConfirm: () async {
-          Navigator.pop(dialogCtx); // close dialog
-          await sl<TokenStorage>().clearAll();
-          if (context.mounted) {
-            Navigator.of(context, rootNavigator: true)
-                .pushNamedAndRemoveUntil(Routes.login, (r) => false);
-          }
-        },
-      ),
+  void _showLogoutDialog(BuildContext context) async {
+    final confirmed = await AppConfirmDialog.show(
+      context,
+      icon: Icons.logout_rounded,
+      iconColor: AppColors.warning,
+      title: 'تسجيل الخروج؟',
+      subtitle: 'متأكد إنك تبي تخرج من حسابك؟ تقدر ترجع في أي وقت.',
+      confirmLabel: 'تسجيل الخروج',
+      cancelLabel: 'البقاء',
+      destructive: true,
     );
+    if (confirmed && context.mounted) {
+      await sl<TokenStorage>().clearAll();
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true)
+            .pushNamedAndRemoveUntil(Routes.login, (r) => false);
+      }
+    }
   }
 }
 

@@ -17,6 +17,7 @@ import 'package:project_gofull/core/widgets/app_button.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_refueling_screen.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DriverNavigateScreen extends StatefulWidget {
@@ -246,38 +247,24 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
     }
   }
 
-  void _onCancelOrder() {
-    showDialog(
-      context: context,
-      builder: (ctx) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-          title: Text('إلغاء الطلب', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
-          content: Text(
-            'هل أنت متأكد من إلغاء هذا الطلب؟\nسيتم إبلاغ العميل بالإلغاء.',
-            style: getRegularStyle(color: const Color(0xFF6B7280), fontSize: FontSize.s14),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text('تراجع', style: getMediumStyle(color: const Color(0xFF6B7280), fontSize: FontSize.s14)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-                final orderId = int.tryParse(widget.args.orderId);
-                if (orderId != null) {
-                  sl<ProviderBloc>().add(CancelOrderEvent(id: orderId));
-                }
-                Navigator.pop(context); // back to home
-              },
-              child: Text('إلغاء الطلب', style: getMediumStyle(color: AppColors.error, fontSize: FontSize.s14)),
-            ),
-          ],
-        ),
-      ),
+  void _onCancelOrder() async {
+    final confirmed = await AppConfirmDialog.show(
+      context,
+      icon: Icons.cancel_rounded,
+      iconColor: AppColors.error,
+      title: 'إلغاء الطلب',
+      subtitle: 'هل أنت متأكد من إلغاء هذا الطلب؟\nسيتم إبلاغ العميل بالإلغاء.',
+      confirmLabel: 'إلغاء الطلب',
+      cancelLabel: 'تراجع',
+      destructive: true,
     );
+    if (confirmed) {
+      final orderId = int.tryParse(widget.args.orderId);
+      if (orderId != null) {
+        sl<ProviderBloc>().add(CancelOrderEvent(id: orderId));
+      }
+      if (mounted) Navigator.pop(context);
+    }
   }
 
   void _onArrivedTapped() {

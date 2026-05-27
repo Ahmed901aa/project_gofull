@@ -21,6 +21,7 @@ import 'package:project_gofull/features/app_config/presentation/bloc/app_config_
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
 import '../widgets/fuel_details_form.dart';
 
 class FuelScreen extends StatefulWidget {
@@ -132,10 +133,11 @@ class _FuelScreenState extends State<FuelScreen> {
                 serviceType: 'fuel_delivery',
               ));
           } else if (state is RequestError) {
-            final msg = state.message.contains('active')
-                ? 'لديك طلب نشط بالفعل. يرجى إلغاؤه من الصفحة الرئيسية أولاً.'
-                : state.message;
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+            if (state.message.contains('active')) {
+              AppSnackbar.warning(context, 'لديك طلب نشط بالفعل. أكمله أو ألغه من الصفحة الرئيسية قبل تقديم طلب جديد');
+            } else {
+              AppSnackbar.error(context, _friendlyError(state.message));
+            }
           }
         },
         child: Builder(
@@ -236,9 +238,7 @@ class _FuelScreenState extends State<FuelScreen> {
                               : () {
                                   final err = _getValidationError(context);
                                   if (err != null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text(err)),
-                                    );
+                                    AppSnackbar.warning(context, err);
                                   }
                                 },
                         );
@@ -290,6 +290,22 @@ class _FuelScreenState extends State<FuelScreen> {
         pricePerLiter: diesel?.pricePerLiter ?? 0.85,
       ),
     ];
+  }
+
+  String _friendlyError(String raw) {
+    if (raw.contains('network') || raw.contains('connection') || raw.contains('SocketException')) {
+      return 'تعذّر الاتصال بالإنترنت. تحقق من اتصالك وحاول مرة أخرى';
+    }
+    if (raw.contains('server') || raw.contains('500')) {
+      return 'حدث خطأ في الخادم. يرجى المحاولة لاحقاً';
+    }
+    if (raw.contains('unauthorized') || raw.contains('401')) {
+      return 'انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى';
+    }
+    if (raw.contains('permission') || raw.contains('403')) {
+      return 'ليس لديك صلاحية لتنفيذ هذا الإجراء';
+    }
+    return raw;
   }
 
   Widget _section(String title, {required double gap}) => Column(

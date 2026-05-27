@@ -13,6 +13,7 @@ import 'package:project_gofull/features/requests/domain/entities/service_request
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
 
 /// Banner shown on the customer home screen when there's an active order.
 /// Tap → resume the order on the correct screen based on its status.
@@ -264,38 +265,20 @@ class ActiveOrderCard extends StatelessWidget {
     }
   }
 
-  void _confirmCancel(BuildContext context, int orderId) {
-    showDialog(
-      context: context,
-      builder: (ctx) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: AlertDialog(
-          title: Text('إلغاء الطلب',
-              style: getBoldStyle(
-                  color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
-          content: Text('هل أنت متأكد من رغبتك في إلغاء هذا الطلب؟',
-              style: getRegularStyle(
-                  color: AppColors.neutral800, fontSize: FontSize.s14)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text('لا',
-                  style: getMediumStyle(
-                      color: AppColors.neutral800, fontSize: FontSize.s14)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-                _cancelOrder(context, orderId);
-              },
-              child: Text('نعم، إلغاء',
-                  style: getMediumStyle(
-                      color: AppColors.error, fontSize: FontSize.s14)),
-            ),
-          ],
-        ),
-      ),
+  void _confirmCancel(BuildContext context, int orderId) async {
+    final confirmed = await AppConfirmDialog.show(
+      context,
+      icon: Icons.cancel_rounded,
+      iconColor: AppColors.error,
+      title: 'إلغاء الطلب',
+      subtitle: 'هل أنت متأكد من رغبتك في إلغاء هذا الطلب؟',
+      confirmLabel: 'نعم، إلغاء',
+      cancelLabel: 'تراجع',
+      destructive: true,
     );
+    if (confirmed && context.mounted) {
+      _cancelOrder(context, orderId);
+    }
   }
 
   void _cancelOrder(BuildContext context, int orderId) {
@@ -304,15 +287,7 @@ class ActiveOrderCard extends StatelessWidget {
       if (state is RequestCancelled) {
         onCancelled?.call();
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('تم إلغاء الطلب بنجاح'),
-              backgroundColor: AppColors.success,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-            ),
-          );
+          AppSnackbar.success(context, 'تم إلغاء الطلب بنجاح');
         }
       }
     });

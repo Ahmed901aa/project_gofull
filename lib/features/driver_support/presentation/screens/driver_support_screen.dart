@@ -9,6 +9,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DriverSupportScreen extends StatelessWidget {
@@ -31,16 +32,7 @@ class DriverSupportScreen extends StatelessWidget {
 
   void _copyPhone(BuildContext context, String phone) {
     Clipboard.setData(ClipboardData(text: phone));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'تم نسخ الرقم',
-          style: getRegularStyle(color: AppColors.white, fontSize: FontSize.s14),
-        ),
-        backgroundColor: AppColors.primary,
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    AppSnackbar.info(context, 'تم نسخ الرقم');
   }
 
   @override

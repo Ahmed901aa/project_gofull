@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
@@ -78,20 +79,10 @@ class _RatingSheetState extends State<_RatingSheet> {
         listener: (context, state) {
           if (state is ProviderRated) {
             Navigator.pop(context, true);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: const Text('شكراً لتقييمك'),
-                backgroundColor: AppColors.primary,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
-              ),
-            );
+            AppSnackbar.success(context, 'شكراً لتقييمك! رأيك يساعدنا على التحسين');
           } else if (state is RequestError) {
             setState(() => _submitting = false);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            AppSnackbar.error(context, 'تعذّر إرسال التقييم. يرجى المحاولة مرة أخرى');
           }
         },
         child: Directionality(
