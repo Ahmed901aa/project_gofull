@@ -10,6 +10,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverDrawer extends StatefulWidget {
   const DriverDrawer({super.key});
@@ -73,7 +74,7 @@ class _DriverDrawerState extends State<DriverDrawer> {
     final initials = driverName.isNotEmpty ? driverName[0] : '؟';
 
     return Drawer(
-      backgroundColor: AppColors.white,
+      backgroundColor: context.colors.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.zero,
       ),
@@ -90,12 +91,12 @@ class _DriverDrawerState extends State<DriverDrawer> {
                   // Avatar
                   CircleAvatar(
                     radius: 30.r,
-                    backgroundColor: AppColors.primary50,
+                    backgroundColor: context.colors.primarySurface,
                     child: Text(
                       initials,
                       style: getBoldStyle(
                         fontSize: FontSize.s20,
-                        color: AppColors.primary,
+                        color: context.colors.primary,
                       ),
                     ),
                   ),
@@ -109,7 +110,7 @@ class _DriverDrawerState extends State<DriverDrawer> {
                           driverName,
                           style: getBoldStyle(
                             fontSize: FontSize.s16,
-                            color: AppColors.black,
+                            color: context.colors.textPrimary,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -119,7 +120,7 @@ class _DriverDrawerState extends State<DriverDrawer> {
                           serviceType,
                           style: getRegularStyle(
                             fontSize: FontSize.s14,
-                            color: AppColors.grey,
+                            color: context.colors.iconSecondary,
                           ),
                         ),
                         SizedBox(height: 4.h),
@@ -127,10 +128,10 @@ class _DriverDrawerState extends State<DriverDrawer> {
                           SizedBox(
                             width: 60.w,
                             height: 12.h,
-                            child: const LinearProgressIndicator(
-                              backgroundColor: AppColors.neutral500,
+                            child: LinearProgressIndicator(
+                              backgroundColor: context.colors.border,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                  AppColors.primary200),
+                                  context.colors.primaryLight),
                             ),
                           )
                         else
@@ -139,7 +140,7 @@ class _DriverDrawerState extends State<DriverDrawer> {
                               Icon(
                                 Icons.star_rounded,
                                 size: 16.sp,
-                                color: AppColors.gold,
+                                color: context.colors.gold,
                               ),
                               SizedBox(width: 4.w),
                               Text(
@@ -148,7 +149,7 @@ class _DriverDrawerState extends State<DriverDrawer> {
                                     : '— (0)',
                                 style: getMediumStyle(
                                   fontSize: FontSize.s12,
-                                  color: AppColors.darkGrey,
+                                  color: context.colors.textSecondary,
                                 ),
                               ),
                             ],
@@ -163,7 +164,7 @@ class _DriverDrawerState extends State<DriverDrawer> {
             SizedBox(height: Sizes.s20),
 
             // ── Menu items ──
-            const Divider(color: AppColors.divider, height: 1),
+            Divider(color: context.colors.divider, height: 1),
 
             _DrawerMenuItem(
               icon: Icons.person_outline_rounded,
@@ -209,11 +210,11 @@ class _DriverDrawerState extends State<DriverDrawer> {
             const Spacer(),
 
             // ── Logout ──
-            const Divider(color: AppColors.divider, height: 1),
+            Divider(color: context.colors.divider, height: 1),
             _DrawerMenuItem(
               icon: Icons.logout_rounded,
               title: S.of(context).logout,
-              color: AppColors.error,
+              color: context.colors.error,
               onTap: () async {
                 Navigator.pop(context); // close drawer
                 await sl<TokenStorage>().clearAll();
@@ -249,7 +250,7 @@ class _DrawerMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final itemColor = color ?? AppColors.black;
+    final itemColor = color ?? context.colors.textPrimary;
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -273,7 +274,7 @@ class _DrawerMenuItem extends StatelessWidget {
             Icon(
               Icons.arrow_forward_rounded,
               size: 14.sp,
-              color: AppColors.grey,
+              color: context.colors.iconSecondary,
             ),
           ],
         ),

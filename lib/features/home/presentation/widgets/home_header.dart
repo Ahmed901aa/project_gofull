@@ -6,6 +6,7 @@ import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'home_location_bar.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class HomeHeader extends StatelessWidget {
   final String userName;
@@ -21,10 +22,10 @@ class HomeHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Color(0xFF004B3B), Color(0xFF8AACA5)],
+          colors: [context.colors.primary, context.colors.primaryLight],
         ),
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(AppRadius.s24)),
       ),
@@ -42,11 +43,11 @@ class HomeHeader extends StatelessWidget {
                   children: [
                     Text(
                       '${S.of(context).welcomePrefix} $userName',
-                      style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s20),
+                      style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s20),
                     ),
                     Text(
                       S.of(context).welcomeSubtitle,
-                      style: getRegularStyle(color: AppColors.white, fontSize: FontSize.s12),
+                      style: getRegularStyle(color: context.colors.surface, fontSize: FontSize.s12),
                     ),
                   ],
                 ),
@@ -54,7 +55,7 @@ class HomeHeader extends StatelessWidget {
                   onPressed: () => Navigator.pushNamed(context, '/notifications'),
                   padding: EdgeInsets.zero,
                   constraints: BoxConstraints(minWidth: 24.w, minHeight: 24.w),
-                  icon: Icon(Icons.notifications_none_outlined, color: AppColors.white, size: 24.sp),
+                  icon: Icon(Icons.notifications_none_outlined, color: context.colors.surface, size: 24.sp),
                 ),
               ],
             ),

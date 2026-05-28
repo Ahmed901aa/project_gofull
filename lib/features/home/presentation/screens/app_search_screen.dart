@@ -10,6 +10,7 @@ import 'package:project_gofull/features/home/presentation/widgets/search_header.
 import 'package:project_gofull/features/home/presentation/widgets/search_idle_content.dart';
 import 'package:project_gofull/features/home/presentation/widgets/search_result_tile.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class AppSearchScreen extends StatefulWidget {
   const AppSearchScreen({super.key});
@@ -56,7 +57,7 @@ class _AppSearchScreenState extends State<AppSearchScreen> {
   Widget build(BuildContext context) {
     final query = _controller.text.trim();
     return Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             SearchHeader(controller: _controller),
@@ -71,7 +72,7 @@ class _AppSearchScreenState extends State<AppSearchScreen> {
                     if (query.isNotEmpty && _results.isEmpty) const SearchEmptyResults(),
                     if (query.isNotEmpty && _results.isNotEmpty) ...[
                       SizedBox(height: Insets.s16),
-                      Text('${S.of(context).searchResults} (${_results.length})', style: getMediumStyle(color: const Color(0xFF838485), fontSize: FontSize.s14)),
+                      Text('${S.of(context).searchResults} (${_results.length})', style: getMediumStyle(color: context.colors.textSecondary, fontSize: FontSize.s14)),
                       SizedBox(height: Insets.s12),
                       ..._results.map((item) => SearchResultTile(
                             title: item['title'] as String, subtitle: item['subtitle'] as String,

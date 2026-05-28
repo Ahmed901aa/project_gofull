@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class OffersShimmer extends StatelessWidget {
   const OffersShimmer({super.key});
@@ -19,9 +20,9 @@ class OffersShimmer extends StatelessWidget {
         itemBuilder: (_, __) => Container(
           width: 220.w,
           decoration: BoxDecoration(
-            color: AppColors.neutral300,
+            color: context.colors.surfaceVariant,
             borderRadius: BorderRadius.circular(AppRadius.s16),
-            border: Border.all(color: AppColors.neutral500),
+            border: Border.all(color: context.colors.border),
           ),
         ),
       ),

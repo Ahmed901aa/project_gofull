@@ -19,6 +19,7 @@ import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/service_section_header.dart';
 import '../widgets/towing_car_details_form.dart';
 import '../widgets/towing_route_section.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class TowingScreen extends StatefulWidget {
   const TowingScreen({super.key});
@@ -141,7 +142,7 @@ class _TowingScreenState extends State<TowingScreen> {
         },
         child: Builder(
           builder: (blocContext) => Scaffold(
-            backgroundColor: AppColors.white,
+            backgroundColor: context.colors.surface,
             body: SafeArea(
               top: false,
               child: Column(

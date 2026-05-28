@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class EditProfileBottomButtons extends StatelessWidget {
   final VoidCallback onSave;
@@ -20,9 +21,9 @@ class EditProfileBottomButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
-        border: Border.all(color: const Color(0xFFF8F8F9)),
+        border: Border.all(color: context.colors.inputFill),
         boxShadow: const [
           BoxShadow(color: Color(0x05CCCCCC), blurRadius: 1, offset: Offset(0, -1)),
           BoxShadow(color: Color(0x05CCCCCC), blurRadius: 2, offset: Offset(0, -2)),
@@ -39,14 +40,14 @@ class EditProfileBottomButtons extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: onSave,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF004B3B),
+                      backgroundColor: context.colors.primary,
                       foregroundColor: AppColors.white,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
                       elevation: 0,
                     ),
                     child: Text(
                       S.of(context).saveChanges,
-                      style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16).copyWith(height: 1.6),
+                      style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s16).copyWith(height: 1.6),
                     ),
                   ),
                 ),
@@ -57,14 +58,14 @@ class EditProfileBottomButtons extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: onDelete,
                   style: OutlinedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFBE1E3),
-                    foregroundColor: const Color(0xFFE63946),
-                    side: const BorderSide(color: Color(0xFFE63946)),
+                    backgroundColor: context.colors.errorSurface,
+                    foregroundColor: context.colors.error,
+                    side: BorderSide(color: context.colors.error),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
                   ),
                   child: Text(
                     S.of(context).deleteAccountBtn,
-                    style: getBoldStyle(color: const Color(0xFFE63946), fontSize: FontSize.s16).copyWith(height: 1.6),
+                    style: getBoldStyle(color: context.colors.error, fontSize: FontSize.s16).copyWith(height: 1.6),
                   ),
                 ),
               ),

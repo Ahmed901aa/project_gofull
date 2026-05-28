@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class PhoneInputField extends StatelessWidget {
   final TextEditingController controller;
@@ -22,10 +23,10 @@ class PhoneInputField extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: AppColors.lightGrey,
+            color: context.colors.surfaceVariant,
             borderRadius: BorderRadius.circular(AppRadius.s12),
             border: Border.all(
-              color: errorText != null ? AppColors.error : AppColors.inputBorder,
+              color: errorText != null ? context.colors.error : context.colors.inputBorder,
             ),
           ),
           child: Row(
@@ -38,7 +39,7 @@ class PhoneInputField extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   border: Border(
-                    left: BorderSide(color: AppColors.inputBorder, width: 1),
+                    left: BorderSide(color: context.colors.inputBorder, width: 1),
                   ),
                 ),
                 child: Row(
@@ -47,7 +48,7 @@ class PhoneInputField extends StatelessWidget {
                     Text(
                       '218+',
                       style: getMediumStyle(
-                        color: AppColors.black,
+                        color: context.colors.textPrimary,
                         fontSize: 16.sp,
                       ),
                     ),
@@ -64,13 +65,13 @@ class PhoneInputField extends StatelessWidget {
                   textDirection: TextDirection.ltr,
                   textAlign: TextAlign.start,
                   style: getMediumStyle(
-                    color: AppColors.black,
+                    color: context.colors.textPrimary,
                     fontSize: 16.sp,
                   ),
                   decoration: InputDecoration(
                     hintText: S.of(context).phoneHint,
                     hintStyle: getRegularStyle(
-                      color: AppColors.grey,
+                      color: context.colors.iconSecondary,
                       fontSize: 16.sp,
                     ),
                     border: InputBorder.none,
@@ -90,7 +91,7 @@ class PhoneInputField extends StatelessWidget {
             child: Text(
               errorText!,
               style: getRegularStyle(
-                color: AppColors.error,
+                color: context.colors.error,
                 fontSize: 12.sp,
               ),
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class ServiceSectionHeader extends StatelessWidget {
   final String title;
@@ -18,7 +19,7 @@ class ServiceSectionHeader extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             title,
-            style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
+            style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18),
             textAlign: TextAlign.start,
           ),
         ),

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class BulletItem extends StatelessWidget {
   final String text;
@@ -21,13 +22,13 @@ class BulletItem extends StatelessWidget {
             child: Container(
               width: 5.w,
               height: 5.w,
-              decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.primary),
+              decoration: BoxDecoration(shape: BoxShape.circle, color: context.colors.primary),
             ),
           ),
           Expanded(
             child: Text(
               text,
-              style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s14),
+              style: getRegularStyle(color: context.colors.primary, fontSize: FontSize.s14),
               textAlign: TextAlign.start,
             ),
           ),

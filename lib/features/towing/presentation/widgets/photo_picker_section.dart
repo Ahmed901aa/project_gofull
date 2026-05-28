@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class PhotoPickerSection extends StatefulWidget {
   const PhotoPickerSection({super.key});
@@ -27,13 +28,13 @@ class _PhotoPickerSectionState extends State<PhotoPickerSection> {
     return Row(
       children: [
         // RIGHT — camera button (always)
-        _buildButton(icon: Icons.add_a_photo_outlined, onTap: () => _pick(ImageSource.camera), borderColor: const Color(0xFFEFF0F1), iconColor: AppColors.primary),
+        _buildButton(icon: Icons.add_a_photo_outlined, onTap: () => _pick(ImageSource.camera), borderColor: context.colors.border, iconColor: context.colors.primary),
         SizedBox(width: Insets.s12),
         // MIDDLE — photo result (from camera or gallery)
         _buildPhotoSlot(),
         SizedBox(width: Insets.s12),
         // LEFT — gallery button (always)
-        _buildButton(icon: Icons.photo_library_outlined, onTap: () => _pick(ImageSource.gallery), borderColor: const Color(0xFFEFF0F1), iconColor: AppColors.neutral800),
+        _buildButton(icon: Icons.photo_library_outlined, onTap: () => _pick(ImageSource.gallery), borderColor: context.colors.border, iconColor: context.colors.textSecondary),
       ],
     );
   }
@@ -43,28 +44,28 @@ class _PhotoPickerSectionState extends State<PhotoPickerSection> {
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: _slotBox(
-        borderColor: borderColor ?? AppColors.primary,
-        child: Icon(icon, color: iconColor ?? AppColors.primary, size: 28.sp),
+        borderColor: borderColor ?? context.colors.primary,
+        child: Icon(icon, color: iconColor ?? context.colors.primary, size: 28.sp),
       ),
     ),
   );
 
   Widget _buildPhotoSlot() => Expanded(
     child: _slotBox(
-      borderColor: _photo != null ? AppColors.primary : const Color(0xFFEFF0F1),
+      borderColor: _photo != null ? context.colors.primary : context.colors.border,
       child: _photo != null
           ? Stack(children: [
               Positioned.fill(child: Image.file(_photo!, fit: BoxFit.cover)),
               Positioned(
                 top: 4.h, right: 4.w,
-                child: _badge(color: AppColors.primary, icon: Icons.edit_outlined, onTap: () => _pick(ImageSource.camera)),
+                child: _badge(color: context.colors.primary, icon: Icons.edit_outlined, onTap: () => _pick(ImageSource.camera)),
               ),
               Positioned(
                 top: 4.h, left: 4.w,
-                child: _badge(color: AppColors.error, icon: Icons.close_rounded, onTap: () => setState(() => _photo = null)),
+                child: _badge(color: context.colors.error, icon: Icons.close_rounded, onTap: () => setState(() => _photo = null)),
               ),
             ])
-          : Icon(Icons.image_outlined, color: AppColors.neutral600, size: 28.sp),
+          : Icon(Icons.image_outlined, color: context.colors.border, size: 28.sp),
     ),
   );
 
@@ -75,14 +76,14 @@ class _PhotoPickerSectionState extends State<PhotoPickerSection> {
       child: Container(
         width: 22.w, height: 22.w,
         decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(AppRadius.s16)),
-        child: Icon(icon, color: AppColors.white, size: 12.sp),
+        child: Icon(icon, color: context.colors.surface, size: 12.sp),
       ),
     );
 
   Widget _slotBox({required Color borderColor, required Widget child}) => Container(
     height: 88,
     decoration: BoxDecoration(
-      color: const Color(0xFFF8F8F9),
+      color: context.colors.inputFill,
       borderRadius: BorderRadius.circular(16),
       border: Border.all(color: borderColor),
     ),

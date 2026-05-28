@@ -16,6 +16,7 @@ import '../widgets/picker/picker_my_location_btn.dart';
 import '../widgets/picker/picker_search_overlay.dart';
 import '../widgets/picker/picker_top_bar.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 /// Default fallback: Benghazi, Libya
 const _kDefaultLocation = LatLng(32.1194, 20.0868);
@@ -175,9 +176,9 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     // Show a loading spinner while resolving GPS
     if (_resolvingGps || _center == null) {
       return Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
-        body: const Center(
-          child: CircularProgressIndicator(color: AppColors.primary),
+        backgroundColor: context.colors.background,
+        body: Center(
+          child: CircularProgressIndicator(color: context.colors.primary),
         ),
       );
     }
@@ -199,7 +200,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
             }))),
       if (_searching)
         Positioned(top: 0, left: 0, right: 0,
-          child: Material(color: Colors.white, child: Column(mainAxisSize: MainAxisSize.min, children: [
+          child: Material(color: context.colors.surface, child: Column(mainAxisSize: MainAxisSize.min, children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
             PickerSearchOverlay(controller: _searchCtrl, focusNode: _searchFocus,
               suggestions: _suggestions, isLoading: _loadingSugg,

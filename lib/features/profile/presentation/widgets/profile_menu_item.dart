@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class ProfileMenuItem extends StatelessWidget {
   final IconData icon;
@@ -29,9 +30,9 @@ class ProfileMenuItem extends StatelessWidget {
         height: 48.h,
         padding: EdgeInsets.symmetric(horizontal: Insets.s16),
         decoration: BoxDecoration(
-          color: AppColors.scaffoldBg,
+          color: context.colors.background,
           borderRadius: BorderRadius.circular(AppRadius.s24),
-          border: Border.all(color: AppColors.neutral500),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -44,17 +45,17 @@ class ProfileMenuItem extends StatelessWidget {
                   width: 32.w,
                   height: 32.w,
                   decoration: BoxDecoration(
-                    color: AppColors.scaffoldBg,
+                    color: context.colors.background,
                     shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.neutral500),
+                    border: Border.all(color: context.colors.border),
                   ),
                   alignment: Alignment.center,
-                  child: Icon(icon, size: 16.sp, color: iconColor ?? const Color(0xFF0E0E0E)),
+                  child: Icon(icon, size: 16.sp, color: iconColor ?? context.colors.textPrimary),
                 ),
                 SizedBox(width: Insets.s8),
                 Text(
                   label,
-                  style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+                  style: getRegularStyle(color: context.colors.textPrimary, fontSize: FontSize.s16),
                 ),
               ],
             ),
@@ -65,11 +66,11 @@ class ProfileMenuItem extends StatelessWidget {
                 if (trailing != null) ...[
                   Text(
                     trailing!,
-                    style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
+                    style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14),
                   ),
                   SizedBox(width: Insets.s8),
                 ],
-                Icon(Icons.arrow_forward_rounded, size: 16.sp, color: const Color(0xFF0E0E0E)),
+                Icon(Icons.arrow_forward_rounded, size: 16.sp, color: context.colors.textPrimary),
               ],
             ),
           ],

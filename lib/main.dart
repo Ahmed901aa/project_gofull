@@ -5,9 +5,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/cubits/locale_cubit.dart';
+import 'package:project_gofull/core/cubits/theme_cubit.dart';
 import 'package:project_gofull/core/cubits/location_cubit.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/routes/route_generator.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -32,71 +33,55 @@ class GoFullApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => LocationCubit()),
         BlocProvider(create: (_) => sl<LocaleCubit>()),
+        BlocProvider(create: (_) => sl<ThemeCubit>()),
         BlocProvider(
           create: (_) =>
               sl<AppConfigBloc>()..add(const LoadAppConfigEvent()),
         ),
       ],
+      // Rebuild on both locale AND theme changes
       child: BlocBuilder<LocaleCubit, Locale>(
         builder: (context, locale) {
           final isArabic = locale.languageCode == 'ar';
           final fontFamily = FontConstants.forLocale(locale);
-
-          // Update font size scale for the active locale
           FontSize.setLocaleScale(locale);
 
-          return ScreenUtilInit(
-            designSize: const Size(375, 812),
-            minTextAdapt: true,
-            builder: (context, child) => MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'GoFull',
-              locale: locale,
-              supportedLocales: S.supportedLocales,
-              localizationsDelegates: const [
-                S.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              theme: ThemeData(
-                fontFamily: fontFamily,
-                scaffoldBackgroundColor: AppColors.white,
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: AppColors.primary,
-                  primary: AppColors.primary,
-                ),
-                textTheme: TextTheme(
-                  bodyLarge: TextStyle(fontFamily: fontFamily),
-                  bodyMedium: TextStyle(fontFamily: fontFamily),
-                  bodySmall: TextStyle(fontFamily: fontFamily),
-                  titleLarge: TextStyle(fontFamily: fontFamily),
-                  titleMedium: TextStyle(fontFamily: fontFamily),
-                  titleSmall: TextStyle(fontFamily: fontFamily),
-                  labelLarge: TextStyle(fontFamily: fontFamily),
-                  labelMedium: TextStyle(fontFamily: fontFamily),
-                  labelSmall: TextStyle(fontFamily: fontFamily),
-                ),
-                appBarTheme: AppBarTheme(
-                  titleTextStyle: TextStyle(
-                    fontFamily: fontFamily,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+          return BlocBuilder<ThemeCubit, ThemeMode>(
+            builder: (context, themeMode) {
+              return ScreenUtilInit(
+                designSize: const Size(375, 812),
+                minTextAdapt: true,
+                builder: (context, child) => MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  title: 'GoFull',
+                  locale: locale,
+                  supportedLocales: S.supportedLocales,
+                  localizationsDelegates: const [
+                    S.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+
+                  // ── Theme system ──
+                  themeMode: themeMode,
+                  theme: buildLightTheme(fontFamily: fontFamily),
+                  darkTheme: buildDarkTheme(fontFamily: fontFamily),
+
+                  builder: (context, child) => GestureDetector(
+                    onTap: () => FocusScope.of(context).unfocus(),
+                    behavior: HitTestBehavior.opaque,
+                    child: Directionality(
+                      textDirection:
+                          isArabic ? TextDirection.rtl : TextDirection.ltr,
+                      child: child!,
+                    ),
                   ),
+                  initialRoute: Routes.splash,
+                  onGenerateRoute: RouteGenerator.getRoute,
                 ),
-              ),
-              builder: (context, child) => GestureDetector(
-                onTap: () => FocusScope.of(context).unfocus(),
-                behavior: HitTestBehavior.opaque,
-                child: Directionality(
-                  textDirection:
-                      isArabic ? TextDirection.rtl : TextDirection.ltr,
-                  child: child!,
-                ),
-              ),
-              initialRoute: Routes.splash,
-              onGenerateRoute: RouteGenerator.getRoute,
-            ),
+              );
+            },
           );
         },
       ),

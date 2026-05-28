@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
 import 'package:project_gofull/features/auth/presentation/widgets/phone_input_field.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class LoginFormCard extends StatefulWidget {
   final TextEditingController phoneController;
@@ -44,12 +45,12 @@ class _LoginFormCardState extends State<LoginFormCard> {
           Text(S.of(context).login,
               textAlign: TextAlign.center,
               style: getBoldStyle(
-                  color: AppColors.black, fontSize: FontSize.s24)),
+                  color: context.colors.textPrimary, fontSize: FontSize.s24)),
           SizedBox(height: Sizes.s8),
           Text(S.of(context).loginSubtitle,
               textAlign: TextAlign.center,
               style: getRegularStyle(
-                  color: AppColors.grey, fontSize: FontSize.s14)),
+                  color: context.colors.iconSecondary, fontSize: FontSize.s14)),
           SizedBox(height: Sizes.s8),
           _buildCreateAccountRow(),
           SizedBox(height: Sizes.s24),
@@ -57,7 +58,7 @@ class _LoginFormCardState extends State<LoginFormCard> {
           // ── Phone ──────────────────────────────────────────
           Text(S.of(context).phoneLabel,
               style: getMediumStyle(
-                  color: AppColors.black, fontSize: FontSize.s16)),
+                  color: context.colors.textPrimary, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
           PhoneInputField(
               controller: widget.phoneController, errorText: null),
@@ -66,7 +67,7 @@ class _LoginFormCardState extends State<LoginFormCard> {
           // ── Password ───────────────────────────────────────
           Text(S.of(context).passwordLabel,
               style: getMediumStyle(
-                  color: AppColors.black, fontSize: FontSize.s16)),
+                  color: context.colors.textPrimary, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
           _buildPasswordField(),
 
@@ -77,7 +78,7 @@ class _LoginFormCardState extends State<LoginFormCard> {
               widget.errorMessage!,
               textAlign: TextAlign.center,
               style: getRegularStyle(
-                  color: AppColors.error, fontSize: FontSize.s14),
+                  color: context.colors.error, fontSize: FontSize.s14),
             ),
           ],
 
@@ -90,7 +91,7 @@ class _LoginFormCardState extends State<LoginFormCard> {
           SizedBox(height: Sizes.s24),
           Text(S.of(context).termsText,
               textAlign: TextAlign.center,
-              style: getRegularStyle(color: AppColors.grey, fontSize: 11.sp)),
+              style: getRegularStyle(color: context.colors.iconSecondary, fontSize: 11.sp)),
         ],
       ),
     );
@@ -99,26 +100,26 @@ class _LoginFormCardState extends State<LoginFormCard> {
   Widget _buildPasswordField() {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightGrey,
+        color: context.colors.surfaceVariant,
         borderRadius: BorderRadius.circular(AppRadius.s12),
-        border: Border.all(color: AppColors.inputBorder),
+        border: Border.all(color: context.colors.inputBorder),
       ),
       child: TextField(
         controller: widget.passwordController,
         obscureText: _obscurePassword,
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.start,
-        style: getMediumStyle(color: AppColors.black, fontSize: 16.sp),
+        style: getMediumStyle(color: context.colors.textPrimary, fontSize: 16.sp),
         decoration: InputDecoration(
           hintText: S.of(context).passwordHint,
-          hintStyle: getRegularStyle(color: AppColors.grey, fontSize: 16.sp),
+          hintStyle: getRegularStyle(color: context.colors.iconSecondary, fontSize: 16.sp),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
               horizontal: Insets.s12, vertical: Insets.s12),
           prefixIcon: IconButton(
             icon: Icon(
               _obscurePassword ? Icons.visibility_off : Icons.visibility,
-              color: AppColors.grey,
+              color: context.colors.iconSecondary,
               size: 20.sp,
             ),
             onPressed: () =>
@@ -136,11 +137,11 @@ class _LoginFormCardState extends State<LoginFormCard> {
             onTap: widget.onCreateAccount,
             child: Text(S.of(context).createAccount,
                 style: getSemiBoldStyle(
-                    color: AppColors.primary, fontSize: FontSize.s14)),
+                    color: context.colors.primary, fontSize: FontSize.s14)),
           ),
           Text(' ${S.of(context).noAccount}',
               style: getRegularStyle(
-                  color: AppColors.grey, fontSize: FontSize.s14)),
+                  color: context.colors.iconSecondary, fontSize: FontSize.s14)),
         ],
       );
 }

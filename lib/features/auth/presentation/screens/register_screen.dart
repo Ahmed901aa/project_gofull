@@ -16,6 +16,7 @@ import 'package:project_gofull/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_event.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_state.dart';
 import 'package:project_gofull/features/auth/presentation/widgets/phone_input_field.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -79,7 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         },
         child: Builder(
           builder: (context) => Scaffold(
-            backgroundColor: AppColors.primary,
+            backgroundColor: context.colors.primary,
             body: Column(
               children: [
                 Expanded(
@@ -101,7 +102,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: AppColors.white,
+                      color: context.colors.surface,
                       borderRadius: BorderRadius.vertical(
                           top: Radius.circular(AppRadius.s32)),
                     ),
@@ -131,7 +132,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Text(S.of(context).createAccountTitle,
               textAlign: TextAlign.center,
               style: getBoldStyle(
-                  color: AppColors.black, fontSize: FontSize.s24)),
+                  color: context.colors.textPrimary, fontSize: FontSize.s24)),
           SizedBox(height: Sizes.s8),
           _buildLoginRow(),
           SizedBox(height: Sizes.s20),
@@ -139,7 +140,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           // ── Name ───────────────────────────────────────────
           Text(S.of(context).nameLabel,
               style: getMediumStyle(
-                  color: AppColors.black, fontSize: FontSize.s16)),
+                  color: context.colors.textPrimary, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
           _buildTextField(
             controller: _nameController,
@@ -150,7 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           // ── Phone ──────────────────────────────────────────
           Text(S.of(context).phoneLabel,
               style: getMediumStyle(
-                  color: AppColors.black, fontSize: FontSize.s16)),
+                  color: context.colors.textPrimary, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
           PhoneInputField(controller: _phoneController, errorText: null),
           SizedBox(height: Sizes.s16),
@@ -158,7 +159,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           // ── Password ───────────────────────────────────────
           Text(S.of(context).passwordLabel,
               style: getMediumStyle(
-                  color: AppColors.black, fontSize: FontSize.s16)),
+                  color: context.colors.textPrimary, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
           _buildPasswordField(
             controller: _passwordController,
@@ -172,7 +173,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           // ── Confirm Password ───────────────────────────────
           Text(S.of(context).confirmPasswordLabel,
               style: getMediumStyle(
-                  color: AppColors.black, fontSize: FontSize.s16)),
+                  color: context.colors.textPrimary, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
           _buildPasswordField(
             controller: _confirmPasswordController,
@@ -188,7 +189,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Text(errorMsg,
                 textAlign: TextAlign.center,
                 style: getRegularStyle(
-                    color: AppColors.error, fontSize: FontSize.s14)),
+                    color: context.colors.error, fontSize: FontSize.s14)),
           ],
 
           SizedBox(height: Sizes.s24),
@@ -210,17 +211,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightGrey,
+        color: context.colors.surfaceVariant,
         borderRadius: BorderRadius.circular(AppRadius.s12),
-        border: Border.all(color: AppColors.inputBorder),
+        border: Border.all(color: context.colors.inputBorder),
       ),
       child: TextField(
         controller: controller,
         textAlign: TextAlign.start,
-        style: getMediumStyle(color: AppColors.black, fontSize: 16.sp),
+        style: getMediumStyle(color: context.colors.textPrimary, fontSize: 16.sp),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: getRegularStyle(color: AppColors.grey, fontSize: 16.sp),
+          hintStyle: getRegularStyle(color: context.colors.iconSecondary, fontSize: 16.sp),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
               horizontal: Insets.s12, vertical: Insets.s12),
@@ -237,26 +238,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightGrey,
+        color: context.colors.surfaceVariant,
         borderRadius: BorderRadius.circular(AppRadius.s12),
-        border: Border.all(color: AppColors.inputBorder),
+        border: Border.all(color: context.colors.inputBorder),
       ),
       child: TextField(
         controller: controller,
         obscureText: obscure,
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.start,
-        style: getMediumStyle(color: AppColors.black, fontSize: 16.sp),
+        style: getMediumStyle(color: context.colors.textPrimary, fontSize: 16.sp),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: getRegularStyle(color: AppColors.grey, fontSize: 16.sp),
+          hintStyle: getRegularStyle(color: context.colors.iconSecondary, fontSize: 16.sp),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
               horizontal: Insets.s12, vertical: Insets.s12),
           prefixIcon: IconButton(
             icon: Icon(
               obscure ? Icons.visibility_off : Icons.visibility,
-              color: AppColors.grey,
+              color: context.colors.iconSecondary,
               size: 20.sp,
             ),
             onPressed: onToggle,
@@ -273,11 +274,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             onTap: () => Navigator.of(context).pop(),
             child: Text(S.of(context).loginButton,
                 style: getSemiBoldStyle(
-                    color: AppColors.primary, fontSize: FontSize.s14)),
+                    color: context.colors.primary, fontSize: FontSize.s14)),
           ),
           Text(' ${S.of(context).alreadyHaveAccount}',
               style: getRegularStyle(
-                  color: AppColors.grey, fontSize: FontSize.s14)),
+                  color: context.colors.iconSecondary, fontSize: FontSize.s14)),
         ],
       );
 }

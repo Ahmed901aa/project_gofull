@@ -6,6 +6,7 @@ import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 /// Shows a bottom-sheet confirmation dialog and returns `true` when the user
 /// confirms or `false` / `null` when cancelled.
@@ -25,7 +26,7 @@ class _ConfirmAcceptanceContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppRadius.s24),
         ),
@@ -44,7 +45,7 @@ class _ConfirmAcceptanceContent extends StatelessWidget {
             width: 40.w,
             height: 4.h,
             decoration: BoxDecoration(
-              color: AppColors.neutral600,
+              color: context.colors.border,
               borderRadius: BorderRadius.circular(2.r),
             ),
           ),
@@ -54,14 +55,14 @@ class _ConfirmAcceptanceContent extends StatelessWidget {
           Container(
             width: 56.w,
             height: 56.w,
-            decoration: const BoxDecoration(
-              color: AppColors.primary50,
+            decoration: BoxDecoration(
+              color: context.colors.primarySurface,
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.check_circle_outline_rounded,
               size: 32.sp,
-              color: AppColors.primary,
+              color: context.colors.primary,
             ),
           ),
           SizedBox(height: Insets.s16),
@@ -70,7 +71,7 @@ class _ConfirmAcceptanceContent extends StatelessWidget {
           Text(
             S.of(context).confirmAcceptTitle,
             style: getBoldStyle(
-              color: const Color(0xFF0E0E0E),
+              color: context.colors.textPrimary,
               fontSize: FontSize.s20,
             ),
             textAlign: TextAlign.center,
@@ -81,7 +82,7 @@ class _ConfirmAcceptanceContent extends StatelessWidget {
           Text(
             S.of(context).confirmAcceptMessage,
             style: getRegularStyle(
-              color: AppColors.neutral800,
+              color: context.colors.textSecondary,
               fontSize: FontSize.s14,
             ),
             textAlign: TextAlign.center,

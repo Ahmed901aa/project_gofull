@@ -14,9 +14,12 @@ import 'package:project_gofull/core/widgets/app_header.dart';
 import 'package:project_gofull/core/cubits/locale_cubit.dart';
 import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:project_gofull/core/widgets/language_selector_sheet.dart';
+import 'package:project_gofull/core/widgets/theme_selector_sheet.dart';
+import 'package:project_gofull/core/cubits/theme_cubit.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/profile_menu_item.dart';
 import '../widgets/profile_user_card.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -60,6 +63,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  String _themeTrailing(BuildContext context) {
+    final l10n = S.of(context);
+    final mode = context.watch<ThemeCubit>().appThemeMode;
+    switch (mode) {
+      case AppThemeMode.system:
+        return l10n.themeSystem;
+      case AppThemeMode.light:
+        return l10n.themeLight;
+      case AppThemeMode.dark:
+        return l10n.themeDark;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
@@ -78,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final isProvider = userRole == 'provider';
 
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
+      backgroundColor: context.colors.background,
       body: Column(
         children: [
           AppHeader(title: l10n.myAccount, showBack: false),
@@ -136,6 +152,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
+                    icon: Icons.brightness_6_rounded,
+                    label: l10n.appearance,
+                    trailing: _themeTrailing(context),
+                    onTap: () async {
+                      final changed = await showThemeSelectorSheet(context);
+                      if (changed && mounted) {
+                        AppSnackbar.success(context, l10n.themeChanged);
+                      }
+                    },
+                  ),
+                  SizedBox(height: Sizes.s12),
+                  ProfileMenuItem(
                     icon: Icons.headset_mic_outlined,
                     label: l10n.technicalSupport,
                     onTap: () =>
@@ -172,7 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ProfileMenuItem(
                     icon: Icons.logout_rounded,
                     label: l10n.logout,
-                    iconColor: AppColors.error,
+                    iconColor: context.colors.error,
                     onTap: () => _showLogoutDialog(context),
                   ),
                   SizedBox(height: Sizes.s16),
@@ -190,7 +218,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final confirmed = await AppConfirmDialog.show(
       context,
       icon: Icons.logout_rounded,
-      iconColor: AppColors.warning,
+      iconColor: context.colors.warning,
       title: l10n.logoutTitle,
       subtitle: l10n.logoutSubtitle,
       confirmLabel: l10n.logoutBtn,
@@ -240,16 +268,16 @@ class _ProviderInfoSection extends StatelessWidget {
     }
   }
 
-  Color _statusColor(String status) {
+  Color _statusColor(BuildContext context, String status) {
     switch (status) {
       case 'approved':
-        return AppColors.success;
+        return context.colors.success;
       case 'pending':
-        return AppColors.warning;
+        return context.colors.warning;
       case 'rejected':
-        return AppColors.error;
+        return context.colors.error;
       default:
-        return AppColors.grey;
+        return context.colors.iconSecondary;
     }
   }
 
@@ -259,9 +287,9 @@ class _ProviderInfoSection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,7 +301,7 @@ class _ProviderInfoSection extends StatelessWidget {
                 serviceType == l10n.towingService
                     ? Icons.car_crash_rounded
                     : Icons.local_gas_station_rounded,
-                color: AppColors.primary,
+                color: context.colors.primary,
                 size: 20.sp,
               ),
               SizedBox(width: 6.w),
@@ -281,7 +309,7 @@ class _ProviderInfoSection extends StatelessWidget {
                 child: Text(
                   serviceType,
                   style: getBoldStyle(
-                      color: AppColors.primary, fontSize: FontSize.s14),
+                      color: context.colors.primary, fontSize: FontSize.s14),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -291,13 +319,13 @@ class _ProviderInfoSection extends StatelessWidget {
                 padding: EdgeInsets.symmetric(
                     horizontal: Insets.s8, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: _statusColor(verificationStatus).withValues(alpha: 0.1),
+                  color: _statusColor(context, verificationStatus).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppRadius.s8),
                 ),
                 child: Text(
                   _statusLabel(context, verificationStatus),
                   style: getBoldStyle(
-                    color: _statusColor(verificationStatus),
+                    color: _statusColor(context, verificationStatus),
                     fontSize: FontSize.s12,
                   ),
                 ),
@@ -308,7 +336,7 @@ class _ProviderInfoSection extends StatelessWidget {
                 padding: EdgeInsets.symmetric(
                     horizontal: Insets.s8, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: (isAvailable ? AppColors.success : AppColors.grey)
+                  color: (isAvailable ? context.colors.success : context.colors.iconSecondary)
                       .withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppRadius.s8),
                 ),
@@ -320,7 +348,7 @@ class _ProviderInfoSection extends StatelessWidget {
                       height: 6.w,
                       decoration: BoxDecoration(
                         color:
-                            isAvailable ? AppColors.success : AppColors.grey,
+                            isAvailable ? context.colors.success : context.colors.iconSecondary,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -329,7 +357,7 @@ class _ProviderInfoSection extends StatelessWidget {
                       isAvailable ? l10n.available : l10n.unavailable,
                       style: getBoldStyle(
                         color:
-                            isAvailable ? AppColors.success : AppColors.grey,
+                            isAvailable ? context.colors.success : context.colors.iconSecondary,
                         fontSize: FontSize.s12,
                       ),
                     ),
@@ -340,30 +368,30 @@ class _ProviderInfoSection extends StatelessWidget {
           ),
           SizedBox(height: Insets.s12),
           // Vehicle info
-          _infoRow(Icons.directions_car_rounded, l10n.vehicleInfo,
+          _infoRow(context, Icons.directions_car_rounded, l10n.vehicleInfo,
               '$vehicleMake $vehicleModel'),
           SizedBox(height: 8.h),
-          _infoRow(Icons.confirmation_number_rounded, l10n.carPlate, vehiclePlate),
+          _infoRow(context, Icons.confirmation_number_rounded, l10n.carPlate, vehiclePlate),
         ],
       ),
     );
   }
 
-  Widget _infoRow(IconData icon, String label, String value) {
+  Widget _infoRow(BuildContext context, IconData icon, String label, String value) {
     return Row(
       children: [
-        Icon(icon, size: 16.sp, color: AppColors.grey),
+        Icon(icon, size: 16.sp, color: context.colors.iconSecondary),
         SizedBox(width: 6.w),
         Text(
           '$label: ',
           style: getRegularStyle(
-              color: AppColors.grey, fontSize: FontSize.s12),
+              color: context.colors.iconSecondary, fontSize: FontSize.s12),
         ),
         Expanded(
           child: Text(
             value,
             style: getBoldStyle(
-                color: const Color(0xFF0E0E0E), fontSize: FontSize.s12),
+                color: context.colors.textPrimary, fontSize: FontSize.s12),
             overflow: TextOverflow.ellipsis,
           ),
         ),

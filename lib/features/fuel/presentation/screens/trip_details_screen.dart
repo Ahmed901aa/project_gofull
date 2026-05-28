@@ -18,6 +18,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_event
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class TripDetailsScreen extends StatelessWidget {
   final TripDetailsArgs? args;
@@ -33,20 +34,20 @@ class TripDetailsScreen extends StatelessWidget {
         return bloc;
       },
       child: Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: context.colors.background,
         body: BlocBuilder<RequestBloc, RequestState>(
           builder: (context, state) {
             Widget body;
             if (state is RequestLoading) {
-              body = const Center(
-                  child: CircularProgressIndicator(color: AppColors.primary));
+              body = Center(
+                  child: CircularProgressIndicator(color: context.colors.primary));
             } else if (state is RequestDetailsLoaded) {
               body = _buildContent(context, state.request);
             } else if (state is RequestError) {
               body = Center(
                   child: Text(state.message,
                       style: getRegularStyle(
-                          color: AppColors.grey, fontSize: FontSize.s14)));
+                          color: context.colors.iconSecondary, fontSize: FontSize.s14)));
             } else {
               body = const SizedBox.shrink();
             }
@@ -83,13 +84,13 @@ class TripDetailsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SizedBox(height: Insets.s16),
-          _section(
+          _section(context,
               l10n.location, TripLocationCard(address: req.driverAddress ?? '—')),
           SizedBox(height: Insets.s16),
-          _section(l10n.fuelDetails,
+          _section(context, l10n.fuelDetails,
               TripFuelChips(fuelType: fuelType, quantity: quantity)),
           SizedBox(height: Insets.s16),
-          _section(
+          _section(context,
             l10n.providerDetails,
             ProviderInfoCard.fromRequest(
               req,
@@ -104,7 +105,7 @@ class TripDetailsScreen extends StatelessWidget {
             ),
           ),
           SizedBox(height: Insets.s16),
-          _section(
+          _section(context,
             l10n.paymentSummary,
             TripPaymentCard(
               subtotal:
@@ -117,29 +118,29 @@ class TripDetailsScreen extends StatelessWidget {
           ),
           if (ratingValue != null) ...[
             SizedBox(height: Insets.s16),
-            _section(
+            _section(context,
               l10n.yourRating,
               Container(
                 padding: EdgeInsets.all(Insets.s16),
                 decoration: BoxDecoration(
-                  color: AppColors.neutral400,
+                  color: context.colors.surfaceElevated,
                   borderRadius: BorderRadius.circular(AppRadius.s16),
-                  border: Border.all(color: AppColors.neutral500),
+                  border: Border.all(color: context.colors.border),
                 ),
                 child: Row(children: [
                   Icon(Icons.star_rounded,
-                      size: 24.sp, color: const Color(0xFFFFB800)),
+                      size: 24.sp, color: context.colors.gold),
                   SizedBox(width: 8.w),
                   Text('$ratingValue / 5',
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s18)),
                   if (ratingInfo?['comment'] != null) ...[
                     SizedBox(width: Insets.s12),
                     Expanded(
                       child: Text(ratingInfo!['comment'].toString(),
                           style: getRegularStyle(
-                              color: AppColors.neutral800,
+                              color: context.colors.textSecondary,
                               fontSize: FontSize.s14),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis),
@@ -155,12 +156,12 @@ class TripDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _section(String title, Widget content) => Column(
+  Widget _section(BuildContext context, String title, Widget content) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(title,
               style: getBoldStyle(
-                  color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
+                  color: context.colors.textPrimary, fontSize: FontSize.s18),
               textAlign: TextAlign.start),
           SizedBox(height: Insets.s8),
           content,
@@ -168,7 +169,7 @@ class TripDetailsScreen extends StatelessWidget {
       );
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(children: [
           SizedBox(height: MediaQuery.of(context).padding.top),
           Padding(
@@ -180,16 +181,16 @@ class TripDetailsScreen extends StatelessWidget {
                 GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Icon(Icons.arrow_back_rounded,
-                        size: 20.sp, color: const Color(0xFF0E0E0E))),
+                        size: 20.sp, color: context.colors.textPrimary)),
                 Text(S.of(context).driverTripDetails,
                     style: getBoldStyle(
-                        color: const Color(0xFF0E0E0E),
+                        color: context.colors.textPrimary,
                         fontSize: FontSize.s20)),
                 SizedBox(width: 24.sp),
               ],
             ),
           ),
-          const Divider(height: 1, color: Color(0xFFF5F5F5)),
+          Divider(height: 1, color: context.colors.borderSubtle),
         ]),
       );
 }

@@ -19,6 +19,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_state
 import 'package:project_gofull/features/towing/presentation/widgets/safety_section.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class ServiceArrivedScreen extends StatefulWidget {
   final ServiceArrivedArgs? args;
@@ -106,7 +107,7 @@ class _ServiceArrivedScreenState extends State<ServiceArrivedScreen> {
       child: BlocListener<RequestBloc, RequestState>(
         listener: (context, state) => _onState(state),
         child: Scaffold(
-          backgroundColor: AppColors.scaffoldBg,
+          backgroundColor: context.colors.background,
           body: Column(children: [
             _buildHeader(context),
             Expanded(
@@ -121,13 +122,13 @@ class _ServiceArrivedScreenState extends State<ServiceArrivedScreen> {
                     SizedBox(height: Insets.s16),
                     Text(_args.title ?? S.of(context).serviceArrived,
                         style: getBoldStyle(
-                            color: const Color(0xFF0E0E0E),
+                            color: context.colors.textPrimary,
                             fontSize: FontSize.s18),
                         textAlign: TextAlign.center),
                     SizedBox(height: 4.h),
                     Text(_args.subtitle ?? S.of(context).arrivedMsg,
                         style: getRegularStyle(
-                            color: AppColors.neutral800,
+                            color: context.colors.textSecondary,
                             fontSize: FontSize.s14),
                         textAlign: TextAlign.center),
                     SizedBox(height: Insets.s16),
@@ -149,7 +150,7 @@ class _ServiceArrivedScreenState extends State<ServiceArrivedScreen> {
   }
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(children: [
           SizedBox(height: MediaQuery.of(context).padding.top),
           Padding(
@@ -161,16 +162,16 @@ class _ServiceArrivedScreenState extends State<ServiceArrivedScreen> {
                   GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: Icon(Icons.close_rounded,
-                          size: 24.sp, color: const Color(0xFF0E0E0E))),
+                          size: 24.sp, color: context.colors.textPrimary)),
                   Text(S.of(context).refuelingInProgressHeader,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20)),
                   Icon(Icons.info_outline_rounded,
-                      size: 24.sp, color: const Color(0xFF0E0E0E)),
+                      size: 24.sp, color: context.colors.textPrimary),
                 ]),
           ),
-          const Divider(height: 1, color: Color(0xFFF5F5F5)),
+          Divider(height: 1, color: context.colors.borderSubtle),
         ]),
       );
 }

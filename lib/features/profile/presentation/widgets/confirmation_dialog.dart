@@ -6,10 +6,11 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'dialog_action_buttons.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   final IconData icon;
-  final Color iconColor;
+  final Color? iconColor;
   final String title;
   final String subtitle;
   final String confirmLabel;
@@ -17,10 +18,10 @@ class ConfirmationDialog extends StatelessWidget {
   final VoidCallback? onConfirm;
   final VoidCallback? onCancel;
 
-  const ConfirmationDialog({
+  ConfirmationDialog({
     super.key,
     required this.icon,
-    this.iconColor = const Color(0xFF004B3B),
+    this.iconColor,
     required this.title,
     required this.subtitle,
     required this.confirmLabel,
@@ -31,6 +32,7 @@ class ConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final resolvedIconColor = iconColor ?? context.colors.primary;
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(horizontal: Insets.s24),
@@ -38,9 +40,9 @@ class ConfirmationDialog extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: 12.h),
           decoration: BoxDecoration(
-            color: AppColors.scaffoldBg,
+            color: context.colors.background,
             borderRadius: BorderRadius.circular(AppRadius.s24),
-            border: Border.all(color: const Color(0xFFEFF0F1)),
+            border: Border.all(color: context.colors.border),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -48,15 +50,15 @@ class ConfirmationDialog extends StatelessWidget {
               SizedBox(height: 8.h),
               Container(
                 width: 80.w, height: 80.w,
-                decoration: BoxDecoration(color: iconColor.withOpacity(0.1), shape: BoxShape.circle),
-                child: Icon(icon, size: 40.sp, color: iconColor),
+                decoration: BoxDecoration(color: resolvedIconColor.withOpacity(0.1), shape: BoxShape.circle),
+                child: Icon(icon, size: 40.sp, color: resolvedIconColor),
               ),
               SizedBox(height: 8.h),
-              Text(title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20), textAlign: TextAlign.center),
+              Text(title, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s20), textAlign: TextAlign.center),
               SizedBox(height: 4.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.w),
-                child: Text(subtitle, style: getRegularStyle(color: const Color(0xFF646565), fontSize: FontSize.s14), textAlign: TextAlign.center),
+                child: Text(subtitle, style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14), textAlign: TextAlign.center),
               ),
               SizedBox(height: 12.h),
               DialogActionButtons(cancelLabel: cancelLabel, confirmLabel: confirmLabel, onCancel: onCancel, onConfirm: onConfirm),

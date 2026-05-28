@@ -23,6 +23,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_event
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'app_search_screen.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -185,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: BlocListener<RequestBloc, RequestState>(
         listener: _onRatingCheckState,
         child: Scaffold(
-          backgroundColor: AppColors.scaffoldBg,
+          backgroundColor: context.colors.background,
           body: BlocConsumer<AppConfigBloc, AppConfigState>(
             listener: _onConfigChanged,
             builder: (context, config) {
@@ -193,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
               final banners = config.banners;
 
               return RefreshIndicator(
-                color: AppColors.primary,
+                color: context.colors.primary,
                 onRefresh: () async {
                   context.read<AppConfigBloc>()
                     ..add(const LoadAppConfigEvent())

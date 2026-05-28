@@ -24,6 +24,7 @@ import '../widgets/trip_payment_section.dart';
 import '../widgets/trip_safety_section.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 String _calcDistance(double lat1, double lng1, double lat2, double lng2) {
   const r = 6371.0;
@@ -125,7 +126,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
       child: BlocListener<RequestBloc, RequestState>(
         listener: (context, state) => _onState(state),
         child: Scaffold(
-          backgroundColor: AppColors.scaffoldBg,
+          backgroundColor: context.colors.background,
           body: Column(children: [
             _buildHeader(context),
             Expanded(
@@ -142,14 +143,14 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
                     SizedBox(height: Insets.s16),
                     Text(S.of(context).carOnWayToDestination,
                         style: getBoldStyle(
-                            color: const Color(0xFF0E0E0E),
+                            color: context.colors.textPrimary,
                             fontSize: FontSize.s18),
                         textAlign: TextAlign.center),
                     SizedBox(height: 4.h),
                     Text(
                         S.of(context).carBeingTransported,
                         style: getRegularStyle(
-                            color: AppColors.neutral800,
+                            color: context.colors.textSecondary,
                             fontSize: FontSize.s14),
                         textAlign: TextAlign.center),
                     SizedBox(height: Insets.s24),
@@ -183,7 +184,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
   }
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(children: [
           SizedBox(height: MediaQuery.of(context).padding.top),
           Padding(
@@ -195,13 +196,13 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
                   SizedBox(width: 24.sp),
                   Text(S.of(context).tripInProgressHeader,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20)),
                   Icon(Icons.info_outline_rounded,
-                      size: 24.sp, color: const Color(0xFF0E0E0E)),
+                      size: 24.sp, color: context.colors.textPrimary),
                 ]),
           ),
-          const Divider(height: 1, color: Color(0xFFF5F5F5)),
+          Divider(height: 1, color: context.colors.borderSubtle),
         ]),
       );
 
@@ -221,7 +222,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
       children: [
         Text(S.of(context).routeSection,
             style: getBoldStyle(
-                color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
+                color: context.colors.textPrimary, fontSize: FontSize.s18),
             textAlign: TextAlign.start),
         SizedBox(height: Insets.s8),
         TripRouteCard(title: S.of(context).departurePoint, address: origin),
@@ -240,7 +241,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
         children: [
           Text(S.of(context).carPhotos,
               style: getBoldStyle(
-                  color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
+                  color: context.colors.textPrimary, fontSize: FontSize.s18),
               textAlign: TextAlign.start),
           SizedBox(height: Insets.s8),
           Row(
@@ -259,7 +260,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
         children: [
           Text(S.of(context).providerDetails,
               style: getBoldStyle(
-                  color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
+                  color: context.colors.textPrimary, fontSize: FontSize.s18),
               textAlign: TextAlign.start),
           SizedBox(height: Insets.s8),
           ProviderInfoCard.fromRequest(

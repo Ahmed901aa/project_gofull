@@ -12,6 +12,7 @@ import '../widgets/location_option_tile.dart';
 import '../widgets/location_results_list.dart';
 import '../widgets/location_search_app_bar.dart';
 import '../widgets/location_search_bar.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class LocationSearchScreen extends StatefulWidget {
   final LocationSearchArgs args;
@@ -85,18 +86,18 @@ class _State extends State<LocationSearchScreen> {
   Widget build(BuildContext context) {
     final hasQuery = _ctrl.text.isNotEmpty;
     return Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: context.colors.surface,
         resizeToAvoidBottomInset: true,
         body: SafeArea(child: Column(children: [
           LocationSearchAppBar(onClose: () => Navigator.pop(context)),
           LocationSearchBar(controller: _ctrl, focusNode: _focus,
             onClear: () { _ctrl.clear(); setState(() => _results = []); }),
-          const Divider(color: AppColors.neutral500, height: 1),
+          Divider(color: context.colors.border, height: 1),
           LocationOptionTile(onGpsTap: _onGpsTap, onMapTap: _onMapTap),
-          const Divider(color: AppColors.neutral500, height: 1),
+          Divider(color: context.colors.border, height: 1),
           if (hasQuery && _isLoading)
-            const Expanded(child: Center(child: CircularProgressIndicator(
-                color: AppColors.primary, strokeWidth: 2))),
+            Expanded(child: Center(child: CircularProgressIndicator(
+                color: context.colors.primary, strokeWidth: 2))),
           if (hasQuery && !_isLoading)
             Expanded(child: LocationResultsList(
                 items: _results, onItemTap: _onResultTap)),

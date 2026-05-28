@@ -19,6 +19,7 @@ import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverNavigateScreen extends StatefulWidget {
   final DriverNavigateArgs args;
@@ -203,7 +204,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
         Polyline(
           polylineId: const PolylineId('route'),
           points: [_providerPosition!, _destination],
-          color: AppColors.primary.withOpacity(0.5),
+          color: context.colors.primary.withOpacity(0.5),
           width: 3,
         ),
       };
@@ -251,7 +252,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
     final confirmed = await AppConfirmDialog.show(
       context,
       icon: Icons.cancel_rounded,
-      iconColor: AppColors.error,
+      iconColor: context.colors.error,
       title: S.of(context).cancelOrderDialogTitle,
       subtitle: S.of(context).cancelOrderDialogSubtitle,
       confirmLabel: S.of(context).cancelOrderDialogBtn,
@@ -368,7 +369,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
         left: 0,
         right: 0,
         child: Container(
-          color: AppColors.white,
+          color: context.colors.surface,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -381,13 +382,13 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: Icon(Icons.arrow_back_rounded,
-                          size: 24.sp, color: const Color(0xFF0E0E0E)),
+                          size: 24.sp, color: context.colors.textPrimary),
                     ),
                     Expanded(
                       child: Text(
                         _title(context),
                         style: getBoldStyle(
-                            color: const Color(0xFF0E0E0E),
+                            color: context.colors.textPrimary,
                             fontSize: FontSize.s20),
                         textAlign: TextAlign.center,
                       ),
@@ -396,7 +397,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
                   ],
                 ),
               ),
-              const Divider(height: 1, color: Color(0xFFF5F5F5)),
+              Divider(height: 1, color: context.colors.borderSubtle),
             ],
           ),
         ),
@@ -414,17 +415,17 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
           width: 44.w,
           height: 44.w,
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: context.colors.surface,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: AppColors.shadow,
+                color: context.colors.shadow,
                 blurRadius: 8.r,
                 offset: const Offset(0, 2),
               ),
             ],
           ),
-          child: Icon(icon, size: 22.sp, color: AppColors.primary),
+          child: Icon(icon, size: 22.sp, color: context.colors.primary),
         ),
       );
 
@@ -432,13 +433,13 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
 
   Widget _buildBottomPanel(BuildContext context) => Container(
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.colors.surface,
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(AppRadius.s24),
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.shadow,
+              color: context.colors.shadow,
               blurRadius: 16.r,
               offset: const Offset(0, -4),
             ),
@@ -460,7 +461,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
                 width: 40.w,
                 height: 4.h,
                 decoration: BoxDecoration(
-                  color: AppColors.neutral600,
+                  color: context.colors.border,
                   borderRadius: BorderRadius.circular(2.r),
                 ),
               ),
@@ -473,12 +474,12 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
                 Container(
                   width: 40.w,
                   height: 40.w,
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary50,
+                  decoration: BoxDecoration(
+                    color: context.colors.primarySurface,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(Icons.location_on_rounded,
-                      size: 20.sp, color: AppColors.primary),
+                      size: 20.sp, color: context.colors.primary),
                 ),
                 SizedBox(width: Insets.s12),
                 Expanded(
@@ -488,14 +489,14 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
                       Text(
                         _locationLabel(context),
                         style: getRegularStyle(
-                            color: AppColors.neutral800,
+                            color: context.colors.textSecondary,
                             fontSize: FontSize.s12),
                       ),
                       SizedBox(height: 2.h),
                       Text(
                         widget.args.address,
                         style: getMediumStyle(
-                            color: const Color(0xFF0E0E0E),
+                            color: context.colors.textPrimary,
                             fontSize: FontSize.s14),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -512,18 +513,18 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
                 padding: EdgeInsets.symmetric(
                     horizontal: Insets.s12, vertical: Insets.s8),
                 decoration: BoxDecoration(
-                  color: AppColors.primary50,
+                  color: context.colors.primarySurface,
                   borderRadius: BorderRadius.circular(AppRadius.s8),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.straighten_rounded,
-                        size: 18.sp, color: AppColors.primary),
+                        size: 18.sp, color: context.colors.primary),
                     SizedBox(width: 6.w),
                     Text('${S.of(context).remainingDistance} $_remainingDistance',
                         style: getMediumStyle(
-                            color: AppColors.primary,
+                            color: context.colors.primary,
                             fontSize: FontSize.s14)),
                   ],
                 ),
@@ -553,12 +554,12 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
                     width: Sizes.s48,
                     height: Sizes.s48,
                     decoration: BoxDecoration(
-                      color: AppColors.primary50,
+                      color: context.colors.primarySurface,
                       borderRadius:
                           BorderRadius.circular(AppRadius.s12),
                     ),
                     child: Icon(Icons.phone_rounded,
-                        size: 22.sp, color: AppColors.primary),
+                        size: 22.sp, color: context.colors.primary),
                   ),
                 ),
               ],
@@ -583,7 +584,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
                 child: Text(
                   S.of(context).cancelOrderLabel,
                   style: getMediumStyle(
-                    color: AppColors.error,
+                    color: context.colors.error,
                     fontSize: FontSize.s14,
                   ),
                 ),

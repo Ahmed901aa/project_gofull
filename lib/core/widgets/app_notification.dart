@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 // ── Types ──────────────────────────────────────────────────
 
@@ -48,7 +49,7 @@ class AppSnackbar {
 
     messenger.clearSnackBars();
 
-    final config = _configFor(type);
+    final config = _configFor(context, type);
 
     messenger.showSnackBar(
       SnackBar(
@@ -58,17 +59,17 @@ class AppSnackbar {
                 width: 32.w,
                 height: 32.w,
                 decoration: BoxDecoration(
-                  color: AppColors.white.withValues(alpha: 0.2),
+                  color: context.colors.surface.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
-                child: Icon(config.icon, size: 18.sp, color: AppColors.white),
+                child: Icon(config.icon, size: 18.sp, color: context.colors.surface),
               ),
               SizedBox(width: Insets.s10),
               Expanded(
                 child: Text(
                   message,
                   style: getMediumStyle(
-                    color: AppColors.white,
+                    color: context.colors.surface,
                     fontSize: FontSize.s14,
                   ),
                   maxLines: 3,
@@ -91,16 +92,16 @@ class AppSnackbar {
     );
   }
 
-  static _SnackConfig _configFor(AppNotificationType type) {
+  static _SnackConfig _configFor(BuildContext context, AppNotificationType type) {
     switch (type) {
       case AppNotificationType.success:
-        return _SnackConfig(AppColors.success, Icons.check_circle_rounded);
+        return _SnackConfig(context.colors.success, Icons.check_circle_rounded);
       case AppNotificationType.error:
-        return _SnackConfig(AppColors.error, Icons.error_rounded);
+        return _SnackConfig(context.colors.error, Icons.error_rounded);
       case AppNotificationType.warning:
-        return _SnackConfig(AppColors.warning, Icons.warning_rounded);
+        return _SnackConfig(context.colors.warning, Icons.warning_rounded);
       case AppNotificationType.info:
-        return _SnackConfig(AppColors.primary, Icons.info_rounded);
+        return _SnackConfig(context.colors.primary, Icons.info_rounded);
     }
   }
 }
@@ -120,7 +121,7 @@ class _SnackConfig {
 ///   final confirmed = await AppConfirmDialog.show(
 ///     context,
 ///     icon: Icons.cancel_rounded,
-///     iconColor: AppColors.error,
+///     iconColor: context.colors.error,
 ///     title: 'إلغاء الطلب',
 ///     subtitle: 'هل أنت متأكد من إلغاء هذا الطلب؟\nسيتم إبلاغ العميل بالإلغاء.',
 ///     confirmLabel: 'إلغاء الطلب',
@@ -132,7 +133,7 @@ class AppConfirmDialog {
   static Future<bool> show(
     BuildContext context, {
     required IconData icon,
-    Color iconColor = AppColors.primary,
+    Color? iconColor,
     required String title,
     required String subtitle,
     required String confirmLabel,
@@ -144,7 +145,7 @@ class AppConfirmDialog {
       barrierDismissible: true,
       builder: (_) => _ConfirmDialogContent(
         icon: icon,
-        iconColor: iconColor,
+        iconColor: iconColor ?? context.colors.primary,
         title: title,
         subtitle: subtitle,
         confirmLabel: confirmLabel,
@@ -178,7 +179,7 @@ class _ConfirmDialogContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resolvedCancelLabel = cancelLabel ?? S.of(context).goBack;
-    final confirmColor = destructive ? AppColors.error : AppColors.primary;
+    final confirmColor = destructive ? context.colors.error : context.colors.primary;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -187,11 +188,11 @@ class _ConfirmDialogContent extends StatelessWidget {
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: Insets.s20, vertical: 20.h),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: context.colors.surface,
             borderRadius: BorderRadius.circular(AppRadius.s24),
             boxShadow: [
               BoxShadow(
-                color: AppColors.shadow,
+                color: context.colors.shadow,
                 blurRadius: 24,
                 offset: const Offset(0, 8),
               ),
@@ -216,7 +217,7 @@ class _ConfirmDialogContent extends StatelessWidget {
               Text(
                 title,
                 style: getBoldStyle(
-                  color: const Color(0xFF0E0E0E),
+                  color: context.colors.textPrimary,
                   fontSize: FontSize.s20,
                 ),
                 textAlign: TextAlign.center,
@@ -229,7 +230,7 @@ class _ConfirmDialogContent extends StatelessWidget {
                 child: Text(
                   subtitle,
                   style: getRegularStyle(
-                    color: AppColors.neutral900,
+                    color: context.colors.textSecondary,
                     fontSize: FontSize.s14,
                   ),
                   textAlign: TextAlign.center,
@@ -247,14 +248,14 @@ class _ConfirmDialogContent extends StatelessWidget {
                       child: Container(
                         height: 48.h,
                         decoration: BoxDecoration(
-                          color: AppColors.neutral400,
+                          color: context.colors.surfaceElevated,
                           borderRadius: BorderRadius.circular(AppRadius.s16),
                         ),
                         alignment: Alignment.center,
                         child: Text(
                           resolvedCancelLabel,
                           style: getSemiBoldStyle(
-                            color: AppColors.darkGrey,
+                            color: context.colors.textSecondary,
                             fontSize: FontSize.s15,
                           ),
                         ),
@@ -276,7 +277,7 @@ class _ConfirmDialogContent extends StatelessWidget {
                         child: Text(
                           confirmLabel,
                           style: getSemiBoldStyle(
-                            color: AppColors.white,
+                            color: context.colors.surface,
                             fontSize: FontSize.s15,
                           ),
                         ),

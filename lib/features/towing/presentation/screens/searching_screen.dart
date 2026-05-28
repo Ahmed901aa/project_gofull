@@ -17,6 +17,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_state
 import 'package:project_gofull/features/towing/presentation/widgets/searching_animation.dart';
 import '../widgets/searching_header.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class SearchingScreen extends StatefulWidget {
   final SearchingArgs args;
@@ -179,7 +180,7 @@ class _SearchingScreenState extends State<SearchingScreen> {
             if (!didPop) _onCancel();
           },
           child: Scaffold(
-            backgroundColor: AppColors.white,
+            backgroundColor: context.colors.surface,
             body: Column(
               children: [
                 const SearchingHeader(),
@@ -194,13 +195,13 @@ class _SearchingScreenState extends State<SearchingScreen> {
                           SizedBox(height: Insets.s16),
                           Text(widget.args.searchingText,
                               style: getBoldStyle(
-                                  color: const Color(0xFF0E0E0E),
+                                  color: context.colors.textPrimary,
                                   fontSize: FontSize.s18),
                               textAlign: TextAlign.center),
                           SizedBox(height: Insets.s8),
                           Text(widget.args.subtitleText,
                               style: getRegularStyle(
-                                  color: AppColors.neutral800,
+                                  color: context.colors.textSecondary,
                                   fontSize: FontSize.s14),
                               textAlign: TextAlign.center),
                           SizedBox(height: Insets.s16),
@@ -208,15 +209,15 @@ class _SearchingScreenState extends State<SearchingScreen> {
                             padding: EdgeInsets.symmetric(
                                 horizontal: Insets.s16, vertical: Insets.s12),
                             decoration: BoxDecoration(
-                              color: AppColors.primary50,
+                              color: context.colors.primarySurface,
                               borderRadius:
                                   BorderRadius.circular(AppRadius.s16),
-                              border: Border.all(color: AppColors.primary),
+                              border: Border.all(color: context.colors.primary),
                             ),
                             child: Text(
                               S.of(context).waitSafeLocation,
                               style: getRegularStyle(
-                                  color: AppColors.primary,
+                                  color: context.colors.primary,
                                   fontSize: FontSize.s14),
                               textAlign: TextAlign.start,
                             ),
@@ -237,7 +238,7 @@ class _SearchingScreenState extends State<SearchingScreen> {
                       child: OutlinedButton(
                         onPressed: _onCancel,
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: AppColors.error),
+                          side: BorderSide(color: context.colors.error),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius:
@@ -246,7 +247,7 @@ class _SearchingScreenState extends State<SearchingScreen> {
                         ),
                         child: Text(S.of(context).cancelOrder,
                             style: getSemiBoldStyle(
-                                color: AppColors.error,
+                                color: context.colors.error,
                                 fontSize: FontSize.s16)),
                       ),
                     ),

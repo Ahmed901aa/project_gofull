@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/home/domain/entities/offer_entity.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class OfferCard extends StatelessWidget {
   final OfferEntity offer;
@@ -19,8 +20,8 @@ class OfferCard extends StatelessWidget {
       child: Container(
         width: 272.w,
         decoration: BoxDecoration(
-          color: AppColors.neutral300,
-          border: Border.all(color: AppColors.neutral500),
+          color: context.colors.surfaceVariant,
+          border: Border.all(color: context.colors.border),
           borderRadius: BorderRadius.circular(AppRadius.s16),
         ),
         child: Column(
@@ -31,7 +32,7 @@ class OfferCard extends StatelessWidget {
               child: Container(
                 height: 120.h,
                 width: double.infinity,
-                color: Colors.white,
+                color: context.colors.surface,
                 child: Builder(builder: (ctx) {
                   final img = Image.asset(ImageAssets.offerBanner, fit: BoxFit.cover);
                   return Directionality.of(ctx) == TextDirection.rtl
@@ -47,7 +48,7 @@ class OfferCard extends StatelessWidget {
                 children: [
                   Text(
                     offer.title,
-                    style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+                    style: getSemiBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s14),
                     textAlign: TextAlign.start,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -55,7 +56,7 @@ class OfferCard extends StatelessWidget {
                   SizedBox(height: 4.h),
                   Text(
                     '${S.of(context).useCodePrefix}${offer.code}',
-                    style: getSemiBoldStyle(color: AppColors.primary, fontSize: FontSize.s14),
+                    style: getSemiBoldStyle(color: context.colors.primary, fontSize: FontSize.s14),
                     textAlign: TextAlign.start,
                   ),
                 ],

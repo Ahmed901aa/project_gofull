@@ -793,5 +793,11 @@
   "privacyDriverRightsBody": "• طلب الوصول إلى بياناتك الشخصية\n• طلب تصحيح أو تحديث بياناتك\n• طلب حذف حسابك وبياناتك\n• سحب موافقتك في أي وقت\n• تقديم شكوى للجهات المختصة",
   "privacyDriverContactTitle": "التواصل معنا",
   "privacyDriverContactBody": "إذا كان لديك أي استفسارات حول سياسة الخصوصية أو كيفية التعامل مع بياناتك، يرجى التواصل معنا عبر قسم الدعم الفني في التطبيق أو مراسلتنا على البريد الإلكتروني: support@gofull.ly",
-  "fuelDetailsSection": "تفاصيل الوقود"
+  "fuelDetailsSection": "تفاصيل الوقود",
+  "appearance": "المظهر",
+  "themeMode": "السمة",
+  "themeSystem": "النظام",
+  "themeLight": "فاتح",
+  "themeDark": "داكن",
+  "themeChanged": "تم تحديث السمة"
 }

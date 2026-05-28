@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class ArrivedCarPhotos extends StatelessWidget {
   const ArrivedCarPhotos({super.key});
@@ -14,7 +15,7 @@ class ArrivedCarPhotos extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(S.of(context).carPhotos, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.start),
+        Text(S.of(context).carPhotos, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18), textAlign: TextAlign.start),
         SizedBox(height: Insets.s8),
         Row(
           children: List.generate(
@@ -40,11 +41,11 @@ class _PhotoPlaceholder extends StatelessWidget {
     return Container(
       height: 88.h,
       decoration: BoxDecoration(
-        color: AppColors.neutral200,
+        color: context.colors.inputFill,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
-      child: Icon(Icons.image_outlined, size: 28.sp, color: AppColors.neutral600),
+      child: Icon(Icons.image_outlined, size: 28.sp, color: context.colors.border),
     );
   }
 }

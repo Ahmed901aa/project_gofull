@@ -13,6 +13,7 @@ import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverRefuelingArgs {
   final String orderId;
@@ -50,7 +51,7 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             _buildHeader(context),
@@ -69,7 +70,7 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
                       Text(
                         S.of(context).refuelingInProgressTitle,
                         style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s22,
                         ),
                         textAlign: TextAlign.center,
@@ -78,7 +79,7 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
                       Text(
                         S.of(context).refuelingInstructions,
                         style: getRegularStyle(
-                          color: AppColors.neutral800,
+                          color: context.colors.textSecondary,
                           fontSize: FontSize.s14,
                         ),
                         textAlign: TextAlign.center,
@@ -98,7 +99,7 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
   }
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(
           children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
@@ -110,13 +111,13 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Icon(Icons.arrow_back_rounded,
-                        size: 24.sp, color: const Color(0xFF0E0E0E)),
+                        size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(
                     child: Text(
                       S.of(context).refuelingTitle,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20),
                       textAlign: TextAlign.center,
                     ),
@@ -132,17 +133,17 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
                       width: 36.w,
                       height: 36.w,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
+                        color: context.colors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: Icon(Icons.phone_rounded,
-                          size: 20.sp, color: AppColors.primary),
+                          size: 20.sp, color: context.colors.primary),
                     ),
                   ),
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF5F5F5)),
+            Divider(height: 1, color: context.colors.borderSubtle),
           ],
         ),
       );
@@ -150,21 +151,21 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
   Widget _buildInstructionsCard() => Container(
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
-          color: const Color(0xFFE8F5E9),
+          color: context.colors.successSurface,
           borderRadius: BorderRadius.circular(AppRadius.s12),
-          border: Border.all(color: AppColors.success.withValues(alpha: 0.3)),
+          border: Border.all(color: context.colors.success.withValues(alpha: 0.3)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(Icons.info_rounded, size: 22.sp, color: AppColors.primary),
+                Icon(Icons.info_rounded, size: 22.sp, color: context.colors.primary),
                 SizedBox(width: Insets.s8),
                 Text(
                   S.of(context).refuelingGuide,
                   style: getBoldStyle(
-                      color: AppColors.primary, fontSize: FontSize.s14),
+                      color: context.colors.primary, fontSize: FontSize.s14),
                 ),
               ],
             ),
@@ -186,8 +187,8 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
             child: Container(
               width: 6.w,
               height: 6.w,
-              decoration: const BoxDecoration(
-                color: AppColors.primary,
+              decoration: BoxDecoration(
+                color: context.colors.primary,
                 shape: BoxShape.circle,
               ),
             ),
@@ -197,7 +198,7 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
             child: Text(
               text,
               style: getRegularStyle(
-                  color: AppColors.primaryLight, fontSize: FontSize.s14),
+                  color: context.colors.primaryLight, fontSize: FontSize.s14),
             ),
           ),
         ],
@@ -210,9 +211,9 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
           Insets.s16,
           Insets.s12 + MediaQuery.of(context).padding.bottom,
         ),
-        decoration: const BoxDecoration(
-          color: AppColors.white,
-          border: Border(top: BorderSide(color: Color(0xFFF5F5F5))),
+        decoration: BoxDecoration(
+          color: context.colors.surface,
+          border: Border(top: BorderSide(color: context.colors.borderSubtle)),
         ),
         child: AppButton(
           text: S.of(context).refuelingDoneCollect,

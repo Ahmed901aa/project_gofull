@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});
@@ -24,7 +25,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     final l10n = S.of(context);
     final _sections = _getSections(l10n);
     return Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             AppHeader(title: l10n.privacyPolicy),
@@ -39,14 +40,14 @@ class PrivacyPolicyScreen extends StatelessWidget {
                       Text(
                         section.title,
                         style: getBoldStyle(
-                            color: const Color(0xFF0E0E0E),
+                            color: context.colors.textPrimary,
                             fontSize: FontSize.s18),
                       ),
                       SizedBox(height: 8.h),
                       Text(
                         section.body,
                         style: getRegularStyle(
-                            color: AppColors.darkGrey,
+                            color: context.colors.textSecondary,
                             fontSize: FontSize.s14),
                       ),
                       SizedBox(height: 20.h),

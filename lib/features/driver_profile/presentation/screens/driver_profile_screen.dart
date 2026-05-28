@@ -11,6 +11,7 @@ import 'package:project_gofull/features/provider/domain/entities/provider_profil
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_state.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverProfileScreen extends StatelessWidget {
   const DriverProfileScreen({super.key});
@@ -20,7 +21,7 @@ class DriverProfileScreen extends StatelessWidget {
     return BlocProvider(
       create: (_) => sl<ProviderBloc>()..add(const LoadProfileEvent()),
       child: Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             _buildHeader(context),
@@ -28,7 +29,7 @@ class DriverProfileScreen extends StatelessWidget {
               child: BlocBuilder<ProviderBloc, ProviderState>(
                 builder: (context, state) {
                   if (state is ProviderLoading) {
-                    return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+                    return Center(child: CircularProgressIndicator(color: context.colors.primary));
                   }
                   final profile = state is ProfileLoaded ? state.profile : null;
                   return SingleChildScrollView(
@@ -56,7 +57,7 @@ class DriverProfileScreen extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(
           children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
@@ -68,13 +69,13 @@ class DriverProfileScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Icon(Icons.arrow_back_rounded,
-                        size: 24.sp, color: const Color(0xFF0E0E0E)),
+                        size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(
                     child: Text(
                       S.of(context).profileTitle,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20),
                       textAlign: TextAlign.center,
                     ),
@@ -83,7 +84,7 @@ class DriverProfileScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF5F5F5)),
+            Divider(height: 1, color: context.colors.borderSubtle),
           ],
         ),
       );
@@ -103,7 +104,7 @@ class _ProfileCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.primary,
+        color: context.colors.primary,
         borderRadius: BorderRadius.circular(AppRadius.s24),
       ),
       child: Row(
@@ -113,13 +114,13 @@ class _ProfileCard extends StatelessWidget {
             width: 80.w,
             height: 80.w,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF8E6),
+              color: context.colors.goldLight,
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.white, width: 2),
+              border: Border.all(color: context.colors.surface, width: 2),
             ),
             alignment: Alignment.center,
             child: Icon(Icons.person_rounded,
-                size: 40.sp, color: AppColors.primary),
+                size: 40.sp, color: context.colors.primary),
           ),
           SizedBox(width: Insets.s12),
           // Info
@@ -130,20 +131,20 @@ class _ProfileCard extends StatelessWidget {
                 Text(
                   name,
                   style: getBoldStyle(
-                      color: AppColors.white, fontSize: FontSize.s18),
+                      color: context.colors.surface, fontSize: FontSize.s18),
                 ),
                 SizedBox(height: 2.h),
                 Text(
                   id,
                   style: getRegularStyle(
-                      color: AppColors.white.withValues(alpha: 0.7),
+                      color: context.colors.surface.withValues(alpha: 0.7),
                       fontSize: FontSize.s12),
                 ),
                 SizedBox(height: 4.h),
                 Text(
                   role,
                   style: getRegularStyle(
-                      color: AppColors.white, fontSize: FontSize.s14),
+                      color: context.colors.surface, fontSize: FontSize.s14),
                 ),
                 SizedBox(height: Insets.s8),
                 // Status badge
@@ -151,13 +152,13 @@ class _ProfileCard extends StatelessWidget {
                   padding: EdgeInsets.symmetric(
                       horizontal: Insets.s12, vertical: 4.h),
                   decoration: BoxDecoration(
-                    color: AppColors.gold.withValues(alpha: 0.2),
+                    color: context.colors.gold.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(AppRadius.s16),
                   ),
                   child: Text(
                     isOnline ? S.of(context).active : S.of(context).inactive,
                     style: getMediumStyle(
-                        color: AppColors.gold, fontSize: FontSize.s12),
+                        color: context.colors.gold, fontSize: FontSize.s12),
                   ),
                 ),
               ],
@@ -172,12 +173,12 @@ class _ProfileCard extends StatelessWidget {
               width: 36.w,
               height: 36.w,
               decoration: BoxDecoration(
-                color: AppColors.white.withValues(alpha: 0.15),
+                color: context.colors.surface.withValues(alpha: 0.15),
                 shape: BoxShape.circle,
               ),
               alignment: Alignment.center,
               child:
-                  Icon(Icons.edit_rounded, size: 18.sp, color: AppColors.white),
+                  Icon(Icons.edit_rounded, size: 18.sp, color: context.colors.surface),
             ),
           ),
         ],
@@ -198,40 +199,41 @@ class _InfoBoxesRow extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: _infoBox(S.of(context).rating, rating, Icons.star_rounded)),
+            Expanded(child: _infoBox(context, S.of(context).rating, rating, Icons.star_rounded)),
             SizedBox(width: Insets.s12),
             Expanded(
                 child: _infoBox(
+                    context,
                     S.of(context).totalRatingsLabel, '${profile?.totalRatings ?? 0}', Icons.reviews_rounded)),
           ],
         ),
         SizedBox(height: Insets.s12),
-        _infoBox(S.of(context).completedOrdersLabel, '${profile?.completedOrders ?? 0}', Icons.check_circle_rounded),
+        _infoBox(context, S.of(context).completedOrdersLabel, '${profile?.completedOrders ?? 0}', Icons.check_circle_rounded),
       ],
     );
   }
 
-  Widget _infoBox(String label, String value, IconData icon) => Container(
+  Widget _infoBox(BuildContext context, String label, String value, IconData icon) => Container(
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.s16),
-          border: Border.all(color: AppColors.neutral500),
+          border: Border.all(color: context.colors.border),
         ),
         child: Column(
           children: [
-            Icon(icon, size: 24.sp, color: AppColors.gold),
+            Icon(icon, size: 24.sp, color: context.colors.gold),
             SizedBox(height: Insets.s8),
             Text(
               value,
               style: getBoldStyle(
-                  color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
+                  color: context.colors.textPrimary, fontSize: FontSize.s18),
             ),
             SizedBox(height: 4.h),
             Text(
               label,
               style: getRegularStyle(
-                  color: AppColors.grey, fontSize: FontSize.s12),
+                  color: context.colors.iconSecondary, fontSize: FontSize.s12),
             ),
           ],
         ),
@@ -249,31 +251,31 @@ class _SalarySection extends StatelessWidget {
         Text(
           S.of(context).salaryLabel,
           style: getBoldStyle(
-              color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+              color: context.colors.textPrimary, fontSize: FontSize.s16),
         ),
         SizedBox(height: Insets.s8),
         Container(
           padding: EdgeInsets.all(Insets.s16),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: context.colors.surface,
             borderRadius: BorderRadius.circular(AppRadius.s16),
-            border: Border.all(color: AppColors.neutral500),
+            border: Border.all(color: context.colors.border),
           ),
           child: Row(
             children: [
               Icon(Icons.account_balance_wallet_rounded,
-                  size: 24.sp, color: AppColors.primary),
+                  size: 24.sp, color: context.colors.primary),
               SizedBox(width: Insets.s12),
               Text(
                 S.of(context).fixedSalaryLabel,
                 style: getRegularStyle(
-                    color: AppColors.darkGrey, fontSize: FontSize.s14),
+                    color: context.colors.textSecondary, fontSize: FontSize.s14),
               ),
               SizedBox(width: 4.w),
               Text(
                 '1500 ${S.of(context).currencyKWD}',
                 style: getBoldStyle(
-                    color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+                    color: context.colors.textPrimary, fontSize: FontSize.s16),
               ),
             ],
           ),
@@ -300,14 +302,14 @@ class _VehicleSection extends StatelessWidget {
         Text(
           S.of(context).vehicleLabel2,
           style: getBoldStyle(
-              color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+              color: context.colors.textPrimary, fontSize: FontSize.s16),
         ),
         SizedBox(height: Insets.s8),
         Row(
           children: [
-            Expanded(child: _vehicleBadge(S.of(context).vehicleTypeLabel, vehicleName)),
+            Expanded(child: _vehicleBadge(context, S.of(context).vehicleTypeLabel, vehicleName)),
             SizedBox(width: Insets.s8),
-            Expanded(child: _vehicleBadge(S.of(context).plateNumberVehicle, plate)),
+            Expanded(child: _vehicleBadge(context, S.of(context).plateNumberVehicle, plate)),
           ],
         ),
         SizedBox(height: Insets.s12),
@@ -315,21 +317,21 @@ class _VehicleSection extends StatelessWidget {
         Container(
           height: 180.h,
           decoration: BoxDecoration(
-            color: AppColors.neutral400,
+            color: context.colors.surfaceElevated,
             borderRadius: BorderRadius.circular(AppRadius.s16),
-            border: Border.all(color: AppColors.neutral500),
+            border: Border.all(color: context.colors.border),
           ),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.directions_car_rounded,
-                    size: 56.sp, color: AppColors.neutral600),
+                    size: 56.sp, color: context.colors.border),
                 SizedBox(height: Insets.s8),
                 Text(
                   S.of(context).vehicleImageLabel,
                   style: getRegularStyle(
-                      color: AppColors.neutral800, fontSize: FontSize.s14),
+                      color: context.colors.textSecondary, fontSize: FontSize.s14),
                 ),
               ],
             ),
@@ -339,12 +341,12 @@ class _VehicleSection extends StatelessWidget {
     );
   }
 
-  Widget _vehicleBadge(String label, String value) => Container(
+  Widget _vehicleBadge(BuildContext context, String label, String value) => Container(
         padding: EdgeInsets.all(Insets.s12),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.s16),
-          border: Border.all(color: AppColors.neutral500),
+          border: Border.all(color: context.colors.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,13 +354,13 @@ class _VehicleSection extends StatelessWidget {
             Text(
               label,
               style: getRegularStyle(
-                  color: AppColors.grey, fontSize: FontSize.s12),
+                  color: context.colors.iconSecondary, fontSize: FontSize.s12),
             ),
             SizedBox(height: 4.h),
             Text(
               value,
               style: getSemiBoldStyle(
-                  color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+                  color: context.colors.textPrimary, fontSize: FontSize.s14),
             ),
           ],
         ),
@@ -400,14 +402,14 @@ class _DocumentsSection extends StatelessWidget {
         Text(
           S.of(context).documentsLabel,
           style: getBoldStyle(
-              color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+              color: context.colors.textPrimary, fontSize: FontSize.s16),
         ),
         SizedBox(height: Insets.s8),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: context.colors.surface,
             borderRadius: BorderRadius.circular(AppRadius.s16),
-            border: Border.all(color: AppColors.neutral500),
+            border: Border.all(color: context.colors.border),
           ),
           child: Column(
             children: _documents.asMap().entries.map((entry) {
@@ -419,7 +421,7 @@ class _DocumentsSection extends StatelessWidget {
                   if (!isLast)
                     Divider(
                         height: 1,
-                        color: AppColors.neutral500,
+                        color: context.colors.border,
                         indent: Insets.s16,
                         endIndent: Insets.s16),
                 ],
@@ -440,18 +442,18 @@ class _DocumentsSection extends StatelessWidget {
 
     switch (doc.status) {
       case _DocStatus.accepted:
-        statusBg = AppColors.success.withValues(alpha: 0.1);
-        statusFg = AppColors.success;
+        statusBg = context.colors.success.withValues(alpha: 0.1);
+        statusFg = context.colors.success;
         statusLabel = S.of(context).acceptedLabel;
         actionLabel = S.of(context).viewLabel;
       case _DocStatus.underReview:
-        statusBg = AppColors.gold.withValues(alpha: 0.1);
-        statusFg = AppColors.gold;
+        statusBg = context.colors.gold.withValues(alpha: 0.1);
+        statusFg = context.colors.gold;
         statusLabel = S.of(context).underReviewLabel;
         actionLabel = S.of(context).viewLabel;
       case _DocStatus.required_:
-        statusBg = AppColors.error.withValues(alpha: 0.1);
-        statusFg = AppColors.error;
+        statusBg = context.colors.error.withValues(alpha: 0.1);
+        statusFg = context.colors.error;
         statusLabel = S.of(context).requiredLabel;
         actionLabel = S.of(context).uploadFileLabel;
         showUpload = true;
@@ -467,12 +469,12 @@ class _DocumentsSection extends StatelessWidget {
             width: 36.w,
             height: 36.w,
             decoration: BoxDecoration(
-              color: AppColors.neutral400,
+              color: context.colors.surfaceElevated,
               borderRadius: BorderRadius.circular(AppRadius.s8),
             ),
             alignment: Alignment.center,
             child: Icon(Icons.description_outlined,
-                size: 20.sp, color: AppColors.darkGrey),
+                size: 20.sp, color: context.colors.textSecondary),
           ),
           SizedBox(width: Insets.s12),
           // Name + status
@@ -483,7 +485,7 @@ class _DocumentsSection extends StatelessWidget {
                 Text(
                   doc.localizedName(context),
                   style: getMediumStyle(
-                      color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+                      color: context.colors.textPrimary, fontSize: FontSize.s14),
                 ),
                 SizedBox(height: 4.h),
                 Container(
@@ -511,7 +513,7 @@ class _DocumentsSection extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                   horizontal: Insets.s12, vertical: Insets.s4),
               decoration: BoxDecoration(
-                color: showUpload ? AppColors.primary : AppColors.neutral400,
+                color: showUpload ? context.colors.primary : context.colors.surfaceElevated,
                 borderRadius: BorderRadius.circular(AppRadius.s8),
               ),
               child: Row(
@@ -519,13 +521,13 @@ class _DocumentsSection extends StatelessWidget {
                 children: [
                   if (showUpload) ...[
                     Icon(Icons.upload_file_rounded,
-                        size: 14.sp, color: AppColors.white),
+                        size: 14.sp, color: context.colors.surface),
                     SizedBox(width: 4.w),
                   ],
                   Text(
                     actionLabel,
                     style: getMediumStyle(
-                      color: showUpload ? AppColors.white : AppColors.primary,
+                      color: showUpload ? AppColors.white : context.colors.primary,
                       fontSize: FontSize.s12,
                     ),
                   ),

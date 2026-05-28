@@ -10,6 +10,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/camera_actions_bar.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -51,7 +52,7 @@ class _CameraScreenState extends State<CameraScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: _photo == null
-          ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+          ? Center(child: CircularProgressIndicator(color: context.colors.primary))
           : Column(children: [
               _buildHeader(),
               Expanded(child: ClipRRect(borderRadius: BorderRadius.circular(AppRadius.s16), child: Image.file(_photo!, fit: BoxFit.contain, width: double.infinity))),
@@ -68,8 +69,8 @@ class _CameraScreenState extends State<CameraScreen> {
           Padding(
             padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.close_rounded, size: 24.sp, color: AppColors.white)),
-              Text(S.of(context).photoCapture, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s20)),
+              GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.close_rounded, size: 24.sp, color: context.colors.surface)),
+              Text(S.of(context).photoCapture, style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s20)),
               const SizedBox(width: 24),
             ]),
           ),

@@ -14,6 +14,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class RecentOrdersSection extends StatelessWidget {
   const RecentOrdersSection({super.key});
@@ -38,7 +39,7 @@ class RecentOrdersSection extends StatelessWidget {
                   children: [
                     Text(S.of(context).recentOrders,
                         style: getSemiBoldStyle(
-                            color: const Color(0xFF0E0E0E),
+                            color: context.colors.textPrimary,
                             fontSize: FontSize.s18)),
                     const Spacer(),
                     GestureDetector(
@@ -48,7 +49,7 @@ class RecentOrdersSection extends StatelessWidget {
                       },
                       child: Text(S.of(context).viewAll,
                           style: getMediumStyle(
-                              color: AppColors.primary,
+                              color: context.colors.primary,
                               fontSize: FontSize.s14)),
                     ),
                   ],
@@ -85,21 +86,21 @@ class _RecentOrderCard extends StatelessWidget {
     Color statusColor;
     if (order.isCompleted) {
       statusLabel = l10n.completed;
-      statusColor = AppColors.success;
+      statusColor = context.colors.success;
     } else if (order.isCancelled) {
       statusLabel = l10n.cancelled;
-      statusColor = AppColors.error;
+      statusColor = context.colors.error;
     } else {
       statusLabel = l10n.inProgress;
-      statusColor = AppColors.primary;
+      statusColor = context.colors.primary;
     }
 
     return Container(
       padding: EdgeInsets.all(Insets.s12),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: const Color(0xFFEFF0F1)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         children: [
@@ -114,13 +115,13 @@ class _RecentOrderCard extends StatelessWidget {
                         ? Icons.fire_truck_rounded
                         : Icons.local_gas_station_rounded,
                     size: 16.sp,
-                    color: AppColors.primary,
+                    color: context.colors.primary,
                   ),
                   SizedBox(width: 4.w),
                   Text(
                     isTow ? l10n.towService : l10n.fuelSupply,
                     style: getMediumStyle(
-                        color: const Color(0xFF0E0E0E),
+                        color: context.colors.textPrimary,
                         fontSize: FontSize.s14),
                   ),
                 ],
@@ -145,11 +146,11 @@ class _RecentOrderCard extends StatelessWidget {
             children: [
               Text(date,
                   style: getRegularStyle(
-                      color: AppColors.grey, fontSize: FontSize.s12)),
+                      color: context.colors.iconSecondary, fontSize: FontSize.s12)),
               const Spacer(),
               Text(price,
                   style: getSemiBoldStyle(
-                      color: const Color(0xFF0E0E0E),
+                      color: context.colors.textPrimary,
                       fontSize: FontSize.s14)),
             ],
           ),

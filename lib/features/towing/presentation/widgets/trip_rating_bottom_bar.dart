@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class TripRatingBottomBar extends StatelessWidget {
   final VoidCallback onPressed;
@@ -15,10 +16,10 @@ class TripRatingBottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
         boxShadow: [
-          BoxShadow(color: const Color(0xFFCCCCCC).withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2)),
+          BoxShadow(color: context.colors.border.withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2)),
         ],
       ),
       padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s16),
@@ -28,10 +29,10 @@ class TripRatingBottomBar extends StatelessWidget {
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary, foregroundColor: AppColors.white,
+            backgroundColor: context.colors.primary, foregroundColor: AppColors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0,
           ),
-          child: Text(label, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+          child: Text(label, style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s16)),
         ),
       ),
     );
@@ -45,15 +46,15 @@ class AlreadyRatedBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
         boxShadow: [
-          BoxShadow(color: const Color(0xFFCCCCCC).withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2)),
+          BoxShadow(color: context.colors.border.withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2)),
         ],
       ),
       padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s16),
       child: Center(
-        child: Text(S.of(context).alreadyRated, style: getMediumStyle(color: AppColors.neutral800, fontSize: FontSize.s14)),
+        child: Text(S.of(context).alreadyRated, style: getMediumStyle(color: context.colors.textSecondary, fontSize: FontSize.s14)),
       ),
     );
   }

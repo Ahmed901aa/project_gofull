@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class EditProfileAvatar extends StatelessWidget {
   final VoidCallback? onEditTap;
@@ -18,8 +19,8 @@ class EditProfileAvatar extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 52.w,
-              backgroundColor: AppColors.neutral500,
-              child: Icon(Icons.person, size: 52.sp, color: const Color(0xFF838485)),
+              backgroundColor: context.colors.border,
+              child: Icon(Icons.person, size: 52.sp, color: context.colors.textSecondary),
             ),
             Positioned(
               bottom: 0,
@@ -30,11 +31,11 @@ class EditProfileAvatar extends StatelessWidget {
                   width: 24.w,
                   height: 24.w,
                   decoration: BoxDecoration(
-                    color: AppColors.scaffoldBg,
+                    color: context.colors.background,
                     borderRadius: BorderRadius.circular(AppRadius.s16),
-                    border: Border.all(color: const Color(0xFFEFF0F1)),
+                    border: Border.all(color: context.colors.border),
                   ),
-                  child: Icon(Icons.edit_outlined, size: 12.sp, color: const Color(0xFF0E0E0E)),
+                  child: Icon(Icons.edit_outlined, size: 12.sp, color: context.colors.textPrimary),
                 ),
               ),
             ),

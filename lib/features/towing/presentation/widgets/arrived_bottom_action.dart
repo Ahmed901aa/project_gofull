@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class ArrivedBottomAction extends StatelessWidget {
   final int? requestId;
@@ -16,7 +17,7 @@ class ArrivedBottomAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
         boxShadow: const [
           BoxShadow(color: Color(0x0ACCCCCC), blurRadius: 4, offset: Offset(0, -4)),
@@ -35,12 +36,12 @@ class ArrivedBottomAction extends StatelessWidget {
                     context, Routes.rating, (route) => false,
                     arguments: RatingArgs(orderId: (requestId ?? 0).toString())),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: context.colors.primary,
                   foregroundColor: AppColors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
                   elevation: 0,
                 ),
-                child: Text(S.of(context).rateService, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+                child: Text(S.of(context).rateService, style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s16)),
               ),
             ),
           ),
@@ -53,10 +54,10 @@ class ArrivedBottomAction extends StatelessWidget {
                 onPressed: () => Navigator.pushNamedAndRemoveUntil(
                     context, Routes.home, (route) => false),
                 style: TextButton.styleFrom(
-                  foregroundColor: AppColors.grey,
+                  foregroundColor: context.colors.iconSecondary,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
                 ),
-                child: Text(S.of(context).skip, style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+                child: Text(S.of(context).skip, style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s14)),
               ),
             ),
           ),

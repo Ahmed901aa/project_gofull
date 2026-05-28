@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/features/home/domain/entities/offer_entity.dart';
 import 'offer_card.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class OffersSection extends StatelessWidget {
   final List<OfferEntity> offers;
@@ -22,7 +23,7 @@ class OffersSection extends StatelessWidget {
             width: double.infinity,
             child: Text(
               S.of(context).offersForYou,
-              style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
+              style: getSemiBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18),
               textAlign: TextAlign.start,
             ),
           ),

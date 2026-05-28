@@ -18,6 +18,7 @@ import '../widgets/arrived_payment_card.dart';
 import '../widgets/arrived_safety_card.dart';
 import '../widgets/gif_circle.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverArrivedScreen extends StatefulWidget {
   final TripInProgressArgs? args;
@@ -106,7 +107,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
           }
         },
         child: Scaffold(
-          backgroundColor: AppColors.scaffoldBg,
+          backgroundColor: context.colors.background,
           body: Column(
             children: [
               _buildHeader(context),
@@ -123,13 +124,13 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
                       SizedBox(height: Insets.s16),
                       Text(
                         S.of(context).missionCompletedTitle,
-                        style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
+                        style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 4.h),
                       Text(
                         S.of(context).carDroppedOffBody,
-                        style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14),
+                        style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: Insets.s24),
@@ -150,9 +151,9 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
                           key: _ratingKey,
                           padding: EdgeInsets.all(Insets.s16),
                           decoration: BoxDecoration(
-                            color: AppColors.white,
+                            color: context.colors.surface,
                             borderRadius: BorderRadius.circular(AppRadius.s16),
-                            border: Border.all(color: const Color(0xFFEFF0F1)),
+                            border: Border.all(color: context.colors.border),
                           ),
                           child: _ratingSubmitted
                               ? _buildRatingSuccess()
@@ -177,11 +178,11 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(S.of(context).howWasYourExperience, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
+        Text(S.of(context).howWasYourExperience, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18)),
         SizedBox(height: 2.h),
         Text(
           S.of(context).ratingHelpsImproveServices,
-          style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
+          style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14),
           textAlign: TextAlign.center,
         ),
         SizedBox(height: Insets.s16),
@@ -196,7 +197,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
                 child: Icon(
                   _rating >= star ? Icons.star_rounded : Icons.star_outline_rounded,
                   size: 40.sp,
-                  color: const Color(0xFFFFB800),
+                  color: context.colors.gold,
                 ),
               ),
             );
@@ -206,24 +207,24 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
           SizedBox(height: Insets.s16),
           Align(
             alignment: AlignmentDirectional.centerEnd,
-            child: Text(S.of(context).addNotes, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+            child: Text(S.of(context).addNotes, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
           ),
           SizedBox(height: Insets.s8),
           Container(
             decoration: BoxDecoration(
-              color: AppColors.scaffoldBg,
+              color: context.colors.background,
               borderRadius: BorderRadius.circular(AppRadius.s16),
-              border: Border.all(color: AppColors.neutral500),
+              border: Border.all(color: context.colors.border),
             ),
             child: TextField(
               controller: _notesController,
               maxLength: _maxNoteLength,
               maxLines: 3,
               textAlign: TextAlign.start,
-              style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+              style: getRegularStyle(color: context.colors.textPrimary, fontSize: FontSize.s14),
               decoration: InputDecoration(
                 hintText: S.of(context).addNotesHint,
-                hintStyle: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
+                hintStyle: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14),
                 contentPadding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
                 border: InputBorder.none,
                 counterText: '',
@@ -238,7 +239,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
               padding: EdgeInsets.symmetric(horizontal: Insets.s8),
               child: Text(
                 '${_notesController.text.length}/$_maxNoteLength',
-                style: getMediumStyle(color: AppColors.neutral900, fontSize: FontSize.s12),
+                style: getMediumStyle(color: context.colors.textSecondary, fontSize: FontSize.s12),
                 textDirection: TextDirection.ltr,
               ),
             ),
@@ -253,13 +254,13 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.check_circle_rounded, size: 48.sp, color: AppColors.primary),
+        Icon(Icons.check_circle_rounded, size: 48.sp, color: context.colors.primary),
         SizedBox(height: Insets.s8),
-        Text(S.of(context).thankYouForRating, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
+        Text(S.of(context).thankYouForRating, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18)),
         SizedBox(height: 4.h),
         Text(
           S.of(context).ratingSubmittedSuccessBody,
-          style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14),
+          style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14),
           textAlign: TextAlign.center,
         ),
         SizedBox(height: Insets.s8),
@@ -272,7 +273,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
               child: Icon(
                 _rating >= (i + 1) ? Icons.star_rounded : Icons.star_outline_rounded,
                 size: 28.sp,
-                color: const Color(0xFFFFB800),
+                color: context.colors.gold,
               ),
             )),
           ),
@@ -282,7 +283,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
   }
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(children: [
           SizedBox(height: MediaQuery.of(context).padding.top),
           Padding(
@@ -292,19 +293,19 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
               children: [
                 SizedBox(width: 24.sp),
                 Text(S.of(context).vehicleArrivalHeader,
-                    style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
-                Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
+                    style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s20)),
+                Icon(Icons.info_outline_rounded, size: 24.sp, color: context.colors.textPrimary),
               ],
             ),
           ),
-          const Divider(height: 1, color: Color(0xFFF5F5F5)),
+          Divider(height: 1, color: context.colors.borderSubtle),
         ]),
       );
 
   Widget _buildBottomButton(BuildContext context) {
     if (_ratingSubmitted) {
       return Container(
-        decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
+        decoration: BoxDecoration(color: context.colors.surface, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
           boxShadow: const [BoxShadow(color: Color(0x0ACCCCCC), blurRadius: 4, offset: Offset(0, -4))]),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -313,9 +314,9 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
               padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
               child: SizedBox(width: double.infinity, height: 48.h, child: ElevatedButton(
                 onPressed: () => Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: AppColors.white,
+                style: ElevatedButton.styleFrom(backgroundColor: context.colors.primary, foregroundColor: AppColors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
-                child: Text(S.of(context).backToHome, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+                child: Text(S.of(context).backToHome, style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s16)),
               )),
             ),
             SizedBox(height: MediaQuery.of(context).padding.bottom),
@@ -326,7 +327,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
 
     if (_showRating) {
       return Container(
-        decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
+        decoration: BoxDecoration(color: context.colors.surface, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
           boxShadow: const [BoxShadow(color: Color(0x0ACCCCCC), blurRadius: 4, offset: Offset(0, -4))]),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -335,20 +336,20 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
               padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, 0),
               child: SizedBox(width: double.infinity, height: 48.h, child: ElevatedButton(
                 onPressed: _rating == 0 ? null : _submitRating,
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary,
-                  disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.4),
+                style: ElevatedButton.styleFrom(backgroundColor: context.colors.primary,
+                  disabledBackgroundColor: context.colors.primary.withValues(alpha: 0.4),
                   foregroundColor: AppColors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
-                child: Text(S.of(context).submitRating, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+                child: Text(S.of(context).submitRating, style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s16)),
               )),
             ),
             Padding(
               padding: EdgeInsets.fromLTRB(Insets.s16, 8.h, Insets.s16, Insets.s12),
               child: SizedBox(width: double.infinity, height: 40.h, child: TextButton(
                 onPressed: () => Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
-                style: TextButton.styleFrom(foregroundColor: AppColors.grey,
+                style: TextButton.styleFrom(foregroundColor: context.colors.iconSecondary,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16))),
-                child: Text(S.of(context).skip, style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+                child: Text(S.of(context).skip, style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s14)),
               )),
             ),
             SizedBox(height: MediaQuery.of(context).padding.bottom),
@@ -358,7 +359,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
     }
 
     return Container(
-      decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
+      decoration: BoxDecoration(color: context.colors.surface, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
         boxShadow: const [BoxShadow(color: Color(0x0ACCCCCC), blurRadius: 4, offset: Offset(0, -4))]),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -367,18 +368,18 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
             padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, 0),
             child: SizedBox(width: double.infinity, height: 48.h, child: ElevatedButton(
               onPressed: _onTapRating,
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: AppColors.white,
+              style: ElevatedButton.styleFrom(backgroundColor: context.colors.primary, foregroundColor: AppColors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
-              child: Text(S.of(context).rateService, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+              child: Text(S.of(context).rateService, style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s16)),
             )),
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(Insets.s16, 8.h, Insets.s16, Insets.s12),
             child: SizedBox(width: double.infinity, height: 40.h, child: TextButton(
               onPressed: () => Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
-              style: TextButton.styleFrom(foregroundColor: AppColors.grey,
+              style: TextButton.styleFrom(foregroundColor: context.colors.iconSecondary,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16))),
-              child: Text(S.of(context).skip, style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+              child: Text(S.of(context).skip, style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s14)),
             )),
           ),
           SizedBox(height: MediaQuery.of(context).padding.bottom),

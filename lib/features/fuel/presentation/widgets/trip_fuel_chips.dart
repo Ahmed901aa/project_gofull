@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class TripFuelChips extends StatelessWidget {
   final String fuelType;
@@ -22,9 +23,9 @@ class TripFuelChips extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
       decoration: BoxDecoration(
-        color: AppColors.neutral400,
+        color: context.colors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         children: [
@@ -48,12 +49,12 @@ class _Chip extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: 4.h),
       decoration: BoxDecoration(
-        color: AppColors.scaffoldBg,
+        color: context.colors.background,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFBABABA).withValues(alpha: 0.1),
+            color: context.colors.textDisabled.withValues(alpha: 0.1),
             blurRadius: 14,
             offset: const Offset(0, 5),
           ),
@@ -61,9 +62,9 @@ class _Chip extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(label, style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s12)),
+          Text(label, style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s12)),
           SizedBox(height: 2.h),
-          Text(value, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+          Text(value, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
         ],
       ),
     );

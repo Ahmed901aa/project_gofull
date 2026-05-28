@@ -19,6 +19,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_state
 import 'package:project_gofull/features/towing/presentation/widgets/safety_section.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class TowingStartedScreen extends StatefulWidget {
   final TowingStartedArgs? args;
@@ -114,7 +115,7 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
       child: BlocListener<RequestBloc, RequestState>(
         listener: (context, state) => _onState(state),
         child: Scaffold(
-          backgroundColor: AppColors.scaffoldBg,
+          backgroundColor: context.colors.background,
           body: Column(children: [
             _buildHeader(context),
             Expanded(
@@ -127,13 +128,13 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
                   SizedBox(height: Insets.s16),
                   Text(_args.title ?? S.of(context).towingStartHeader,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s18),
                       textAlign: TextAlign.center),
                   SizedBox(height: 4.h),
                   Text(_args.subtitle ?? S.of(context).carBeingTransported,
                       style: getRegularStyle(
-                          color: AppColors.neutral800,
+                          color: context.colors.textSecondary,
                           fontSize: FontSize.s14),
                       textAlign: TextAlign.center),
                   SizedBox(height: Insets.s16),
@@ -155,7 +156,7 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
   }
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(children: [
           SizedBox(height: MediaQuery.of(context).padding.top),
           Padding(
@@ -167,25 +168,25 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
                   SizedBox(width: 24.sp),
                   Text(S.of(context).towingStartHeader,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20)),
                   Icon(Icons.info_outline_rounded,
-                      size: 24.sp, color: const Color(0xFF0E0E0E)),
+                      size: 24.sp, color: context.colors.textPrimary),
                 ]),
           ),
-          const Divider(height: 1, color: Color(0xFFF5F5F5)),
+          Divider(height: 1, color: context.colors.borderSubtle),
         ]),
       );
 
   Widget _buildDestinationCard() => Container(
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.s12),
-          border: Border.all(color: AppColors.neutral500),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(children: [
-          Icon(Icons.location_on_rounded, size: 22.sp, color: AppColors.primary),
+          Icon(Icons.location_on_rounded, size: 22.sp, color: context.colors.primary),
           SizedBox(width: Insets.s12),
           Expanded(
             child: Column(
@@ -193,11 +194,11 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
               children: [
                 Text(S.of(context).deliveryDestination,
                     style: getRegularStyle(
-                        color: AppColors.neutral800, fontSize: FontSize.s12)),
+                        color: context.colors.textSecondary, fontSize: FontSize.s12)),
                 SizedBox(height: 2.h),
                 Text(_destinationAddress,
                     style: getMediumStyle(
-                        color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+                        color: context.colors.textPrimary, fontSize: FontSize.s14),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis),
               ],
@@ -211,7 +212,7 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
         children: [
           Text(S.of(context).providerDetails,
               style: getBoldStyle(
-                  color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
+                  color: context.colors.textPrimary, fontSize: FontSize.s18),
               textAlign: TextAlign.start),
           SizedBox(height: Insets.s8),
           ProviderInfoCard.fromRequest(

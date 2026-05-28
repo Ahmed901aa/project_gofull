@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 /// Reusable card to display provider info (name, rating, plate, vehicle)
 /// across DriverFoundScreen, ServiceArrivedScreen, TripDetailsScreen, etc.
@@ -64,12 +65,12 @@ class ProviderInfoCard extends StatelessWidget {
     return Container(
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.s16),
-          border: Border.all(color: AppColors.neutral500),
+          border: Border.all(color: context.colors.border),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFFBABABA).withValues(alpha: 0.08),
+              color: context.colors.textDisabled.withValues(alpha: 0.08),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -81,7 +82,7 @@ class ProviderInfoCard extends StatelessWidget {
             Text(
               l10n.providerInfoTitle,
               style: getBoldStyle(
-                color: const Color(0xFF0E0E0E),
+                color: context.colors.textPrimary,
                 fontSize: FontSize.s14,
               ),
             ),
@@ -93,13 +94,13 @@ class ProviderInfoCard extends StatelessWidget {
                   width: 56.w,
                   height: 56.w,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
+                    color: context.colors.primary.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.person_rounded,
                     size: 30.sp,
-                    color: AppColors.primary,
+                    color: context.colors.primary,
                   ),
                 ),
                 SizedBox(width: Insets.s12),
@@ -111,7 +112,7 @@ class ProviderInfoCard extends StatelessWidget {
                       Text(
                         displayName,
                         style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s16,
                         ),
                         maxLines: 1,
@@ -123,13 +124,13 @@ class ProviderInfoCard extends StatelessWidget {
                           Icon(
                             Icons.star_rounded,
                             size: 16.sp,
-                            color: const Color(0xFFFFB800),
+                            color: context.colors.gold,
                           ),
                           SizedBox(width: 2.w),
                           Text(
                             rating,
                             style: getSemiBoldStyle(
-                              color: const Color(0xFF0E0E0E),
+                              color: context.colors.textPrimary,
                               fontSize: FontSize.s13,
                             ),
                           ),
@@ -140,7 +141,7 @@ class ProviderInfoCard extends StatelessWidget {
                             Text(
                               l10n.ratingCountLabel(ratingCount!),
                               style: getRegularStyle(
-                                color: AppColors.neutral800,
+                                color: context.colors.textSecondary,
                                 fontSize: FontSize.s12,
                               ),
                             ),
@@ -158,20 +159,20 @@ class ProviderInfoCard extends StatelessWidget {
                       width: 40.w,
                       height: 40.w,
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
+                        color: context.colors.primary,
                         borderRadius: BorderRadius.circular(AppRadius.s12),
                       ),
                       child: Icon(
                         Icons.phone_rounded,
                         size: 20.sp,
-                        color: AppColors.white,
+                        color: context.colors.surface,
                       ),
                     ),
                   ),
               ],
             ),
             SizedBox(height: Insets.s12),
-            const Divider(height: 1, color: AppColors.neutral500),
+            Divider(height: 1, color: context.colors.border),
             SizedBox(height: Insets.s12),
             // Plate + vehicle
             Row(
@@ -216,21 +217,21 @@ class _InfoItem extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Insets.s8),
       decoration: BoxDecoration(
-        color: AppColors.scaffoldBg,
+        color: context.colors.background,
         borderRadius: BorderRadius.circular(AppRadius.s12),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, size: 14.sp, color: AppColors.primary),
+              Icon(icon, size: 14.sp, color: context.colors.primary),
               SizedBox(width: 4.w),
               Text(
                 label,
                 style: getRegularStyle(
-                  color: AppColors.neutral800,
+                  color: context.colors.textSecondary,
                   fontSize: FontSize.s12,
                 ),
               ),
@@ -240,7 +241,7 @@ class _InfoItem extends StatelessWidget {
           Text(
             value,
             style: getBoldStyle(
-              color: const Color(0xFF0E0E0E),
+              color: context.colors.textPrimary,
               fontSize: FontSize.s13,
             ),
             maxLines: 1,

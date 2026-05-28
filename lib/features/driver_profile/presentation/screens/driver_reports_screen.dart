@@ -11,6 +11,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverReportsScreen extends StatefulWidget {
   const DriverReportsScreen({super.key});
@@ -110,7 +111,7 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             _buildHeader(context),
@@ -123,11 +124,11 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(Icons.error_outline_rounded,
-                                  size: 48.sp, color: AppColors.grey),
+                                  size: 48.sp, color: context.colors.iconSecondary),
                               SizedBox(height: Insets.s8),
                               Text(_error!,
                                   style: getRegularStyle(
-                                      color: AppColors.grey,
+                                      color: context.colors.iconSecondary,
                                       fontSize: FontSize.s16)),
                               SizedBox(height: Insets.s16),
                               TextButton(
@@ -160,8 +161,8 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                             children: [
                               _StatCard(
                                 icon: Icons.route_rounded,
-                                iconBg: AppColors.primary50,
-                                iconColor: AppColors.primary,
+                                iconBg: context.colors.primarySurface,
+                                iconColor: context.colors.primary,
                                 title: S.of(context).totalOrdersLabel,
                                 value: '$_totalOrders',
                                 changePercent: '${_ordersChange.abs()}%',
@@ -172,8 +173,8 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                               _StatCard(
                                 icon: Icons.account_balance_wallet_rounded,
                                 iconBg:
-                                    AppColors.gold.withValues(alpha: 0.1),
-                                iconColor: AppColors.gold,
+                                    context.colors.gold.withValues(alpha: 0.1),
+                                iconColor: context.colors.gold,
                                 title: S.of(context).totalIncomeLabel,
                                 value:
                                     '${_totalIncome.toStringAsFixed(2)} ${S.of(context).currencyDL}',
@@ -185,8 +186,8 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                               _StatCard(
                                 icon: Icons.star_rounded,
                                 iconBg:
-                                    AppColors.gold.withValues(alpha: 0.1),
-                                iconColor: AppColors.gold,
+                                    context.colors.gold.withValues(alpha: 0.1),
+                                iconColor: context.colors.gold,
                                 title: S.of(context).averageRatingLabel,
                                 value: _averageRating > 0
                                     ? '${_averageRating.toStringAsFixed(1)} / 5'
@@ -199,8 +200,8 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                               _StatCard(
                                 icon: Icons.today_rounded,
                                 iconBg:
-                                    AppColors.info.withValues(alpha: 0.1),
-                                iconColor: AppColors.info,
+                                    context.colors.info.withValues(alpha: 0.1),
+                                iconColor: context.colors.info,
                                 title: S.of(context).todayIncomeLabel,
                                 value:
                                     '${_todayIncome.toStringAsFixed(2)} ${S.of(context).currencyDL}',
@@ -240,7 +241,7 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
   }
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(
           children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
@@ -252,13 +253,13 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Icon(Icons.arrow_back_rounded,
-                        size: 24.sp, color: const Color(0xFF0E0E0E)),
+                        size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(
                     child: Text(
                       S.of(context).reportsTitle,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20),
                       textAlign: TextAlign.center,
                     ),
@@ -267,7 +268,7 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF5F5F5)),
+            Divider(height: 1, color: context.colors.borderSubtle),
           ],
         ),
       );
@@ -309,9 +310,9 @@ class _StatCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         children: [
@@ -333,7 +334,7 @@ class _StatCard extends StatelessWidget {
                 Text(
                   title,
                   style: getRegularStyle(
-                      color: AppColors.grey, fontSize: FontSize.s14),
+                      color: context.colors.iconSecondary, fontSize: FontSize.s14),
                 ),
                 SizedBox(height: 4.h),
                 Row(
@@ -343,13 +344,13 @@ class _StatCard extends StatelessWidget {
                           ? Icons.arrow_upward_rounded
                           : Icons.arrow_downward_rounded,
                       size: 14.sp,
-                      color: isPositive ? AppColors.success : AppColors.error,
+                      color: isPositive ? context.colors.success : context.colors.error,
                     ),
                     SizedBox(width: 2.w),
                     Text(
                       '$changePercent $changeLabel',
                       style: getRegularStyle(
-                        color: isPositive ? AppColors.success : AppColors.error,
+                        color: isPositive ? context.colors.success : context.colors.error,
                         fontSize: FontSize.s12,
                       ),
                     ),
@@ -361,7 +362,7 @@ class _StatCard extends StatelessWidget {
           Text(
             value,
             style: getBoldStyle(
-                color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
+                color: context.colors.textPrimary, fontSize: FontSize.s18),
           ),
         ],
       ),
@@ -385,9 +386,9 @@ class _ChartSection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -395,7 +396,7 @@ class _ChartSection extends StatelessWidget {
           Text(
             title,
             style: getBoldStyle(
-                color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+                color: context.colors.textPrimary, fontSize: FontSize.s16),
           ),
           SizedBox(height: Insets.s16),
           child,
@@ -437,13 +438,13 @@ class _BarChart extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           horizontal: Insets.s4, vertical: 2.h),
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
+                        color: context.colors.primary,
                         borderRadius: BorderRadius.circular(AppRadius.s8),
                       ),
                       child: Text(
                         '${entry.value.toInt()}',
                         style: getMediumStyle(
-                            color: AppColors.white, fontSize: FontSize.s12),
+                            color: context.colors.surface, fontSize: FontSize.s12),
                       ),
                     ),
                     SizedBox(height: 4.h),
@@ -451,7 +452,7 @@ class _BarChart extends StatelessWidget {
                   Container(
                     height: (160.h * ratio).clamp(4.0, 160.h),
                     decoration: BoxDecoration(
-                      color: isPeak ? AppColors.primary : AppColors.primary200,
+                      color: isPeak ? context.colors.primary : context.colors.primaryLight,
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(AppRadius.s8),
                       ),
@@ -461,7 +462,7 @@ class _BarChart extends StatelessWidget {
                   Text(
                     entry.key,
                     style:
-                        getRegularStyle(color: AppColors.grey, fontSize: 9.sp),
+                        getRegularStyle(color: context.colors.iconSecondary, fontSize: 9.sp),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -495,19 +496,19 @@ class _AreaChart extends StatelessWidget {
             padding:
                 EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
             decoration: BoxDecoration(
-              color: AppColors.success.withValues(alpha: 0.1),
+              color: context.colors.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.s8),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.trending_up_rounded,
-                    size: 14.sp, color: AppColors.success),
+                    size: 14.sp, color: context.colors.success),
                 SizedBox(width: 4.w),
                 Text(
                   S.of(context).weeklyAcceptanceRateLabel,
                   style: getMediumStyle(
-                      color: AppColors.success, fontSize: FontSize.s12),
+                      color: context.colors.success, fontSize: FontSize.s12),
                 ),
               ],
             ),
@@ -519,8 +520,8 @@ class _AreaChart extends StatelessWidget {
           child: CustomPaint(
             painter: _AreaChartPainter(
               values: values,
-              lineColor: AppColors.primary,
-              fillColor: AppColors.primary.withValues(alpha: 0.1),
+              lineColor: context.colors.primary,
+              fillColor: context.colors.primary.withValues(alpha: 0.1),
             ),
             size: Size(double.infinity, 160.h),
           ),
@@ -532,7 +533,7 @@ class _AreaChart extends StatelessWidget {
               .map((l) => Text(
                     l,
                     style: getRegularStyle(
-                        color: AppColors.grey, fontSize: FontSize.s12),
+                        color: context.colors.iconSecondary, fontSize: FontSize.s12),
                   ))
               .toList(),
         ),

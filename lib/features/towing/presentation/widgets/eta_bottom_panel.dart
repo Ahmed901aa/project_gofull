@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class EtaBottomPanel extends StatelessWidget {
   final String etaFormatted;
@@ -25,23 +26,23 @@ class EtaBottomPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
-        boxShadow: [BoxShadow(color: const Color(0xFFCCCCCC).withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2))],
+        boxShadow: [BoxShadow(color: context.colors.border.withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2))],
       ),
       padding: EdgeInsets.all(Insets.s16),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Text(
           label ?? S.of(context).etaLabel(etaFormatted),
-          style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+          style: getSemiBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s16),
         ),
         SizedBox(height: Insets.s8),
         ClipRRect(
           borderRadius: BorderRadius.circular(AppRadius.s16),
           child: LinearProgressIndicator(
             value: progress,
-            backgroundColor: AppColors.neutral600,
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+            backgroundColor: context.colors.border,
+            valueColor: AlwaysStoppedAnimation<Color>(context.colors.primary),
             minHeight: 6.h,
           ),
         ),
@@ -80,10 +81,10 @@ class _ActionButton extends StatelessWidget {
       height: 48.h,
       child: OutlinedButton.icon(
         onPressed: onPressed,
-        icon: Icon(icon, size: 20.sp, color: AppColors.primary),
-        label: Text(label, style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s16)),
+        icon: Icon(icon, size: 20.sp, color: context.colors.primary),
+        label: Text(label, style: getBoldStyle(color: context.colors.primary, fontSize: FontSize.s16)),
         style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: AppColors.primary),
+          side: BorderSide(color: context.colors.primary),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
         ),
       ),

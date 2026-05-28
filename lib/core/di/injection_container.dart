@@ -55,6 +55,7 @@ import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc
 
 // Notifications
 import 'package:project_gofull/core/cubits/locale_cubit.dart';
+import 'package:project_gofull/core/cubits/theme_cubit.dart';
 import 'package:project_gofull/features/notifications/data/datasources/notification_data_source.dart';
 import 'package:project_gofull/features/notifications/presentation/bloc/notification_bloc.dart';
 
@@ -72,6 +73,7 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<TokenStorage>(() => TokenStorage(sl()));
   sl.registerLazySingleton<ApiClient>(() => ApiClient(sl()));
   sl.registerLazySingleton<LocaleCubit>(() => LocaleCubit(sl()));
+  sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit(sl()));
 
   // ── Feature: Auth ────────────────────────────────────────
   sl.registerLazySingleton<AuthDataSource>(

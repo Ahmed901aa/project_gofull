@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class SearchHeader extends StatelessWidget {
   final TextEditingController controller;
@@ -13,7 +14,7 @@ class SearchHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.white,
+      color: context.colors.surface,
       child: Column(
         children: [
           SizedBox(height: MediaQuery.of(context).padding.top),
@@ -23,7 +24,7 @@ class SearchHeader extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
+                  child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: context.colors.textPrimary),
                 ),
                 SizedBox(width: Insets.s12),
                 Expanded(
@@ -31,13 +32,13 @@ class SearchHeader extends StatelessWidget {
                     height: 48.h,
                     padding: EdgeInsets.symmetric(horizontal: Insets.s16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF8F8F9),
+                      color: context.colors.inputFill,
                       borderRadius: BorderRadius.circular(AppRadius.s16),
-                      border: Border.all(color: const Color(0xFFEFF0F1)),
+                      border: Border.all(color: context.colors.border),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.search_rounded, size: 20.sp, color: const Color(0xFF838485)),
+                        Icon(Icons.search_rounded, size: 20.sp, color: context.colors.textSecondary),
                         SizedBox(width: Insets.s8),
                         Expanded(
                           child: TextField(
@@ -45,18 +46,18 @@ class SearchHeader extends StatelessWidget {
                             autofocus: true,
                             decoration: InputDecoration(
                               hintText: S.of(context).searchServiceHelp,
-                              hintStyle: getRegularStyle(color: const Color(0xFF838485), fontSize: FontSize.s14),
+                              hintStyle: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14),
                               border: InputBorder.none,
                               isDense: true,
                               contentPadding: EdgeInsets.zero,
                             ),
-                            style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+                            style: getRegularStyle(color: context.colors.textPrimary, fontSize: FontSize.s14),
                           ),
                         ),
                         if (controller.text.isNotEmpty)
                           GestureDetector(
                             onTap: () => controller.clear(),
-                            child: Icon(Icons.close_rounded, size: 18.sp, color: const Color(0xFF838485)),
+                            child: Icon(Icons.close_rounded, size: 18.sp, color: context.colors.textSecondary),
                           ),
                       ],
                     ),
@@ -65,7 +66,7 @@ class SearchHeader extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(height: 1, color: Color(0xFFF5F5F5)),
+          Divider(height: 1, color: context.colors.borderSubtle),
         ],
       ),
     );

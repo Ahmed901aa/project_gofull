@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class PickerMap extends StatelessWidget {
   final LatLng initialPosition;
@@ -36,7 +37,7 @@ class PickerMap extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.location_on, color: AppColors.primary, size: 48.sp),
+              Icon(Icons.location_on, color: context.colors.primary, size: 48.sp),
               Container(
                 width: 8.w,
                 height: 4.h,

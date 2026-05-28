@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 List<Map<String, String>> _getTermsSections(S l10n) => [
   {'title': l10n.termsGeneralTitle, 'body': l10n.termsGeneralBody},
@@ -21,7 +22,7 @@ class TermsScreen extends StatelessWidget {
     final l10n = S.of(context);
     final _sections = _getTermsSections(l10n);
     return Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             _buildHeader(context),
@@ -38,12 +39,12 @@ class TermsScreen extends StatelessWidget {
                       children: [
                         Text(
                           s['title']!,
-                          style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+                          style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s16),
                         ),
                         SizedBox(height: Insets.s8),
                         Text(
                           s['body']!,
-                          style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14).copyWith(height: 1.6),
+                          style: getRegularStyle(color: context.colors.textPrimary, fontSize: FontSize.s14).copyWith(height: 1.6),
                         ),
                       ],
                     ),
@@ -57,7 +58,7 @@ class TermsScreen extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(
           children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
@@ -67,12 +68,12 @@ class TermsScreen extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
+                    child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(
                     child: Text(
                       S.of(context).terms,
-                      style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
+                      style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s20),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -80,7 +81,7 @@ class TermsScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF5F5F5)),
+            Divider(height: 1, color: context.colors.borderSubtle),
           ],
         ),
       );

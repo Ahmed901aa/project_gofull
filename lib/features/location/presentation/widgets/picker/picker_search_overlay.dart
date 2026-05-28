@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import '../../../domain/nominatim_result.dart';
 import 'picker_suggestion_tile.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class PickerSearchOverlay extends StatelessWidget {
   final TextEditingController controller;
@@ -34,7 +35,7 @@ class PickerSearchOverlay extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          color: AppColors.white,
+          color: context.colors.surface,
           padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
           child: Row(children: [
             GestureDetector(
@@ -42,47 +43,47 @@ class PickerSearchOverlay extends StatelessWidget {
               behavior: HitTestBehavior.opaque,
               child: Container(
                 width: 36.w, height: 36.w,
-                decoration: const BoxDecoration(color: AppColors.lightGrey, shape: BoxShape.circle),
-                child: Icon(Icons.arrow_back, size: 18.sp, color: AppColors.black),
+                decoration: BoxDecoration(color: context.colors.surfaceVariant, shape: BoxShape.circle),
+                child: Icon(Icons.arrow_back, size: 18.sp, color: context.colors.textPrimary),
               ),
             ),
             SizedBox(width: Insets.s8),
             Expanded(child: Container(
               height: 44.h,
               padding: EdgeInsets.symmetric(horizontal: Insets.s12),
-              decoration: BoxDecoration(color: AppColors.lightGrey, borderRadius: BorderRadius.circular(AppRadius.s12)),
+              decoration: BoxDecoration(color: context.colors.surfaceVariant, borderRadius: BorderRadius.circular(AppRadius.s12)),
               child: Row(children: [
-                Icon(Icons.search_rounded, color: AppColors.grey, size: 18.sp),
+                Icon(Icons.search_rounded, color: context.colors.iconSecondary, size: 18.sp),
                 SizedBox(width: Insets.s8),
                 Expanded(child: TextField(
                   controller: controller, focusNode: focusNode, autofocus: true, textInputAction: TextInputAction.search,
-                  style: getMediumStyle(color: AppColors.black, fontSize: FontSize.s14),
+                  style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s14),
                   decoration: InputDecoration(
                     hintText: S.of(context).searchForCityOrDistrict, border: InputBorder.none, isDense: true,
-                    hintStyle: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14),
+                    hintStyle: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s14),
                     contentPadding: EdgeInsets.symmetric(vertical: 12.h),
                   ),
                   onSubmitted: (_) { if (suggestions.isNotEmpty) onSelect(suggestions.first); },
                 )),
                 if (controller.text.isNotEmpty)
                   GestureDetector(onTap: onClear, behavior: HitTestBehavior.opaque,
-                    child: Icon(Icons.close, color: AppColors.grey, size: 16.sp)),
+                    child: Icon(Icons.close, color: context.colors.iconSecondary, size: 16.sp)),
               ]),
             )),
           ]),
         ),
-        const Divider(color: AppColors.divider, height: 1),
+        Divider(color: context.colors.divider, height: 1),
         if (isLoading)
-          Container(color: AppColors.white, padding: EdgeInsets.symmetric(vertical: 20.h),
-            child: const Center(child: CircularProgressIndicator(color: AppColors.primary, strokeWidth: 2)))
+          Container(color: context.colors.surface, padding: EdgeInsets.symmetric(vertical: 20.h),
+            child: Center(child: CircularProgressIndicator(color: context.colors.primary, strokeWidth: 2)))
         else if (suggestions.isNotEmpty)
           Container(
-            color: AppColors.white,
+            color: context.colors.surface,
             constraints: BoxConstraints(maxHeight: 300.h),
             child: ListView.separated(
               shrinkWrap: true,
               itemCount: suggestions.length,
-              separatorBuilder: (_, __) => const Divider(color: AppColors.divider, height: 1),
+              separatorBuilder: (_, __) => Divider(color: context.colors.divider, height: 1),
               itemBuilder: (_, i) => PickerSuggestionTile(item: suggestions[i], onTap: onSelect),
             ),
           ),

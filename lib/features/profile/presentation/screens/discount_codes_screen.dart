@@ -9,6 +9,7 @@ import 'package:project_gofull/features/profile/presentation/widgets/discount_co
 import 'package:project_gofull/features/profile/presentation/widgets/discount_tabs.dart';
 import 'package:project_gofull/features/profile/presentation/widgets/expired_coupon_card.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 // TODO: Connect to coupons API when backend endpoint is available
 const List<Map<String, String>> _activeCoupons = [];
@@ -31,7 +32,7 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     return Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: context.colors.background,
         body: Column(children: [
           _buildHeader(context),
           Expanded(
@@ -47,14 +48,14 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
                 if (_selectedTab == 0 && _activeCoupons.isEmpty)
                   Padding(
                     padding: EdgeInsets.only(top: Insets.s24),
-                    child: Center(child: Text(l10n.noActiveCoupons, style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14))),
+                    child: Center(child: Text(l10n.noActiveCoupons, style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s14))),
                   ),
                 if (_selectedTab == 0)
                   ..._activeCoupons.map((c) => Padding(padding: EdgeInsets.only(bottom: Sizes.s12), child: CouponCard(title: c['title']!, expiry: c['expiry']!))),
                 if (_selectedTab == 1 && _expiredCoupons.isEmpty)
                   Padding(
                     padding: EdgeInsets.only(top: Insets.s24),
-                    child: Center(child: Text(l10n.noExpiredCoupons, style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14))),
+                    child: Center(child: Text(l10n.noExpiredCoupons, style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s14))),
                   ),
                 if (_selectedTab == 1)
                   ..._expiredCoupons.map((c) => Padding(padding: EdgeInsets.only(bottom: Sizes.s12), child: ExpiredCouponCard(title: c['title']!, expiry: c['expiry']!))),
@@ -67,18 +68,18 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
   }
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(children: [
           SizedBox(height: MediaQuery.of(context).padding.top),
           Padding(
             padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
             child: Row(children: [
-              GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: const Color(0xFF0E0E0E))),
-              Expanded(child: Text(S.of(context).discountCodes, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20), textAlign: TextAlign.center)),
+              GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: context.colors.textPrimary)),
+              Expanded(child: Text(S.of(context).discountCodes, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s20), textAlign: TextAlign.center)),
               SizedBox(width: 24.sp),
             ]),
           ),
-          const Divider(height: 1, color: Color(0xFFF5F5F5)),
+          Divider(height: 1, color: context.colors.borderSubtle),
         ]),
       );
 }

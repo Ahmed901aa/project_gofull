@@ -12,6 +12,7 @@ import 'package:project_gofull/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_event.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_state.dart';
 import 'package:project_gofull/features/auth/presentation/widgets/login_form_card.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -58,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         child: Builder(
           builder: (context) => Scaffold(
-            backgroundColor: AppColors.primary,
+            backgroundColor: context.colors.primary,
             body: Column(
               children: [
                 Expanded(
@@ -80,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: AppColors.white,
+                      color: context.colors.surface,
                       borderRadius: BorderRadius.vertical(
                           top: Radius.circular(AppRadius.s32)),
                     ),

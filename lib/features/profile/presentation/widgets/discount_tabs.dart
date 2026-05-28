@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DiscountTabs extends StatelessWidget {
   final int selectedTab;
@@ -17,28 +18,28 @@ class DiscountTabs extends StatelessWidget {
       children: [
         Row(
           children: [
-            _tab(0, S.of(context).savingsList),
-            _tab(1, S.of(context).previousCodes),
+            _tab(context, 0, S.of(context).savingsList),
+            _tab(context, 1, S.of(context).previousCodes),
           ],
         ),
-        Container(height: 1, color: AppColors.neutral600),
+        Container(height: 1, color: context.colors.border),
       ],
     );
   }
 
-  Widget _tab(int index, String label) => Expanded(
+  Widget _tab(BuildContext context, int index, String label) => Expanded(
         child: GestureDetector(
           onTap: () => onTabChanged(index),
           child: IntrinsicWidth(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(label, style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
+                Text(label, style: getRegularStyle(color: context.colors.textPrimary, fontSize: FontSize.s18)),
                 SizedBox(height: 4.h),
                 Container(
                   height: 2.h,
                   decoration: BoxDecoration(
-                    color: selectedTab == index ? AppColors.primary : Colors.transparent,
+                    color: selectedTab == index ? context.colors.primary : Colors.transparent,
                     borderRadius: BorderRadius.circular(AppRadius.s24),
                   ),
                 ),

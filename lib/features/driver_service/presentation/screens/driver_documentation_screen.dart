@@ -14,6 +14,7 @@ import 'package:project_gofull/core/widgets/app_button.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverDocumentationScreen extends StatefulWidget {
   final DriverDocumentationArgs args;
@@ -80,7 +81,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             _buildHeader(context),
@@ -108,7 +109,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
   // ── Header ──────────────────────────────────────────────────
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(
           children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
@@ -120,13 +121,13 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Icon(Icons.arrow_back_rounded,
-                        size: 24.sp, color: const Color(0xFF0E0E0E)),
+                        size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(
                     child: Text(
                       S.of(context).documentation,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20),
                       textAlign: TextAlign.center,
                     ),
@@ -142,17 +143,17 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
                       width: 36.w,
                       height: 36.w,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
+                        color: context.colors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: Icon(Icons.phone_rounded,
-                          size: 20.sp, color: AppColors.primary),
+                          size: 20.sp, color: context.colors.primary),
                     ),
                   ),
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF5F5F5)),
+            Divider(height: 1, color: context.colors.borderSubtle),
           ],
         ),
       );
@@ -162,14 +163,14 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
   Widget _buildInfoBanner() => Container(
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
-          color: const Color(0xFFE8F5E9),
+          color: context.colors.successSurface,
           borderRadius: BorderRadius.circular(AppRadius.s12),
-          border: Border.all(color: AppColors.success.withOpacity(0.3)),
+          border: Border.all(color: context.colors.success.withOpacity(0.3)),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.info_rounded, size: 22.sp, color: AppColors.primary),
+            Icon(Icons.info_rounded, size: 22.sp, color: context.colors.primary),
             SizedBox(width: Insets.s12),
             Expanded(
               child: Column(
@@ -178,13 +179,13 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
                   Text(
                     S.of(context).mandatoryDoc,
                     style: getBoldStyle(
-                        color: AppColors.primary, fontSize: FontSize.s14),
+                        color: context.colors.primary, fontSize: FontSize.s14),
                   ),
                   SizedBox(height: 4.h),
                   Text(
                     S.of(context).docMandatoryDesc,
                     style: getRegularStyle(
-                        color: AppColors.primaryLight,
+                        color: context.colors.primaryLight,
                         fontSize: FontSize.s12),
                   ),
                 ],
@@ -202,12 +203,12 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
       child: Container(
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.s12),
           border: Border.all(
             color: _captured
-                ? AppColors.success.withValues(alpha: 0.4)
-                : AppColors.inputBorder,
+                ? context.colors.success.withValues(alpha: 0.4)
+                : context.colors.inputBorder,
           ),
         ),
         child: _captured ? _buildCapturedView() : _buildEmptyView(),
@@ -221,23 +222,23 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
             width: 64.w,
             height: 64.w,
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
+              color: context.colors.primary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(Icons.camera_alt_rounded,
-                size: 32.sp, color: AppColors.primary),
+                size: 32.sp, color: context.colors.primary),
           ),
           SizedBox(height: Insets.s12),
           Text(
             S.of(context).captureVehiclePhoto,
             style: getSemiBoldStyle(
-                color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+                color: context.colors.textPrimary, fontSize: FontSize.s16),
           ),
           SizedBox(height: 4.h),
           Text(
             S.of(context).tapToCapturePhoto,
             style: getRegularStyle(
-                color: AppColors.neutral800, fontSize: FontSize.s14),
+                color: context.colors.textSecondary, fontSize: FontSize.s14),
             textAlign: TextAlign.center,
           ),
         ],
@@ -259,12 +260,12 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.check_circle_rounded,
-                  size: 20.sp, color: AppColors.success),
+                  size: 20.sp, color: context.colors.success),
               SizedBox(width: 6.w),
               Text(
                 S.of(context).photoCaptured,
                 style: getSemiBoldStyle(
-                    color: AppColors.success, fontSize: FontSize.s14),
+                    color: context.colors.success, fontSize: FontSize.s14),
               ),
               SizedBox(width: Insets.s16),
               GestureDetector(
@@ -273,19 +274,19 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
                   padding: EdgeInsets.symmetric(
                       horizontal: Insets.s12, vertical: 6.h),
                   decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.primary),
+                    border: Border.all(color: context.colors.primary),
                     borderRadius: BorderRadius.circular(AppRadius.s8),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(Icons.camera_alt_outlined,
-                          size: 14.sp, color: AppColors.primary),
+                          size: 14.sp, color: context.colors.primary),
                       SizedBox(width: 4.w),
                       Text(
                         S.of(context).retake,
                         style: getMediumStyle(
-                            color: AppColors.primary, fontSize: FontSize.s12),
+                            color: context.colors.primary, fontSize: FontSize.s12),
                       ),
                     ],
                   ),
@@ -305,9 +306,9 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
           Insets.s16,
           Insets.s12 + MediaQuery.of(context).padding.bottom,
         ),
-        decoration: const BoxDecoration(
-          color: AppColors.white,
-          border: Border(top: BorderSide(color: Color(0xFFF5F5F5))),
+        decoration: BoxDecoration(
+          color: context.colors.surface,
+          border: Border(top: BorderSide(color: context.colors.borderSubtle)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -318,7 +319,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
                 child: Text(
                   S.of(context).pleaseCaptureToContinue,
                   style: getRegularStyle(
-                      color: AppColors.neutral800, fontSize: FontSize.s12),
+                      color: context.colors.textSecondary, fontSize: FontSize.s12),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -326,7 +327,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
               text: _buttonLabel(context),
               onPressed: _captured ? _onContinue : () {},
               backgroundColor:
-                  _captured ? AppColors.primary : AppColors.neutral600,
+                  _captured ? context.colors.primary : context.colors.border,
             ),
           ],
         ),

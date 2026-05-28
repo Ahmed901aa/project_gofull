@@ -793,5 +793,11 @@
   "privacyDriverRightsBody": "• Request access to your personal data\n• Request correction or update of your data\n• Request deletion of your account and data\n• Withdraw your consent at any time\n• File a complaint with the relevant authorities",
   "privacyDriverContactTitle": "Contact Us",
   "privacyDriverContactBody": "If you have any questions about the privacy policy or how your data is handled, please contact us through the technical support section in the app or email us at: support@gofull.ly",
-  "fuelDetailsSection": "Fuel Details"
+  "fuelDetailsSection": "Fuel Details",
+  "appearance": "Appearance",
+  "themeMode": "Theme",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "themeChanged": "Theme updated"
 }

@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class MapTopBar extends StatelessWidget {
   final VoidCallback? onSearchTap;
@@ -13,7 +14,7 @@ class MapTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.white,
+      color: context.colors.surface,
       padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
       child: Row(
         children: [
@@ -21,14 +22,14 @@ class MapTopBar extends StatelessWidget {
             onTap: () => Navigator.pop(context),
             child: Container(
               width: 36.w, height: 36.w,
-              decoration: BoxDecoration(color: AppColors.lightGrey, shape: BoxShape.circle),
-              child: Icon(Icons.close, size: 18.sp, color: AppColors.black),
+              decoration: BoxDecoration(color: context.colors.surfaceVariant, shape: BoxShape.circle),
+              child: Icon(Icons.close, size: 18.sp, color: context.colors.textPrimary),
             ),
           ),
           Expanded(
             child: Text(
               S.of(context).currentLocation,
-              style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s18),
+              style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18),
               textAlign: TextAlign.center,
             ),
           ),
@@ -37,8 +38,8 @@ class MapTopBar extends StatelessWidget {
             behavior: HitTestBehavior.opaque,
             child: Container(
               width: 36.w, height: 36.w,
-              decoration: BoxDecoration(color: AppColors.lightGrey, shape: BoxShape.circle),
-              child: Icon(Icons.search_rounded, size: 18.sp, color: AppColors.black),
+              decoration: BoxDecoration(color: context.colors.surfaceVariant, shape: BoxShape.circle),
+              child: Icon(Icons.search_rounded, size: 18.sp, color: context.colors.textPrimary),
             ),
           ),
         ],

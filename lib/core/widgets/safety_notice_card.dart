@@ -3,6 +3,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class SafetyNoticeCard extends StatelessWidget {
   const SafetyNoticeCard({super.key});
@@ -13,9 +14,9 @@ class SafetyNoticeCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFFFBE1E3),
+        color: context.colors.errorSurface,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: const Color(0xFFE63946)),
+        border: Border.all(color: context.colors.error),
       ),
       child: RichText(
         textAlign: TextAlign.start,
@@ -23,11 +24,11 @@ class SafetyNoticeCard extends StatelessWidget {
           children: [
             TextSpan(
               text: l10n.safetyFirstTitle,
-              style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+              style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s14),
             ),
             TextSpan(
               text: l10n.safetyFirstBody,
-              style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+              style: getRegularStyle(color: context.colors.textPrimary, fontSize: FontSize.s14),
             ),
           ],
         ),

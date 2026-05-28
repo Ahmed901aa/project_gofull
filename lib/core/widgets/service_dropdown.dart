@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class ServiceDropdown extends StatelessWidget {
   final String hint;
@@ -25,9 +26,9 @@ class ServiceDropdown extends StatelessWidget {
       height: 48.h,
       padding: EdgeInsets.symmetric(horizontal: Insets.s16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F8F9),
+        color: context.colors.inputFill,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: const Color(0xFFEFF0F1)),
+        border: Border.all(color: context.colors.border),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
@@ -35,14 +36,14 @@ class ServiceDropdown extends StatelessWidget {
           value: value,
           hint: Align(
             alignment: AlignmentDirectional.centerEnd,
-            child: Text(hint, style: getRegularStyle(color: const Color(0xFFAAAAAB), fontSize: FontSize.s14)),
+            child: Text(hint, style: getRegularStyle(color: context.colors.textDisabled, fontSize: FontSize.s14)),
           ),
-          icon: Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.neutral900, size: 20.sp),
+          icon: Icon(Icons.keyboard_arrow_down_rounded, color: context.colors.textSecondary, size: 20.sp),
           items: items.map((item) => DropdownMenuItem(
             value: item,
             child: Align(
               alignment: AlignmentDirectional.centerEnd,
-              child: Text(item, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+              child: Text(item, style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
             ),
           )).toList(),
           onChanged: onChanged,

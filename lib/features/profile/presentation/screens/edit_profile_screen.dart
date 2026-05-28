@@ -10,6 +10,7 @@ import '../widgets/edit_profile_avatar.dart';
 import '../widgets/edit_profile_bottom_buttons.dart';
 import '../widgets/edit_profile_fields.dart';
 import '../widgets/phone_otp_bottom_sheet.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -67,7 +68,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final confirmed = await AppConfirmDialog.show(
       context,
       icon: Icons.person_remove_outlined,
-      iconColor: AppColors.error,
+      iconColor: context.colors.error,
       title: l10n.deleteAccount,
       subtitle: l10n.deleteAccountSubtitle,
       confirmLabel: l10n.confirmDelete,
@@ -82,7 +83,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             AppHeader(title: S.of(context).editProfile),

@@ -12,6 +12,7 @@ import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverSupportScreen extends StatelessWidget {
   const DriverSupportScreen({super.key});
@@ -39,7 +40,7 @@ class DriverSupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             _buildHeader(context),
@@ -73,7 +74,7 @@ class DriverSupportScreen extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(
           children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
@@ -85,13 +86,13 @@ class DriverSupportScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Icon(Icons.arrow_back_rounded,
-                        size: 24.sp, color: const Color(0xFF0E0E0E)),
+                        size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(
                     child: Text(
                       S.of(context).technicalSupportTitle,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20),
                       textAlign: TextAlign.center,
                     ),
@@ -100,7 +101,7 @@ class DriverSupportScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF5F5F5)),
+            Divider(height: 1, color: context.colors.borderSubtle),
           ],
         ),
       );
@@ -123,7 +124,7 @@ class _SupportIllustration extends StatelessWidget {
         Text(
           S.of(context).supportTeamAvailable,
           style: getMediumStyle(
-              color: AppColors.primary, fontSize: FontSize.s16),
+              color: context.colors.primary, fontSize: FontSize.s16),
         ),
       ],
     );
@@ -147,15 +148,15 @@ class _DirectCallSection extends StatelessWidget {
         Text(
           S.of(context).directCallLabel,
           style: getBoldStyle(
-              color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+              color: context.colors.textPrimary, fontSize: FontSize.s16),
         ),
         SizedBox(height: Insets.s8),
         Container(
           padding: EdgeInsets.all(Insets.s16),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: context.colors.surface,
             borderRadius: BorderRadius.circular(AppRadius.s16),
-            border: Border.all(color: AppColors.neutral500),
+            border: Border.all(color: context.colors.border),
           ),
           child: Row(
             children: [
@@ -166,12 +167,12 @@ class _DirectCallSection extends StatelessWidget {
                   width: 44.w,
                   height: 44.w,
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: context.colors.primary,
                     borderRadius: BorderRadius.circular(AppRadius.s12),
                   ),
                   alignment: Alignment.center,
                   child: Icon(Icons.phone_rounded,
-                      size: 22.sp, color: AppColors.white),
+                      size: 22.sp, color: context.colors.surface),
                 ),
               ),
               SizedBox(width: Insets.s12),
@@ -183,13 +184,13 @@ class _DirectCallSection extends StatelessWidget {
                     Text(
                       S.of(context).phoneNumberLabel2,
                       style: getRegularStyle(
-                          color: AppColors.grey, fontSize: FontSize.s12),
+                          color: context.colors.iconSecondary, fontSize: FontSize.s12),
                     ),
                     SizedBox(height: 2.h),
                     Text(
                       phone,
                       style: getSemiBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s16),
                       textDirection: TextDirection.ltr,
                     ),
@@ -203,12 +204,12 @@ class _DirectCallSection extends StatelessWidget {
                   width: 36.w,
                   height: 36.w,
                   decoration: BoxDecoration(
-                    color: AppColors.neutral400,
+                    color: context.colors.surfaceElevated,
                     borderRadius: BorderRadius.circular(AppRadius.s8),
                   ),
                   alignment: Alignment.center,
                   child: Icon(Icons.copy_rounded,
-                      size: 18.sp, color: AppColors.darkGrey),
+                      size: 18.sp, color: context.colors.textSecondary),
                 ),
               ),
             ],

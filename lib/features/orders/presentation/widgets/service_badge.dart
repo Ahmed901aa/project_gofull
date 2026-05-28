@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/orders/models/order_data.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class ServiceBadge extends StatelessWidget {
   final ServiceType serviceType;
@@ -17,15 +18,15 @@ class ServiceBadge extends StatelessWidget {
     final label = serviceType == ServiceType.tow ? S.of(context).towTruckService : S.of(context).fuelSupply;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Insets.s12, vertical: 4.h),
-      decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(AppRadius.s16)),
+      decoration: BoxDecoration(color: context.colors.primary, borderRadius: BorderRadius.circular(AppRadius.s16)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           serviceType == ServiceType.tow
               ? SvgPicture.asset('assets/svg/towing.svg', width: 14.sp, height: 14.sp, colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn))
-              : Icon(Icons.local_gas_station_outlined, size: 14.sp, color: AppColors.white),
+              : Icon(Icons.local_gas_station_outlined, size: 14.sp, color: context.colors.surface),
           SizedBox(width: 4.w),
-          Text(label, style: getMediumStyle(color: AppColors.white, fontSize: FontSize.s12)),
+          Text(label, style: getMediumStyle(color: context.colors.surface, fontSize: FontSize.s12)),
         ],
       ),
     );

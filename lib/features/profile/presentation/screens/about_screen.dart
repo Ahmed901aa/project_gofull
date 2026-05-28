@@ -8,6 +8,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -16,7 +17,7 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     return Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             AppHeader(title: l10n.aboutGoFull),
@@ -32,7 +33,7 @@ class AboutScreen extends StatelessWidget {
                       width: 100.w,
                       height: 100.w,
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
+                        color: context.colors.primary,
                         borderRadius: BorderRadius.circular(24.r),
                       ),
                       padding: EdgeInsets.all(20.w),
@@ -46,18 +47,19 @@ class AboutScreen extends StatelessWidget {
                     Text(
                       'GO FULL',
                       style: getBoldStyle(
-                          color: AppColors.primary, fontSize: FontSize.s24),
+                          color: context.colors.primary, fontSize: FontSize.s24),
                     ),
                     SizedBox(height: 4.h),
                     Text(
                       l10n.version,
                       style: getRegularStyle(
-                          color: AppColors.grey, fontSize: FontSize.s14),
+                          color: context.colors.iconSecondary, fontSize: FontSize.s14),
                     ),
                     SizedBox(height: 32.h),
 
                     // Description
                     _buildCard(
+                      context,
                       icon: Icons.local_gas_station_rounded,
                       title: l10n.aboutFuelTitle,
                       description:
@@ -65,6 +67,7 @@ class AboutScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 12.h),
                     _buildCard(
+                      context,
                       icon: Icons.fire_truck_rounded,
                       title: l10n.aboutTowTitle,
                       description:
@@ -72,6 +75,7 @@ class AboutScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 12.h),
                     _buildCard(
+                      context,
                       icon: Icons.speed_rounded,
                       title: l10n.aboutFastResponse,
                       description:
@@ -79,6 +83,7 @@ class AboutScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 12.h),
                     _buildCard(
+                      context,
                       icon: Icons.verified_user_rounded,
                       title: l10n.aboutSafety,
                       description:
@@ -89,7 +94,7 @@ class AboutScreen extends StatelessWidget {
                     Text(
                       l10n.copyright,
                       style: getRegularStyle(
-                          color: AppColors.grey, fontSize: FontSize.s12),
+                          color: context.colors.iconSecondary, fontSize: FontSize.s12),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 16.h),
@@ -102,7 +107,8 @@ class AboutScreen extends StatelessWidget {
       );
   }
 
-  Widget _buildCard({
+  Widget _buildCard(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required String description,
@@ -110,9 +116,9 @@ class AboutScreen extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: const Color(0xFFEFF0F1)),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,10 +127,10 @@ class AboutScreen extends StatelessWidget {
             width: 44.w,
             height: 44.w,
             decoration: BoxDecoration(
-              color: AppColors.primary50,
+              color: context.colors.primarySurface,
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: Icon(icon, color: AppColors.primary, size: 24.sp),
+            child: Icon(icon, color: context.colors.primary, size: 24.sp),
           ),
           SizedBox(width: 12.w),
           Expanded(
@@ -133,12 +139,12 @@ class AboutScreen extends StatelessWidget {
               children: [
                 Text(title,
                     style: getSemiBoldStyle(
-                        color: const Color(0xFF0E0E0E),
+                        color: context.colors.textPrimary,
                         fontSize: FontSize.s16)),
                 SizedBox(height: 4.h),
                 Text(description,
                     style: getRegularStyle(
-                        color: AppColors.darkGrey, fontSize: FontSize.s14)),
+                        color: context.colors.textSecondary, fontSize: FontSize.s14)),
               ],
             ),
           ),

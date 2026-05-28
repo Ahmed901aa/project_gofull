@@ -2375,4 +2375,22 @@ class SEn extends S {
 
   @override
   String get fuelDetailsSection => 'Fuel Details';
+
+  @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get themeMode => 'Theme';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String get themeChanged => 'Theme updated';
 }

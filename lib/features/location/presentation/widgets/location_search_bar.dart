@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 /// Search input: bg #F8F8F9, border #EFF0F1, radius 16px, height 48px.
 /// RTL Row: search icon (right) | text field | X clear (left).
@@ -28,25 +29,25 @@ class LocationSearchBar extends StatelessWidget {
         height: 48.h,
         padding: EdgeInsets.symmetric(horizontal: Insets.s16),
         decoration: BoxDecoration(
-          color: AppColors.neutral200,
+          color: context.colors.inputFill,
           borderRadius: BorderRadius.circular(AppRadius.s16),
-          border: Border.all(color: AppColors.neutral500),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(
           children: [
             // RTL first child → rightmost = search icon
-            Icon(Icons.search_rounded, color: AppColors.neutral800, size: 20.sp),
+            Icon(Icons.search_rounded, color: context.colors.textSecondary, size: 20.sp),
             SizedBox(width: Insets.s8),
             Expanded(
               child: TextField(
                 controller: controller,
                 focusNode: focusNode,
                 style: getMediumStyle(
-                    color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+                    color: context.colors.textPrimary, fontSize: FontSize.s16),
                 decoration: InputDecoration(
                   hintText: S.of(context).searchForLocation,
                   hintStyle: getRegularStyle(
-                      color: AppColors.neutral800, fontSize: FontSize.s16),
+                      color: context.colors.textSecondary, fontSize: FontSize.s16),
                   border: InputBorder.none,
                   isDense: true,
                   contentPadding: EdgeInsets.zero,
@@ -58,7 +59,7 @@ class LocationSearchBar extends StatelessWidget {
               GestureDetector(
                 onTap: onClear,
                 behavior: HitTestBehavior.opaque,
-                child: Icon(Icons.close, color: AppColors.neutral800, size: 18.sp),
+                child: Icon(Icons.close, color: context.colors.textSecondary, size: 18.sp),
               ),
           ],
         ),

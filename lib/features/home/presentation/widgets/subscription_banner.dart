@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class SubscriptionBanner extends StatelessWidget {
   const SubscriptionBanner({super.key});
@@ -15,14 +16,14 @@ class SubscriptionBanner extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(Insets.s20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFF5E6C5), Color(0xFFFDF6EB)],
+        gradient: LinearGradient(
+          colors: [context.colors.goldLight, context.isDarkMode ? context.colors.surfaceElevated : const Color(0xFFFDF6EB)],
           begin: AlignmentDirectional.topEnd,
           end: AlignmentDirectional.bottomStart,
         ),
         borderRadius: BorderRadius.circular(AppRadius.s16),
         border: Border.all(
-          color: AppColors.gold.withValues(alpha: 0.3),
+          color: context.colors.gold.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -31,12 +32,12 @@ class SubscriptionBanner extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.gold.withValues(alpha: 0.2),
+              color: context.colors.gold.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(
               Icons.workspace_premium_rounded,
-              color: AppColors.gold,
+              color: context.colors.gold,
               size: 28.sp,
             ),
           ),
@@ -49,7 +50,7 @@ class SubscriptionBanner extends StatelessWidget {
                 Text(
                   S.of(context).subscriptionTitle,
                   style: getSemiBoldStyle(
-                    color: AppColors.black,
+                    color: context.colors.textPrimary,
                     fontSize: FontSize.s14,
                   ),
                   maxLines: 2,
@@ -59,7 +60,7 @@ class SubscriptionBanner extends StatelessWidget {
                 Text(
                   S.of(context).subscriptionSubtitle,
                   style: getRegularStyle(
-                    color: AppColors.darkGrey,
+                    color: context.colors.textSecondary,
                     fontSize: FontSize.s12,
                   ),
                 ),
@@ -74,13 +75,13 @@ class SubscriptionBanner extends StatelessWidget {
               vertical: Insets.s8,
             ),
             decoration: BoxDecoration(
-              color: AppColors.gold,
+              color: context.colors.gold,
               borderRadius: BorderRadius.circular(AppRadius.s12),
             ),
             child: Text(
               S.of(context).subscribeNow,
               style: getBoldStyle(
-                color: AppColors.white,
+                color: context.colors.surface,
                 fontSize: FontSize.s12,
               ),
             ),

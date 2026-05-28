@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 /// TODO: Remove in production — mock only.
 class MockTriggerButton extends StatelessWidget {
@@ -18,12 +19,12 @@ class MockTriggerButton extends StatelessWidget {
       child: OutlinedButton(
         onPressed: onTap,
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.warning,
-          side: const BorderSide(color: AppColors.warning),
+          foregroundColor: context.colors.warning,
+          side: BorderSide(color: context.colors.warning),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
           minimumSize: Size(double.infinity, 44.h),
         ),
-        child: Text(label, style: getBoldStyle(color: AppColors.warning, fontSize: FontSize.s14)),
+        child: Text(label, style: getBoldStyle(color: context.colors.warning, fontSize: FontSize.s14)),
       ),
     );
   }

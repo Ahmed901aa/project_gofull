@@ -15,6 +15,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_event
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 /// Banner shown on the customer home screen when there's an active order.
 /// Tap → resume the order on the correct screen based on its status.
@@ -50,7 +51,7 @@ class ActiveOrderCard extends StatelessWidget {
             padding: EdgeInsets.only(bottom: Sizes.s12),
             child: Text(l10n.currentOrder,
                 style: getSemiBoldStyle(
-                    color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
+                    color: context.colors.textPrimary, fontSize: FontSize.s18),
                 textAlign: TextAlign.start),
           ),
           InkWell(
@@ -58,12 +59,12 @@ class ActiveOrderCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppRadius.s16),
             child: Container(
               decoration: BoxDecoration(
-                color: AppColors.neutral50,
+                color: context.colors.surfaceVariant,
                 borderRadius: BorderRadius.circular(AppRadius.s16),
-                border: Border.all(color: AppColors.primary, width: 1.5),
+                border: Border.all(color: context.colors.primary, width: 1.5),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.08),
+                    color: context.colors.primary.withValues(alpha: 0.08),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -82,13 +83,13 @@ class ActiveOrderCard extends StatelessWidget {
                         padding: EdgeInsets.symmetric(
                             horizontal: Insets.s12, vertical: 4.h),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.1),
+                          color: context.colors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(AppRadius.s16),
                         ),
                         child: Text(
                           isFuel ? l10n.fuelService : l10n.towService,
                           style: getSemiBoldStyle(
-                              color: AppColors.primary,
+                              color: context.colors.primary,
                               fontSize: FontSize.s12),
                         ),
                       ),
@@ -100,12 +101,12 @@ class ActiveOrderCard extends StatelessWidget {
                   // Address
                   Row(children: [
                     Icon(Icons.location_on_rounded,
-                        size: 18.sp, color: AppColors.primary),
+                        size: 18.sp, color: context.colors.primary),
                     SizedBox(width: 6.w),
                     Expanded(
                       child: Text(address,
                           style: getMediumStyle(
-                              color: const Color(0xFF0E0E0E),
+                              color: context.colors.textPrimary,
                               fontSize: FontSize.s14),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis),
@@ -119,11 +120,11 @@ class ActiveOrderCard extends StatelessWidget {
                     children: [
                       Text(l10n.total,
                           style: getRegularStyle(
-                              color: AppColors.neutral800,
+                              color: context.colors.textSecondary,
                               fontSize: FontSize.s14)),
                       Text(price,
                           style: getBoldStyle(
-                              color: AppColors.primary,
+                              color: context.colors.primary,
                               fontSize: FontSize.s16)),
                     ],
                   ),
@@ -138,7 +139,7 @@ class ActiveOrderCard extends StatelessWidget {
                           child: ElevatedButton(
                             onPressed: () => _resumeOrder(context, order),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
+                              backgroundColor: context.colors.primary,
                               foregroundColor: AppColors.white,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
@@ -152,12 +153,12 @@ class ActiveOrderCard extends StatelessWidget {
                               children: [
                                 Text(l10n.resumeOrder,
                                     style: getSemiBoldStyle(
-                                        color: AppColors.white,
+                                        color: context.colors.surface,
                                         fontSize: FontSize.s14)),
                                 SizedBox(width: 6.w),
                                 Icon(Icons.arrow_forward_rounded,
                                     size: 22.sp,
-                                    color: AppColors.white,
+                                    color: context.colors.surface,
                                     textDirection: TextDirection.ltr),
                               ],
                             ),
@@ -172,7 +173,7 @@ class ActiveOrderCard extends StatelessWidget {
                             onPressed: () =>
                                 _confirmCancel(context, order.id),
                             style: OutlinedButton.styleFrom(
-                              side: const BorderSide(color: AppColors.error),
+                              side: BorderSide(color: context.colors.error),
                               shape: RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.circular(AppRadius.s12),
@@ -180,7 +181,7 @@ class ActiveOrderCard extends StatelessWidget {
                             ),
                             child: Text(l10n.cancel,
                                 style: getSemiBoldStyle(
-                                    color: AppColors.error,
+                                    color: context.colors.error,
                                     fontSize: FontSize.s14)),
                           ),
                         ),
@@ -273,7 +274,7 @@ class ActiveOrderCard extends StatelessWidget {
     final confirmed = await AppConfirmDialog.show(
       context,
       icon: Icons.cancel_rounded,
-      iconColor: AppColors.error,
+      iconColor: context.colors.error,
       title: l10n.cancelOrderConfirmTitle,
       subtitle: l10n.cancelOrderCustomerConfirm,
       confirmLabel: l10n.yesCancel,
@@ -337,22 +338,22 @@ class _StatusBadge extends StatelessWidget {
     switch (s.trim().toLowerCase()) {
       case 'pending':
         return _StatusInfo(
-            l10n.pendingAcceptance, AppColors.warning, const Color(0xFFFFF3E0));
+            l10n.pendingAcceptance, context.colors.warning, context.colors.warningSurface);
       case 'accepted':
         return _StatusInfo(
-            l10n.orderAccepted, const Color(0xFF1565C0), const Color(0xFFE3F2FD));
+            l10n.orderAccepted, context.colors.info, context.isDarkMode ? const Color(0xFF1A2E3A) : const Color(0xFFE3F2FD));
       case 'en_route':
         return _StatusInfo(
-            l10n.enRoute, const Color(0xFF2E7D32), const Color(0xFFE8F5E9));
+            l10n.enRoute, context.colors.success, context.colors.successSurface);
       case 'arrived':
         return _StatusInfo(
-            l10n.arrived, const Color(0xFF0C5460), const Color(0xFFD1ECF1));
+            l10n.arrived, context.isDarkMode ? const Color(0xFF4DB6AC) : const Color(0xFF0C5460), context.isDarkMode ? const Color(0xFF1A3A35) : const Color(0xFFD1ECF1));
       case 'in_progress':
-        return _StatusInfo(l10n.inProgress, const Color(0xFF4A148C),
-            const Color(0xFFE2D5F1));
+        return _StatusInfo(l10n.inProgress, context.isDarkMode ? const Color(0xFFCE93D8) : const Color(0xFF4A148C),
+            context.isDarkMode ? const Color(0xFF2A1A3A) : const Color(0xFFE2D5F1));
       default:
         return _StatusInfo(
-            l10n.processing, AppColors.neutral800, AppColors.neutral400);
+            l10n.processing, context.colors.textSecondary, context.colors.surfaceElevated);
     }
   }
 }

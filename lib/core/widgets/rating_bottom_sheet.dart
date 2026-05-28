@@ -12,6 +12,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 /// Shows the rating bottom sheet for an unrated completed order.
 /// Returns `true` if the user rated, `false` if dismissed.
@@ -89,7 +90,7 @@ class _RatingSheetState extends State<_RatingSheet> {
         },
         child: Container(
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color: context.colors.surface,
               borderRadius:
                   BorderRadius.vertical(top: Radius.circular(24.r)),
             ),
@@ -104,7 +105,7 @@ class _RatingSheetState extends State<_RatingSheet> {
                   height: 4.h,
                   margin: EdgeInsets.only(bottom: Insets.s16),
                   decoration: BoxDecoration(
-                    color: AppColors.neutral600,
+                    color: context.colors.border,
                     borderRadius: BorderRadius.circular(2.r),
                   ),
                 ),
@@ -113,7 +114,7 @@ class _RatingSheetState extends State<_RatingSheet> {
                 Text(
                   l10n.rateService,
                   style: getBoldStyle(
-                      color: const Color(0xFF0E0E0E),
+                      color: context.colors.textPrimary,
                       fontSize: FontSize.s20),
                 ),
                 SizedBox(height: 4.h),
@@ -122,7 +123,7 @@ class _RatingSheetState extends State<_RatingSheet> {
                 Text(
                   '${widget.request.isFuelDelivery ? l10n.fuelService : l10n.towService} — ${_providerName(context)}',
                   style: getRegularStyle(
-                      color: AppColors.neutral800,
+                      color: context.colors.textSecondary,
                       fontSize: FontSize.s14),
                 ),
                 SizedBox(height: Insets.s24),
@@ -142,8 +143,8 @@ class _RatingSheetState extends State<_RatingSheet> {
                               : Icons.star_border_rounded,
                           size: 44.sp,
                           color: starIndex <= _rating
-                              ? const Color(0xFFFFB800)
-                              : AppColors.neutral600,
+                              ? context.colors.gold
+                              : context.colors.border,
                         ),
                       ),
                     );
@@ -158,8 +159,8 @@ class _RatingSheetState extends State<_RatingSheet> {
                       : _ratingLabel(_rating, l10n),
                   style: getMediumStyle(
                     color: _rating == 0
-                        ? AppColors.neutral800
-                        : AppColors.primary,
+                        ? context.colors.textSecondary
+                        : context.colors.primary,
                     fontSize: FontSize.s14,
                   ),
                 ),
@@ -172,24 +173,24 @@ class _RatingSheetState extends State<_RatingSheet> {
                   decoration: InputDecoration(
                     hintText: l10n.writeCommentHint,
                     hintStyle: getRegularStyle(
-                        color: AppColors.neutral800,
+                        color: context.colors.textSecondary,
                         fontSize: FontSize.s14),
                     filled: true,
-                    fillColor: AppColors.scaffoldBg,
+                    fillColor: context.colors.background,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppRadius.s12),
                       borderSide:
-                          const BorderSide(color: AppColors.neutral500),
+                          BorderSide(color: context.colors.border),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppRadius.s12),
                       borderSide:
-                          const BorderSide(color: AppColors.neutral500),
+                          BorderSide(color: context.colors.border),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(AppRadius.s12),
                       borderSide:
-                          const BorderSide(color: AppColors.primary),
+                          BorderSide(color: context.colors.primary),
                     ),
                     contentPadding: EdgeInsets.all(Insets.s12),
                   ),
@@ -204,8 +205,8 @@ class _RatingSheetState extends State<_RatingSheet> {
                     onPressed:
                         _rating > 0 && !_submitting ? _submit : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      disabledBackgroundColor: const Color(0xFFD9DADB),
+                      backgroundColor: context.colors.primary,
+                      disabledBackgroundColor: context.colors.border,
                       foregroundColor: AppColors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius:
@@ -217,14 +218,14 @@ class _RatingSheetState extends State<_RatingSheet> {
                         ? SizedBox(
                             width: 24.w,
                             height: 24.w,
-                            child: const CircularProgressIndicator(
+                            child: CircularProgressIndicator(
                                 strokeWidth: 2.5,
-                                color: AppColors.white),
+                                color: context.colors.surface),
                           )
                         : Text(
                             l10n.submitRatingBtn,
                             style: getBoldStyle(
-                                color: AppColors.white,
+                                color: context.colors.surface,
                                 fontSize: FontSize.s16),
                           ),
                   ),

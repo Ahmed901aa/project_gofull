@@ -22,6 +22,7 @@ import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/driver_found_header.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverFoundScreen extends StatefulWidget {
   final DriverFoundArgs? args;
@@ -180,7 +181,7 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
       child: BlocListener<RequestBloc, RequestState>(
         listener: _onStatusChanged,
         child: Scaffold(
-          backgroundColor: AppColors.scaffoldBg,
+          backgroundColor: context.colors.background,
           body: Column(
             children: [
               DriverFoundHeader(showClose: _args.showClose),
@@ -209,7 +210,7 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
                                 : S.of(context).towDriverOnWayToYou)
                             : _args.title,
                         style: getBoldStyle(
-                            color: const Color(0xFF0E0E0E),
+                            color: context.colors.textPrimary,
                             fontSize: FontSize.s18),
                         textAlign: TextAlign.center,
                       ),
@@ -219,7 +220,7 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
                             ? S.of(context).driverMovedWaitSafe
                             : S.of(context).driverAcceptedSubtitle,
                         style: getRegularStyle(
-                            color: AppColors.neutral800,
+                            color: context.colors.textSecondary,
                             fontSize: FontSize.s14),
                         textAlign: TextAlign.center,
                       ),

@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 
 
@@ -49,8 +50,8 @@ class DottedCircleContainer extends StatelessWidget {
             SizedBox(
               width: size * 0.38,
               height: size * 0.38,
-              child: const CircularProgressIndicator(
-                color: Colors.white,
+              child: CircularProgressIndicator(
+                color: context.colors.surface,
                 strokeWidth: 3,
               ),
             )

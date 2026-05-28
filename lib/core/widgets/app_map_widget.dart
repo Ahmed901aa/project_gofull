@@ -13,6 +13,7 @@ import 'app_map/map_search_overlay.dart';
 import 'app_map/map_my_location_button.dart';
 import 'app_map/map_confirm_button.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 /// Default fallback: Benghazi, Libya
 const _kDefaultLat = 32.1194;
@@ -246,8 +247,8 @@ class _AppMapWidgetState extends State<AppMapWidget> {
   Widget build(BuildContext context) {
     // Show loading while resolving GPS
     if (_resolvingGps) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
+      return Center(
+        child: CircularProgressIndicator(color: context.colors.primary),
       );
     }
 

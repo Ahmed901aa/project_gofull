@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class MapConfirmButton extends StatelessWidget {
   final String address;
@@ -16,9 +17,9 @@ class MapConfirmButton extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s16, Insets.s16, 32.h),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s24)),
-        boxShadow: [BoxShadow(color: AppColors.shadow, blurRadius: 16, offset: const Offset(0, -4))],
+        boxShadow: [BoxShadow(color: context.colors.shadow, blurRadius: 16, offset: const Offset(0, -4))],
       ),
       child: SizedBox(
         width: double.infinity,
@@ -26,12 +27,12 @@ class MapConfirmButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () => Navigator.pop(context, address),
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
+            backgroundColor: context.colors.primary,
             foregroundColor: AppColors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s12)),
             elevation: 0,
           ),
-          child: Text(S.of(context).confirm, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+          child: Text(S.of(context).confirm, style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s16)),
         ),
       ),
     );

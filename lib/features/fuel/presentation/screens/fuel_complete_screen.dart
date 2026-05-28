@@ -18,6 +18,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 List<String> _getSafetyItems(BuildContext context) {
   final l10n = S.of(context);
@@ -121,7 +122,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
           }
         },
         child: Scaffold(
-          backgroundColor: AppColors.scaffoldBg,
+          backgroundColor: context.colors.background,
           body: Column(
             children: [
               _buildHeader(context),
@@ -136,9 +137,9 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
                       SizedBox(height: Insets.s16),
                       const Center(child: DottedCircleContainer(imagePath: 'assets/images/shield.gif')),
                       SizedBox(height: Insets.s16),
-                      Text(l10n.fuelCompleteSuccess, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
+                      Text(l10n.fuelCompleteSuccess, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18), textAlign: TextAlign.center),
                       SizedBox(height: 6.h),
-                      Text(l10n.fuelCompleteSubtitle, style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.center),
+                      Text(l10n.fuelCompleteSubtitle, style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14), textAlign: TextAlign.center),
                       SizedBox(height: Insets.s24),
                       FuelCompleteSafetySection(items: _getSafetyItems(context)),
                       SizedBox(height: Insets.s16),
@@ -147,7 +148,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
                         SizedBox(height: Insets.s16),
                         FuelCompletePaymentSection(data: _buildData(_request!, cur, S.of(context))),
                       ] else
-                        const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+                        Center(child: CircularProgressIndicator(color: context.colors.primary)),
                       SizedBox(height: Insets.s16),
 
                       // ── Inline Rating Section ──────────────────────
@@ -156,9 +157,9 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
                           key: _ratingKey,
                           padding: EdgeInsets.all(Insets.s16),
                           decoration: BoxDecoration(
-                            color: AppColors.white,
+                            color: context.colors.surface,
                             borderRadius: BorderRadius.circular(AppRadius.s16),
-                            border: Border.all(color: const Color(0xFFEFF0F1)),
+                            border: Border.all(color: context.colors.border),
                           ),
                           child: _ratingSubmitted
                               ? _buildRatingSuccess()
@@ -183,11 +184,11 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(l10n.howWasYourExperience, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
+        Text(l10n.howWasYourExperience, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18)),
         SizedBox(height: 2.h),
         Text(
           l10n.feedbackHelpsImprove,
-          style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
+          style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14),
           textAlign: TextAlign.center,
         ),
         SizedBox(height: Insets.s16),
@@ -203,7 +204,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
                 child: Icon(
                   _rating >= star ? Icons.star_rounded : Icons.star_outline_rounded,
                   size: 40.sp,
-                  color: const Color(0xFFFFB800),
+                  color: context.colors.gold,
                 ),
               ),
             );
@@ -214,24 +215,24 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
           SizedBox(height: Insets.s16),
           Align(
             alignment: AlignmentDirectional.centerEnd,
-            child: Text(l10n.addNotes, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+            child: Text(l10n.addNotes, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
           ),
           SizedBox(height: Insets.s8),
           Container(
             decoration: BoxDecoration(
-              color: AppColors.scaffoldBg,
+              color: context.colors.background,
               borderRadius: BorderRadius.circular(AppRadius.s16),
-              border: Border.all(color: AppColors.neutral500),
+              border: Border.all(color: context.colors.border),
             ),
             child: TextField(
               controller: _notesController,
               maxLength: _maxNoteLength,
               maxLines: 3,
               textAlign: TextAlign.start,
-              style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+              style: getRegularStyle(color: context.colors.textPrimary, fontSize: FontSize.s14),
               decoration: InputDecoration(
                 hintText: l10n.addNotesHint,
-                hintStyle: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
+                hintStyle: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14),
                 contentPadding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
                 border: InputBorder.none,
                 counterText: '',
@@ -246,7 +247,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
               padding: EdgeInsets.symmetric(horizontal: Insets.s8),
               child: Text(
                 '${_notesController.text.length}/$_maxNoteLength',
-                style: getMediumStyle(color: AppColors.neutral900, fontSize: FontSize.s12),
+                style: getMediumStyle(color: context.colors.textSecondary, fontSize: FontSize.s12),
                 textDirection: TextDirection.ltr,
               ),
             ),
@@ -261,13 +262,13 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.check_circle_rounded, size: 48.sp, color: AppColors.primary),
+        Icon(Icons.check_circle_rounded, size: 48.sp, color: context.colors.primary),
         SizedBox(height: Insets.s8),
-        Text(l10n.thankYouForRating, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
+        Text(l10n.thankYouForRating, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18)),
         SizedBox(height: 4.h),
         Text(
           l10n.ratingSubmittedSuccess,
-          style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14),
+          style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14),
           textAlign: TextAlign.center,
         ),
         SizedBox(height: Insets.s8),
@@ -281,7 +282,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
               child: Icon(
                 _rating >= (i + 1) ? Icons.star_rounded : Icons.star_outline_rounded,
                 size: 28.sp,
-                color: const Color(0xFFFFB800),
+                color: context.colors.gold,
               ),
             )),
           ),
@@ -291,18 +292,18 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
   }
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(children: [
           SizedBox(height: MediaQuery.of(context).padding.top),
           Padding(
             padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.close_rounded, size: 24.sp, color: const Color(0xFF0E0E0E))),
-              Text(l10n.fuelCompleteTitle, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
-              Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
+              GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.close_rounded, size: 24.sp, color: context.colors.textPrimary)),
+              Text(l10n.fuelCompleteTitle, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s20)),
+              Icon(Icons.info_outline_rounded, size: 24.sp, color: context.colors.textPrimary),
             ]),
           ),
-          const Divider(height: 1, color: Color(0xFFF5F5F5)),
+          Divider(height: 1, color: context.colors.borderSubtle),
         ]),
       );
 
@@ -310,14 +311,14 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
     // After rating submitted → go home
     if (_ratingSubmitted) {
       return Container(
-        decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
-          boxShadow: [BoxShadow(color: const Color(0xFFCCCCCC).withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2))]),
+        decoration: BoxDecoration(color: context.colors.surface, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
+          boxShadow: [BoxShadow(color: context.colors.border.withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2))]),
         padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s16),
         child: SizedBox(height: 48.h, width: double.infinity, child: ElevatedButton(
           onPressed: () => Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
-          style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: AppColors.white,
+          style: ElevatedButton.styleFrom(backgroundColor: context.colors.primary, foregroundColor: AppColors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
-          child: Text(l10n.backToHome, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+          child: Text(l10n.backToHome, style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s16)),
         )),
       );
     }
@@ -325,26 +326,26 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
     // Rating form visible → submit button
     if (_showRating) {
       return Container(
-        decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
-          boxShadow: [BoxShadow(color: const Color(0xFFCCCCCC).withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2))]),
+        decoration: BoxDecoration(color: context.colors.surface, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
+          boxShadow: [BoxShadow(color: context.colors.border.withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2))]),
         padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: 48.h, width: double.infinity, child: ElevatedButton(
               onPressed: _rating == 0 ? null : _submitRating,
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary,
-                disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.4),
+              style: ElevatedButton.styleFrom(backgroundColor: context.colors.primary,
+                disabledBackgroundColor: context.colors.primary.withValues(alpha: 0.4),
                 foregroundColor: AppColors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
-              child: Text(l10n.submitRating, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+              child: Text(l10n.submitRating, style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s16)),
             )),
             SizedBox(height: 8.h),
             SizedBox(height: 40.h, width: double.infinity, child: TextButton(
               onPressed: () => Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
-              style: TextButton.styleFrom(foregroundColor: AppColors.grey,
+              style: TextButton.styleFrom(foregroundColor: context.colors.iconSecondary,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16))),
-              child: Text(l10n.skip, style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+              child: Text(l10n.skip, style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s14)),
             )),
           ],
         ),
@@ -353,24 +354,24 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
 
     // Default → show rating button + skip
     return Container(
-      decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
-        boxShadow: [BoxShadow(color: const Color(0xFFCCCCCC).withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2))]),
+      decoration: BoxDecoration(color: context.colors.surface, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
+        boxShadow: [BoxShadow(color: context.colors.border.withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2))]),
       padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(height: 48.h, width: double.infinity, child: ElevatedButton(
             onPressed: _onTapRating,
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: AppColors.white,
+            style: ElevatedButton.styleFrom(backgroundColor: context.colors.primary, foregroundColor: AppColors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
-            child: Text(l10n.rateService, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+            child: Text(l10n.rateService, style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s16)),
           )),
           SizedBox(height: 8.h),
           SizedBox(height: 40.h, width: double.infinity, child: TextButton(
             onPressed: () => Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
-            style: TextButton.styleFrom(foregroundColor: AppColors.grey,
+            style: TextButton.styleFrom(foregroundColor: context.colors.iconSecondary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16))),
-            child: Text(l10n.skip, style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+            child: Text(l10n.skip, style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s14)),
           )),
         ],
       ),

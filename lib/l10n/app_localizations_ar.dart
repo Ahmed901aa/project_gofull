@@ -2360,4 +2360,22 @@ class SAr extends S {
 
   @override
   String get fuelDetailsSection => 'تفاصيل الوقود';
+
+  @override
+  String get appearance => 'المظهر';
+
+  @override
+  String get themeMode => 'السمة';
+
+  @override
+  String get themeSystem => 'النظام';
+
+  @override
+  String get themeLight => 'فاتح';
+
+  @override
+  String get themeDark => 'داكن';
+
+  @override
+  String get themeChanged => 'تم تحديث السمة';
 }

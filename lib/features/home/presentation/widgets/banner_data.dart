@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class BannerData {
   final List<Color> gradientColors;
@@ -24,7 +25,7 @@ List<BannerData> getBannerSlides(BuildContext context) {
   final l10n = S.of(context);
   return [
     BannerData(
-      gradientColors: [Color(0xFFFFB800), Color(0xFFE1A200), Color(0xFF996E00)],
+      gradientColors: [context.colors.gold, Color(0xFFE1A200), Color(0xFF996E00)],
       headline: l10n.bannerAllServicesIn,
       headlineAccent: l10n.bannerOneSubscription,
       badge: l10n.bannerFreeVouchers,
@@ -33,7 +34,7 @@ List<BannerData> getBannerSlides(BuildContext context) {
       ctaLabel: l10n.subscribeNow,
     ),
     BannerData(
-      gradientColors: [Color(0xFF1A6B54), Color(0xFF004B3B), Color(0xFF003329)],
+      gradientColors: [context.colors.primaryLight, context.colors.primary, Color(0xFF003329)],
       headline: l10n.bannerTowRoundClock,
       headlineAccent: l10n.bannerTwentyFourHours,
       badge: l10n.bannerFastResponse,

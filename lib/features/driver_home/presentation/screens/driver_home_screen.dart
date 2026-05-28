@@ -22,6 +22,7 @@ import 'package:project_gofull/core/widgets/app_notification.dart';
 import '../widgets/driver_drawer.dart';
 import '../widgets/driver_status_toggle.dart';
 import '../widgets/order_popup_card.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});
@@ -283,7 +284,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     final confirmed = await AppConfirmDialog.show(
       context,
       icon: Icons.cancel_rounded,
-      iconColor: AppColors.error,
+      iconColor: context.colors.error,
       title: S.of(context).cancelOrderDialogTitle,
       subtitle: S.of(context).cancelOrderDialogSubtitle,
       confirmLabel: S.of(context).cancelOrderDialogBtn,
@@ -462,7 +463,7 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
   Widget build(BuildContext context) {
     final isFuel = widget.serviceType != 'towing';
     final accentColor = isFuel
-        ? const Color(0xFF1A6B54)
+        ? context.colors.primaryLight
         : const Color(0xFF1565C0);
     final accentLight = isFuel
         ? const Color(0xFF2A9D6E)
@@ -472,7 +473,7 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
       duration: const Duration(milliseconds: 350),
       curve: Curves.easeOutCubic,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
         boxShadow: [
           BoxShadow(
@@ -541,7 +542,7 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
                       S.of(context).searchingSubtitle,
                       style: getRegularStyle(
                         fontSize: FontSize.s12,
-                        color: AppColors.grey,
+                        color: context.colors.iconSecondary,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -560,7 +561,7 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(vertical: 12.h),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFEE2E2),
+                    color: context.colors.errorSurface,
                     borderRadius: BorderRadius.circular(14.r),
                     border: Border.all(
                       color: const Color(0xFFFCA5A5),
@@ -571,12 +572,12 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.stop_circle_outlined,
-                          size: 20.sp, color: const Color(0xFFDC2626)),
+                          size: 20.sp, color: context.colors.error),
                       SizedBox(width: 6.w),
                       Text(
                         S.of(context).stopPatrol,
                         style: getSemiBoldStyle(
-                          color: const Color(0xFFDC2626),
+                          color: context.colors.error,
                           fontSize: FontSize.s14,
                         ),
                       ),
@@ -613,7 +614,7 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
                       width: 48.w,
                       height: 48.w,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: context.colors.surface.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(14.r),
                       ),
                       child: Icon(
@@ -657,7 +658,7 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
                           vertical: 10.h,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: context.colors.surface,
                           borderRadius: BorderRadius.circular(12.r),
                           boxShadow: [
                             BoxShadow(
@@ -861,9 +862,9 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
     switch (widget.request.status) {
       case 'accepted':    return const Color(0xFF2979FF);
       case 'en_route':    return const Color(0xFFFF9800);
-      case 'arrived':     return const Color(0xFF1A6B54);
+      case 'arrived':     return context.colors.primaryLight;
       case 'in_progress': return const Color(0xFF7C3AED);
-      default: return AppColors.primary;
+      default: return context.colors.primary;
     }
   }
 
@@ -887,7 +888,7 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
         return Container(
           padding: EdgeInsets.all(14.w),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: context.colors.surface,
             borderRadius: BorderRadius.circular(20.r),
             boxShadow: [
               BoxShadow(
@@ -1001,11 +1002,11 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                       width: 48.w,
                       height: 48.w,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFEE2E2),
+                        color: context.colors.errorSurface,
                         borderRadius: BorderRadius.circular(14.r),
                         border: Border.all(color: const Color(0xFFFCA5A5)),
                       ),
-                      child: Icon(Icons.close_rounded, size: 22.sp, color: const Color(0xFFDC2626)),
+                      child: Icon(Icons.close_rounded, size: 22.sp, color: context.colors.error),
                     ),
                   ),
                   SizedBox(width: 10.w),
@@ -1252,7 +1253,7 @@ class _SlideToActivateState extends State<SlideToActivate>
                     height: _thumbSize,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.white,
+                      color: context.colors.surface,
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.18),
@@ -1302,7 +1303,7 @@ class _MapControlButton extends StatelessWidget {
         width: 46.w,
         height: 46.w,
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(14.r),
           boxShadow: [
             BoxShadow(

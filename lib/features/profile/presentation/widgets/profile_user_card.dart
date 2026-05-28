@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class ProfileUserCard extends StatelessWidget {
   final String name;
@@ -25,7 +26,7 @@ class ProfileUserCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.primary,
+        color: context.colors.primary,
         borderRadius: BorderRadius.circular(AppRadius.s24),
       ),
       child: Row(
@@ -35,14 +36,14 @@ class ProfileUserCard extends StatelessWidget {
             width: 40.w,
             height: 40.w,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF8E6),
+              color: context.colors.goldLight,
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.white),
+              border: Border.all(color: context.colors.surface),
             ),
             alignment: Alignment.center,
             child: Text(
               initials,
-              style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+              style: getRegularStyle(color: context.colors.textPrimary, fontSize: FontSize.s16),
             ),
           ),
           SizedBox(width: 4.w),
@@ -52,11 +53,11 @@ class ProfileUserCard extends StatelessWidget {
             children: [
               Text(
                 name,
-                style: getRegularStyle(color: AppColors.white, fontSize: FontSize.s18),
+                style: getRegularStyle(color: context.colors.surface, fontSize: FontSize.s18),
               ),
               Text(
                 phone,
-                style: getRegularStyle(color: AppColors.white, fontSize: FontSize.s14),
+                style: getRegularStyle(color: context.colors.surface, fontSize: FontSize.s14),
               ),
             ],
           ),
@@ -68,13 +69,13 @@ class ProfileUserCard extends StatelessWidget {
               height: 32.h,
               padding: EdgeInsets.symmetric(horizontal: Insets.s16),
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color: context.colors.surface,
                 borderRadius: BorderRadius.circular(AppRadius.s24),
               ),
               alignment: Alignment.center,
               child: Text(
                 S.of(context).editBtn,
-                style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s14),
+                style: getBoldStyle(color: context.colors.primary, fontSize: FontSize.s14),
               ),
             ),
           ),

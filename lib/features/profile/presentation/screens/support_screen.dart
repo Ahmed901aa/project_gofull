@@ -12,6 +12,7 @@ import 'package:project_gofull/core/widgets/app_header.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class SupportScreen extends StatelessWidget {
   final bool showBack;
@@ -42,7 +43,7 @@ class SupportScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     return Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             AppHeader(title: l10n.supportAndHelp, showBack: showBack),
@@ -64,7 +65,7 @@ class SupportScreen extends StatelessWidget {
                           Text(
                             l10n.contactUs,
                             style: getBoldStyle(
-                              color: const Color(0xFF0E0E0E),
+                              color: context.colors.textPrimary,
                               fontSize: FontSize.s18,
                             ),
                           ),
@@ -74,7 +75,7 @@ class SupportScreen extends StatelessWidget {
                             return Column(children: [
                               _ContactOptionCard(
                                 icon: Icons.phone_rounded,
-                                iconBgColor: AppColors.primary,
+                                iconBgColor: context.colors.primary,
                                 title: l10n.directCall,
                                 subtitle: phone,
                                 onTap: () => _makeCall(phone),
@@ -103,7 +104,7 @@ class SupportScreen extends StatelessWidget {
                           Text(
                             l10n.faq,
                             style: getBoldStyle(
-                              color: const Color(0xFF0E0E0E),
+                              color: context.colors.textPrimary,
                               fontSize: FontSize.s18,
                             ),
                           ),
@@ -155,7 +156,7 @@ class SupportScreen extends StatelessWidget {
           Text(
             l10n.howCanWeHelp,
             style: getBoldStyle(
-              color: const Color(0xFF0E0E0E),
+              color: context.colors.textPrimary,
               fontSize: FontSize.s22,
             ),
           ),
@@ -163,7 +164,7 @@ class SupportScreen extends StatelessWidget {
           Text(
             l10n.teamReadyToServe,
             style: getRegularStyle(
-              color: AppColors.neutral800,
+              color: context.colors.textSecondary,
               fontSize: FontSize.s14,
             ),
           ),
@@ -200,9 +201,9 @@ class _ContactOptionCard extends StatelessWidget {
         width: double.infinity,
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.s16),
-          border: Border.all(color: const Color(0xFFEFF0F1)),
+          border: Border.all(color: context.colors.border),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.03),
@@ -230,7 +231,7 @@ class _ContactOptionCard extends StatelessWidget {
                   Text(
                     title,
                     style: getSemiBoldStyle(
-                      color: const Color(0xFF0E0E0E),
+                      color: context.colors.textPrimary,
                       fontSize: FontSize.s14,
                     ),
                   ),
@@ -238,7 +239,7 @@ class _ContactOptionCard extends StatelessWidget {
                   Text(
                     subtitle,
                     style: getRegularStyle(
-                      color: AppColors.neutral800,
+                      color: context.colors.textSecondary,
                       fontSize: FontSize.s12,
                     ),
                   ),
@@ -248,7 +249,7 @@ class _ContactOptionCard extends StatelessWidget {
             Icon(
               Icons.arrow_forward_rounded,
               size: 16.sp,
-              color: AppColors.neutral800,
+              color: context.colors.textSecondary,
             ),
           ],
         ),
@@ -278,12 +279,12 @@ class _FaqItemState extends State<_FaqItem> {
     return Container(
       margin: EdgeInsets.only(bottom: 8.h),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(AppRadius.s12),
         border: Border.all(
           color: _expanded
-              ? AppColors.primary.withValues(alpha: 0.3)
-              : const Color(0xFFEFF0F1),
+              ? context.colors.primary.withValues(alpha: 0.3)
+              : context.colors.border,
         ),
       ),
       child: Column(
@@ -299,7 +300,7 @@ class _FaqItemState extends State<_FaqItem> {
                     child: Text(
                       widget.question,
                       style: getMediumStyle(
-                        color: const Color(0xFF0E0E0E),
+                        color: context.colors.textPrimary,
                         fontSize: FontSize.s14,
                       ),
                     ),
@@ -310,7 +311,7 @@ class _FaqItemState extends State<_FaqItem> {
                     child: Icon(
                       Icons.keyboard_arrow_down_rounded,
                       size: 22.sp,
-                      color: AppColors.primary,
+                      color: context.colors.primary,
                     ),
                   ),
                 ],
@@ -326,7 +327,7 @@ class _FaqItemState extends State<_FaqItem> {
               child: Text(
                 widget.answer,
                 style: getRegularStyle(
-                  color: AppColors.neutral800,
+                  color: context.colors.textSecondary,
                   fontSize: FontSize.s12,
                 ),
               ),

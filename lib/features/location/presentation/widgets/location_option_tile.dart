@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 /// Two quick-action rows separated by a divider.
 /// Callbacks are provided by the parent screen.
@@ -21,18 +22,18 @@ class LocationOptionTile extends StatelessWidget {
       children: [
         _ActionRow(
           icon: Icon(Icons.my_location_rounded,
-              color: AppColors.primary, size: 22.sp),
+              color: context.colors.primary, size: 22.sp),
           label: S.of(context).yourLocation,
           onTap: onGpsTap,
-          labelColor: const Color(0xFF0E0E0E),
+          labelColor: context.colors.textPrimary,
         ),
-        const Divider(color: AppColors.neutral500, height: 1),
+        Divider(color: context.colors.border, height: 1),
         _ActionRow(
           icon: Icon(Icons.location_on_outlined,
-              color: AppColors.primary, size: 22.sp),
+              color: context.colors.primary, size: 22.sp),
           label: S.of(context).selectLocationOnMapAlt,
           onTap: onMapTap,
-          labelColor: const Color(0xFF0E0E0E),
+          labelColor: context.colors.textPrimary,
         ),
       ],
     );

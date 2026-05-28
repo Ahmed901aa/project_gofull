@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'promo_banner_card.dart';
 import 'promo_dots_indicator.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class PromoBanner extends StatefulWidget {
   const PromoBanner({super.key});
@@ -63,7 +64,7 @@ class _PromoBannerState extends State<PromoBanner> {
         PromoDotsIndicator(
           totalPages: _totalPages,
           currentPage: _currentPage,
-          activeColor: AppColors.primary,
+          activeColor: context.colors.primary,
         ),
       ],
     );

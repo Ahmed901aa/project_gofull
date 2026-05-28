@@ -14,6 +14,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import '../widgets/nav_item.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class BottomNavShell extends StatefulWidget {
   BottomNavShell({Key? key}) : super(key: key ?? shellKey);
@@ -140,12 +141,12 @@ class _BottomNavShellState extends State<BottomNavShell>
       child: BlocListener<RequestBloc, RequestState>(
         listener: _onRatingState,
         child: Scaffold(
-          backgroundColor: AppColors.white,
+          backgroundColor: context.colors.surface,
           body: IndexedStack(index: _currentIndex, children: _screens),
           bottomNavigationBar: Container(
-            decoration: const BoxDecoration(
-              color: AppColors.scaffoldBg,
-              border: Border(top: BorderSide(color: Color(0xFFF4F5F6))),
+            decoration: BoxDecoration(
+              color: context.colors.background,
+              border: Border(top: BorderSide(color: context.colors.surfaceVariant)),
             ),
             child: SafeArea(
               top: false,

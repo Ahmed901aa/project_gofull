@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 /// Shows a polished language selection bottom sheet.
 ///
@@ -48,7 +49,7 @@ class _LanguageSelectorContentState extends State<_LanguageSelectorContent> {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s24)),
       ),
       padding: EdgeInsets.fromLTRB(Insets.s16, 8.h, Insets.s16, Insets.s16),
@@ -62,7 +63,7 @@ class _LanguageSelectorContentState extends State<_LanguageSelectorContent> {
               width: 40.w,
               height: 4.h,
               decoration: BoxDecoration(
-                color: const Color(0xFFD9DADB),
+                color: context.colors.border,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -72,12 +73,12 @@ class _LanguageSelectorContentState extends State<_LanguageSelectorContent> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.language_rounded,
-                    color: AppColors.primary, size: 22.sp),
+                    color: context.colors.primary, size: 22.sp),
                 SizedBox(width: 8.w),
                 Text(
                   'Language / اللغة',
                   style: getBoldStyle(
-                      color: const Color(0xFF0E0E0E),
+                      color: context.colors.textPrimary,
                       fontSize: FontSize.s18),
                 ),
               ],
@@ -117,7 +118,7 @@ class _LanguageSelectorContentState extends State<_LanguageSelectorContent> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: context.colors.primary,
                   foregroundColor: AppColors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppRadius.s16),
@@ -129,7 +130,7 @@ class _LanguageSelectorContentState extends State<_LanguageSelectorContent> {
                       ? (_selected == 'ar' ? 'تأكيد' : 'Confirm')
                       : (current == 'ar' ? 'إغلاق' : 'Close'),
                   style: getBoldStyle(
-                      color: AppColors.white, fontSize: FontSize.s16),
+                      color: context.colors.surface, fontSize: FontSize.s16),
                 ),
               ),
             ),
@@ -164,11 +165,11 @@ class _LanguageOption extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: 14.h),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primary.withValues(alpha: 0.06)
+              ? context.colors.primary.withValues(alpha: 0.06)
               : AppColors.white,
           borderRadius: BorderRadius.circular(AppRadius.s16),
           border: Border.all(
-            color: isSelected ? AppColors.primary : const Color(0xFFEFF0F1),
+            color: isSelected ? context.colors.primary : context.colors.border,
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -186,8 +187,8 @@ class _LanguageOption extends StatelessWidget {
                     title,
                     style: getBoldStyle(
                       color: isSelected
-                          ? AppColors.primary
-                          : const Color(0xFF0E0E0E),
+                          ? context.colors.primary
+                          : context.colors.textPrimary,
                       fontSize: FontSize.s16,
                     ),
                   ),
@@ -195,7 +196,7 @@ class _LanguageOption extends StatelessWidget {
                   Text(
                     subtitle,
                     style: getRegularStyle(
-                      color: AppColors.grey,
+                      color: context.colors.iconSecondary,
                       fontSize: FontSize.s12,
                     ),
                   ),
@@ -209,15 +210,15 @@ class _LanguageOption extends StatelessWidget {
               height: 24.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isSelected ? AppColors.primary : Colors.transparent,
+                color: isSelected ? context.colors.primary : Colors.transparent,
                 border: Border.all(
-                  color: isSelected ? AppColors.primary : const Color(0xFFCCCCCC),
+                  color: isSelected ? context.colors.primary : context.colors.border,
                   width: 1.5,
                 ),
               ),
               child: isSelected
                   ? Icon(Icons.check_rounded,
-                      color: AppColors.white, size: 16.sp)
+                      color: context.colors.surface, size: 16.sp)
                   : null,
             ),
           ],

@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/resources/assets_manager.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverPrivacyPolicyScreen extends StatelessWidget {
   const DriverPrivacyPolicyScreen({super.key});
@@ -60,7 +61,7 @@ class DriverPrivacyPolicyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             AppHeader(title: S.of(context).privacyPolicyTitle),
@@ -75,8 +76,8 @@ class DriverPrivacyPolicyScreen extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.all(Insets.s16),
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF1A6B54), Color(0xFF004B3B)],
+                        gradient: LinearGradient(
+                          colors: [context.colors.primaryLight, context.colors.primary],
                           begin: AlignmentDirectional.topEnd,
                           end: AlignmentDirectional.bottomStart,
                         ),
@@ -88,7 +89,7 @@ class DriverPrivacyPolicyScreen extends StatelessWidget {
                             width: 56.w,
                             height: 56.w,
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.15),
+                              color: context.colors.surface.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(14.r),
                               border: Border.all(
                                 color: Colors.white.withValues(alpha: 0.3),
@@ -111,7 +112,7 @@ class DriverPrivacyPolicyScreen extends StatelessWidget {
                                 Text(
                                   'GO FULL — ${S.of(context).privacyPolicyTitle}',
                                   style: getBoldStyle(
-                                    color: AppColors.white,
+                                    color: context.colors.surface,
                                     fontSize: FontSize.s16,
                                   ),
                                 ),
@@ -148,7 +149,7 @@ class DriverPrivacyPolicyScreen extends StatelessWidget {
                       child: Text(
                         S.of(context).privacyCopyright,
                         style: getRegularStyle(
-                          color: AppColors.grey,
+                          color: context.colors.iconSecondary,
                           fontSize: FontSize.s12,
                         ),
                       ),
@@ -178,7 +179,7 @@ class _SectionCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(AppRadius.s12),
         boxShadow: [
           BoxShadow(
@@ -197,12 +198,12 @@ class _SectionCard extends StatelessWidget {
                 width: 36.w,
                 height: 36.w,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: context.colors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Icon(
                   section.icon,
-                  color: AppColors.primary,
+                  color: context.colors.primary,
                   size: 20.sp,
                 ),
               ),
@@ -211,7 +212,7 @@ class _SectionCard extends StatelessWidget {
                 child: Text(
                   section.title,
                   style: getBoldStyle(
-                    color: const Color(0xFF0E0E0E),
+                    color: context.colors.textPrimary,
                     fontSize: FontSize.s16,
                   ),
                 ),
@@ -222,7 +223,7 @@ class _SectionCard extends StatelessWidget {
           Text(
             section.body,
             style: getRegularStyle(
-              color: AppColors.darkGrey,
+              color: context.colors.textSecondary,
               fontSize: FontSize.s14,
             ).copyWith(height: 1.6),
           ),

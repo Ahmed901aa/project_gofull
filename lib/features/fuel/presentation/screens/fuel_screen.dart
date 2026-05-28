@@ -24,6 +24,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_state
 import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/fuel_details_form.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class FuelScreen extends StatefulWidget {
   const FuelScreen({super.key});
@@ -165,7 +166,7 @@ class _FuelScreenState extends State<FuelScreen> {
         },
         child: Builder(
           builder: (blocContext) => Scaffold(
-            backgroundColor: AppColors.white,
+            backgroundColor: context.colors.surface,
             body: SafeArea(
               top: false,
               child: Column(
@@ -204,7 +205,7 @@ class _FuelScreenState extends State<FuelScreen> {
                                   onTap: () => context.read<AppConfigBloc>().add(const LoadAppConfigEvent()),
                                   child: Text(
                                     l10n.fuelTypesNotLoaded,
-                                    style: getRegularStyle(color: AppColors.error, fontSize: FontSize.s14),
+                                    style: getRegularStyle(color: context.colors.error, fontSize: FontSize.s14),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -237,7 +238,7 @@ class _FuelScreenState extends State<FuelScreen> {
                                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                 child: Text(
                                   l10n.pricePerLiterDisplay(_selectedFuel!.pricePerLiter.toStringAsFixed(2), config.currency),
-                                  style: getMediumStyle(color: AppColors.primary, fontSize: FontSize.s14),
+                                  style: getMediumStyle(color: context.colors.primary, fontSize: FontSize.s14),
                                   textAlign: TextAlign.start,
                                 ),
                               ),
@@ -348,7 +349,7 @@ class _FuelScreenState extends State<FuelScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(title,
-                style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
+                style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18),
                 textAlign: TextAlign.start),
           ),
           SizedBox(height: gap),

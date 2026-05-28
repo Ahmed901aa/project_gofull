@@ -11,6 +11,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverTripDetailsScreen extends StatefulWidget {
   final DriverTripDetailsArgs args;
@@ -82,20 +83,20 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             _buildHeader(context),
             Expanded(
               child: _isLoading
-                  ? const Center(
+                  ? Center(
                       child:
-                          CircularProgressIndicator(color: AppColors.primary))
+                          CircularProgressIndicator(color: context.colors.primary))
                   : _order == null
                       ? Center(
                           child: Text(S.of(context).failedToLoadTripDetails,
                               style: getRegularStyle(
-                                  color: AppColors.grey,
+                                  color: context.colors.iconSecondary,
                                   fontSize: FontSize.s14)))
                       : SingleChildScrollView(
                           physics: const BouncingScrollPhysics(),
@@ -117,7 +118,7 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
   // ── Header ──────────────────────────────────────────────
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(
           children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
@@ -129,23 +130,23 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: Icon(Icons.arrow_back_rounded,
-                        size: 24.sp, color: const Color(0xFF0E0E0E)),
+                        size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(
                     child: Text(
                       S.of(context).tripDetailsTitle,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Icon(Icons.info_outline_rounded,
-                      size: 24.sp, color: AppColors.grey),
+                      size: 24.sp, color: context.colors.iconSecondary),
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF5F5F5)),
+            Divider(height: 1, color: context.colors.borderSubtle),
           ],
         ),
       );
@@ -159,9 +160,9 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
           Insets.s16,
           Insets.s24,
         ),
-        decoration: const BoxDecoration(
-          color: AppColors.white,
-          border: Border(top: BorderSide(color: AppColors.divider)),
+        decoration: BoxDecoration(
+          color: context.colors.surface,
+          border: Border(top: BorderSide(color: context.colors.divider)),
         ),
         child: SafeArea(
           top: false,
@@ -228,7 +229,7 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
   Widget _sectionTitle(String title) => Text(
         title,
         style: getBoldStyle(
-            color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+            color: context.colors.textPrimary, fontSize: FontSize.s16),
       );
 }
 
@@ -244,9 +245,9 @@ class _TripRouteTimeline extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.neutral400,
+        color: context.colors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: IntrinsicHeight(
         child: Row(
@@ -256,17 +257,17 @@ class _TripRouteTimeline extends StatelessWidget {
               children: [
                 Container(
                   width: 12.w, height: 12.w,
-                  decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+                  decoration: BoxDecoration(color: context.colors.primary, shape: BoxShape.circle),
                 ),
                 Expanded(
                   child: CustomPaint(
-                    painter: _DottedLinePainter(color: AppColors.primary),
+                    painter: _DottedLinePainter(color: context.colors.primary),
                     size: Size(2.w, 0),
                   ),
                 ),
                 Container(
                   width: 12.w, height: 12.w,
-                  decoration: const BoxDecoration(color: AppColors.gold, shape: BoxShape.circle),
+                  decoration: BoxDecoration(color: context.colors.gold, shape: BoxShape.circle),
                 ),
               ],
             ),
@@ -276,16 +277,16 @@ class _TripRouteTimeline extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(S.of(context).departurePointLabel,
-                      style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s12)),
+                      style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s12)),
                   SizedBox(height: 2.h),
                   Text(pickupAddress,
-                      style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+                      style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
                   SizedBox(height: Insets.s20),
                   Text(S.of(context).deliveryDestinationTripLabel,
-                      style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s12)),
+                      style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s12)),
                   SizedBox(height: 2.h),
                   Text(deliveryAddress,
-                      style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+                      style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
                 ],
               ),
             ),
@@ -336,23 +337,23 @@ class _LocationSection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.neutral400,
+        color: context.colors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         children: [
-          Icon(Icons.location_on_outlined, size: 20.sp, color: AppColors.primary),
+          Icon(Icons.location_on_outlined, size: 20.sp, color: context.colors.primary),
           SizedBox(width: Insets.s8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(S.of(context).carLocationLabel,
-                    style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s12)),
+                    style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s12)),
                 SizedBox(height: 2.h),
                 Text(address,
-                    style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+                    style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
               ],
             ),
           ),
@@ -379,29 +380,29 @@ class _FuelDetailsSection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.neutral400,
+        color: context.colors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         children: [
-          _detailRow(S.of(context).orderedQuantityLabel, quantity),
+          _detailRow(context, S.of(context).orderedQuantityLabel, quantity),
           SizedBox(height: Insets.s12),
-          _detailRow(S.of(context).fuelTypeLabel, fuelType),
+          _detailRow(context, S.of(context).fuelTypeLabel, fuelType),
           SizedBox(height: Insets.s12),
-          _detailRow(S.of(context).pricePerLiterLabel, pricePerLiter),
+          _detailRow(context, S.of(context).pricePerLiterLabel, pricePerLiter),
         ],
       ),
     );
   }
 
-  Widget _detailRow(String label, String value) => Row(
+  Widget _detailRow(BuildContext context, String label, String value) => Row(
         children: [
           Text(label,
-              style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14)),
+              style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14)),
           const Spacer(),
           Text(value,
-              style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+              style: getSemiBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
         ],
       );
 }
@@ -416,26 +417,26 @@ class _CarDetailsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: _badgeCard(S.of(context).plateNumberLabel, plateNumber)),
+        Expanded(child: _badgeCard(context, S.of(context).plateNumberLabel, plateNumber)),
       ],
     );
   }
 
-  Widget _badgeCard(String label, String value) => Container(
+  Widget _badgeCard(BuildContext context, String label, String value) => Container(
         padding: EdgeInsets.all(Insets.s12),
         decoration: BoxDecoration(
-          color: AppColors.neutral400,
+          color: context.colors.surfaceElevated,
           borderRadius: BorderRadius.circular(AppRadius.s16),
-          border: Border.all(color: AppColors.neutral500),
+          border: Border.all(color: context.colors.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(label,
-                style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s12)),
+                style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s12)),
             SizedBox(height: 4.h),
             Text(value,
-                style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+                style: getSemiBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
           ],
         ),
       );
@@ -453,21 +454,21 @@ class _CustomerInfoSection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.neutral400,
+        color: context.colors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         children: [
           Container(
             width: 48.w, height: 48.w,
             decoration: BoxDecoration(
-              color: AppColors.primary50,
+              color: context.colors.primarySurface,
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.primary200, width: 1.5),
+              border: Border.all(color: context.colors.primaryLight, width: 1.5),
             ),
             alignment: Alignment.center,
-            child: Icon(Icons.person_rounded, size: 24.sp, color: AppColors.primary),
+            child: Icon(Icons.person_rounded, size: 24.sp, color: context.colors.primary),
           ),
           SizedBox(width: Insets.s12),
           Expanded(
@@ -475,10 +476,10 @@ class _CustomerInfoSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(name,
-                    style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+                    style: getSemiBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
                 SizedBox(height: 2.h),
                 Text(phone,
-                    style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s12),
+                    style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s12),
                     textDirection: TextDirection.ltr),
               ],
             ),
@@ -501,27 +502,27 @@ class _PaymentSummarySection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.neutral400,
+        color: context.colors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         children: [
           Text(S.of(context).totalLabel,
-              style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
+              style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s16)),
           SizedBox(width: Insets.s8),
           Container(
             padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
             decoration: BoxDecoration(
-              color: AppColors.primary50,
+              color: context.colors.primarySurface,
               borderRadius: BorderRadius.circular(AppRadius.s16),
             ),
             child: Text(paymentMethod,
-                style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12)),
+                style: getRegularStyle(color: context.colors.primary, fontSize: FontSize.s12)),
           ),
           const Spacer(),
           Text('$total ${S.of(context).currencyDL}',
-              style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
+              style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18)),
         ],
       ),
     );
