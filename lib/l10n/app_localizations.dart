@@ -2482,7 +2482,7 @@ abstract class S {
   /// No description provided for @languageChanged.
   ///
   /// In en, this message translates to:
-  /// **'Language changed successfully'**
+  /// **'Language changed'**
   String get languageChanged;
 
   /// No description provided for @searchKeywordFuel.
@@ -4638,6 +4638,30 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Theme updated'**
   String get themeChanged;
+
+  /// No description provided for @selectLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Language'**
+  String get selectLanguage;
+
+  /// No description provided for @matchSystemTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Match System Theme'**
+  String get matchSystemTheme;
+
+  /// No description provided for @matchSystemThemeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The app follows your phone\'s theme automatically'**
+  String get matchSystemThemeDesc;
+
+  /// No description provided for @darkThemeToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Theme'**
+  String get darkThemeToggle;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

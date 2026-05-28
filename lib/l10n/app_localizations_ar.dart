@@ -1222,7 +1222,7 @@ class SAr extends S {
   String get switchLanguageTitle => 'تغيير اللغة';
 
   @override
-  String get languageChanged => 'تم تغيير اللغة بنجاح';
+  String get languageChanged => 'تم تغيير اللغة';
 
   @override
   String get searchKeywordFuel => 'وقود,بنزين,ديزل,تعبئة,طلب وقود';
@@ -2378,4 +2378,16 @@ class SAr extends S {
 
   @override
   String get themeChanged => 'تم تحديث السمة';
+
+  @override
+  String get selectLanguage => 'اختر اللغة';
+
+  @override
+  String get matchSystemTheme => 'مطابقة ثيم النظام';
+
+  @override
+  String get matchSystemThemeDesc => 'التطبيق يتبع ثيم هاتفك تلقائياً';
+
+  @override
+  String get darkThemeToggle => 'الوضع الليلي';
 }

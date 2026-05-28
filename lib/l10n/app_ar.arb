@@ -799,5 +799,10 @@
   "themeSystem": "النظام",
   "themeLight": "فاتح",
   "themeDark": "داكن",
-  "themeChanged": "تم تحديث السمة"
+  "themeChanged": "تم تحديث السمة",
+  "selectLanguage": "اختر اللغة",
+  "matchSystemTheme": "مطابقة ثيم النظام",
+  "matchSystemThemeDesc": "التطبيق يتبع ثيم هاتفك تلقائياً",
+  "darkThemeToggle": "الوضع الليلي",
+  "languageChanged": "تم تغيير اللغة"
 }

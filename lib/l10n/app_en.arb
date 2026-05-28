@@ -799,5 +799,10 @@
   "themeSystem": "System",
   "themeLight": "Light",
   "themeDark": "Dark",
-  "themeChanged": "Theme updated"
+  "themeChanged": "Theme updated",
+  "selectLanguage": "Select Language",
+  "matchSystemTheme": "Match System Theme",
+  "matchSystemThemeDesc": "The app follows your phone's theme automatically",
+  "darkThemeToggle": "Dark Theme",
+  "languageChanged": "Language changed"
 }

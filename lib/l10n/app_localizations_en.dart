@@ -1230,7 +1230,7 @@ class SEn extends S {
   String get switchLanguageTitle => 'Change Language';
 
   @override
-  String get languageChanged => 'Language changed successfully';
+  String get languageChanged => 'Language changed';
 
   @override
   String get searchKeywordFuel => 'fuel,gas,petrol,diesel,fill,delivery';
@@ -2393,4 +2393,17 @@ class SEn extends S {
 
   @override
   String get themeChanged => 'Theme updated';
+
+  @override
+  String get selectLanguage => 'Select Language';
+
+  @override
+  String get matchSystemTheme => 'Match System Theme';
+
+  @override
+  String get matchSystemThemeDesc =>
+      'The app follows your phone\'s theme automatically';
+
+  @override
+  String get darkThemeToggle => 'Dark Theme';
 }

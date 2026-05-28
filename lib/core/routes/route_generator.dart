@@ -30,6 +30,8 @@ import 'package:project_gofull/features/profile/presentation/screens/privacy_pol
 import 'package:project_gofull/features/profile/presentation/screens/about_screen.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 import 'package:project_gofull/features/notifications/presentation/screens/notifications_screen.dart';
+import 'package:project_gofull/features/profile/presentation/screens/language_screen.dart';
+import 'package:project_gofull/features/profile/presentation/screens/appearance_screen.dart';
 // Driver App imports
 import 'package:project_gofull/features/driver_home/presentation/screens/driver_home_screen.dart';
 import 'package:project_gofull/features/driver_profile/presentation/screens/driver_profile_screen.dart';
@@ -117,6 +119,10 @@ class RouteGenerator {
         return _buildRoute(const AboutScreen(), settings);
       case Routes.notifications:
         return _buildRoute(const NotificationsScreen(), settings);
+      case Routes.languageSettings:
+        return _buildRoute(const LanguageScreen(), settings);
+      case Routes.appearanceSettings:
+        return _buildRoute(const AppearanceScreen(), settings);
 
       // ── Driver App Routes ──────────────────────────────
       case Routes.driverHome:

@@ -12,12 +12,10 @@ import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
 import 'package:project_gofull/core/cubits/locale_cubit.dart';
 import 'package:project_gofull/core/widgets/app_notification.dart';
-import 'package:project_gofull/core/cubits/theme_cubit.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/profile_menu_item.dart';
 import '../widgets/profile_user_card.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
-import 'package:project_gofull/core/widgets/service_dropdown.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -124,47 +122,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Navigator.pushNamed(context, Routes.discountCodes),
                   ),
                   SizedBox(height: Sizes.s12),
-                  // ── Language selector (same style as fuel type dropdown) ──
-                  Text(l10n.language,
-                      style: getMediumStyle(
-                          color: context.colors.textPrimary,
-                          fontSize: FontSize.s16)),
-                  SizedBox(height: Sizes.s8),
-                  ServiceDropdown(
-                    hint: l10n.language,
-                    value: localeCubit.isArabic
-                        ? l10n.arabic
-                        : l10n.english,
-                    items: [l10n.arabic, l10n.english],
-                    onChanged: (val) {
-                      if (val == null) return;
-                      final wantArabic = val == l10n.arabic;
-                      if (wantArabic != localeCubit.isArabic) {
-                        localeCubit.toggleLocale();
-                      }
-                    },
+                  ProfileMenuItem(
+                    icon: Icons.language_rounded,
+                    label: l10n.language,
+                    trailing: localeCubit.isArabic ? 'العربية' : 'English',
+                    onTap: () =>
+                        Navigator.pushNamed(context, Routes.languageSettings),
                   ),
                   SizedBox(height: Sizes.s12),
-                  // ── Theme selector (same style as fuel type dropdown) ──
-                  Text(l10n.appearance,
-                      style: getMediumStyle(
-                          color: context.colors.textPrimary,
-                          fontSize: FontSize.s16)),
-                  SizedBox(height: Sizes.s8),
-                  ServiceDropdown(
-                    hint: l10n.appearance,
-                    value: context.watch<ThemeCubit>().isDark
-                        ? l10n.themeDark
-                        : l10n.themeLight,
-                    items: [l10n.themeLight, l10n.themeDark],
-                    onChanged: (val) {
-                      if (val == null) return;
-                      final cubit = context.read<ThemeCubit>();
-                      final next = val == l10n.themeDark
-                          ? AppThemeMode.dark
-                          : AppThemeMode.light;
-                      cubit.setThemeMode(next);
-                    },
+                  ProfileMenuItem(
+                    icon: Icons.brightness_6_rounded,
+                    label: l10n.appearance,
+                    onTap: () =>
+                        Navigator.pushNamed(context, Routes.appearanceSettings),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
