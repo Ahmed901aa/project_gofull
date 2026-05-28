@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class SupportPhoneCard extends StatelessWidget {
   final String phoneNumber;
@@ -55,7 +56,7 @@ class SupportPhoneCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'اتصال مباشر',
+                    S.of(context).directCall,
                     style: getBoldStyle(
                       color: const Color(0xFF0E0E0E),
                       fontSize: FontSize.s16,
@@ -63,7 +64,7 @@ class SupportPhoneCard extends StatelessWidget {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    'رقم الجوال: $phoneNumber',
+                    '\${S.of(context).mobileNumber} $phoneNumber',
                     style: getRegularStyle(
                       color: const Color(0xFF646565),
                       fontSize: FontSize.s14,

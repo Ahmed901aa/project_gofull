@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 
@@ -47,7 +47,7 @@ class SubscriptionBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  AppStrings.subscriptionTitle,
+                  S.of(context).subscriptionTitle,
                   style: getSemiBoldStyle(
                     color: AppColors.black,
                     fontSize: FontSize.s14,
@@ -57,7 +57,7 @@ class SubscriptionBanner extends StatelessWidget {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  AppStrings.subscriptionSubtitle,
+                  S.of(context).subscriptionSubtitle,
                   style: getRegularStyle(
                     color: AppColors.darkGrey,
                     fontSize: FontSize.s12,
@@ -78,7 +78,7 @@ class SubscriptionBanner extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadius.s12),
             ),
             child: Text(
-              AppStrings.subscribeNow,
+              S.of(context).subscribeNow,
               style: getBoldStyle(
                 color: AppColors.white,
                 fontSize: FontSize.s12,

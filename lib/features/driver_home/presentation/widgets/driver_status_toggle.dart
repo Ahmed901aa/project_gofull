@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 
@@ -73,7 +73,7 @@ class DriverStatusToggle extends StatelessWidget {
             ),
             SizedBox(width: 8.w),
             Text(
-              isActive ? AppStrings.active : AppStrings.inactive,
+              isActive ? S.of(context).active : S.of(context).inactive,
               style: getSemiBoldStyle(
                 fontSize: FontSize.s14,
                 color: isActive ? AppColors.success : const Color(0xFF6b7280),

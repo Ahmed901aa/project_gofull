@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -107,7 +107,7 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
                   ),
                   Expanded(
                     child: Text(
-                      AppStrings.rateTrip,
+                      S.of(context).rateTrip,
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20),
@@ -129,7 +129,7 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
   Widget _buildQuestion() => Column(
         children: [
           Text(
-            AppStrings.howWasCustomer,
+            S.of(context).howWasCustomer,
             style: getBoldStyle(
                 color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
             textAlign: TextAlign.center,
@@ -138,7 +138,7 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: Insets.s16),
             child: Text(
-              AppStrings.ratingHelps,
+              S.of(context).ratingHelps,
               style: getRegularStyle(
                   color: AppColors.neutral800, fontSize: FontSize.s14),
               textAlign: TextAlign.center,
@@ -180,7 +180,7 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppStrings.additionalNotes,
+              S.of(context).additionalNotes,
               style: getSemiBoldStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
             ),
@@ -193,7 +193,7 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
               style: getRegularStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
               decoration: InputDecoration(
-                hintText: AppStrings.additionalNotesHint,
+                hintText: S.of(context).additionalNotesHint,
                 hintStyle: getRegularStyle(
                     color: AppColors.neutral800, fontSize: FontSize.s14),
                 filled: true,
@@ -233,7 +233,7 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
           border: Border(top: BorderSide(color: Color(0xFFF5F5F5))),
         ),
         child: AppButton(
-          text: AppStrings.submitRating,
+          text: S.of(context).submitRating,
           onPressed: _selectedStars > 0 ? _onSubmit : () {},
           backgroundColor:
               _selectedStars > 0 ? AppColors.primary : AppColors.neutral600,

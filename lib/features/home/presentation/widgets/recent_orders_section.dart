@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_state.dart';
 import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
@@ -35,7 +36,7 @@ class RecentOrdersSection extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text('آخر الطلبات',
+                    Text(S.of(context).recentOrders,
                         style: getSemiBoldStyle(
                             color: const Color(0xFF0E0E0E),
                             fontSize: FontSize.s18)),
@@ -45,7 +46,7 @@ class RecentOrdersSection extends StatelessWidget {
                         // Switch to orders tab
                         BottomNavShell.shellKey.currentState?.switchTo(1);
                       },
-                      child: Text('عرض الكل',
+                      child: Text(S.of(context).viewAll,
                           style: getMediumStyle(
                               color: AppColors.primary,
                               fontSize: FontSize.s14)),
@@ -72,6 +73,7 @@ class _RecentOrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final config = context.read<AppConfigBloc>().state;
     final cur = config.currency;
     final isTow = order.isTowing;
@@ -79,16 +81,16 @@ class _RecentOrderCard extends StatelessWidget {
         order.total != null ? '${order.total} $cur' : '—';
     final date = order.createdAt?.substring(0, 10) ?? '';
 
-    String statusAr;
+    String statusLabel;
     Color statusColor;
     if (order.isCompleted) {
-      statusAr = 'مكتمل';
+      statusLabel = l10n.completed;
       statusColor = AppColors.success;
     } else if (order.isCancelled) {
-      statusAr = 'ملغي';
+      statusLabel = l10n.cancelled;
       statusColor = AppColors.error;
     } else {
-      statusAr = 'قيد التنفيذ';
+      statusLabel = l10n.inProgress;
       statusColor = AppColors.primary;
     }
 
@@ -116,7 +118,7 @@ class _RecentOrderCard extends StatelessWidget {
                   ),
                   SizedBox(width: 4.w),
                   Text(
-                    isTow ? 'خدمة ساحبة' : 'إمداد وقود',
+                    isTow ? l10n.towService : l10n.fuelSupply,
                     style: getMediumStyle(
                         color: const Color(0xFF0E0E0E),
                         fontSize: FontSize.s14),
@@ -132,7 +134,7 @@ class _RecentOrderCard extends StatelessWidget {
                   color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppRadius.s8),
                 ),
-                child: Text(statusAr,
+                child: Text(statusLabel,
                     style: getMediumStyle(
                         color: statusColor, fontSize: FontSize.s12)),
               ),

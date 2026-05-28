@@ -14,13 +14,13 @@ class HomeMockDataSource implements HomeDataSource {
     return const [
       OfferModel(
         id: 'offer-1',
-        title: 'خصم 20% على أول طلب وقود',
+        title: '20% off your first fuel order',
         code: 'GO20',
         colorValue: 0xFF004B3B,
       ),
       OfferModel(
         id: 'offer-2',
-        title: 'خصم 20% على أول طلب ساحبة',
+        title: '20% off your first tow request',
         code: 'GO20',
         colorValue: 0xFF006B52,
       ),
@@ -41,7 +41,7 @@ class HomeRemoteDataSource implements HomeDataSource {
           .map((e) => OfferModel.fromJson(e as Map<String, dynamic>))
           .toList();
     } catch (_) {
-      throw const ServerException('فشل تحميل العروض');
+      throw const ServerException('Failed to load offers');
     }
   }
 }

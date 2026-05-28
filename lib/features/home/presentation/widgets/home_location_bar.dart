@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class HomeSearchBar extends StatelessWidget {
   final VoidCallback onTap;
@@ -30,7 +31,7 @@ class HomeSearchBar extends StatelessWidget {
               SizedBox(width: Insets.s8),
               Expanded(
                 child: Text(
-                  'ابحث عن خدمة، طلب، أو مساعدة...',
+                  S.of(context).searchServiceHelp,
                   style: getRegularStyle(color: const Color(0xFF838485), fontSize: FontSize.s14),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

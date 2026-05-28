@@ -14,6 +14,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/core/widgets/app_notification.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 /// Banner shown on the customer home screen when there's an active order.
 /// Tap → resume the order on the correct screen based on its status.
@@ -29,7 +30,8 @@ class ActiveOrderCard extends StatelessWidget {
 
     final config = context.read<AppConfigBloc>().state;
     final cur = config.currency;
-    final address = order.driverAddress ?? 'الموقع الحالي';
+    final l10n = S.of(context);
+    final address = order.driverAddress ?? l10n.currentLocation;
     final price = order.total != null
         ? '${double.tryParse(order.total!)?.toStringAsFixed(2) ?? '—'} $cur'
         : '—';
@@ -46,7 +48,7 @@ class ActiveOrderCard extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.only(bottom: Sizes.s12),
-            child: Text('طلبك الحالي',
+            child: Text(l10n.currentOrder,
                 style: getSemiBoldStyle(
                     color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
                 textAlign: TextAlign.right),
@@ -84,7 +86,7 @@ class ActiveOrderCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(AppRadius.s16),
                         ),
                         child: Text(
-                          isFuel ? 'خدمة وقود' : 'خدمة ساحبة',
+                          isFuel ? l10n.fuelService : l10n.towService,
                           style: getSemiBoldStyle(
                               color: AppColors.primary,
                               fontSize: FontSize.s12),
@@ -115,7 +117,7 @@ class ActiveOrderCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('الإجمالي',
+                      Text(l10n.total,
                           style: getRegularStyle(
                               color: AppColors.neutral800,
                               fontSize: FontSize.s14)),
@@ -148,7 +150,7 @@ class ActiveOrderCard extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('متابعة الطلب',
+                                Text(l10n.resumeOrder,
                                     style: getSemiBoldStyle(
                                         color: AppColors.white,
                                         fontSize: FontSize.s14)),
@@ -176,7 +178,7 @@ class ActiveOrderCard extends StatelessWidget {
                                     BorderRadius.circular(AppRadius.s12),
                               ),
                             ),
-                            child: Text('إلغاء',
+                            child: Text(l10n.cancel,
                                 style: getSemiBoldStyle(
                                     color: AppColors.error,
                                     fontSize: FontSize.s14)),
@@ -196,6 +198,7 @@ class ActiveOrderCard extends StatelessWidget {
 
   /// Navigate to the correct screen for the current order status.
   void _resumeOrder(BuildContext context, ServiceRequestEntity order) {
+    final l10n = S.of(context);
     final isFuel = order.isFuelDelivery;
     final status = order.status.trim().toLowerCase();
 
@@ -206,11 +209,11 @@ class ActiveOrderCard extends StatelessWidget {
           Routes.searchingDriver,
           arguments: SearchingArgs(
             searchingText: isFuel
-                ? 'جاري البحث عن أقرب مزود وقود'
-                : 'جاري البحث عن أقرب سائق ساحبة',
+                ? l10n.searchingForFuelProvider
+                : l10n.searchingForTowDriver,
             subtitleText: isFuel
-                ? 'نقوم الآن بمطابقة طلبك مع أقرب سيارة إمداد.'
-                : 'نقوم الآن بمطابقة طلبك مع أقرب سيارة ساحبة.',
+                ? l10n.searchingFuelSubtitle
+                : l10n.searchingTowSubtitle,
             nextRoute: Routes.driverFound,
             requestId: order.id,
             serviceType:
@@ -226,10 +229,10 @@ class ActiveOrderCard extends StatelessWidget {
           Routes.driverFound,
           arguments: DriverFoundArgs(
             title: isFuel
-                ? 'تم العثور على مزود وقود!'
-                : 'تم العثور على ساحبة!',
-            vehicleLabel: isFuel ? 'نوع المركبة' : 'نوع الساحبة',
-            vehicleValue: isFuel ? 'سيارة إمداد وقود' : 'ساحبة هيدروليك',
+                ? l10n.fuelProviderFound
+                : l10n.towTruckFound,
+            vehicleLabel: l10n.vehicleLabel,
+            vehicleValue: isFuel ? l10n.fuelSupplyVehicle : l10n.hydraulicTowTruck,
             showClose: true,
             imagePath: isFuel
                 ? 'assets/images/tank_truck.gif'
@@ -266,14 +269,15 @@ class ActiveOrderCard extends StatelessWidget {
   }
 
   void _confirmCancel(BuildContext context, int orderId) async {
+    final l10n = S.of(context);
     final confirmed = await AppConfirmDialog.show(
       context,
       icon: Icons.cancel_rounded,
       iconColor: AppColors.error,
-      title: 'إلغاء الطلب',
-      subtitle: 'هل أنت متأكد من رغبتك في إلغاء هذا الطلب؟',
-      confirmLabel: 'نعم، إلغاء',
-      cancelLabel: 'تراجع',
+      title: l10n.cancelOrderConfirmTitle,
+      subtitle: l10n.cancelOrderCustomerConfirm,
+      confirmLabel: l10n.yesCancel,
+      cancelLabel: l10n.cancel,
       destructive: true,
     );
     if (confirmed && context.mounted) {
@@ -287,7 +291,7 @@ class ActiveOrderCard extends StatelessWidget {
       if (state is RequestCancelled) {
         onCancelled?.call();
         if (context.mounted) {
-          AppSnackbar.success(context, 'تم إلغاء الطلب بنجاح');
+          AppSnackbar.success(context, S.of(context).orderCancelledSuccess);
         }
       }
     });
@@ -300,7 +304,7 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final info = _info(status);
+    final info = _info(context, status);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
       decoration: BoxDecoration(
@@ -328,26 +332,27 @@ class _StatusBadge extends StatelessWidget {
     );
   }
 
-  _StatusInfo _info(String s) {
+  _StatusInfo _info(BuildContext context, String s) {
+    final l10n = S.of(context);
     switch (s.trim().toLowerCase()) {
       case 'pending':
         return _StatusInfo(
-            'في انتظار القبول', AppColors.warning, const Color(0xFFFFF3E0));
+            l10n.pendingAcceptance, AppColors.warning, const Color(0xFFFFF3E0));
       case 'accepted':
         return _StatusInfo(
-            'تم القبول', const Color(0xFF1565C0), const Color(0xFFE3F2FD));
+            l10n.orderAccepted, const Color(0xFF1565C0), const Color(0xFFE3F2FD));
       case 'en_route':
         return _StatusInfo(
-            'في الطريق إليك', const Color(0xFF2E7D32), const Color(0xFFE8F5E9));
+            l10n.enRoute, const Color(0xFF2E7D32), const Color(0xFFE8F5E9));
       case 'arrived':
         return _StatusInfo(
-            'وصل إليك', const Color(0xFF0C5460), const Color(0xFFD1ECF1));
+            l10n.arrived, const Color(0xFF0C5460), const Color(0xFFD1ECF1));
       case 'in_progress':
-        return _StatusInfo('قيد التنفيذ', const Color(0xFF4A148C),
+        return _StatusInfo(l10n.inProgress, const Color(0xFF4A148C),
             const Color(0xFFE2D5F1));
       default:
         return _StatusInfo(
-            'قيد المعالجة', AppColors.neutral800, AppColors.neutral400);
+            l10n.processing, AppColors.neutral800, AppColors.neutral400);
     }
   }
 }

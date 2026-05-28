@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class TripRatingBottomBar extends StatelessWidget {
   final VoidCallback onPressed;
@@ -52,7 +53,7 @@ class AlreadyRatedBar extends StatelessWidget {
       ),
       padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s16),
       child: Center(
-        child: Text('تم التقييم', style: getMediumStyle(color: AppColors.neutral800, fontSize: FontSize.s14)),
+        child: Text(S.of(context).alreadyRated, style: getMediumStyle(color: AppColors.neutral800, fontSize: FontSize.s14)),
       ),
     );
   }

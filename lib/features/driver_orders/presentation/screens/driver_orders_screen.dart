@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -62,7 +63,7 @@ class DriverOrdersScreen extends StatelessWidget {
       BuildContext context, List<ServiceRequestEntity> requests) {
     if (requests.isEmpty) {
       return Center(
-          child: Text('لا توجد طلبات سابقة',
+          child: Text(S.of(context).noRecentOrders,
               style: getRegularStyle(
                   color: AppColors.grey, fontSize: FontSize.s16)));
     }
@@ -93,7 +94,7 @@ class DriverOrdersScreen extends StatelessWidget {
                   child: Icon(Icons.arrow_back_rounded,
                       size: 24.sp, color: const Color(0xFF0E0E0E))),
               Expanded(
-                  child: Text('الطلبات الأخيرة',
+                  child: Text(S.of(context).recentOrdersTitle,
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20),
@@ -162,7 +163,7 @@ class _OrderCard extends StatelessWidget {
             ]),
             SizedBox(height: Insets.s12),
             Row(children: [
-              Text('الإجمالي',
+              Text(S.of(context).totalLabel,
                   style: getRegularStyle(
                       color: AppColors.grey, fontSize: FontSize.s14)),
               SizedBox(width: 4.w),
@@ -181,7 +182,7 @@ class _OrderCard extends StatelessWidget {
                   Icon(Icons.check_circle_rounded,
                       size: 14.sp, color: AppColors.primary),
                   SizedBox(width: 4.w),
-                  Text('كاش',
+                  Text(S.of(context).cashLabel,
                       style: getMediumStyle(
                           color: AppColors.primary, fontSize: FontSize.s12)),
                 ]),
@@ -213,7 +214,7 @@ class _ServiceBadge extends StatelessWidget {
             size: 14.sp,
             color: isTow ? AppColors.primary : AppColors.gold),
         SizedBox(width: 4.w),
-        Text(isTow ? 'خدمة ساحبة' : 'خدمة وقود',
+        Text(isTow ? S.of(context).towService : S.of(context).fuelService,
             style: getMediumStyle(
                 color: isTow ? AppColors.primary : AppColors.gold,
                 fontSize: FontSize.s12)),
@@ -234,15 +235,15 @@ class _StatusBadge extends StatelessWidget {
     if (status == 'cancelled') {
       bg = AppColors.error.withValues(alpha: 0.1);
       fg = AppColors.error;
-      label = 'ملغي';
+      label = S.of(context).cancelled;
     } else if (status == 'completed' && isRated) {
       bg = AppColors.success.withValues(alpha: 0.1);
       fg = AppColors.success;
-      label = 'مكتمل';
+      label = S.of(context).completed;
     } else {
       bg = AppColors.gold.withValues(alpha: 0.1);
       fg = AppColors.gold;
-      label = 'غير مقيّم';
+      label = S.of(context).notRated;
     }
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),

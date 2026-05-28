@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class ArrivedBottomAction extends StatelessWidget {
   final int? requestId;
@@ -39,7 +40,7 @@ class ArrivedBottomAction extends StatelessWidget {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
                   elevation: 0,
                 ),
-                child: Text('تقييم الخدمة', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+                child: Text(S.of(context).rateService, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
               ),
             ),
           ),
@@ -55,7 +56,7 @@ class ArrivedBottomAction extends StatelessWidget {
                   foregroundColor: AppColors.grey,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
                 ),
-                child: Text('تخطي', style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+                child: Text(S.of(context).skip, style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
               ),
             ),
           ),

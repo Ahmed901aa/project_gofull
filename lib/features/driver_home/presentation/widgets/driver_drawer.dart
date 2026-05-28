@@ -5,7 +5,7 @@ import 'package:project_gofull/core/network/api_client.dart';
 import 'package:project_gofull/core/network/api_constants.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -43,14 +43,14 @@ class _DriverDrawerState extends State<DriverDrawer> {
     }
   }
 
-  String _serviceTypeLabel(String? type) {
+  String _serviceTypeLabel(String? type, BuildContext context) {
     switch (type) {
       case 'fuel_delivery':
-        return 'سائق توصيل وقود';
+        return S.of(context).fuelDeliveryDriver;
       case 'towing':
-        return 'سائق ساحبة';
+        return S.of(context).towTruckDriverRole;
       default:
-        return type ?? AppStrings.towDriver;
+        return type ?? S.of(context).towDriver;
     }
   }
 
@@ -61,9 +61,9 @@ class _DriverDrawerState extends State<DriverDrawer> {
     final driverName =
         (_profileData?['name'] as String?) ??
         (user?['name'] as String?) ??
-        'السائق';
+        S.of(context).theDriver;
     final serviceType = _serviceTypeLabel(
-        _profileData?['service_type'] as String?);
+        _profileData?['service_type'] as String?, context);
     final averageRating =
         double.tryParse('${_profileData?['average_rating'] ?? ''}') ?? 0.0;
     final totalRatings =
@@ -167,7 +167,7 @@ class _DriverDrawerState extends State<DriverDrawer> {
 
             _DrawerMenuItem(
               icon: Icons.person_outline_rounded,
-              title: AppStrings.driverProfile,
+              title: S.of(context).driverProfile,
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, Routes.driverProfile);
@@ -175,7 +175,7 @@ class _DriverDrawerState extends State<DriverDrawer> {
             ),
             _DrawerMenuItem(
               icon: Icons.headset_mic_outlined,
-              title: AppStrings.supportTeam,
+              title: S.of(context).supportTeam,
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, Routes.driverSupport);
@@ -183,7 +183,7 @@ class _DriverDrawerState extends State<DriverDrawer> {
             ),
             _DrawerMenuItem(
               icon: Icons.bar_chart_rounded,
-              title: AppStrings.reports,
+              title: S.of(context).reports,
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, Routes.driverReports);
@@ -191,7 +191,7 @@ class _DriverDrawerState extends State<DriverDrawer> {
             ),
             _DrawerMenuItem(
               icon: Icons.receipt_long_outlined,
-              title: AppStrings.recentOrders,
+              title: S.of(context).recentOrders,
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, Routes.driverOrders);
@@ -199,7 +199,7 @@ class _DriverDrawerState extends State<DriverDrawer> {
             ),
             _DrawerMenuItem(
               icon: Icons.privacy_tip_outlined,
-              title: AppStrings.privacyPolicy,
+              title: S.of(context).privacyPolicy,
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, Routes.driverPrivacyPolicy);
@@ -212,7 +212,7 @@ class _DriverDrawerState extends State<DriverDrawer> {
             const Divider(color: AppColors.divider, height: 1),
             _DrawerMenuItem(
               icon: Icons.logout_rounded,
-              title: AppStrings.logout,
+              title: S.of(context).logout,
               color: AppColors.error,
               onTap: () async {
                 Navigator.pop(context); // close drawer

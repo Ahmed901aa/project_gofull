@@ -19,7 +19,7 @@ class ProviderRepositoryImpl implements ProviderRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 

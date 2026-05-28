@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/network/api_client.dart';
@@ -10,7 +11,10 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
+import 'package:project_gofull/core/cubits/locale_cubit.dart';
 import 'package:project_gofull/core/widgets/app_notification.dart';
+import 'package:project_gofull/core/widgets/language_selector_sheet.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/profile_menu_item.dart';
 import '../widgets/profile_user_card.dart';
 
@@ -45,12 +49,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  String _serviceTypeLabel(String? type) {
+  String _serviceTypeLabel(String? type, S l10n) {
     switch (type) {
       case 'fuel_delivery':
-        return 'توصيل وقود';
+        return l10n.fuelDelivery;
       case 'towing':
-        return 'سحب مركبات';
+        return l10n.towingService;
       default:
         return type ?? '-';
     }
@@ -58,24 +62,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    final localeCubit = context.watch<LocaleCubit>();
     // Use API data first, fall back to cached token data
     final userName = (_profileData?['name'] as String?) ??
         (sl<TokenStorage>().getUser()?['name'] as String?) ??
-        'المستخدم';
+        l10n.appName;
     final userPhone = (_profileData?['phone'] as String?) ??
         (sl<TokenStorage>().getUser()?['phone'] as String?) ??
         '';
     final userRole = (_profileData?['role'] as String?) ??
         (sl<TokenStorage>().getUser()?['role'] as String?) ??
         'driver';
-    final initials = userName.isNotEmpty ? userName[0] : '؟';
+    final initials = userName.isNotEmpty ? userName[0] : '?';
     final isProvider = userRole == 'provider';
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       body: Column(
         children: [
-          const AppHeader(title: 'حسابي', showBack: false),
+          AppHeader(title: l10n.myAccount, showBack: false),
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -95,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   if (!_isLoading && isProvider)
                     _ProviderInfoSection(
                       serviceType: _serviceTypeLabel(
-                          _profileData?['service_type'] as String?),
+                          _profileData?['service_type'] as String?, l10n),
                       vehicleMake:
                           _profileData?['vehicle_make'] as String? ?? '-',
                       vehicleModel:
@@ -112,55 +118,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(height: Insets.s16),
                   ProfileMenuItem(
                     icon: Icons.local_offer_outlined,
-                    label: 'أكواد الخصم',
+                    label: l10n.discountCodes,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.discountCodes),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
                     icon: Icons.language_rounded,
-                    label: 'اللغة',
-                    trailing: 'English',
-                    onTap: () {},
+                    label: l10n.language,
+                    trailing: localeCubit.isArabic ? 'English' : l10n.arabic,
+                    onTap: () async {
+                      final changed = await showLanguageSelectorSheet(context);
+                      if (changed && mounted) {
+                        AppSnackbar.success(context, l10n.languageChanged);
+                      }
+                    },
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
                     icon: Icons.headset_mic_outlined,
-                    label: 'الدعم الفني',
+                    label: l10n.technicalSupport,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.support),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
                     icon: Icons.help_outline_rounded,
-                    label: 'الأسئلة الشائعة',
+                    label: l10n.faq,
                     onTap: () => Navigator.pushNamed(context, Routes.faq),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
                     icon: Icons.description_outlined,
-                    label: 'الشروط والأحكام',
+                    label: l10n.terms,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.terms),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
                     icon: Icons.privacy_tip_outlined,
-                    label: 'سياسة الخصوصية',
+                    label: l10n.privacyPolicy,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.privacyPolicy),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
                     icon: Icons.info_outline_rounded,
-                    label: 'عن Go Full',
+                    label: l10n.aboutGoFull,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.aboutApp),
                   ),
                   SizedBox(height: Sizes.s12),
                   ProfileMenuItem(
                     icon: Icons.logout_rounded,
-                    label: 'تسجيل الخروج',
+                    label: l10n.logout,
                     iconColor: AppColors.error,
                     onTap: () => _showLogoutDialog(context),
                   ),
@@ -175,14 +186,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showLogoutDialog(BuildContext context) async {
+    final l10n = S.of(context);
     final confirmed = await AppConfirmDialog.show(
       context,
       icon: Icons.logout_rounded,
       iconColor: AppColors.warning,
-      title: 'تسجيل الخروج؟',
-      subtitle: 'متأكد إنك تبي تخرج من حسابك؟ تقدر ترجع في أي وقت.',
-      confirmLabel: 'تسجيل الخروج',
-      cancelLabel: 'البقاء',
+      title: l10n.logoutTitle,
+      subtitle: l10n.logoutSubtitle,
+      confirmLabel: l10n.logoutBtn,
+      cancelLabel: l10n.stayBtn,
       destructive: true,
     );
     if (confirmed && context.mounted) {
@@ -214,14 +226,15 @@ class _ProviderInfoSection extends StatelessWidget {
     required this.verificationStatus,
   });
 
-  String _statusLabel(String status) {
+  String _statusLabel(BuildContext context, String status) {
+    final l10n = S.of(context);
     switch (status) {
       case 'approved':
-        return 'موثق';
+        return l10n.verified;
       case 'pending':
-        return 'قيد المراجعة';
+        return l10n.pendingReview;
       case 'rejected':
-        return 'مرفوض';
+        return l10n.rejected;
       default:
         return status;
     }
@@ -242,6 +255,7 @@ class _ProviderInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
@@ -256,17 +270,20 @@ class _ProviderInfoSection extends StatelessWidget {
           Row(
             children: [
               Icon(
-                serviceType == 'سحب مركبات'
+                serviceType == l10n.towingService
                     ? Icons.car_crash_rounded
                     : Icons.local_gas_station_rounded,
                 color: AppColors.primary,
                 size: 20.sp,
               ),
               SizedBox(width: 6.w),
-              Text(
-                serviceType,
-                style: getBoldStyle(
-                    color: AppColors.primary, fontSize: FontSize.s14),
+              Flexible(
+                child: Text(
+                  serviceType,
+                  style: getBoldStyle(
+                      color: AppColors.primary, fontSize: FontSize.s14),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
               const Spacer(),
               // Verification badge
@@ -278,7 +295,7 @@ class _ProviderInfoSection extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadius.s8),
                 ),
                 child: Text(
-                  _statusLabel(verificationStatus),
+                  _statusLabel(context, verificationStatus),
                   style: getBoldStyle(
                     color: _statusColor(verificationStatus),
                     fontSize: FontSize.s12,
@@ -309,7 +326,7 @@ class _ProviderInfoSection extends StatelessWidget {
                     ),
                     SizedBox(width: 4.w),
                     Text(
-                      isAvailable ? 'متاح' : 'غير متاح',
+                      isAvailable ? l10n.available : l10n.unavailable,
                       style: getBoldStyle(
                         color:
                             isAvailable ? AppColors.success : AppColors.grey,
@@ -323,10 +340,10 @@ class _ProviderInfoSection extends StatelessWidget {
           ),
           SizedBox(height: Insets.s12),
           // Vehicle info
-          _infoRow(Icons.directions_car_rounded, 'المركبة',
+          _infoRow(Icons.directions_car_rounded, l10n.vehicleInfo,
               '$vehicleMake $vehicleModel'),
           SizedBox(height: 8.h),
-          _infoRow(Icons.confirmation_number_rounded, 'اللوحة', vehiclePlate),
+          _infoRow(Icons.confirmation_number_rounded, l10n.carPlate, vehiclePlate),
         ],
       ),
     );
@@ -347,6 +364,7 @@ class _ProviderInfoSection extends StatelessWidget {
             value,
             style: getBoldStyle(
                 color: const Color(0xFF0E0E0E), fontSize: FontSize.s12),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],

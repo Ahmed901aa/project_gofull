@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
@@ -41,12 +41,12 @@ class _LoginFormCardState extends State<LoginFormCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(AppStrings.login,
+          Text(S.of(context).login,
               textAlign: TextAlign.center,
               style: getBoldStyle(
                   color: AppColors.black, fontSize: FontSize.s24)),
           SizedBox(height: Sizes.s8),
-          Text(AppStrings.loginSubtitle,
+          Text(S.of(context).loginSubtitle,
               textAlign: TextAlign.center,
               style: getRegularStyle(
                   color: AppColors.grey, fontSize: FontSize.s14)),
@@ -55,7 +55,7 @@ class _LoginFormCardState extends State<LoginFormCard> {
           SizedBox(height: Sizes.s24),
 
           // ── Phone ──────────────────────────────────────────
-          Text(AppStrings.phoneLabel,
+          Text(S.of(context).phoneLabel,
               style: getMediumStyle(
                   color: AppColors.black, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
@@ -64,7 +64,7 @@ class _LoginFormCardState extends State<LoginFormCard> {
           SizedBox(height: Sizes.s16),
 
           // ── Password ───────────────────────────────────────
-          Text(AppStrings.passwordLabel,
+          Text(S.of(context).passwordLabel,
               style: getMediumStyle(
                   color: AppColors.black, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
@@ -83,12 +83,12 @@ class _LoginFormCardState extends State<LoginFormCard> {
 
           SizedBox(height: Sizes.s24),
           AppButton(
-            text: AppStrings.loginButton,
+            text: S.of(context).loginButton,
             isLoading: widget.isLoading,
             onPressed: widget.onLogin,
           ),
           SizedBox(height: Sizes.s24),
-          Text(AppStrings.termsText,
+          Text(S.of(context).termsText,
               textAlign: TextAlign.center,
               style: getRegularStyle(color: AppColors.grey, fontSize: 11.sp)),
         ],
@@ -110,7 +110,7 @@ class _LoginFormCardState extends State<LoginFormCard> {
         textAlign: TextAlign.right,
         style: getMediumStyle(color: AppColors.black, fontSize: 16.sp),
         decoration: InputDecoration(
-          hintText: AppStrings.passwordHint,
+          hintText: S.of(context).passwordHint,
           hintStyle: getRegularStyle(color: AppColors.grey, fontSize: 16.sp),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
@@ -134,11 +134,11 @@ class _LoginFormCardState extends State<LoginFormCard> {
         children: [
           GestureDetector(
             onTap: widget.onCreateAccount,
-            child: Text(AppStrings.createAccount,
+            child: Text(S.of(context).createAccount,
                 style: getSemiBoldStyle(
                     color: AppColors.primary, fontSize: FontSize.s14)),
           ),
-          Text(' ${AppStrings.noAccount}',
+          Text(' ${S.of(context).noAccount}',
               style: getRegularStyle(
                   color: AppColors.grey, fontSize: FontSize.s14)),
         ],

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -31,16 +31,16 @@ class DriverOrderDetailsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildCustomerInfo(),
+                    _buildCustomerInfo(context),
                     SizedBox(height: Insets.s16),
-                    _buildTripRoute(),
+                    _buildTripRoute(context),
                     SizedBox(height: Insets.s16),
                     if (args.customerNotes != null &&
                         args.customerNotes!.isNotEmpty) ...[
-                      _buildCustomerNotes(),
+                      _buildCustomerNotes(context),
                       SizedBox(height: Insets.s16),
                     ],
-                    _buildPaymentSummary(),
+                    _buildPaymentSummary(context),
                     SizedBox(height: Insets.s24),
                   ],
                 ),
@@ -72,7 +72,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      AppStrings.orderDetails,
+                      S.of(context).orderDetails,
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20),
@@ -91,7 +91,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
 
   // ── Customer Info ───────────────────────────────────────────
 
-  Widget _buildCustomerInfo() => Container(
+  Widget _buildCustomerInfo(BuildContext context) => Container(
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
           color: AppColors.white,
@@ -101,7 +101,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppStrings.customerInfo,
+              S.of(context).customerInfo,
               style: getBoldStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
             ),
@@ -166,7 +166,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
 
   // ── Car Photos ──────────────────────────────────────────────
 
-  Widget _buildCarPhotos() => Container(
+  Widget _buildCarPhotos(BuildContext context) => Container(
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
           color: AppColors.white,
@@ -176,7 +176,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppStrings.carPhotos,
+              S.of(context).carPhotos,
               style: getBoldStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
             ),
@@ -223,7 +223,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
 
   // ── Trip Route ──────────────────────────────────────────────
 
-  Widget _buildTripRoute() => Container(
+  Widget _buildTripRoute(BuildContext context) => Container(
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
           color: AppColors.white,
@@ -233,7 +233,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppStrings.tripRoute,
+              S.of(context).tripRoute,
               style: getBoldStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
             ),
@@ -258,7 +258,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AppStrings.departurePoint,
+                        S.of(context).departurePoint,
                         style: getRegularStyle(
                             color: AppColors.neutral800,
                             fontSize: FontSize.s12),
@@ -313,7 +313,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AppStrings.deliveryDestination,
+                        S.of(context).deliveryDestination,
                         style: getRegularStyle(
                             color: AppColors.neutral800,
                             fontSize: FontSize.s12),
@@ -338,7 +338,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppRadius.s8),
                   ),
                   child: Text(
-                    '${args.distance.toStringAsFixed(1)} ${AppStrings.km}',
+                    '${args.distance.toStringAsFixed(1)} ${S.of(context).km}',
                     style: getMediumStyle(
                         color: AppColors.primary, fontSize: FontSize.s12),
                   ),
@@ -351,7 +351,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
 
   // ── Customer Notes ──────────────────────────────────────────
 
-  Widget _buildCustomerNotes() => Container(
+  Widget _buildCustomerNotes(BuildContext context) => Container(
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
           color: AppColors.white,
@@ -361,7 +361,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppStrings.customerNotes,
+              S.of(context).customerNotes,
               style: getBoldStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
             ),
@@ -385,7 +385,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
 
   // ── Payment Summary ─────────────────────────────────────────
 
-  Widget _buildPaymentSummary() => Container(
+  Widget _buildPaymentSummary(BuildContext context) => Container(
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
           color: AppColors.white,
@@ -395,7 +395,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppStrings.paymentSummaryLabel,
+              S.of(context).paymentSummaryLabel,
               style: getBoldStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
             ),
@@ -406,7 +406,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      AppStrings.totalAmount,
+                      S.of(context).totalAmount,
                       style: getMediumStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s16),
@@ -428,7 +428,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  '${args.amount.toStringAsFixed(2)} ج.م',
+                  '${args.amount.toStringAsFixed(2)} ${S.of(context).currencyEGP}',
                   style: getBoldStyle(
                       color: AppColors.primary, fontSize: FontSize.s18),
                 ),
@@ -456,7 +456,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
           children: [
             // Accept order
             AppButton(
-              text: AppStrings.acceptOrder,
+              text: S.of(context).acceptOrder,
               onPressed: () => _onAcceptTapped(context),
             ),
             SizedBox(height: Insets.s8),
@@ -474,7 +474,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  AppStrings.rejectOrder,
+                  S.of(context).rejectOrder,
                   style: getSemiBoldStyle(
                       color: AppColors.error, fontSize: FontSize.s16),
                 ),

@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class RatingNotesSection extends StatelessWidget {
   final TextEditingController controller;
@@ -19,10 +20,11 @@ class RatingNotesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('أضف ملاحظاتك', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.start),
+        Text(l10n.addNotes, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.start),
         SizedBox(height: Insets.s8),
         Container(
           decoration: BoxDecoration(
@@ -38,7 +40,7 @@ class RatingNotesSection extends StatelessWidget {
             textDirection: TextDirection.rtl,
             style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
             decoration: InputDecoration(
-              hintText: 'اكتب هنا أي تفاصيل إضافية تود مشاركتها...',
+              hintText: l10n.addNotesHint,
               hintStyle: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
               contentPadding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
               border: InputBorder.none,

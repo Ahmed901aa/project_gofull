@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -33,8 +33,8 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
 
   bool get _isPickup => widget.args.documentationType == 'pickup';
 
-  String get _buttonLabel =>
-      _isPickup ? AppStrings.startToDestination : AppStrings.collectPayment;
+  String _buttonLabel(BuildContext context) =>
+      _isPickup ? S.of(context).startToDestination : S.of(context).collectPayment;
 
   Future<void> _capturePhoto() async {
     final picked = await _picker.pickImage(
@@ -127,7 +127,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
                   ),
                   Expanded(
                     child: Text(
-                      AppStrings.documentation,
+                      S.of(context).documentation,
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20),
@@ -179,13 +179,13 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppStrings.mandatoryDoc,
+                    S.of(context).mandatoryDoc,
                     style: getBoldStyle(
                         color: AppColors.primary, fontSize: FontSize.s14),
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    'التقط صورة واضحة للمركبة قبل بدء عملية النقل. هذا التوثيق يحمي حقوقك وحقوق العميل.',
+                    S.of(context).docMandatoryDesc,
                     style: getRegularStyle(
                         color: AppColors.primaryLight,
                         fontSize: FontSize.s12),
@@ -232,13 +232,13 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
           ),
           SizedBox(height: Insets.s12),
           Text(
-            'التقط صورة للمركبة',
+            S.of(context).captureVehiclePhoto,
             style: getSemiBoldStyle(
                 color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
           ),
           SizedBox(height: 4.h),
           Text(
-            'اضغط هنا لفتح الكاميرا والتقاط صورة واضحة',
+            S.of(context).tapToCapturePhoto,
             style: getRegularStyle(
                 color: AppColors.neutral800, fontSize: FontSize.s14),
             textAlign: TextAlign.center,
@@ -265,7 +265,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
                   size: 20.sp, color: AppColors.success),
               SizedBox(width: 6.w),
               Text(
-                'تم التقاط الصورة',
+                S.of(context).photoCaptured,
                 style: getSemiBoldStyle(
                     color: AppColors.success, fontSize: FontSize.s14),
               ),
@@ -286,7 +286,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
                           size: 14.sp, color: AppColors.primary),
                       SizedBox(width: 4.w),
                       Text(
-                        AppStrings.retake,
+                        S.of(context).retake,
                         style: getMediumStyle(
                             color: AppColors.primary, fontSize: FontSize.s12),
                       ),
@@ -319,14 +319,14 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
               Padding(
                 padding: EdgeInsets.only(bottom: Insets.s8),
                 child: Text(
-                  'يرجى التقاط صورة للمركبة للمتابعة',
+                  S.of(context).pleaseCaptureToContinue,
                   style: getRegularStyle(
                       color: AppColors.neutral800, fontSize: FontSize.s12),
                   textAlign: TextAlign.center,
                 ),
               ),
             AppButton(
-              text: _buttonLabel,
+              text: _buttonLabel(context),
               onPressed: _captured ? _onContinue : () {},
               backgroundColor:
                   _captured ? AppColors.primary : AppColors.neutral600,

@@ -11,6 +11,7 @@ import 'package:project_gofull/features/fuel/presentation/widgets/rating_notes_s
 import 'package:project_gofull/features/fuel/presentation/widgets/rating_stars_section.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class RatingScreen extends StatefulWidget {
   final RatingArgs? args;
@@ -69,7 +70,7 @@ class _RatingScreenState extends State<RatingScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back_ios_new_rounded, size: 20.sp, color: const Color(0xFF0E0E0E))),
-                  Text('تقييم الرحلة', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
+                  Text(S.of(context).rateTrip, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
                   Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
                 ],
               ),
@@ -104,7 +105,7 @@ class _RatingScreenState extends State<RatingScreen> {
               backgroundColor: AppColors.primary, disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.4),
               foregroundColor: AppColors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0,
             ),
-            child: Text('إرسال التقييم', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+            child: Text(S.of(context).submitRating, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
           ),
         ),
       );

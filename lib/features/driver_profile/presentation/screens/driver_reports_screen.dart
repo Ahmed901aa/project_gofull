@@ -10,6 +10,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class DriverReportsScreen extends StatefulWidget {
   const DriverReportsScreen({super.key});
@@ -87,11 +88,11 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
         final message = (e.response?.data as Map?)?['message'] as String?;
         setState(() {
           if (statusCode == 403) {
-            _error = message ?? 'حسابك قيد المراجعة، يرجى انتظار موافقة الإدارة';
+            _error = message ?? S.of(context).accountUnderReview;
           } else if (statusCode == 404) {
-            _error = 'لم يتم العثور على بيانات التحليلات';
+            _error = S.of(context).analyticsNotFound;
           } else {
-            _error = 'تعذّر تحميل التقارير';
+            _error = S.of(context).failedToLoadReports;
           }
           _isLoading = false;
         });
@@ -99,7 +100,7 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = 'تعذّر تحميل التقارير';
+          _error = S.of(context).failedToLoadReports;
           _isLoading = false;
         });
       }
@@ -139,7 +140,7 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                                   });
                                   _loadAnalytics();
                                 },
-                                child: const Text('إعادة المحاولة'),
+                                child: Text(S.of(context).retryButton),
                               ),
                             ],
                           ),
@@ -163,10 +164,10 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                                 icon: Icons.route_rounded,
                                 iconBg: AppColors.primary50,
                                 iconColor: AppColors.primary,
-                                title: 'إجمالي الطلبات',
+                                title: S.of(context).totalOrdersLabel,
                                 value: '$_totalOrders',
                                 changePercent: '${_ordersChange.abs()}%',
-                                changeLabel: 'من أمس',
+                                changeLabel: S.of(context).fromYesterdayLabel,
                                 isPositive: _ordersChange >= 0,
                               ),
                               SizedBox(height: Insets.s12),
@@ -175,11 +176,11 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                                 iconBg:
                                     AppColors.gold.withValues(alpha: 0.1),
                                 iconColor: AppColors.gold,
-                                title: 'إجمالي الدخل',
+                                title: S.of(context).totalIncomeLabel,
                                 value:
-                                    '${_totalIncome.toStringAsFixed(2)} د.ل',
+                                    '${_totalIncome.toStringAsFixed(2)} ${S.of(context).currencyDL}',
                                 changePercent: '${_incomeChange.abs()}%',
-                                changeLabel: 'من أمس',
+                                changeLabel: S.of(context).fromYesterdayLabel,
                                 isPositive: _incomeChange >= 0,
                               ),
                               SizedBox(height: Insets.s12),
@@ -188,12 +189,12 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                                 iconBg:
                                     AppColors.gold.withValues(alpha: 0.1),
                                 iconColor: AppColors.gold,
-                                title: 'متوسط التقييم',
+                                title: S.of(context).averageRatingLabel,
                                 value: _averageRating > 0
                                     ? '${_averageRating.toStringAsFixed(1)} / 5'
                                     : '—',
                                 changePercent: '$_totalRatings',
-                                changeLabel: 'تقييم',
+                                changeLabel: S.of(context).ratingLabel,
                                 isPositive: true,
                               ),
                               SizedBox(height: Insets.s12),
@@ -202,11 +203,11 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                                 iconBg:
                                     AppColors.info.withValues(alpha: 0.1),
                                 iconColor: AppColors.info,
-                                title: 'دخل اليوم',
+                                title: S.of(context).todayIncomeLabel,
                                 value:
-                                    '${_todayIncome.toStringAsFixed(2)} د.ل',
+                                    '${_todayIncome.toStringAsFixed(2)} ${S.of(context).currencyDL}',
                                 changePercent: '$_todayOrders',
-                                changeLabel: 'طلب اليوم',
+                                changeLabel: S.of(context).orderTodayLabel,
                                 isPositive: true,
                               ),
 
@@ -215,7 +216,7 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                               // ── Task Productivity Chart ──
                               if (_barData.isNotEmpty)
                                 _ChartSection(
-                                  title: 'الطلبات الأسبوعية',
+                                  title: S.of(context).weeklyOrdersLabel,
                                   child: _BarChart(data: _barData),
                                 ),
 
@@ -225,7 +226,7 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                               // ── Response Rate Chart ──
                               if (_areaData.isNotEmpty)
                                 _ChartSection(
-                                  title: 'معدل القبول',
+                                  title: S.of(context).acceptRateLabel,
                                   child: _AreaChart(data: _areaData),
                                 ),
 
@@ -258,7 +259,7 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                   ),
                   Expanded(
                     child: Text(
-                      'التقارير',
+                      S.of(context).reportsTitle,
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20),
@@ -507,7 +508,7 @@ class _AreaChart extends StatelessWidget {
                     size: 14.sp, color: AppColors.success),
                 SizedBox(width: 4.w),
                 Text(
-                  'معدل القبول الأسبوعي',
+                  S.of(context).weeklyAcceptanceRateLabel,
                   style: getMediumStyle(
                       color: AppColors.success, fontSize: FontSize.s12),
                 ),

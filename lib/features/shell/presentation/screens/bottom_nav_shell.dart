@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/widgets/rating_bottom_sheet.dart';
 import 'package:project_gofull/features/home/presentation/screens/home_screen.dart';
 import 'package:project_gofull/features/orders/presentation/screens/orders_screen.dart';
@@ -157,28 +157,28 @@ class _BottomNavShellState extends State<BottomNavShell>
                   children: [
                     NavItem(
                       icon: Icons.home_rounded,
-                      label: AppStrings.home,
+                      label: S.of(context).home,
                       index: 0,
                       currentIndex: _currentIndex,
                       onTap: switchTo,
                     ),
                     NavItem(
                       icon: Icons.receipt_long_rounded,
-                      label: AppStrings.myOrders,
+                      label: S.of(context).myOrders,
                       index: 1,
                       currentIndex: _currentIndex,
                       onTap: switchTo,
                     ),
                     NavItem(
                       icon: Icons.headset_mic_outlined,
-                      label: 'الدعم',
+                      label: S.of(context).support,
                       index: 2,
                       currentIndex: _currentIndex,
                       onTap: switchTo,
                     ),
                     NavItem(
                       icon: Icons.person_outline_rounded,
-                      label: AppStrings.myAccount,
+                      label: S.of(context).myAccount,
                       index: 3,
                       currentIndex: _currentIndex,
                       onTap: switchTo,

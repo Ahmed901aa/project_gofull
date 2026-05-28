@@ -8,7 +8,7 @@ import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/network/api_client.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -51,13 +51,13 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
 
   bool get _isToCustomer => widget.args.navigationType == 'to_customer';
 
-  String get _title => _isToCustomer
-      ? AppStrings.navigateToCustomer
-      : AppStrings.navigateToDestination;
+  String _title(BuildContext context) => _isToCustomer
+      ? S.of(context).navigateToCustomer
+      : S.of(context).navigateToDestination;
 
-  String get _locationLabel => _isToCustomer
-      ? AppStrings.departurePoint
-      : AppStrings.deliveryDestinationLabel;
+  String _locationLabel(BuildContext context) => _isToCustomer
+      ? S.of(context).departurePoint
+      : S.of(context).deliveryDestinationLabel;
 
   @override
   void initState() {
@@ -127,7 +127,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
       );
 
       _providerPosition = providerLatLng;
-      _remainingDistance = '${km.toStringAsFixed(1)} كم';
+      _remainingDistance = '${km.toStringAsFixed(1)} ${S.of(context).kmUnit}';
       _rebuildMapObjects();
       setState(() {});
 
@@ -180,7 +180,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
         markerId: const MarkerId('destination'),
         position: _destination,
         infoWindow: InfoWindow(
-          title: _isToCustomer ? 'موقع العميل' : 'نقطة التسليم',
+          title: _isToCustomer ? S.of(context).customerLocationMarker : S.of(context).deliveryPointMarker,
           snippet: widget.args.address,
         ),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
@@ -194,7 +194,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
         Marker(
           markerId: const MarkerId('provider'),
           position: _providerPosition!,
-          infoWindow: const InfoWindow(title: 'موقعي'),
+          infoWindow: InfoWindow(title: S.of(context).myLocationMarker),
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
         ),
       );
@@ -252,10 +252,10 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
       context,
       icon: Icons.cancel_rounded,
       iconColor: AppColors.error,
-      title: 'إلغاء الطلب',
-      subtitle: 'هل أنت متأكد من إلغاء هذا الطلب؟\nسيتم إبلاغ العميل بالإلغاء.',
-      confirmLabel: 'إلغاء الطلب',
-      cancelLabel: 'تراجع',
+      title: S.of(context).cancelOrderDialogTitle,
+      subtitle: S.of(context).cancelOrderDialogSubtitle,
+      confirmLabel: S.of(context).cancelOrderDialogBtn,
+      cancelLabel: S.of(context).cancelOrderGoBack,
       destructive: true,
     );
     if (confirmed) {
@@ -388,7 +388,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
                     ),
                     Expanded(
                       child: Text(
-                        _title,
+                        _title(context),
                         style: getBoldStyle(
                             color: const Color(0xFF0E0E0E),
                             fontSize: FontSize.s20),
@@ -489,7 +489,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _locationLabel,
+                        _locationLabel(context),
                         style: getRegularStyle(
                             color: AppColors.neutral800,
                             fontSize: FontSize.s12),
@@ -524,7 +524,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
                     Icon(Icons.straighten_rounded,
                         size: 18.sp, color: AppColors.primary),
                     SizedBox(width: 6.w),
-                    Text('المسافة المتبقية: $_remainingDistance',
+                    Text('${S.of(context).remainingDistance} $_remainingDistance',
                         style: getMediumStyle(
                             color: AppColors.primary,
                             fontSize: FontSize.s14)),
@@ -539,7 +539,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
               children: [
                 Expanded(
                   child: AppButton(
-                    text: AppStrings.openInGoogleMaps,
+                    text: S.of(context).openInGoogleMaps,
                     isOutlined: true,
                     onPressed: _openInGoogleMaps,
                   ),
@@ -571,8 +571,8 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
             // Arrived button
             AppButton(
               text: _isToCustomer && widget.args.isFuel
-                  ? 'وصلت - بدء التعبئة'
-                  : AppStrings.arrivedStartDoc,
+                  ? S.of(context).arrivedStartRefueling
+                  : S.of(context).arrivedStartDoc,
               onPressed: _onArrivedTapped,
             ),
             SizedBox(height: Insets.s8),
@@ -584,7 +584,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
                 padding: EdgeInsets.symmetric(vertical: 10.h),
                 alignment: Alignment.center,
                 child: Text(
-                  'إلغاء الطلب',
+                  S.of(context).cancelOrderLabel,
                   style: getMediumStyle(
                     color: AppColors.error,
                     fontSize: FontSize.s14,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'home_location_bar.dart';
@@ -41,11 +41,11 @@ class HomeHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${AppStrings.welcomePrefix} $userName',
+                      '${S.of(context).welcomePrefix} $userName',
                       style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s20),
                     ),
                     Text(
-                      'نتمنى لك سلامة الطريق.',
+                      S.of(context).welcomeSubtitle,
                       style: getRegularStyle(color: AppColors.white, fontSize: FontSize.s12),
                     ),
                   ],

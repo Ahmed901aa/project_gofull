@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -74,7 +75,7 @@ class DriverProfileScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      'الملف الشخصي',
+                      S.of(context).profileTitle,
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20),
@@ -98,9 +99,9 @@ class _ProfileCard extends StatelessWidget {
   const _ProfileCard({this.profile});
   @override
   Widget build(BuildContext context) {
-    final name = profile?.userName ?? 'السائق';
+    final name = profile?.userName ?? S.of(context).theDriver;
     final id = profile != null ? 'ID-${profile!.id}' : '';
-    final role = profile?.isTowingProvider == true ? 'سائق ساحبة' : 'سائق إمداد وقود';
+    final role = profile?.isTowingProvider == true ? S.of(context).towDriverLabel : S.of(context).fuelSupplyDriver;
     final isOnline = profile?.isAvailable ?? false;
     return Container(
       padding: EdgeInsets.all(Insets.s16),
@@ -157,7 +158,7 @@ class _ProfileCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppRadius.s16),
                   ),
                   child: Text(
-                    isOnline ? 'نشط' : 'غير نشط',
+                    isOnline ? S.of(context).active : S.of(context).inactive,
                     style: getMediumStyle(
                         color: AppColors.gold, fontSize: FontSize.s12),
                   ),
@@ -200,15 +201,15 @@ class _InfoBoxesRow extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: _infoBox('التقييم', rating, Icons.star_rounded)),
+            Expanded(child: _infoBox(S.of(context).rating, rating, Icons.star_rounded)),
             SizedBox(width: Insets.s12),
             Expanded(
                 child: _infoBox(
-                    'إجمالي التقييمات', '${profile?.totalRatings ?? 0}', Icons.reviews_rounded)),
+                    S.of(context).totalRatingsLabel, '${profile?.totalRatings ?? 0}', Icons.reviews_rounded)),
           ],
         ),
         SizedBox(height: Insets.s12),
-        _infoBox('الطلبات المكتملة', '${profile?.completedOrders ?? 0}', Icons.check_circle_rounded),
+        _infoBox(S.of(context).completedOrdersLabel, '${profile?.completedOrders ?? 0}', Icons.check_circle_rounded),
       ],
     );
   }
@@ -249,7 +250,7 @@ class _SalarySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'المرتب',
+          S.of(context).salaryLabel,
           style: getBoldStyle(
               color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
         ),
@@ -267,13 +268,13 @@ class _SalarySection extends StatelessWidget {
                   size: 24.sp, color: AppColors.primary),
               SizedBox(width: Insets.s12),
               Text(
-                'مرتب ثابت:',
+                S.of(context).fixedSalaryLabel,
                 style: getRegularStyle(
                     color: AppColors.darkGrey, fontSize: FontSize.s14),
               ),
               SizedBox(width: 4.w),
               Text(
-                '1500 د.ك',
+                '1500 ${S.of(context).currencyKWD}',
                 style: getBoldStyle(
                     color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
               ),
@@ -300,16 +301,16 @@ class _VehicleSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'المعهدة',
+          S.of(context).vehicleLabel2,
           style: getBoldStyle(
               color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
         ),
         SizedBox(height: Insets.s8),
         Row(
           children: [
-            Expanded(child: _vehicleBadge('نوع المركبة', vehicleName)),
+            Expanded(child: _vehicleBadge(S.of(context).vehicleTypeLabel, vehicleName)),
             SizedBox(width: Insets.s8),
-            Expanded(child: _vehicleBadge('رقم اللوحة', plate)),
+            Expanded(child: _vehicleBadge(S.of(context).plateNumberVehicle, plate)),
           ],
         ),
         SizedBox(height: Insets.s12),
@@ -329,7 +330,7 @@ class _VehicleSection extends StatelessWidget {
                     size: 56.sp, color: AppColors.neutral600),
                 SizedBox(height: Insets.s8),
                 Text(
-                  'صورة المعهدة',
+                  S.of(context).vehicleImageLabel,
                   style: getRegularStyle(
                       color: AppColors.neutral800, fontSize: FontSize.s14),
                 ),
@@ -372,15 +373,25 @@ class _VehicleSection extends StatelessWidget {
 enum _DocStatus { accepted, underReview, required_ }
 
 class _DocItem {
-  final String name;
+  final String nameKey;
   final _DocStatus status;
-  const _DocItem({required this.name, required this.status});
+  const _DocItem({required this.nameKey, required this.status});
+
+  String localizedName(BuildContext context) {
+    final l10n = S.of(context);
+    switch (nameKey) {
+      case 'nationalId': return l10n.nationalIdLabel;
+      case 'drivingLicense': return l10n.drivingLicenseLabel;
+      default: return nameKey;
+    }
+  }
 }
 
+// Document items use keys that are resolved to localized strings at build time
 const _documents = [
-  _DocItem(name: 'الرقم القومي', status: _DocStatus.underReview),
-  _DocItem(name: 'رخصة القيادة', status: _DocStatus.accepted),
-  _DocItem(name: 'الرقم القومي', status: _DocStatus.required_),
+  _DocItem(nameKey: 'nationalId', status: _DocStatus.underReview),
+  _DocItem(nameKey: 'drivingLicense', status: _DocStatus.accepted),
+  _DocItem(nameKey: 'nationalId', status: _DocStatus.required_),
 ];
 
 class _DocumentsSection extends StatelessWidget {
@@ -390,7 +401,7 @@ class _DocumentsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'الوثائق',
+          S.of(context).documentsLabel,
           style: getBoldStyle(
               color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
         ),
@@ -407,7 +418,7 @@ class _DocumentsSection extends StatelessWidget {
               final isLast = entry.key == _documents.length - 1;
               return Column(
                 children: [
-                  _docRow(doc),
+                  _docRow(context, doc),
                   if (!isLast)
                     Divider(
                         height: 1,
@@ -423,7 +434,7 @@ class _DocumentsSection extends StatelessWidget {
     );
   }
 
-  Widget _docRow(_DocItem doc) {
+  Widget _docRow(BuildContext context, _DocItem doc) {
     Color statusBg;
     Color statusFg;
     String statusLabel;
@@ -434,18 +445,18 @@ class _DocumentsSection extends StatelessWidget {
       case _DocStatus.accepted:
         statusBg = AppColors.success.withValues(alpha: 0.1);
         statusFg = AppColors.success;
-        statusLabel = 'مقبولة';
-        actionLabel = 'عرض';
+        statusLabel = S.of(context).acceptedLabel;
+        actionLabel = S.of(context).viewLabel;
       case _DocStatus.underReview:
         statusBg = AppColors.gold.withValues(alpha: 0.1);
         statusFg = AppColors.gold;
-        statusLabel = 'قيد المراجعة';
-        actionLabel = 'عرض';
+        statusLabel = S.of(context).underReviewLabel;
+        actionLabel = S.of(context).viewLabel;
       case _DocStatus.required_:
         statusBg = AppColors.error.withValues(alpha: 0.1);
         statusFg = AppColors.error;
-        statusLabel = 'مطلوب';
-        actionLabel = 'رفع الملف';
+        statusLabel = S.of(context).requiredLabel;
+        actionLabel = S.of(context).uploadFileLabel;
         showUpload = true;
     }
 
@@ -473,7 +484,7 @@ class _DocumentsSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  doc.name,
+                  doc.localizedName(context),
                   style: getMediumStyle(
                       color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
                 ),

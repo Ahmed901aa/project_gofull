@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class SearchingBottomPanel extends StatelessWidget {
   final int secondsLeft;
@@ -31,8 +32,8 @@ class SearchingBottomPanel extends StatelessWidget {
           RichText(
             textDirection: TextDirection.rtl,
             text: TextSpan(children: [
-              TextSpan(text: 'الوقت المتوقع للعثور على سائق: ', style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
-              TextSpan(text: '$mm:$ss دقيقة', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+              TextSpan(text: S.of(context).expectedTimeFindDriver, style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+              TextSpan(text: S.of(context).minutesFormatted('$mm:$ss'), style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
             ]),
           ),
           SizedBox(height: Insets.s8),
@@ -54,7 +55,7 @@ class SearchingBottomPanel extends StatelessWidget {
             child: OutlinedButton.icon(
               onPressed: () => Navigator.pop(context),
               icon: Icon(Icons.close_rounded, size: 20.sp, color: AppColors.primary),
-              label: Text('إلغاء الطلب', style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s16)),
+              label: Text(S.of(context).cancelOrder, style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s16)),
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: AppColors.primary),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),

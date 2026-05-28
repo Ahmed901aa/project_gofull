@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 
@@ -27,7 +27,7 @@ class MapTopBar extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              AppStrings.currentLocation,
+              S.of(context).currentLocation,
               style: getBoldStyle(color: AppColors.black, fontSize: FontSize.s18),
               textAlign: TextAlign.center,
             ),

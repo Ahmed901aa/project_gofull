@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
@@ -20,6 +21,7 @@ class MapSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -45,7 +47,7 @@ class MapSearchBar extends StatelessWidget {
             SizedBox(width: Insets.s8),
             Expanded(
               child: Text(
-                text.isEmpty ? 'ابحث عن موقع...' : text,
+                text.isEmpty ? l10n.searchHint : text,
                 style: text.isEmpty
                     ? getRegularStyle(
                         color: AppColors.grey,

@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class DriverFoundHeader extends StatelessWidget {
   final bool showClose;
@@ -29,7 +30,7 @@ class DriverFoundHeader extends StatelessWidget {
                   )
                 else
                   const SizedBox(width: 24),
-                Text('في الطريق لك', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
+                Text(S.of(context).onTheWayToYou, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
                 Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
               ],
             ),

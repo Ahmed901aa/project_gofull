@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/home/domain/entities/offer_entity.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class OfferCard extends StatelessWidget {
   final OfferEntity offer;
@@ -48,7 +49,7 @@ class OfferCard extends StatelessWidget {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    'استخدم كود: ${offer.code}',
+                    '${S.of(context).useCodePrefix}${offer.code}',
                     style: getSemiBoldStyle(color: AppColors.primary, fontSize: FontSize.s14),
                     textAlign: TextAlign.right,
                   ),

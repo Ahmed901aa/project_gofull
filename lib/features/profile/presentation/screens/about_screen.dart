@@ -7,19 +7,21 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
-            const AppHeader(title: 'عن Go Full'),
+            AppHeader(title: l10n.aboutGoFull),
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -50,7 +52,7 @@ class AboutScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      'الإصدار 1.0.0',
+                      l10n.version,
                       style: getRegularStyle(
                           color: AppColors.grey, fontSize: FontSize.s14),
                     ),
@@ -59,35 +61,35 @@ class AboutScreen extends StatelessWidget {
                     // Description
                     _buildCard(
                       icon: Icons.local_gas_station_rounded,
-                      title: 'إمداد وقود',
+                      title: l10n.aboutFuelTitle,
                       description:
-                          'خدمة توصيل الوقود إلى موقعك مباشرة. بنزين أو ديزل، نوصلك أينما كنت.',
+                          l10n.aboutFuelDesc,
                     ),
                     SizedBox(height: 12.h),
                     _buildCard(
                       icon: Icons.fire_truck_rounded,
-                      title: 'خدمة ساحبة',
+                      title: l10n.aboutTowTitle,
                       description:
-                          'سحب وإنقاذ سريع لسيارتك. فريق متخصص ومجهز لنقل مركبتك بأمان.',
+                          l10n.aboutTowDesc,
                     ),
                     SizedBox(height: 12.h),
                     _buildCard(
                       icon: Icons.speed_rounded,
-                      title: 'سرعة الاستجابة',
+                      title: l10n.aboutFastResponse,
                       description:
-                          'نربطك بأقرب مزود خدمة في منطقتك لضمان وصول المساعدة في أسرع وقت.',
+                          l10n.aboutFastResponseDesc,
                     ),
                     SizedBox(height: 12.h),
                     _buildCard(
                       icon: Icons.verified_user_rounded,
-                      title: 'أمان وموثوقية',
+                      title: l10n.aboutSafety,
                       description:
-                          'جميع مزودي الخدمة معتمدون ومتحققون. تقييمات شفافة لضمان جودة الخدمة.',
+                          l10n.aboutSafetyDesc,
                     ),
 
                     SizedBox(height: 32.h),
                     Text(
-                      '© 2026 GO FULL. جميع الحقوق محفوظة.',
+                      l10n.copyright,
                       style: getRegularStyle(
                           color: AppColors.grey, fontSize: FontSize.s12),
                       textAlign: TextAlign.center,

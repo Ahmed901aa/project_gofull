@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class PhoneInputField extends StatelessWidget {
   final TextEditingController controller;
@@ -67,7 +68,7 @@ class PhoneInputField extends StatelessWidget {
                     fontSize: 16.sp,
                   ),
                   decoration: InputDecoration(
-                    hintText: 'أدخل رقم الجوال',
+                    hintText: S.of(context).phoneHint,
                     hintStyle: getRegularStyle(
                       color: AppColors.grey,
                       fontSize: 16.sp,

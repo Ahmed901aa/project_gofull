@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class DriverCard extends StatelessWidget {
   final String driverName;
@@ -18,7 +19,7 @@ class DriverCard extends StatelessWidget {
     this.driverName = '—',
     this.ratingValue = '—',
     this.reviewCount = '',
-    this.vehicleLabel = 'نوع الساحبة',
+    this.vehicleLabel = '',
     this.vehicleValue = '—',
     this.plateNumber = '—',
   });
@@ -101,7 +102,7 @@ class DriverCard extends StatelessWidget {
               children: [
                 _infoPill(label: vehicleLabel, value: vehicleValue),
                 SizedBox(width: Insets.s16),
-                _infoPill(label: 'رقم اللوحة', value: plateNumber),
+                _infoPill(label: S.of(context).plateNumber, value: plateNumber),
               ],
             ),
           ),

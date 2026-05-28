@@ -12,9 +12,10 @@ class QuickShortcutsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final shortcuts = getQuickShortcuts(context);
     return Row(
-      children: quickShortcuts.map((s) {
-        final isLast = s == quickShortcuts.last;
+      children: shortcuts.map((s) {
+        final isLast = s == shortcuts.last;
         return Expanded(
           child: Padding(
             padding: EdgeInsets.only(left: isLast ? 0 : Insets.s8),

@@ -22,6 +22,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/core/widgets/app_notification.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/fuel_details_form.dart';
 
 class FuelScreen extends StatefulWidget {
@@ -33,8 +34,13 @@ class FuelScreen extends StatefulWidget {
 class _FuelScreenState extends State<FuelScreen> {
   FuelPriceEntity? _selectedFuel;
   String? _selectedQuantity;
-  final _quantities = ['20 لتر', '30 لتر', '40 لتر', '50 لتر', 'تعبئة كاملة'];
+  int? _selectedQuantityIndex;
   final _notesController = TextEditingController();
+
+  List<String> _getQuantities(BuildContext context) {
+    final l10n = S.of(context);
+    return [l10n.liters20Qty, l10n.liters30Qty, l10n.liters40Qty, l10n.liters50Qty, l10n.fullTankQty];
+  }
 
   // Fallback fuel types when backend has no data or has old 91/95 types
   static const _fallbackFuelPrices = [
@@ -55,10 +61,11 @@ class _FuelScreenState extends State<FuelScreen> {
   bool _isValid(BuildContext context) => _isFormValid && _hasLocation(context);
 
   String? _getValidationError(BuildContext context) {
-    if (_selectedFuel == null) return 'الرجاء اختيار نوع الوقود';
-    if (_selectedQuantity == null) return 'الرجاء اختيار الكمية';
-    if (!_isFullTank && _quantityNum <= 0) return 'الرجاء اختيار كمية صحيحة';
-    if (!_hasLocation(context)) return 'الرجاء تحديد موقعك';
+    final l10n = S.of(context);
+    if (_selectedFuel == null) return l10n.pleaseSelectFuelType;
+    if (_selectedQuantity == null) return l10n.pleaseSelectQuantity;
+    if (!_isFullTank && _quantityNum <= 0) return l10n.pleaseSelectValidQuantity;
+    if (!_hasLocation(context)) return l10n.pleaseSelectLocation;
     return null;
   }
 
@@ -72,7 +79,7 @@ class _FuelScreenState extends State<FuelScreen> {
     }
   }
 
-  bool get _isFullTank => _selectedQuantity == 'تعبئة كاملة';
+  bool get _isFullTank => _selectedQuantityIndex == 4;
 
   double get _quantityNum {
     if (_isFullTank) return 0; // full tank — price calculated by driver
@@ -88,8 +95,9 @@ class _FuelScreenState extends State<FuelScreen> {
     final loc = context.read<LocationCubit>().state;
     if (loc.lat == null || loc.lng == null) return;
 
+    final l10n = S.of(context);
     final notes = _notesController.text.isNotEmpty ? _notesController.text : null;
-    final fullTankNote = _isFullTank ? 'تعبئة كاملة' : null;
+    final fullTankNote = _isFullTank ? l10n.fullTankQty : null;
     final combinedNotes = [if (fullTankNote != null) fullTankNote, if (notes != null) notes].join(' - ');
 
     // Map fuel type to backend values: gasoline → petrol, diesel → diesel
@@ -113,30 +121,33 @@ class _FuelScreenState extends State<FuelScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final config = context.watch<AppConfigBloc>().state;
-    // Normalize: only show بنزين and ديزل (no 91/95 variants)
+    // Normalize: only show gasoline and diesel (no 91/95 variants)
     final fuelPrices = _normalizeFuelPrices(config.fuelPrices);
     final fuelNames = fuelPrices.map((e) => e.nameAr).toList();
+    final quantities = _getQuantities(context);
 
     return BlocProvider(
       create: (_) => sl<RequestBloc>(),
       child: BlocListener<RequestBloc, RequestState>(
         listener: (context, state) {
+          final l10n = S.of(context);
           if (state is RequestCreated) {
             BottomNavShell.markOrderActive(state.request.id);
             Navigator.pushNamed(context, Routes.searchingDriver,
               arguments: SearchingArgs(
-                searchingText: 'جاري البحث عن أقرب مزود وقود',
-                subtitleText: 'نقوم الآن بمطابقة طلبك مع أقرب سيارة إمداد مجهزة بنوع الوقود المختار.',
+                searchingText: l10n.searchingForFuelProvider,
+                subtitleText: l10n.searchingFuelSubtitle,
                 nextRoute: Routes.driverFound,
                 requestId: state.request.id,
                 serviceType: 'fuel_delivery',
               ));
           } else if (state is RequestError) {
             if (state.message.contains('active')) {
-              AppSnackbar.warning(context, 'لديك طلب نشط بالفعل. أكمله أو ألغه من الصفحة الرئيسية قبل تقديم طلب جديد');
+              AppSnackbar.warning(context, l10n.activeOrderWarning);
             } else {
-              AppSnackbar.error(context, _friendlyError(state.message));
+              AppSnackbar.error(context, _friendlyError(context, state.message));
             }
           }
         },
@@ -147,7 +158,7 @@ class _FuelScreenState extends State<FuelScreen> {
               top: false,
               child: Column(
                 children: [
-                  const ServiceHeader(title: 'إمداد وقود'),
+                  ServiceHeader(title: l10n.fuelScreenTitle),
                   Expanded(
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
@@ -157,18 +168,18 @@ class _FuelScreenState extends State<FuelScreen> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             const Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: SafetyNoticeCard()),
-                            _section('الموقع', gap: 16),
+                            _section(l10n.locationSection, gap: 16),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16),
                               child: BlocBuilder<LocationCubit, LocationState>(
                                 builder: (context, loc) => ServiceLocationCard(
-                                  topLabel: 'الموقع الحالي',
+                                  topLabel: l10n.selectedLocation,
                                   bottomLabel: loc.address,
                                   onTap: () => Navigator.pushNamed(context, Routes.locationPicker),
                                 ),
                               ),
                             ),
-                            _section('تفاصيل الوقود', gap: 16),
+                            _section(l10n.fuelDetailsSection, gap: 16),
                             if (config.isLoading && fuelNames.isEmpty)
                               const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 16),
@@ -180,7 +191,7 @@ class _FuelScreenState extends State<FuelScreen> {
                                 child: GestureDetector(
                                   onTap: () => context.read<AppConfigBloc>().add(const LoadAppConfigEvent()),
                                   child: Text(
-                                    'لم يتم تحميل أنواع الوقود. اضغط لإعادة المحاولة.',
+                                    l10n.fuelTypesNotLoaded,
                                     style: getRegularStyle(color: AppColors.error, fontSize: FontSize.s14),
                                     textAlign: TextAlign.center,
                                   ),
@@ -191,34 +202,40 @@ class _FuelScreenState extends State<FuelScreen> {
                               selectedFuelType: _selectedFuel?.nameAr,
                               selectedQuantity: _selectedQuantity,
                               fuelTypes: fuelNames,
-                              quantities: _quantities,
+                              quantities: quantities,
                               onFuelTypeChanged: (v) {
                                 setState(() {
                                   _selectedFuel = fuelPrices.firstWhere((e) => e.nameAr == v);
                                 });
                               },
-                              onQuantityChanged: (v) => setState(() => _selectedQuantity = v),
+                              onQuantityChanged: (v) {
+                                setState(() {
+                                  _selectedQuantity = v;
+                                  _selectedQuantityIndex =
+                                      v == null ? null : quantities.indexOf(v);
+                                });
+                              },
                             ),
                             // Show price per liter from backend
                             if (_selectedFuel != null)
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                                 child: Text(
-                                  'سعر اللتر: ${_selectedFuel!.pricePerLiter.toStringAsFixed(2)} ${config.currency}',
+                                  l10n.pricePerLiterDisplay(_selectedFuel!.pricePerLiter.toStringAsFixed(2), config.currency),
                                   style: getMediumStyle(color: AppColors.primary, fontSize: FontSize.s14),
                                   textAlign: TextAlign.right,
                                 ),
                               ),
-                            _section('ملاحظات إضافية', gap: 8),
+                            _section(l10n.additionalNotesSection, gap: 8),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16),
-                              child: ServiceInputField(hint: 'ملاحظات إضافية عن حالة السيارة', controller: _notesController),
+                              child: ServiceInputField(hint: l10n.additionalNotesHintField, controller: _notesController),
                             ),
-                            _section('ملخص الدفع', gap: 16),
+                            _section(l10n.paymentSummarySection, gap: 16),
                             PaymentSummary(
                               subtotal: _isFormValid && !_isFullTank ? _subtotal : null,
                               serviceFee: config.serviceFee,
-                              note: _isFormValid && _isFullTank ? 'سيتم تحديد السعر بعد التعبئة' : null,
+                              note: _isFormValid && _isFullTank ? l10n.priceAfterFill : null,
                             ),
                             const SizedBox(height: 16),
                           ],
@@ -292,18 +309,19 @@ class _FuelScreenState extends State<FuelScreen> {
     ];
   }
 
-  String _friendlyError(String raw) {
+  String _friendlyError(BuildContext context, String raw) {
+    final l10n = S.of(context);
     if (raw.contains('network') || raw.contains('connection') || raw.contains('SocketException')) {
-      return 'تعذّر الاتصال بالإنترنت. تحقق من اتصالك وحاول مرة أخرى';
+      return l10n.networkError;
     }
     if (raw.contains('server') || raw.contains('500')) {
-      return 'حدث خطأ في الخادم. يرجى المحاولة لاحقاً';
+      return l10n.serverError;
     }
     if (raw.contains('unauthorized') || raw.contains('401')) {
-      return 'انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى';
+      return l10n.sessionExpired;
     }
     if (raw.contains('permission') || raw.contains('403')) {
-      return 'ليس لديك صلاحية لتنفيذ هذا الإجراء';
+      return l10n.permissionDenied;
     }
     return raw;
   }

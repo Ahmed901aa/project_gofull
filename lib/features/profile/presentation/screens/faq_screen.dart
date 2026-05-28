@@ -5,12 +5,10 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/profile/presentation/widgets/faq_card.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
-const _faqs = [
-  {
-    'question': 'كيف يتم تحديد تكلفة الرحلة؟',
-    'answer': 'يتم حساب التكلفة بناءً على نوع الخدمة المختارة، والمسافة المقطوعة (في حالة الساحبة)، ورسوم الخدمة الثابتة. يظهر لك سعر تقديري قبل تأكيد الطلب.',
-  },
+List<Map<String, String>> _getFaqs(S l10n) => [
+  {'question': l10n.faqTripCost, 'answer': l10n.faqTripCostAnswer},
 ];
 
 class FaqScreen extends StatefulWidget {
@@ -24,6 +22,8 @@ class _FaqScreenState extends State<FaqScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    final _faqs = _getFaqs(l10n);
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -61,7 +61,7 @@ class _FaqScreenState extends State<FaqScreen> {
               child: Row(
                 children: [
                   GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: const Color(0xFF0E0E0E))),
-                  Expanded(child: Text('الأسئلة الشائعة', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20), textAlign: TextAlign.center)),
+                  Expanded(child: Text(l10n.faq, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20), textAlign: TextAlign.center)),
                   SizedBox(width: 24.sp),
                 ],
               ),

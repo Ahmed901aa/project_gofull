@@ -21,7 +21,7 @@ class RequestRepositoryImpl implements RequestRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 
@@ -41,7 +41,7 @@ class RequestRepositoryImpl implements RequestRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غير مت��قع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 
@@ -65,7 +65,7 @@ class RequestRepositoryImpl implements RequestRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غي�� متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 
@@ -80,7 +80,7 @@ class RequestRepositoryImpl implements RequestRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 
@@ -106,7 +106,7 @@ class RequestRepositoryImpl implements RequestRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 
@@ -124,7 +124,7 @@ class RequestRepositoryImpl implements RequestRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خط�� غير متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 }

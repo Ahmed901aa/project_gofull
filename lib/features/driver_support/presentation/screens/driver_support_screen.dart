@@ -8,6 +8,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,7 +33,7 @@ class DriverSupportScreen extends StatelessWidget {
 
   void _copyPhone(BuildContext context, String phone) {
     Clipboard.setData(ClipboardData(text: phone));
-    AppSnackbar.info(context, 'تم نسخ الرقم');
+    AppSnackbar.info(context, S.of(context).numberCopiedSnack);
   }
 
   @override
@@ -91,7 +92,7 @@ class DriverSupportScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      'الدعم الفني',
+                      S.of(context).technicalSupportTitle,
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20),
@@ -123,7 +124,7 @@ class _SupportIllustration extends StatelessWidget {
         ),
         SizedBox(height: Insets.s12),
         Text(
-          'فريق الدعم متاح لمساعدتك',
+          S.of(context).supportTeamAvailable,
           style: getMediumStyle(
               color: AppColors.primary, fontSize: FontSize.s16),
         ),
@@ -147,7 +148,7 @@ class _DirectCallSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'اتصال مباشر',
+          S.of(context).directCallLabel,
           style: getBoldStyle(
               color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
         ),
@@ -183,7 +184,7 @@ class _DirectCallSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'رقم الجوال:',
+                      S.of(context).phoneNumberLabel2,
                       style: getRegularStyle(
                           color: AppColors.grey, fontSize: FontSize.s12),
                     ),

@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class OrderBadgesRow extends StatelessWidget {
   const OrderBadgesRow({super.key});
@@ -25,7 +26,7 @@ class OrderBadgesRow extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('خدمة ساحبة', style: getMediumStyle(color: AppColors.primary, fontSize: FontSize.s12)),
+                Text(S.of(context).towServiceLabel, style: getMediumStyle(color: AppColors.primary, fontSize: FontSize.s12)),
                 SizedBox(width: 4.w),
                 Icon(Icons.local_shipping_outlined, size: 14.sp, color: AppColors.primary),
               ],
@@ -38,7 +39,7 @@ class OrderBadgesRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadius.s16),
               border: Border.all(color: AppColors.neutral600),
             ),
-            child: Text('قيد التنفيذ', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12)),
+            child: Text(S.of(context).inProgressLabel, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12)),
           ),
         ],
       ),

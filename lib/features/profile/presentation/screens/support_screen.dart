@@ -11,6 +11,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class SupportScreen extends StatelessWidget {
   final bool showBack;
@@ -39,13 +40,14 @@ class SupportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
-            AppHeader(title: 'الدعم والمساعدة', showBack: showBack),
+            AppHeader(title: l10n.supportAndHelp, showBack: showBack),
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -62,7 +64,7 @@ class SupportScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'تواصل معنا',
+                            l10n.contactUs,
                             style: getBoldStyle(
                               color: const Color(0xFF0E0E0E),
                               fontSize: FontSize.s18,
@@ -75,7 +77,7 @@ class SupportScreen extends StatelessWidget {
                               _ContactOptionCard(
                                 icon: Icons.phone_rounded,
                                 iconBgColor: AppColors.primary,
-                                title: 'اتصال مباشر',
+                                title: l10n.directCall,
                                 subtitle: phone,
                                 onTap: () => _makeCall(phone),
                               ),
@@ -83,8 +85,8 @@ class SupportScreen extends StatelessWidget {
                               _ContactOptionCard(
                                 icon: Icons.chat_rounded,
                                 iconBgColor: const Color(0xFF25D366),
-                                title: 'واتساب',
-                                subtitle: 'محادثة فورية مع فريق الدعم',
+                                title: l10n.whatsapp,
+                                subtitle: l10n.whatsappChat,
                                 onTap: () => _openWhatsApp(phone),
                               ),
                             ]);
@@ -101,7 +103,7 @@ class SupportScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'الأسئلة الشائعة',
+                            l10n.faq,
                             style: getBoldStyle(
                               color: const Color(0xFF0E0E0E),
                               fontSize: FontSize.s18,
@@ -109,24 +111,24 @@ class SupportScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 12.h),
                           const _FaqItem(
-                            question: 'كيف أطلب خدمة وقود؟',
+                            question: l10n.faqHowFuel,
                             answer:
-                                'من الصفحة الرئيسية، اختر "تعبئة وقود" ثم حدد نوع الوقود والكمية وموقعك، وسيتم إرسال مزود خدمة إليك.',
+                                l10n.faqHowFuelAnswer,
                           ),
                           const _FaqItem(
-                            question: 'كيف أطلب خدمة سحب (ساحبة)؟',
+                            question: l10n.faqHowTow,
                             answer:
-                                'من الصفحة الرئيسية، اختر "ساحبة" ثم حدد موقع الاستلام وموقع التسليم وأدخل بيانات السيارة.',
+                                l10n.faqHowTowAnswer,
                           ),
                           const _FaqItem(
-                            question: 'هل يمكنني إلغاء الطلب؟',
+                            question: l10n.faqCanCancel,
                             answer:
-                                'نعم، يمكنك إلغاء الطلب قبل قبوله من قبل مزود الخدمة من خلال الضغط على زر الإلغاء.',
+                                l10n.faqCanCancelAnswer,
                           ),
                           const _FaqItem(
-                            question: 'ما هي طرق الدفع المتاحة؟',
+                            question: l10n.faqPaymentMethods,
                             answer:
-                                'حالياً يتم الدفع نقداً عند إتمام الخدمة.',
+                                l10n.faqPaymentMethodsAnswer,
                           ),
                         ],
                       ),
@@ -154,7 +156,7 @@ class SupportScreen extends StatelessWidget {
           ),
           SizedBox(height: 12.h),
           Text(
-            'كيف يمكننا مساعدتك؟',
+            l10n.howCanWeHelp,
             style: getBoldStyle(
               color: const Color(0xFF0E0E0E),
               fontSize: FontSize.s22,
@@ -162,7 +164,7 @@ class SupportScreen extends StatelessWidget {
           ),
           SizedBox(height: 6.h),
           Text(
-            'فريقنا جاهز لخدمتك',
+            l10n.teamReadyToServe,
             style: getRegularStyle(
               color: AppColors.neutral800,
               fontSize: FontSize.s14,
@@ -194,6 +196,7 @@ class _ContactOptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -274,6 +277,7 @@ class _FaqItemState extends State<_FaqItem> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Container(
       margin: EdgeInsets.only(bottom: 8.h),
       decoration: BoxDecoration(

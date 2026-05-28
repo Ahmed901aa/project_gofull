@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 /// Header: [X close] ←title→ [search icon]
 /// RTL Row: first child = rightmost, last child = leftmost.
@@ -29,7 +30,7 @@ class LocationSearchAppBar extends StatelessWidget {
             child: Icon(Icons.close, size: 24.sp, color: const Color(0xFF0E0E0E)),
           ),
           Text(
-            'الموقع الحالي',
+            S.of(context).currentLocation,
             style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
           ),
           // RTL: last child → leftmost = search icon (decorative)

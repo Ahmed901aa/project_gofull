@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class PickerTopBar extends StatelessWidget {
   final VoidCallback onBack;
@@ -51,7 +52,7 @@ class PickerTopBar extends StatelessWidget {
                   children: [
                     Icon(Icons.search_rounded, color: AppColors.primary, size: 20.sp),
                     SizedBox(width: Insets.s8),
-                    Text('ابحث عن موقع...',
+                    Text(S.of(context).searchForLocationDots,
                         style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
                   ],
                 ),

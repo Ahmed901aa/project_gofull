@@ -17,6 +17,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_state
 import 'package:project_gofull/features/towing/presentation/widgets/detail_chip.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/trip_payment_section.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class TowingTripDetailsScreen extends StatelessWidget {
   final TripDetailsArgs? args;
@@ -75,32 +76,32 @@ class TowingTripDetailsScreen extends StatelessWidget {
         children: [
           SizedBox(height: Sizes.s8),
           _section(
-            'مسار الرحلة',
+            S.of(context).routeSection,
             Column(children: [
               ServiceLocationCard(
-                  topLabel: 'نقطة الانطلاق',
+                  topLabel: S.of(context).departurePoint,
                   bottomLabel: req.driverAddress ?? '—'),
               SizedBox(height: Sizes.s8),
               ServiceLocationCard(
-                  topLabel: 'وجهة التوصيل',
+                  topLabel: S.of(context).deliveryDestination,
                   bottomLabel: req.destinationAddress ?? '—'),
             ]),
           ),
           SizedBox(height: Insets.s16),
           _section(
-            'تفاصيل السيارة',
+            S.of(context).carDetailsSection,
             Row(children: [
               if (req.carType != null)
-                DetailChip(label: 'نوع السيارة: ${req.carType}'),
+                DetailChip(label: S.of(context).carTypePrefixLabel(req.carType!)),
               if (req.carType != null && req.plateNumber != null)
                 SizedBox(width: Sizes.s8),
               if (req.plateNumber != null)
-                DetailChip(label: 'رقم اللوحة: ${req.plateNumber}'),
+                DetailChip(label: S.of(context).plateNumberPrefixLabel(req.plateNumber!)),
             ]),
           ),
           SizedBox(height: Insets.s16),
           _section(
-            'تفاصيل مزود الخدمة',
+            S.of(context).providerDetails,
             ProviderInfoCard.fromRequest(
               req,
               onCall: () {
@@ -115,7 +116,7 @@ class TowingTripDetailsScreen extends StatelessWidget {
           ),
           SizedBox(height: Insets.s16),
           _section(
-            'ملخص الدفع',
+            S.of(context).paymentSummary,
             TripPaymentSection(
               subtotal:
                   req.subtotal != null ? '${req.subtotal} $cur' : '— $cur',
@@ -128,7 +129,7 @@ class TowingTripDetailsScreen extends StatelessWidget {
           if (ratingValue != null) ...[
             SizedBox(height: Insets.s16),
             _section(
-              'تقييمك',
+              S.of(context).yourRating,
               Container(
                 padding: EdgeInsets.all(Insets.s16),
                 decoration: BoxDecoration(
@@ -192,7 +193,7 @@ class TowingTripDetailsScreen extends StatelessWidget {
                       onTap: () => Navigator.pop(context),
                       child: Icon(Icons.arrow_back_ios_new_rounded,
                           size: 20.sp, color: const Color(0xFF0E0E0E))),
-                  Text('تفاصيل الرحلة',
+                  Text(S.of(context).driverTripDetails,
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20)),

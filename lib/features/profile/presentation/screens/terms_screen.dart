@@ -4,25 +4,13 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
-// replace with API data later
-const _sections = [
-  {
-    'title': '1. عام (General)',
-    'body': 'باستخدامك لتطبيق "دايم". أنت توافق على الالتزام بكافة الشروط المذكورة هنا لضمان أفضل تجربة تسوق.\nيحق لنا تحديث هذه الشروط من وقت لآخر، وسيتم إخطارك بأي تغييرات جوهرية تطرأ عليها.',
-  },
-  {
-    'title': '2. الطلبات والأسعار (Orders & Pricing)',
-    'body': 'أسعار المنتجات هي نفس أسعار فتح الله جملة ماركت وقت الطلب، مع مراعاة وجود عروض حصرية داخل التطبيق.\nبالنسبة للمنتجات التي تعتمد على الوزن (كاللحوم والخضروات)، قد يختلف السعر النهائي بشكل طفيف بناءً على الوزن الفعلي وقت التجهيز، ويتم تسوية أي فرق في محفظتك تلقائياً.\nيحق للتطبيق إلغاء الطلب في حال عدم توفر المنتج أو وجود خطأ تقني في التسعير، مع التزامنا برد أي مبالغ مدفوعة لمحفظتك.',
-  },
-  {
-    'title': '3. التوصيل (Delivery)',
-    'body': 'نسعى لتوصيل طلبك في الوقت المحدد (من 45 لـ 90 دقيقة)، ولكن قد يتأثر الوقت بظروف خارجة عن إرادتنا كازدحام الطرق أو الظروف الجوية.\nيجب تواجد العميل أو من ينوب عنه في العنوان المحدد لاستلام الطلب، وفي حال تعذر الوصول إليك، قد يتم إلغاء الطلب مع فرض رسوم توصيل.',
-  },
-  {
-    'title': '4. المحفظة والاسترداد (Wallet & Refunds)',
-    'body': 'المبالغ الموجودة في المحفظة ناتجة عن (شحن رصيد، استرداد فرق وزن، أو تعويض عن منتج)، ويمكنك استخدامها في طلباتك القادمة.',
-  },
+List<Map<String, String>> _getTermsSections(S l10n) => [
+  {'title': l10n.termsGeneralTitle, 'body': l10n.termsGeneralBody},
+  {'title': l10n.termsOrdersTitle, 'body': l10n.termsOrdersBody},
+  {'title': l10n.termsDeliveryTitle, 'body': l10n.termsDeliveryBody},
+  {'title': l10n.termsWalletTitle, 'body': l10n.termsWalletBody},
 ];
 
 class TermsScreen extends StatelessWidget {
@@ -30,6 +18,8 @@ class TermsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    final _sections = _getTermsSections(l10n);
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -84,7 +74,7 @@ class TermsScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      'الشروط والأحكام',
+                      l10n.terms,
                       style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
                       textAlign: TextAlign.center,
                     ),

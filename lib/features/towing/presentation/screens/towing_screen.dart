@@ -15,6 +15,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/core/widgets/app_notification.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/service_section_header.dart';
 import '../widgets/towing_car_details_form.dart';
 import '../widgets/towing_route_section.dart';
@@ -29,7 +30,7 @@ class _TowingScreenState extends State<TowingScreen> {
   final _carTypeCtrl = TextEditingController();
   final _plateCtrl = TextEditingController();
   final _notesCtrl = TextEditingController();
-  String _destinationAddress = 'وجهة سحب السيارة';
+  String? _destinationAddress;
   double? _destinationLat;
   double? _destinationLng;
 
@@ -48,10 +49,11 @@ class _TowingScreenState extends State<TowingScreen> {
   bool _isValid(BuildContext context) => _isFormValid && _hasLocation(context);
 
   String? _getValidationError(BuildContext context) {
-    if (!_hasLocation(context)) return 'الرجاء تحديد موقعك';
-    if (!_hasDestination) return 'الرجاء تحديد وجهة التوصيل';
-    if (_carTypeCtrl.text.trim().isEmpty) return 'الرجاء إدخال نوع السيارة';
-    if (_plateCtrl.text.trim().isEmpty) return 'الرجاء إدخال رقم اللوحة';
+    final l10n = S.of(context);
+    if (!_hasLocation(context)) return l10n.pleaseSelectLocation;
+    if (!_hasDestination) return l10n.pleaseSelectDestination;
+    if (_carTypeCtrl.text.trim().isEmpty) return l10n.pleaseEnterCarType;
+    if (_plateCtrl.text.trim().isEmpty) return l10n.pleaseEnterPlateNumber;
     return null;
   }
 
@@ -85,7 +87,7 @@ class _TowingScreenState extends State<TowingScreen> {
           address: loc.address,
           destinationLatitude: _destinationLat!,
           destinationLongitude: _destinationLng!,
-          destinationAddress: _destinationAddress != 'وجهة سحب السيارة' ? _destinationAddress : null,
+          destinationAddress: _destinationAddress,
           plateNumber: _plateCtrl.text.trim(),
           carType: _carTypeCtrl.text.trim(),
           notes:
@@ -110,19 +112,20 @@ class _TowingScreenState extends State<TowingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return BlocProvider(
       create: (_) => sl<RequestBloc>(),
       child: BlocListener<RequestBloc, RequestState>(
         listener: (context, state) {
+          final l10n = S.of(context);
           if (state is RequestCreated) {
             BottomNavShell.markOrderActive(state.request.id);
             Navigator.pushNamed(
               context,
               Routes.searchingDriver,
               arguments: SearchingArgs(
-                searchingText: 'جاري البحث عن أقرب سائق ساحبة',
-                subtitleText:
-                    'نقوم الآن بمطابقة طلبك مع أقرب سيارة ساحبة متاحة في منطقتك.',
+                searchingText: l10n.searchingForTowProvider,
+                subtitleText: l10n.searchingTowSubtitle,
                 nextRoute: Routes.driverFound,
                 requestId: state.request.id,
                 serviceType: 'towing',
@@ -130,7 +133,7 @@ class _TowingScreenState extends State<TowingScreen> {
             );
           } else if (state is RequestError) {
             if (state.message.contains('active')) {
-              AppSnackbar.warning(context, 'لديك طلب نشط بالفعل. أكمله أو ألغه من الصفحة الرئيسية قبل تقديم طلب جديد');
+              AppSnackbar.warning(context, l10n.activeOrderWarning);
             } else {
               AppSnackbar.error(context, state.message);
             }
@@ -143,7 +146,7 @@ class _TowingScreenState extends State<TowingScreen> {
               top: false,
               child: Column(
                 children: [
-                  const ServiceHeader(title: 'خدمة ساحبة'),
+                  ServiceHeader(title: l10n.towingScreenTitle),
                   Expanded(
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
@@ -155,27 +158,27 @@ class _TowingScreenState extends State<TowingScreen> {
                             const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 16),
                                 child: SafetyNoticeCard()),
-                            const ServiceSectionHeader(
-                                title: 'مسار الرحلة', gap: 16),
+                            ServiceSectionHeader(
+                                title: l10n.tripRouteSection, gap: 16),
                             TowingRouteSection(
-                                destinationAddress: _destinationAddress,
+                                destinationAddress: _destinationAddress ?? l10n.towingDestinationPlaceholder,
                                 onDestinationTap: _onDestinationTap),
-                            const ServiceSectionHeader(
-                                title: 'تفاصيل السيارة', gap: 16),
+                            ServiceSectionHeader(
+                                title: l10n.carDetailsSectionTitle, gap: 16),
                             TowingCarDetailsForm(
                                 carTypeCtrl: _carTypeCtrl,
                                 plateCtrl: _plateCtrl),
-                            const ServiceSectionHeader(
-                                title: 'ملاحظات إضافية', gap: 8),
+                            ServiceSectionHeader(
+                                title: l10n.additionalNotesSection, gap: 8),
                             Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
                                 child: ServiceInputField(
-                                  hint: 'ملاحظات إضافية عن حالة السيارة',
+                                  hint: l10n.additionalNotesHintField,
                                   controller: _notesCtrl,
                                 )),
-                            const ServiceSectionHeader(
-                                title: 'ملخص الدفع', gap: 16),
+                            ServiceSectionHeader(
+                                title: l10n.paymentSummarySection, gap: 16),
                             const PaymentSummary(),
                             const SizedBox(height: 16),
                           ],

@@ -21,6 +21,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_state
 import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/driver_found_header.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class DriverFoundScreen extends StatefulWidget {
   final DriverFoundArgs? args;
@@ -43,8 +44,8 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
   DriverFoundArgs get _args =>
       widget.args ??
       const DriverFoundArgs(
-        title: 'تم العثور على مزود الخدمة!',
-        vehicleLabel: 'نوع المركبة',
+        title: '—',
+        vehicleLabel: '—',
         vehicleValue: '—',
       );
 
@@ -102,7 +103,7 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
       _navigated = true;
       _polling.stop();
       if (mounted) {
-        AppSnackbar.warning(context, 'تم إلغاء الطلب من قبل مزود الخدمة. سنبحث لك عن مزود آخر');
+        AppSnackbar.warning(context, S.of(context).orderCancelledByProviderSearchAgain);
         Navigator.popUntil(context, (r) => r.isFirst);
       }
       return;
@@ -114,8 +115,8 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
         setState(() => _isEnRoute = true);
         NotiService().showNotification(
           id: request.id,
-          title: 'مزود الخدمة في الطريق',
-          body: isFuel ? 'مزود الوقود تحرك إلى موقعك' : 'سائق الساحبة تحرك إلى موقعك',
+          title: S.of(context).providerOnTheWayTitle,
+          body: isFuel ? S.of(context).fuelProviderMovedToYou : S.of(context).towDriverMovedToYou,
         );
       }
       return;
@@ -131,14 +132,14 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
       // Only notify on a real transition (not a resume catch-up).
       if (!isResuming) {
         final statusMessages = {
-          'arrived': 'مزود الخدمة وصل إلى موقعك',
-          'in_progress': 'بدأت الخدمة',
-          'completed': 'تمت الخدمة بنجاح',
+          'arrived': S.of(context).providerArrivedAtLocation,
+          'in_progress': S.of(context).serviceStarted,
+          'completed': S.of(context).serviceCompletedSuccessfully,
         };
         NotiService().showNotification(
           id: request.id,
           title: 'GoFull',
-          body: statusMessages[status] ?? 'تحديث حالة الطلب',
+          body: statusMessages[status] ?? S.of(context).orderStatusUpdate,
         );
       }
 
@@ -204,8 +205,8 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
                       Text(
                         _isEnRoute
                             ? (_args.serviceType == 'fuel_delivery'
-                                ? 'مزود الوقود في الطريق إليك'
-                                : 'سائق الساحبة في الطريق إليك')
+                                ? S.of(context).fuelProviderOnWayToYou
+                                : S.of(context).towDriverOnWayToYou)
                             : _args.title,
                         style: getBoldStyle(
                             color: const Color(0xFF0E0E0E),
@@ -215,8 +216,8 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
                       SizedBox(height: 4.h),
                       Text(
                         _isEnRoute
-                            ? 'السائق تحرك إلى موقعك، يرجى الانتظار في مكان آمن.'
-                            : 'وافق السائق على طلبك وهو الآن في طريقه إليك.',
+                            ? S.of(context).driverMovedWaitSafe
+                            : S.of(context).driverAcceptedSubtitle,
                         style: getRegularStyle(
                             color: AppColors.neutral800,
                             fontSize: FontSize.s14),

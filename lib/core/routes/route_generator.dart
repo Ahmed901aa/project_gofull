@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/auth/presentation/screens/splash_screen.dart';
@@ -164,8 +165,8 @@ class RouteGenerator {
       MaterialPageRoute(builder: (_) => page, settings: settings);
 
   static Route<dynamic> _undefinedRoute() => MaterialPageRoute(
-        builder: (_) => const Scaffold(
-          body: Center(child: Text('الصفحة غير موجودة')),
+        builder: (context) => Scaffold(
+          body: Center(child: Text(S.of(context).pageNotFound)),
         ),
       );
 }

@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class OrderPriceRow extends StatelessWidget {
   final String price;
@@ -19,12 +20,12 @@ class OrderPriceRow extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text('الإجمالي', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
+              Text(S.of(context).totalAmount, style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
               SizedBox(width: 6.w),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: Insets.s12, vertical: 4.h),
                 decoration: BoxDecoration(color: AppColors.primary50, borderRadius: BorderRadius.circular(AppRadius.s16)),
-                child: Text('كاش', style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12)),
+                child: Text(S.of(context).cashPayment, style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12)),
               ),
             ],
           ),

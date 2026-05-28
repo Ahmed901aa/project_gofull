@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class CouponCard extends StatelessWidget {
   final String title;
@@ -43,7 +44,7 @@ class CouponCard extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: Insets.s16),
             decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(AppRadius.s24)),
             alignment: Alignment.center,
-            child: Text('إستخدام', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s14)),
+            child: Text(S.of(context).useCoupon, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s14)),
           ),
         ],
       ),

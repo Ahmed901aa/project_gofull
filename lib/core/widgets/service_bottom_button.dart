@@ -4,15 +4,16 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class ServiceBottomButton extends StatelessWidget {
-  final String label;
+  final String? label;
   final VoidCallback? onPressed;
   final bool isLoading;
   final bool isEnabled;
   const ServiceBottomButton({
     super.key,
-    this.label = 'تأكيد',
+    this.label,
     this.onPressed,
     this.isLoading = false,
     this.isEnabled = true,
@@ -42,7 +43,7 @@ class ServiceBottomButton extends StatelessWidget {
           ),
           child: isLoading
               ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2.5, color: AppColors.white))
-              : Text(label, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+              : Text(label ?? S.of(context).confirm, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
         ),
       ),
     );

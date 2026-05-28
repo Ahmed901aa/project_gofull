@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class LocationItem {
   final String title;
@@ -24,7 +25,7 @@ class LocationResultsList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (items.isEmpty) {
       return Center(
-        child: Text('لا توجد نتائج',
+        child: Text(S.of(context).noResults,
             style: getRegularStyle(
                 color: AppColors.neutral800, fontSize: FontSize.s14)),
       );

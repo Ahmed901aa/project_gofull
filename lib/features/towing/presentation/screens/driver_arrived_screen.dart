@@ -17,6 +17,7 @@ import '../widgets/arrived_car_photos.dart';
 import '../widgets/arrived_payment_card.dart';
 import '../widgets/arrived_safety_card.dart';
 import '../widgets/gif_circle.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class DriverArrivedScreen extends StatefulWidget {
   final TripInProgressArgs? args;
@@ -121,13 +122,13 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
                       Center(child: GifCircle(imagePath: 'assets/images/shield.gif')),
                       SizedBox(height: Insets.s16),
                       Text(
-                        'تمت المهمة بنجاح!',
+                        S.of(context).missionCompletedTitle,
                         style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 4.h),
                       Text(
-                        'تم إنزال السيارة في وجهة التوصيل المحددة. يرجى التأكد من سلامة السيارة قبل إتمام الدفع.',
+                        S.of(context).carDroppedOffBody,
                         style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14),
                         textAlign: TextAlign.center,
                       ),
@@ -176,10 +177,10 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('كيف كانت تجربتك؟', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
+        Text(S.of(context).howWasYourExperience, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
         SizedBox(height: 2.h),
         Text(
-          'ملاحظاتك تساعدنا في تحسين جودة خدماتنا وتطوير أداء السائقين.',
+          S.of(context).ratingHelpsImproveServices,
           style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
           textAlign: TextAlign.center,
         ),
@@ -205,7 +206,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
           SizedBox(height: Insets.s16),
           Align(
             alignment: Alignment.centerRight,
-            child: Text('أضف ملاحظاتك', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+            child: Text(S.of(context).addNotes, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
           ),
           SizedBox(height: Insets.s8),
           Container(
@@ -222,7 +223,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
               textDirection: TextDirection.rtl,
               style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
               decoration: InputDecoration(
-                hintText: 'اكتب هنا أي تفاصيل إضافية تود مشاركتها...',
+                hintText: S.of(context).addNotesHint,
                 hintStyle: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
                 contentPadding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
                 border: InputBorder.none,
@@ -255,10 +256,10 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
       children: [
         Icon(Icons.check_circle_rounded, size: 48.sp, color: AppColors.primary),
         SizedBox(height: Insets.s8),
-        Text('شكراً لتقييمك!', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
+        Text(S.of(context).thankYouForRating, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
         SizedBox(height: 4.h),
         Text(
-          'تم إرسال تقييمك بنجاح. شكراً لمساعدتنا في تحسين خدماتنا.',
+          S.of(context).ratingSubmittedSuccessBody,
           style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14),
           textAlign: TextAlign.center,
         ),
@@ -291,7 +292,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(width: 24.sp),
-                Text('وصول السيارة',
+                Text(S.of(context).vehicleArrivalHeader,
                     style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
                 Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
               ],
@@ -315,7 +316,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
                 onPressed: () => Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
                 style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: AppColors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
-                child: Text('العودة للرئيسية', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+                child: Text(S.of(context).backToHome, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
               )),
             ),
             SizedBox(height: MediaQuery.of(context).padding.bottom),
@@ -339,7 +340,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
                   disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.4),
                   foregroundColor: AppColors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
-                child: Text('إرسال التقييم', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+                child: Text(S.of(context).submitRating, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
               )),
             ),
             Padding(
@@ -348,7 +349,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
                 onPressed: () => Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
                 style: TextButton.styleFrom(foregroundColor: AppColors.grey,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16))),
-                child: Text('تخطي', style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+                child: Text(S.of(context).skip, style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
               )),
             ),
             SizedBox(height: MediaQuery.of(context).padding.bottom),
@@ -369,7 +370,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
               onPressed: _onTapRating,
               style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: AppColors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
-              child: Text('تقييم الخدمة', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+              child: Text(S.of(context).rateService, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
             )),
           ),
           Padding(
@@ -378,7 +379,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
               onPressed: () => Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
               style: TextButton.styleFrom(foregroundColor: AppColors.grey,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16))),
-              child: Text('تخطي', style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+              child: Text(S.of(context).skip, style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
             )),
           ),
           SizedBox(height: MediaQuery.of(context).padding.bottom),

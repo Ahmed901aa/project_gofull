@@ -8,6 +8,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_notification.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/camera_actions_bar.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -41,7 +42,7 @@ class _CameraScreenState extends State<CameraScreen> {
     setState(() => _saving = false);
     Navigator.pop(context, _photo);
     if (mounted) {
-      AppSnackbar.success(context, 'تم حفظ الصورة في المعرض');
+      AppSnackbar.success(context, S.of(context).photoSavedToGallery);
     }
   }
 
@@ -68,7 +69,7 @@ class _CameraScreenState extends State<CameraScreen> {
             padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.close_rounded, size: 24.sp, color: AppColors.white)),
-              Text('صورة السيارة', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s20)),
+              Text(S.of(context).photoCapture, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s20)),
               const SizedBox(width: 24),
             ]),
           ),

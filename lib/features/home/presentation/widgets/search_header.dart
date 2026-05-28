@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class SearchHeader extends StatelessWidget {
   final TextEditingController controller;
@@ -43,7 +44,7 @@ class SearchHeader extends StatelessWidget {
                             controller: controller,
                             autofocus: true,
                             decoration: InputDecoration(
-                              hintText: 'ابحث عن خدمة، طلب، أو مساعدة...',
+                              hintText: S.of(context).searchServiceHelp,
                               hintStyle: getRegularStyle(color: const Color(0xFF838485), fontSize: FontSize.s14),
                               border: InputBorder.none,
                               isDense: true,

@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/orders/models/order_data.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class ServiceBadge extends StatelessWidget {
   final ServiceType serviceType;
@@ -13,7 +14,7 @@ class ServiceBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = serviceType == ServiceType.tow ? 'خدمة ساحبة' : 'إمداد وقود';
+    final label = serviceType == ServiceType.tow ? S.of(context).towTruckService : S.of(context).fuelSupply;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Insets.s12, vertical: 4.h),
       decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(AppRadius.s16)),

@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class TripFuelChips extends StatelessWidget {
   final String fuelType;
@@ -17,6 +18,7 @@ class TripFuelChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
       decoration: BoxDecoration(
@@ -26,9 +28,9 @@ class TripFuelChips extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Expanded(child: _Chip(label: 'نوع الوقود', value: fuelType)),
+          Expanded(child: _Chip(label: l10n.fuelType, value: fuelType)),
           SizedBox(width: Insets.s16),
-          Expanded(child: _Chip(label: 'الكمية المطلوبة', value: quantity)),
+          Expanded(child: _Chip(label: l10n.requestedQuantity, value: quantity)),
         ],
       ),
     );
@@ -42,6 +44,7 @@ class _Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: 4.h),
       decoration: BoxDecoration(

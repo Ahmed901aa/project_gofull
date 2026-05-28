@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class EditProfileBottomButtons extends StatelessWidget {
   final VoidCallback onSave;
@@ -44,7 +45,7 @@ class EditProfileBottomButtons extends StatelessWidget {
                       elevation: 0,
                     ),
                     child: Text(
-                      'حفظ التغييرات',
+                      S.of(context).saveChanges,
                       style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16).copyWith(height: 1.6),
                     ),
                   ),
@@ -62,7 +63,7 @@ class EditProfileBottomButtons extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
                   ),
                   child: Text(
-                    'حذف الحساب',
+                    S.of(context).deleteAccountBtn,
                     style: getBoldStyle(color: const Color(0xFFE63946), fontSize: FontSize.s16).copyWith(height: 1.6),
                   ),
                 ),

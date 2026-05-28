@@ -23,6 +23,7 @@ import '../widgets/trip_route_card.dart';
 import '../widgets/trip_payment_section.dart';
 import '../widgets/trip_safety_section.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 String _calcDistance(double lat1, double lng1, double lat2, double lng2) {
   const r = 6371.0;
@@ -34,7 +35,7 @@ String _calcDistance(double lat1, double lng1, double lat2, double lng2) {
           sin(dLng / 2) *
           sin(dLng / 2);
   final km = r * 2 * atan2(sqrt(a), sqrt(1 - a));
-  return '${km.toStringAsFixed(1)} كم';
+  return '${km.toStringAsFixed(1)}'; // unit added by caller
 }
 
 class TripInProgressScreen extends StatefulWidget {
@@ -98,8 +99,8 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
       _polling.stop();
       NotiService().showNotification(
         id: req.id,
-        title: 'تم إلغاء الطلب',
-        body: 'تم إلغاء طلبك من قبل مزود الخدمة',
+        title: S.of(context).orderCancelledTitle,
+        body: S.of(context).orderCancelledByProviderBody,
       );
       Navigator.pushReplacementNamed(context, Routes.home);
     }
@@ -139,14 +140,14 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
                         child: DottedCircleContainer(
                             imagePath: 'assets/images/crane (1).gif')),
                     SizedBox(height: Insets.s16),
-                    Text('سيارتك في طريقها إلى وجهة التوصيل.',
+                    Text(S.of(context).carOnWayToDestination,
                         style: getBoldStyle(
                             color: const Color(0xFF0E0E0E),
                             fontSize: FontSize.s18),
                         textAlign: TextAlign.center),
                     SizedBox(height: 4.h),
                     Text(
-                        'يتم الآن نقل السيارة على الساحبة إلى وجهتك.',
+                        S.of(context).carBeingTransported,
                         style: getRegularStyle(
                             color: AppColors.neutral800,
                             fontSize: FontSize.s14),
@@ -192,7 +193,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(width: 24.sp),
-                  Text('الرحلة قيد التنفيذ',
+                  Text(S.of(context).tripInProgressHeader,
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20)),
@@ -218,18 +219,18 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('مسار الرحلة',
+        Text(S.of(context).routeSection,
             style: getBoldStyle(
                 color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
             textAlign: TextAlign.right),
         SizedBox(height: Insets.s8),
-        TripRouteCard(title: 'نقطة الانطلاق', address: origin),
+        TripRouteCard(title: S.of(context).departurePoint, address: origin),
         SizedBox(height: Insets.s8),
         TripRouteCard(
-            title: 'وجهة التوصيل',
+            title: S.of(context).deliveryDestination,
             address: destination,
-            distanceLabel: 'المسافة المتبقية:',
-            distanceValue: distance),
+            distanceLabel: S.of(context).remainingDistance,
+            distanceValue: '${distance} ${S.of(context).kmUnit}'),
       ],
     );
   }
@@ -237,7 +238,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
   Widget _buildCarPhotos() => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('صور السيارة',
+          Text(S.of(context).carPhotos,
               style: getBoldStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
               textAlign: TextAlign.right),
@@ -256,7 +257,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
   Widget _buildDriverDetails() => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('تفاصيل مزود الخدمة',
+          Text(S.of(context).providerDetails,
               style: getBoldStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
               textAlign: TextAlign.right),

@@ -22,7 +22,7 @@ class DriverFoundBody extends StatelessWidget {
     super.key,
     required this.imagePath,
     required this.title,
-    this.subtitle = 'وافق السائق على طلبك وهو الآن في طريقه إليك.',
+    this.subtitle = '',
     required this.driverName,
     required this.driverRating,
     required this.driverReviewCount,

@@ -3,6 +3,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/widgets/service_dropdown.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class FuelDetailsForm extends StatelessWidget {
   final String? selectedFuelType;
@@ -24,20 +25,21 @@ class FuelDetailsForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('نوع الوقود', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.right),
+          Text(l10n.fuelType, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.right),
           const SizedBox(height: 8),
-          ServiceDropdown(hint: 'اختر نوع الوقود', value: selectedFuelType, items: fuelTypes, onChanged: onFuelTypeChanged),
+          ServiceDropdown(hint: l10n.selectFuelTypeHint, value: selectedFuelType, items: fuelTypes, onChanged: onFuelTypeChanged),
           const SizedBox(height: 12),
-          Text('الكمية المطلوبة', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.right),
+          Text(l10n.requestedQuantity, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.right),
           const SizedBox(height: 4),
-          Text('سيتم إضافة رسوم الخدمة والتوصيل إلى سعر الوقود.', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.right),
+          Text(l10n.serviceFeeDeliveryNote, style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.right),
           const SizedBox(height: 8),
-          ServiceDropdown(hint: 'اختر الكمية المطلوبة', value: selectedQuantity, items: quantities, onChanged: onQuantityChanged),
+          ServiceDropdown(hint: l10n.selectQuantityHint, value: selectedQuantity, items: quantities, onChanged: onQuantityChanged),
         ],
       ),
     );

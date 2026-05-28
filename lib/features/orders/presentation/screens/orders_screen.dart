@@ -15,6 +15,7 @@ import 'package:project_gofull/features/requests/domain/entities/service_request
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class OrdersScreen extends StatelessWidget {
   const OrdersScreen({super.key});
@@ -60,7 +61,7 @@ class OrdersScreen extends StatelessWidget {
       BuildContext context, List<ServiceRequestEntity> requests) {
     if (requests.isEmpty) {
       return Center(
-          child: Text('لا توجد طلبات حتى الآن',
+          child: Text(S.of(context).noOrdersYet,
               style: getRegularStyle(
                   color: AppColors.grey, fontSize: FontSize.s16)));
     }
@@ -113,7 +114,7 @@ class OrdersScreen extends StatelessWidget {
       toAddress: req.destinationAddress,
       location: req.driverAddress,
       fuelType: req.fuelType,
-      quantity: req.fuelQuantity != null ? '${req.fuelQuantity} لتر' : null,
+      quantity: req.fuelQuantity != null ? '${req.fuelQuantity} ${S.of(context).liters}' : null,
       carType: '',
       plateNumber: req.plateNumber ?? '',
     );
@@ -136,7 +137,7 @@ class OrdersScreen extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(
                 Insets.s16, Insets.s12, Insets.s16, Insets.s12),
             child: Center(
-                child: Text('طلباتي',
+                child: Text(S.of(context).myOrders,
                     style: getBoldStyle(
                         color: const Color(0xFF0E0E0E),
                         fontSize: FontSize.s20))),

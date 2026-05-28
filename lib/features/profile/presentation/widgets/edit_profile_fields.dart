@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 export 'phone_field.dart';
 
@@ -17,7 +18,7 @@ class NameField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'الاسم بالكامل',
+          S.of(context).fullNameLabel,
           style: getBoldStyle(color: const Color(0xFF252525), fontSize: FontSize.s16).copyWith(height: 1.4),
         ),
         SizedBox(height: Insets.s8),

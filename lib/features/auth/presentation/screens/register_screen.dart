@@ -6,7 +6,7 @@ import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/assets_manager.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -128,7 +128,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(AppStrings.createAccountTitle,
+          Text(S.of(context).createAccountTitle,
               textAlign: TextAlign.center,
               style: getBoldStyle(
                   color: AppColors.black, fontSize: FontSize.s24)),
@@ -137,18 +137,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
           SizedBox(height: Sizes.s20),
 
           // ── Name ───────────────────────────────────────────
-          Text(AppStrings.nameLabel,
+          Text(S.of(context).nameLabel,
               style: getMediumStyle(
                   color: AppColors.black, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
           _buildTextField(
             controller: _nameController,
-            hint: AppStrings.nameHint,
+            hint: S.of(context).nameHint,
           ),
           SizedBox(height: Sizes.s16),
 
           // ── Phone ──────────────────────────────────────────
-          Text(AppStrings.phoneLabel,
+          Text(S.of(context).phoneLabel,
               style: getMediumStyle(
                   color: AppColors.black, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
@@ -156,13 +156,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
           SizedBox(height: Sizes.s16),
 
           // ── Password ───────────────────────────────────────
-          Text(AppStrings.passwordLabel,
+          Text(S.of(context).passwordLabel,
               style: getMediumStyle(
                   color: AppColors.black, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
           _buildPasswordField(
             controller: _passwordController,
-            hint: AppStrings.passwordHint,
+            hint: S.of(context).passwordHint,
             obscure: _obscurePassword,
             onToggle: () =>
                 setState(() => _obscurePassword = !_obscurePassword),
@@ -170,13 +170,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
           SizedBox(height: Sizes.s16),
 
           // ── Confirm Password ───────────────────────────────
-          Text(AppStrings.confirmPasswordLabel,
+          Text(S.of(context).confirmPasswordLabel,
               style: getMediumStyle(
                   color: AppColors.black, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
           _buildPasswordField(
             controller: _confirmPasswordController,
-            hint: AppStrings.confirmPasswordHint,
+            hint: S.of(context).confirmPasswordHint,
             obscure: _obscureConfirm,
             onToggle: () =>
                 setState(() => _obscureConfirm = !_obscureConfirm),
@@ -193,7 +193,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
           SizedBox(height: Sizes.s24),
           AppButton(
-            text: AppStrings.registerButton,
+            text: S.of(context).registerButton,
             isLoading: isLoading,
             onPressed: () => _onRegister(context),
           ),
@@ -271,11 +271,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
         children: [
           GestureDetector(
             onTap: () => Navigator.of(context).pop(),
-            child: Text(AppStrings.loginButton,
+            child: Text(S.of(context).loginButton,
                 style: getSemiBoldStyle(
                     color: AppColors.primary, fontSize: FontSize.s14)),
           ),
-          Text(' ${AppStrings.alreadyHaveAccount}',
+          Text(' ${S.of(context).alreadyHaveAccount}',
               style: getRegularStyle(
                   color: AppColors.grey, fontSize: FontSize.s14)),
         ],

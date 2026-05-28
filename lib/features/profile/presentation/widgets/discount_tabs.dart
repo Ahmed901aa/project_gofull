@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class DiscountTabs extends StatelessWidget {
   final int selectedTab;
@@ -16,8 +17,8 @@ class DiscountTabs extends StatelessWidget {
       children: [
         Row(
           children: [
-            _tab(0, 'قائمة التوفير'),
-            _tab(1, 'أكواد سابقة'),
+            _tab(0, S.of(context).savingsList),
+            _tab(1, S.of(context).previousCodes),
           ],
         ),
         Container(height: 1, color: AppColors.neutral600),

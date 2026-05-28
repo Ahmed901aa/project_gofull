@@ -24,7 +24,7 @@ class NotificationRemoteDataSource implements NotificationDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل تحميل الإشعارات');
+              'Failed to load notifications');
     }
   }
 }

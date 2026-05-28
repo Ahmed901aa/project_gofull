@@ -27,11 +27,11 @@ class ProviderMockDataSource implements ProviderDataSource {
     await Future.delayed(const Duration(milliseconds: 600));
     return const ProviderProfileModel(
       id: 1, userId: 2, serviceType: 'towing',
-      vehicleMake: 'تويوتا', vehicleModel: 'هايلكس', vehicleYear: 2020,
-      vehiclePlate: 'أ ب م - 3541', vehicleColor: 'أبيض',
+      vehicleMake: 'Toyota', vehicleModel: 'Hilux', vehicleYear: 2020,
+      vehiclePlate: 'ABM-3541', vehicleColor: 'White',
       isAvailable: true, verificationStatus: 'approved',
       averageRating: 4.8, totalRatings: 15, completedOrders: 42, totalIncome: 0,
-      userName: 'محمد حسن', userPhone: '218913456789',
+      userName: 'Mohammed Hassan', userPhone: '218913456789',
     );
   }
 
@@ -48,8 +48,8 @@ class ProviderMockDataSource implements ProviderDataSource {
       const ServiceRequestModel(
         id: 5, driverId: 3, serviceType: 'towing', status: 'pending',
         driverLatitude: '32.8872', driverLongitude: '13.1913',
-        driverAddress: 'طرابلس، شارع الجمهورية',
-        plateNumber: 'ل ي ب - 1234', notes: 'السيارة لا تشتغل',
+        driverAddress: 'Tripoli, Al-Jumhuriya Street',
+        plateNumber: 'LIB-1234', notes: 'Car won\'t start',
         createdAt: '2026-04-05T08:00:00Z',
       ),
     ];
@@ -63,7 +63,7 @@ class ProviderMockDataSource implements ProviderDataSource {
         id: 3, driverId: 1, providerId: 2,
         serviceType: 'towing', status: 'completed',
         driverLatitude: '32.9000', driverLongitude: '13.2000',
-        driverAddress: 'بنغازي', completedAt: '2026-04-03T16:00:00Z',
+        driverAddress: 'Benghazi', completedAt: '2026-04-03T16:00:00Z',
       ),
     ];
   }
@@ -124,7 +124,7 @@ class ProviderRemoteDataSource implements ProviderDataSource {
       final response = await apiClient.dio.get(ApiConstants.providerProfile);
       return ProviderProfileModel.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'فشل تحميل الملف الشخصي');
+      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'Failed to load profile');
     }
   }
 
@@ -137,7 +137,7 @@ class ProviderRemoteDataSource implements ProviderDataSource {
       );
       return (response.data['data'] as Map<String, dynamic>)['is_available'] as bool;
     } on DioException catch (e) {
-      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'فشل تحديث الحالة');
+      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'Failed to update status');
     }
   }
 
@@ -149,7 +149,7 @@ class ProviderRemoteDataSource implements ProviderDataSource {
       final list = data['data'] as List;
       return list.map((e) => ServiceRequestModel.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (e) {
-      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'فشل تحميل الطلبات');
+      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'Failed to load requests');
     }
   }
 
@@ -161,7 +161,7 @@ class ProviderRemoteDataSource implements ProviderDataSource {
       final list = data['data'] as List;
       return list.map((e) => ServiceRequestModel.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (e) {
-      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'فشل تحميل السجل');
+      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'Failed to load history');
     }
   }
 
@@ -171,7 +171,7 @@ class ProviderRemoteDataSource implements ProviderDataSource {
       final response = await apiClient.dio.patch(ApiConstants.providerAcceptRequest(id));
       return ServiceRequestModel.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'فشل قبول الطلب');
+      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'Failed to accept request');
     }
   }
 
@@ -180,7 +180,7 @@ class ProviderRemoteDataSource implements ProviderDataSource {
     try {
       await apiClient.dio.patch(ApiConstants.providerRejectRequest(id));
     } on DioException catch (e) {
-      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'فشل رفض الطلب');
+      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'Failed to reject request');
     }
   }
 
@@ -193,7 +193,7 @@ class ProviderRemoteDataSource implements ProviderDataSource {
       );
       return ServiceRequestModel.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'فشل تحديث الحالة');
+      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'Failed to update status');
     }
   }
 
@@ -206,7 +206,7 @@ class ProviderRemoteDataSource implements ProviderDataSource {
       );
       return RatingModel.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'فشل إرسال التقييم');
+      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'Failed to submit rating');
     }
   }
 
@@ -218,7 +218,7 @@ class ProviderRemoteDataSource implements ProviderDataSource {
       if (data == null) return null;
       return ServiceRequestModel.fromJson(data as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'فشل تحميل الطلب النشط');
+      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'Failed to load active request');
     }
   }
 
@@ -230,7 +230,7 @@ class ProviderRemoteDataSource implements ProviderDataSource {
         data: {if (reason != null) 'reason': reason},
       );
     } on DioException catch (e) {
-      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'فشل إلغاء الطلب');
+      throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'Failed to cancel order');
     }
   }
 }

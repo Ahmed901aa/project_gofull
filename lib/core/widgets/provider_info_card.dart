@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 /// Reusable card to display provider info (name, rating, plate, vehicle)
 /// across DriverFoundScreen, ServiceArrivedScreen, TripDetailsScreen, etc.
@@ -41,7 +42,7 @@ class ProviderInfoCard extends StatelessWidget {
     final user = (providerInfo['user'] as Map<String, dynamic>?) ?? {};
 
     return ProviderInfoCard(
-      providerName: (user['name'] as String?) ?? 'مزود الخدمة',
+      providerName: (user['name'] as String?) ?? '',
       rating: (providerInfo['average_rating']?.toString()) ?? '—',
       ratingCount: providerInfo['total_ratings']?.toString(),
       plateNumber: (providerInfo['vehicle_plate'] as String?) ?? '—',
@@ -53,6 +54,8 @@ class ProviderInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    final displayName = providerName.isEmpty ? l10n.serviceProviderDefault : providerName;
     final vehicleDesc = [
       if (vehicleMake != null && vehicleMake!.isNotEmpty) vehicleMake,
       if (vehicleModel != null && vehicleModel!.isNotEmpty) vehicleModel,
@@ -78,7 +81,7 @@ class ProviderInfoCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'معلومات مزود الخدمة',
+              l10n.providerInfoTitle,
               style: getBoldStyle(
                 color: const Color(0xFF0E0E0E),
                 fontSize: FontSize.s14,
@@ -108,7 +111,7 @@ class ProviderInfoCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        providerName,
+                        displayName,
                         style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s16,
@@ -137,7 +140,7 @@ class ProviderInfoCard extends StatelessWidget {
                               ratingCount != '0') ...[
                             SizedBox(width: 4.w),
                             Text(
-                              '($ratingCount تقييم)',
+                              l10n.ratingCountLabel(ratingCount!),
                               style: getRegularStyle(
                                 color: AppColors.neutral800,
                                 fontSize: FontSize.s12,
@@ -178,7 +181,7 @@ class ProviderInfoCard extends StatelessWidget {
                 Expanded(
                   child: _InfoItem(
                     icon: Icons.credit_card_rounded,
-                    label: 'رقم اللوحة',
+                    label: l10n.carPlate,
                     value: plateNumber,
                   ),
                 ),
@@ -187,7 +190,7 @@ class ProviderInfoCard extends StatelessWidget {
                   Expanded(
                     child: _InfoItem(
                       icon: Icons.directions_car_rounded,
-                      label: 'المركبة',
+                      label: l10n.vehicleInfo,
                       value: vehicleDesc,
                     ),
                   ),

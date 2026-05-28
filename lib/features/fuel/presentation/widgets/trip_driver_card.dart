@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class TripDriverCard extends StatelessWidget {
   final String name;
@@ -23,6 +24,7 @@ class TripDriverCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
       decoration: BoxDecoration(
@@ -36,9 +38,9 @@ class TripDriverCard extends StatelessWidget {
           SizedBox(height: Insets.s12),
           Row(
             children: [
-              Expanded(child: _InfoChip(label: 'رقم اللوحة', value: plateNumber)),
+              Expanded(child: _InfoChip(label: l10n.plateNumber, value: plateNumber)),
               SizedBox(width: Insets.s16),
-              Expanded(child: _InfoChip(label: 'نوع المركبة', value: vehicleType)),
+              Expanded(child: _InfoChip(label: l10n.vehicleTypeLabel, value: vehicleType)),
             ],
           ),
         ],
@@ -77,6 +79,7 @@ class _RatingBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
       decoration: BoxDecoration(
@@ -107,6 +110,7 @@ class _InfoChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: 4.h),
       decoration: BoxDecoration(

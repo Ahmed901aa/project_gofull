@@ -9,6 +9,7 @@ import 'package:project_gofull/features/orders/models/order_data.dart';
 import 'order_detail_row.dart';
 import 'service_badge.dart';
 import 'status_badge.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class OrderCard extends StatelessWidget {
   final OrderData order;
@@ -68,7 +69,7 @@ class OrderCard extends StatelessWidget {
           SizedBox(width: 8.w),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-              Text('وجهة التوصيل', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12)),
+              Text(S.of(context).deliveryDestinationAlt, style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12)),
               SizedBox(height: 2.h),
               Text(order.toAddress ?? '', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12), maxLines: 2, overflow: TextOverflow.ellipsis),
             ]),
@@ -89,7 +90,7 @@ class OrderCard extends StatelessWidget {
             SizedBox(width: 8.w),
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-                Text('موقع السيارة', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12)),
+                Text(S.of(context).carLocationLabel, style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12)),
                 SizedBox(height: 2.h),
                 Text(order.location ?? '', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12), maxLines: 2, overflow: TextOverflow.ellipsis),
               ]),
@@ -100,11 +101,11 @@ class OrderCard extends StatelessWidget {
             Row(children: [
               Icon(Icons.local_gas_station_rounded, size: 20.sp, color: AppColors.primary),
               SizedBox(width: 8.w),
-              Text('نوع الوقود: ', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12)),
+              Text(S.of(context).fuelTypeLabel, style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12)),
               Text(order.fuelType!, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12)),
               if (order.quantity != null && order.quantity!.isNotEmpty) ...[
                 SizedBox(width: 12.w),
-                Text('الكمية: ', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12)),
+                Text(S.of(context).quantityLabel, style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s12)),
                 Text(order.quantity!, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s12)),
               ],
             ]),
@@ -114,8 +115,8 @@ class OrderCard extends StatelessWidget {
 
   Widget _buildDetailRows() {
     final rows = order.serviceType == ServiceType.tow
-        ? [OrderDetailRow(label: 'نوع السيارة', value: order.carType), OrderDetailRow(label: 'رقم اللوحة', value: order.plateNumber), OrderDetailRow(label: 'نوع الساحبة', value: order.winchType ?? '')]
-        : [OrderDetailRow(label: 'نوع الوقود', value: order.fuelType ?? ''), OrderDetailRow(label: 'الكمية', value: order.quantity ?? ''), OrderDetailRow(label: 'نوع المركبة', value: order.carType), OrderDetailRow(label: 'رقم اللوحة', value: order.plateNumber)];
+        ? [OrderDetailRow(label: S.of(context).carTypeLabel, value: order.carType), OrderDetailRow(label: S.of(context).plateNumberLabel, value: order.plateNumber), OrderDetailRow(label: S.of(context).towTruckType, value: order.winchType ?? '')]
+        : [OrderDetailRow(label: S.of(context).fuelType, value: order.fuelType ?? ''), OrderDetailRow(label: S.of(context).fuelQuantity, value: order.quantity ?? ''), OrderDetailRow(label: S.of(context).vehicleTypeLabel, value: order.carType), OrderDetailRow(label: S.of(context).plateNumberLabel, value: order.plateNumber)];
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: rows);
   }
 }

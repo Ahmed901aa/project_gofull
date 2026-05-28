@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class MapAddressBar extends StatelessWidget {
   final String address;
@@ -34,7 +35,7 @@ class MapAddressBar extends StatelessWidget {
               SizedBox(width: Insets.s8),
               Expanded(
                 child: Text(
-                  address.isEmpty ? 'ابحث عن موقع...' : address,
+                  address.isEmpty ? S.of(context).searchForLocationDots : address,
                   style: getMediumStyle(
                     color: address.isEmpty ? AppColors.grey : AppColors.black,
                     fontSize: FontSize.s12,

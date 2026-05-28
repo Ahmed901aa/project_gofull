@@ -5,64 +5,31 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});
 
-  static const _sections = [
-    _PolicySection(
-      title: 'مقدمة',
-      body:
-          'مرحباً بك في تطبيق GO FULL. نحن نقدر خصوصيتك ونلتزم بحماية بياناتك الشخصية. '
-          'توضح هذه السياسة كيفية جمع واستخدام وحماية معلوماتك عند استخدام خدماتنا.',
-    ),
-    _PolicySection(
-      title: 'البيانات التي نجمعها',
-      body:
-          '• الاسم ورقم الهاتف عند التسجيل\n'
-          '• موقعك الجغرافي لتحديد نقطة الخدمة\n'
-          '• تفاصيل الطلبات والمعاملات\n'
-          '• معلومات الجهاز لتحسين الأداء',
-    ),
-    _PolicySection(
-      title: 'كيف نستخدم بياناتك',
-      body:
-          '• تقديم خدمات إمداد الوقود وسحب المركبات\n'
-          '• تحسين جودة الخدمة وتجربة المستخدم\n'
-          '• التواصل معك بشأن طلباتك\n'
-          '• ضمان أمان وسلامة المعاملات',
-    ),
-    _PolicySection(
-      title: 'حماية البيانات',
-      body:
-          'نستخدم تقنيات تشفير متقدمة لحماية بياناتك. لا نشارك معلوماتك الشخصية '
-          'مع أطراف ثالثة إلا بموافقتك أو عند الضرورة القانونية.',
-    ),
-    _PolicySection(
-      title: 'حقوقك',
-      body:
-          '• طلب الوصول إلى بياناتك الشخصية\n'
-          '• طلب تصحيح أو حذف بياناتك\n'
-          '• سحب موافقتك في أي وقت\n'
-          '• تقديم شكوى للجهات المختصة',
-    ),
-    _PolicySection(
-      title: 'التواصل معنا',
-      body:
-          'إذا كان لديك أي استفسارات حول سياسة الخصوصية، يرجى التواصل معنا '
-          'عبر قسم الدعم الفني في التطبيق.',
-    ),
+  static List<_PolicySection> _getSections(S l10n) => [
+    _PolicySection(title: l10n.privacyPolicyIntroTitle, body: l10n.privacyPolicyIntroBody),
+    _PolicySection(title: l10n.privacyDataCollectedTitle, body: l10n.privacyDataCollectedBody),
+    _PolicySection(title: l10n.privacyDataUseTitle, body: l10n.privacyDataUseBody),
+    _PolicySection(title: l10n.privacyProtectionTitle, body: l10n.privacyProtectionBody),
+    _PolicySection(title: l10n.privacyRightsTitle, body: l10n.privacyRightsBody),
+    _PolicySection(title: l10n.privacyContactTitle, body: l10n.privacyContactBody),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    final _sections = _getSections(l10n);
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
-            const AppHeader(title: 'سياسة الخصوصية'),
+            AppHeader(title: l10n.privacyPolicy),
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
@@ -68,7 +68,7 @@ class _ConfirmAcceptanceContent extends StatelessWidget {
 
           // Title
           Text(
-            AppStrings.confirmAcceptTitle,
+            S.of(context).confirmAcceptTitle,
             style: getBoldStyle(
               color: const Color(0xFF0E0E0E),
               fontSize: FontSize.s20,
@@ -79,7 +79,7 @@ class _ConfirmAcceptanceContent extends StatelessWidget {
 
           // Message
           Text(
-            AppStrings.confirmAcceptMessage,
+            S.of(context).confirmAcceptMessage,
             style: getRegularStyle(
               color: AppColors.neutral800,
               fontSize: FontSize.s14,
@@ -90,14 +90,14 @@ class _ConfirmAcceptanceContent extends StatelessWidget {
 
           // Confirm button
           AppButton(
-            text: AppStrings.confirmAccept,
+            text: S.of(context).confirmAccept,
             onPressed: () => Navigator.pop(context, true),
           ),
           SizedBox(height: Insets.s12),
 
           // Cancel button
           AppButton(
-            text: AppStrings.cancel,
+            text: S.of(context).cancel,
             isOutlined: true,
             onPressed: () => Navigator.pop(context, false),
           ),

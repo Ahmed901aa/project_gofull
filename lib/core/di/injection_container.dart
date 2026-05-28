@@ -54,6 +54,7 @@ import 'package:project_gofull/features/provider/domain/usecases/cancel_order_us
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 
 // Notifications
+import 'package:project_gofull/core/cubits/locale_cubit.dart';
 import 'package:project_gofull/features/notifications/data/datasources/notification_data_source.dart';
 import 'package:project_gofull/features/notifications/presentation/bloc/notification_bloc.dart';
 
@@ -70,6 +71,7 @@ Future<void> initDependencies() async {
   // ── Core Services ────────────────────────────────────────
   sl.registerLazySingleton<TokenStorage>(() => TokenStorage(sl()));
   sl.registerLazySingleton<ApiClient>(() => ApiClient(sl()));
+  sl.registerLazySingleton<LocaleCubit>(() => LocaleCubit(sl()));
 
   // ── Feature: Auth ────────────────────────────────────────
   sl.registerLazySingleton<AuthDataSource>(

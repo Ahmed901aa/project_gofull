@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'driver_avatar.dart';
 import 'rating_badge.dart';
 import 'info_pill.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class DriverDetailsCard extends StatelessWidget {
   final String name;
@@ -80,7 +81,7 @@ class DriverDetailsCard extends StatelessWidget {
           child: Row(children: [
             InfoPill(label: vehicleLabel, value: vehicleValue),
             SizedBox(width: Insets.s16),
-            InfoPill(label: 'رقم اللوحة', value: plateNumber),
+            InfoPill(label: S.of(context).plateNumber, value: plateNumber),
           ]),
         ),
       ]),

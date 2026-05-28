@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
@@ -68,7 +69,7 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
                           imagePath: 'assets/images/refuel.gif'),
                       SizedBox(height: Insets.s24),
                       Text(
-                        'جاري تعبئة الوقود',
+                        S.of(context).refuelingInProgressTitle,
                         style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s22,
@@ -77,7 +78,7 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
                       ),
                       SizedBox(height: 8.h),
                       Text(
-                        'قم بتعبئة وقود السيارة حسب الكمية المطلوبة في الطلب',
+                        S.of(context).refuelingInstructions,
                         style: getRegularStyle(
                           color: AppColors.neutral800,
                           fontSize: FontSize.s14,
@@ -116,7 +117,7 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
                   ),
                   Expanded(
                     child: Text(
-                      'تعبئة الوقود',
+                      S.of(context).refuelingTitle,
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20),
@@ -164,18 +165,18 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
                 Icon(Icons.info_rounded, size: 22.sp, color: AppColors.primary),
                 SizedBox(width: Insets.s8),
                 Text(
-                  'تعليمات التعبئة',
+                  S.of(context).refuelingGuide,
                   style: getBoldStyle(
                       color: AppColors.primary, fontSize: FontSize.s14),
                 ),
               ],
             ),
             SizedBox(height: Insets.s12),
-            _bulletPoint('تأكد من إيقاف محرك السيارة قبل التعبئة'),
+            _bulletPoint(S.of(context).refuelingStep1),
             SizedBox(height: Insets.s8),
-            _bulletPoint('تعبئة الكمية المحددة في الطلب بدقة'),
+            _bulletPoint(S.of(context).refuelingStep2),
             SizedBox(height: Insets.s8),
-            _bulletPoint('إغلاق غطاء الوقود بإحكام بعد الانتهاء'),
+            _bulletPoint(S.of(context).refuelingStep3),
           ],
         ),
       );
@@ -217,7 +218,7 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
           border: Border(top: BorderSide(color: Color(0xFFF5F5F5))),
         ),
         child: AppButton(
-          text: 'تمت التعبئة - تحصيل المبلغ',
+          text: S.of(context).refuelingDoneCollect,
           onPressed: _onRefuelingDone,
         ),
       );

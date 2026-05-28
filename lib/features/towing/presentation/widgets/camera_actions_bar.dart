@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class CameraActionsBar extends StatelessWidget {
   final VoidCallback onRetake;
@@ -33,7 +34,7 @@ class CameraActionsBar extends StatelessWidget {
             child: OutlinedButton.icon(
               onPressed: onRetake,
               icon: Icon(Icons.camera_alt_outlined, size: 20.sp, color: AppColors.primary),
-              label: Text('إعادة التصوير', style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s16)),
+              label: Text(S.of(context).retakePhoto, style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s16)),
               style: OutlinedButton.styleFrom(side: BorderSide(color: AppColors.primary), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16))),
             ),
           ),
@@ -50,7 +51,7 @@ class CameraActionsBar extends StatelessWidget {
               ),
               child: saving
                   ? SizedBox(width: 20.w, height: 20.w, child: const CircularProgressIndicator(color: AppColors.white, strokeWidth: 2))
-                  : Text('حفظ ومتابعة', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+                  : Text(S.of(context).saveAndContinue, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
             ),
           ),
         ),

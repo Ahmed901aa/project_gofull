@@ -17,6 +17,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class TripDetailsScreen extends StatelessWidget {
   final TripDetailsArgs? args;
@@ -61,14 +62,15 @@ class TripDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context, ServiceRequestEntity req) {
+    final l10n = S.of(context);
     final config = context.read<AppConfigBloc>().state;
     final cur = config.currency;
 
     // Fuel info
-    final fuelTypeMap = {'petrol': 'بنزين', 'diesel': 'ديزل'};
+    final fuelTypeMap = {'petrol': l10n.gasolineFuel, 'diesel': l10n.dieselFuel};
     final fuelType = fuelTypeMap[req.fuelType] ?? req.fuelType ?? '—';
     final quantity =
-        req.fuelQuantity != null ? '${req.fuelQuantity} لتر' : '—';
+        req.fuelQuantity != null ? '${req.fuelQuantity} ${l10n.litersUnit}' : '—';
 
     // Rating info
     final ratingInfo = req.ratingInfo;
@@ -82,13 +84,13 @@ class TripDetailsScreen extends StatelessWidget {
         children: [
           SizedBox(height: Insets.s16),
           _section(
-              'الموقع', TripLocationCard(address: req.driverAddress ?? '—')),
+              l10n.location, TripLocationCard(address: req.driverAddress ?? '—')),
           SizedBox(height: Insets.s16),
-          _section('تفاصيل الوقود',
+          _section(l10n.fuelDetails,
               TripFuelChips(fuelType: fuelType, quantity: quantity)),
           SizedBox(height: Insets.s16),
           _section(
-            'تفاصيل مزود الخدمة',
+            l10n.providerDetails,
             ProviderInfoCard.fromRequest(
               req,
               onCall: () {
@@ -103,7 +105,7 @@ class TripDetailsScreen extends StatelessWidget {
           ),
           SizedBox(height: Insets.s16),
           _section(
-            'ملخص الدفع',
+            l10n.paymentSummary,
             TripPaymentCard(
               subtotal:
                   req.subtotal != null ? '${req.subtotal} $cur' : '— $cur',
@@ -116,7 +118,7 @@ class TripDetailsScreen extends StatelessWidget {
           if (ratingValue != null) ...[
             SizedBox(height: Insets.s16),
             _section(
-              'تقييمك',
+              l10n.yourRating,
               Container(
                 padding: EdgeInsets.all(Insets.s16),
                 decoration: BoxDecoration(
@@ -179,7 +181,7 @@ class TripDetailsScreen extends StatelessWidget {
                     onTap: () => Navigator.pop(context),
                     child: Icon(Icons.arrow_back_ios_new_rounded,
                         size: 20.sp, color: const Color(0xFF0E0E0E))),
-                Text('تفاصيل الرحلة',
+                Text(l10n.driverTripDetails,
                     style: getBoldStyle(
                         color: const Color(0xFF0E0E0E),
                         fontSize: FontSize.s20)),

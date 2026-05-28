@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class PhotoLogSection extends StatefulWidget {
   const PhotoLogSection({super.key});
@@ -47,7 +48,7 @@ class _PhotoLogSectionState extends State<PhotoLogSection> {
                     ),
                   ),
                   Text(
-                    'سجل الصور',
+                    S.of(context).photoLog,
                     style: getBoldStyle(
                       color: const Color(0xFF0E0E0E),
                       fontSize: FontSize.s16,

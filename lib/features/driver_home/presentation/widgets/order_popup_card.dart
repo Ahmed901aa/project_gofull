@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
@@ -56,14 +56,14 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
   Widget build(BuildContext context) {
     final req = widget.request;
     final isFuel = req?.isFuelDelivery ?? false;
-    final serviceLabel = isFuel ? AppStrings.fuelService : AppStrings.towService;
-    final address = req?.driverAddress ?? 'عنوان العميل';
+    final serviceLabel = isFuel ? S.of(context).fuelService : S.of(context).towService;
+    final address = req?.driverAddress ?? S.of(context).customerAddress;
     final plateNumber = req?.plateNumber ?? '';
 
     // Extract real customer info from driverInfo (populated by backend `with('driver')`)
     final driverInfo = req?.driverInfo ?? {};
     final rawName = driverInfo['name'] as String?;
-    final customerName = (rawName != null && rawName.isNotEmpty) ? rawName : 'عميل';
+    final customerName = (rawName != null && rawName.isNotEmpty) ? rawName : S.of(context).customerDefault;
     final customerPhone = driverInfo['phone'] as String?;
 
     // Debug log (visible in `flutter logs`)
@@ -73,7 +73,7 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
     );
 
     final fuelInfo = isFuel
-        ? '${req?.fuelType ?? ''} - ${req?.fuelQuantity ?? ''} لتر'
+        ? '${req?.fuelType ?? ''} - ${req?.fuelQuantity ?? ''} ${S.of(context).litersUnit}'
         : '';
 
     return Directionality(
@@ -127,7 +127,7 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
                         ),
                         SizedBox(height: 2.h),
                         Text(
-                          customerPhone ?? 'طلب جديد',
+                          customerPhone ?? S.of(context).newOrderLabel,
                           style: getRegularStyle(fontSize: FontSize.s12, color: AppColors.grey),
                           textDirection: TextDirection.ltr,
                         ),
@@ -242,7 +242,7 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s12)),
                         padding: EdgeInsets.symmetric(horizontal: Insets.s16),
                       ),
-                      child: Text(AppStrings.rejectOrder, style: getSemiBoldStyle(fontSize: FontSize.s14, color: AppColors.error)),
+                      child: Text(S.of(context).rejectOrder, style: getSemiBoldStyle(fontSize: FontSize.s14, color: AppColors.error)),
                     ),
                   ),
                   SizedBox(width: Insets.s12),
@@ -257,7 +257,7 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s12)),
                           elevation: 0,
                         ),
-                        child: Text('${AppStrings.acceptOrder} ($_secondsLeft ث)', style: getSemiBoldStyle(fontSize: FontSize.s16, color: AppColors.white)),
+                        child: Text('${S.of(context).acceptOrder} ($_secondsLeft ${S.of(context).secondsAbbrev})', style: getSemiBoldStyle(fontSize: FontSize.s16, color: AppColors.white)),
                       ),
                     ),
                   ),

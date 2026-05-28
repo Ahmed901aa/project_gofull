@@ -11,6 +11,7 @@ import 'package:project_gofull/features/requests/domain/entities/service_request
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 /// Shows the rating bottom sheet for an unrated completed order.
 /// Returns `true` if the user rated, `false` if dismissed.
@@ -41,10 +42,10 @@ class _RatingSheetState extends State<_RatingSheet> {
   late final RequestBloc _bloc;
   bool _submitting = false;
 
-  String get _providerName {
+  String _providerName(BuildContext context) {
     final prov = widget.request.providerInfo;
     final user = (prov?['user'] as Map<String, dynamic>?) ?? {};
-    return (user['name'] as String?) ?? 'مزود الخدمة';
+    return (user['name'] as String?) ?? S.of(context).serviceProviderDefault;
   }
 
   @override
@@ -73,16 +74,17 @@ class _RatingSheetState extends State<_RatingSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return BlocProvider.value(
       value: _bloc,
       child: BlocListener<RequestBloc, RequestState>(
         listener: (context, state) {
           if (state is ProviderRated) {
             Navigator.pop(context, true);
-            AppSnackbar.success(context, 'شكراً لتقييمك! رأيك يساعدنا على التحسين');
+            AppSnackbar.success(context, l10n.thankYouRating);
           } else if (state is RequestError) {
             setState(() => _submitting = false);
-            AppSnackbar.error(context, 'تعذّر إرسال التقييم. يرجى المحاولة مرة أخرى');
+            AppSnackbar.error(context, l10n.ratingFailed);
           }
         },
         child: Directionality(
@@ -111,7 +113,7 @@ class _RatingSheetState extends State<_RatingSheet> {
 
                 // Title
                 Text(
-                  'قيّم الخدمة',
+                  l10n.rateService,
                   style: getBoldStyle(
                       color: const Color(0xFF0E0E0E),
                       fontSize: FontSize.s20),
@@ -120,7 +122,7 @@ class _RatingSheetState extends State<_RatingSheet> {
 
                 // Subtitle: service type + provider name
                 Text(
-                  '${widget.request.isFuelDelivery ? 'خدمة وقود' : 'خدمة سحب'} — $_providerName',
+                  '${widget.request.isFuelDelivery ? l10n.fuelService : l10n.towService} — ${_providerName(context)}',
                   style: getRegularStyle(
                       color: AppColors.neutral800,
                       fontSize: FontSize.s14),
@@ -154,8 +156,8 @@ class _RatingSheetState extends State<_RatingSheet> {
                 // Rating label
                 Text(
                   _rating == 0
-                      ? 'اضغط على النجوم للتقييم'
-                      : _ratingLabel(_rating),
+                      ? l10n.tapStarsToRate
+                      : _ratingLabel(_rating, l10n),
                   style: getMediumStyle(
                     color: _rating == 0
                         ? AppColors.neutral800
@@ -171,7 +173,7 @@ class _RatingSheetState extends State<_RatingSheet> {
                   maxLines: 3,
                   textDirection: TextDirection.rtl,
                   decoration: InputDecoration(
-                    hintText: 'اكتب تعليقك هنا (اختياري)',
+                    hintText: l10n.writeCommentHint,
                     hintStyle: getRegularStyle(
                         color: AppColors.neutral800,
                         fontSize: FontSize.s14),
@@ -223,7 +225,7 @@ class _RatingSheetState extends State<_RatingSheet> {
                                 color: AppColors.white),
                           )
                         : Text(
-                            'إرسال التقييم',
+                            l10n.submitRatingBtn,
                             style: getBoldStyle(
                                 color: AppColors.white,
                                 fontSize: FontSize.s16),
@@ -242,18 +244,18 @@ class _RatingSheetState extends State<_RatingSheet> {
     );
   }
 
-  String _ratingLabel(int r) {
+  String _ratingLabel(int r, S l10n) {
     switch (r) {
       case 1:
-        return 'سيء';
+        return l10n.ratingBad;
       case 2:
-        return 'مقبول';
+        return l10n.ratingAcceptable;
       case 3:
-        return 'جيد';
+        return l10n.ratingGood;
       case 4:
-        return 'جيد جداً';
+        return l10n.ratingVeryGood;
       case 5:
-        return 'ممتاز';
+        return l10n.ratingExcellent;
       default:
         return '';
     }

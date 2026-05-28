@@ -4,6 +4,7 @@ import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/network/api_client.dart';
 import 'package:project_gofull/core/network/api_constants.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -50,13 +51,13 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
   }
 
   // ── Helpers to extract data safely ──
-  String get _driverAddress => (_order?['driver_address'] as String?) ?? 'غير محدد';
-  String get _destinationAddress => (_order?['destination_address'] as String?) ?? 'غير محدد';
+  String _driverAddress(BuildContext context) => (_order?['driver_address'] as String?) ?? S.of(context).notSpecified;
+  String _destinationAddress(BuildContext context) => (_order?['destination_address'] as String?) ?? S.of(context).notSpecified;
   String get _fuelQuantity => (_order?['fuel_quantity'] as String?) ?? '-';
-  String get _fuelType {
+  String _fuelType(BuildContext context) {
     final t = _order?['fuel_type'] as String?;
-    if (t == 'petrol' || t == 'gasoline') return 'بنزين';
-    if (t == 'diesel') return 'ديزل';
+    if (t == 'petrol' || t == 'gasoline') return S.of(context).gasolineLabel;
+    if (t == 'diesel') return S.of(context).dieselLabel;
     return t ?? '-';
   }
   String get _pricePerLiter => (_order?['price_per_liter'] as String?) ?? '-';
@@ -64,13 +65,14 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
   String get _subtotal => (_order?['subtotal'] as String?) ?? '0.00';
   String get _serviceFee => (_order?['service_fee'] as String?) ?? '0.00';
   String get _total => (_order?['total'] as String?) ?? '0.00';
-  String get _paymentMethod {
+  String _paymentMethod(BuildContext context) {
     final m = _order?['payment_method'] as String?;
-    return m == 'cash' ? 'كاش' : (m ?? 'كاش');
+    final cash = S.of(context).cashLabel;
+    return m == 'cash' ? cash : (m ?? cash);
   }
-  String get _customerName {
+  String _customerName(BuildContext context) {
     final driver = _order?['driver'] as Map<String, dynamic>?;
-    return (driver?['name'] as String?) ?? 'العميل';
+    return (driver?['name'] as String?) ?? S.of(context).customerDefault;
   }
   String get _customerPhone {
     final driver = _order?['driver'] as Map<String, dynamic>?;
@@ -93,7 +95,7 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
                           CircularProgressIndicator(color: AppColors.primary))
                   : _order == null
                       ? Center(
-                          child: Text('فشل تحميل تفاصيل الرحلة',
+                          child: Text(S.of(context).failedToLoadTripDetails,
                               style: getRegularStyle(
                                   color: AppColors.grey,
                                   fontSize: FontSize.s14)))
@@ -134,7 +136,7 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
                   ),
                   Expanded(
                     child: Text(
-                      'تفاصيل الرحلة',
+                      S.of(context).tripDetailsTitle,
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20),
@@ -167,7 +169,7 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
         child: SafeArea(
           top: false,
           child: AppButton(
-            text: 'تقييم الرحلة',
+            text: S.of(context).rateTripBtn,
             onPressed: () =>
                 Navigator.pushNamed(context, Routes.driverRateCustomer,
                     arguments: DriverRateArgs(orderId: widget.args.orderId)),
@@ -178,51 +180,51 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
   // ── Towing Sections ─────────────────────────────────────
 
   List<Widget> _towSections() => [
-        _sectionTitle('مسار الرحلة'),
+        _sectionTitle(S.of(context).tripRouteLabel),
         SizedBox(height: Insets.s8),
         _TripRouteTimeline(
-          pickupAddress: _driverAddress,
-          deliveryAddress: _destinationAddress,
+          pickupAddress: _driverAddress(context),
+          deliveryAddress: _destinationAddress(context),
         ),
         SizedBox(height: Insets.s20),
-        _sectionTitle('تفاصيل السيارة'),
+        _sectionTitle(S.of(context).carDetailsLabel),
         SizedBox(height: Insets.s8),
         _CarDetailsSection(plateNumber: _plateNumber),
         SizedBox(height: Insets.s20),
-        _sectionTitle('معلومات العميل'),
+        _sectionTitle(S.of(context).customerInfoLabel),
         SizedBox(height: Insets.s8),
-        _CustomerInfoSection(name: _customerName, phone: _customerPhone),
+        _CustomerInfoSection(name: _customerName(context), phone: _customerPhone),
         SizedBox(height: Insets.s20),
-        _sectionTitle('ملخص الدفع'),
+        _sectionTitle(S.of(context).paymentSummaryTripLabel),
         SizedBox(height: Insets.s8),
         _PaymentSummarySection(
-            total: _total, paymentMethod: _paymentMethod),
+            total: _total, paymentMethod: _paymentMethod(context)),
         SizedBox(height: Insets.s16),
       ];
 
   // ── Fuel Sections ───────────────────────────────────────
 
   List<Widget> _fuelSections() => [
-        _sectionTitle('الموقع'),
+        _sectionTitle(S.of(context).locationLabel),
         SizedBox(height: Insets.s8),
-        _LocationSection(address: _driverAddress),
+        _LocationSection(address: _driverAddress(context)),
         SizedBox(height: Insets.s20),
-        _sectionTitle('تفاصيل الوقود'),
+        _sectionTitle(S.of(context).fuelDetailsTrip),
         SizedBox(height: Insets.s8),
         _FuelDetailsSection(
-          quantity: '$_fuelQuantity لتر',
-          fuelType: _fuelType,
-          pricePerLiter: '$_pricePerLiter د.ل',
+          quantity: '$_fuelQuantity ${S.of(context).litersUnit}',
+          fuelType: _fuelType(context),
+          pricePerLiter: '$_pricePerLiter ${S.of(context).currencyDL}',
         ),
         SizedBox(height: Insets.s20),
-        _sectionTitle('معلومات العميل'),
+        _sectionTitle(S.of(context).customerInfoLabel),
         SizedBox(height: Insets.s8),
-        _CustomerInfoSection(name: _customerName, phone: _customerPhone),
+        _CustomerInfoSection(name: _customerName(context), phone: _customerPhone),
         SizedBox(height: Insets.s20),
-        _sectionTitle('ملخص الدفع'),
+        _sectionTitle(S.of(context).paymentSummaryTripLabel),
         SizedBox(height: Insets.s8),
         _PaymentSummarySection(
-            total: _total, paymentMethod: _paymentMethod),
+            total: _total, paymentMethod: _paymentMethod(context)),
         SizedBox(height: Insets.s16),
       ];
 
@@ -276,13 +278,13 @@ class _TripRouteTimeline extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('نقطة الانطلاق',
+                  Text(S.of(context).departurePointLabel,
                       style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s12)),
                   SizedBox(height: 2.h),
                   Text(pickupAddress,
                       style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
                   SizedBox(height: Insets.s20),
-                  Text('وجهة التوصيل',
+                  Text(S.of(context).deliveryDestinationTripLabel,
                       style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s12)),
                   SizedBox(height: 2.h),
                   Text(deliveryAddress,
@@ -349,7 +351,7 @@ class _LocationSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('موقع السيارة',
+                Text(S.of(context).carLocationLabel,
                     style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s12)),
                 SizedBox(height: 2.h),
                 Text(address,
@@ -386,11 +388,11 @@ class _FuelDetailsSection extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _detailRow('الكمية المطلوبة', quantity),
+          _detailRow(S.of(context).orderedQuantityLabel, quantity),
           SizedBox(height: Insets.s12),
-          _detailRow('نوع الوقود', fuelType),
+          _detailRow(S.of(context).fuelTypeLabel, fuelType),
           SizedBox(height: Insets.s12),
-          _detailRow('سعر لتر اليوم', pricePerLiter),
+          _detailRow(S.of(context).pricePerLiterLabel, pricePerLiter),
         ],
       ),
     );
@@ -417,7 +419,7 @@ class _CarDetailsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: _badgeCard('رقم اللوحة', plateNumber)),
+        Expanded(child: _badgeCard(S.of(context).plateNumberLabel, plateNumber)),
       ],
     );
   }
@@ -508,7 +510,7 @@ class _PaymentSummarySection extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Text('الإجمالي',
+          Text(S.of(context).totalLabel,
               style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
           SizedBox(width: Insets.s8),
           Container(
@@ -521,7 +523,7 @@ class _PaymentSummarySection extends StatelessWidget {
                 style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12)),
           ),
           const Spacer(),
-          Text('$total د.ل',
+          Text('$total ${S.of(context).currencyDL}',
               style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
         ],
       ),

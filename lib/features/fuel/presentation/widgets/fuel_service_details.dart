@@ -3,6 +3,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class FuelServiceDetails extends StatelessWidget {
   final Map<String, String> data;
@@ -10,14 +11,15 @@ class FuelServiceDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('تفاصيل الخدمة', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
+        Text(l10n.serviceDetails, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
         SizedBox(height: Insets.s8),
-        _row('الكمية الفعلية', data['quantity']!),
-        _row('نوع الوقود', data['fuelType']!),
-        _row('سعر لتر اليوم', data['pricePerLiter']!),
+        _row(l10n.actualQuantity, data['quantity']!),
+        _row(l10n.fuelType, data['fuelType']!),
+        _row(l10n.todayPricePerLiter, data['pricePerLiter']!),
       ],
     );
   }

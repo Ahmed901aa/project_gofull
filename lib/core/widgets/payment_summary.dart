@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_state.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class PaymentSummary extends StatelessWidget {
   /// Pass explicit values to override. If null, shows "—".
@@ -25,6 +26,7 @@ class PaymentSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return BlocBuilder<AppConfigBloc, AppConfigState>(
       builder: (context, config) {
         final cur = config.currency;
@@ -51,8 +53,8 @@ class PaymentSummary extends StatelessWidget {
                   child: Text(note!, style: getMediumStyle(color: AppColors.primary, fontSize: FontSize.s14), textAlign: TextAlign.center),
                 ),
               ),
-            _row(label: 'المجموع', amount: subText),
-            _serviceFeeRow(feeText),
+            _row(label: l10n.subtotal, amount: subText),
+            _serviceFeeRow(feeText, l10n),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: Insets.s16),
               child: const Divider(height: 1, color: Color(0xFFEFF0F1)),
@@ -62,7 +64,7 @@ class PaymentSummary extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: Insets.s16),
               child: Row(
                 children: [
-                  Text('الإجمالي',
+                  Text(l10n.total,
                       style: getRegularStyle(
                           color: AppColors.neutral900,
                           fontSize: FontSize.s18)),
@@ -73,7 +75,7 @@ class PaymentSummary extends StatelessWidget {
                     decoration: BoxDecoration(
                         color: AppColors.primary50,
                         borderRadius: BorderRadius.circular(AppRadius.s16)),
-                    child: Text('كاش',
+                    child: Text(l10n.cashMethod,
                         style: getRegularStyle(
                             color: AppColors.primary,
                             fontSize: FontSize.s12)),
@@ -110,12 +112,12 @@ class PaymentSummary extends StatelessWidget {
     );
   }
 
-  Widget _serviceFeeRow(String feeText) {
+  Widget _serviceFeeRow(String feeText, S l10n) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
-          Text('رسوم الخدمة',
+          Text(l10n.serviceFee,
               style: getRegularStyle(
                   color: AppColors.neutral900, fontSize: FontSize.s16)),
           const SizedBox(width: 4),

@@ -17,12 +17,16 @@ import 'package:project_gofull/features/requests/domain/entities/service_request
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
-const _safetyItems = [
-  'إغلاق الخزان: تأكد من إغلاق غطاء وقود السيارة جيداً.',
-  'المعاينة النهائية: تأكد من عدم وجود أي انسكابات وقود حول السيارة.',
-  'الدفع: يرجى سداد المبلغ الإجمالي للسائق (كاش) أو عبر التطبيق.',
-];
+List<String> _getSafetyItems(BuildContext context) {
+  final l10n = S.of(context);
+  return [
+    l10n.safetyItemTankCap,
+    l10n.safetyItemInspection,
+    l10n.safetyItemPayment,
+  ];
+}
 
 class FuelCompleteScreen extends StatefulWidget {
   final int? requestId;
@@ -62,12 +66,12 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
     super.dispose();
   }
 
-  Map<String, String> _buildData(ServiceRequestEntity req, String cur) {
+  Map<String, String> _buildData(ServiceRequestEntity req, String cur, S l10n) {
     final qty = req.fuelQuantity;
-    final qtyText = (qty != null && qty != '0') ? '$qty لتر' : 'تعبئة كاملة';
+    final qtyText = (qty != null && qty != '0') ? '$qty ${l10n.litersUnit}' : l10n.fullTankFill;
     return {
       'quantity': qtyText,
-      'fuelType': req.fuelType ?? 'بنزين',
+      'fuelType': req.fuelType ?? l10n.gasolineFuel,
       'pricePerLiter': '${req.pricePerLiter ?? '—'} $cur',
       'subtotal': '${req.subtotal ?? '—'} $cur',
       'serviceFee': '${req.serviceFee ?? '—'} $cur',
@@ -103,6 +107,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     final cur = context.read<AppConfigBloc>().state.currency;
 
     return BlocProvider.value(
@@ -129,16 +134,16 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
                       SizedBox(height: Insets.s16),
                       const Center(child: DottedCircleContainer(imagePath: 'assets/images/shield.gif')),
                       SizedBox(height: Insets.s16),
-                      Text('تمت تعبئة سيارتك بالوقود بنجاح!', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
+                      Text(l10n.fuelCompleteSuccess, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
                       SizedBox(height: 6.h),
-                      Text('تم تعبئة الوقود بنجاح. يرجى التأكد من إغلاق غطاء الوقود وسلامة السيارة.', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.center),
+                      Text(l10n.fuelCompleteSubtitle, style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.center),
                       SizedBox(height: Insets.s24),
-                      const FuelCompleteSafetySection(items: _safetyItems),
+                      FuelCompleteSafetySection(items: _getSafetyItems(context)),
                       SizedBox(height: Insets.s16),
                       if (_request != null) ...[
-                        FuelServiceDetails(data: _buildData(_request!, cur)),
+                        FuelServiceDetails(data: _buildData(_request!, cur, S.of(context))),
                         SizedBox(height: Insets.s16),
-                        FuelCompletePaymentSection(data: _buildData(_request!, cur)),
+                        FuelCompletePaymentSection(data: _buildData(_request!, cur, S.of(context))),
                       ] else
                         const Center(child: CircularProgressIndicator(color: AppColors.primary)),
                       SizedBox(height: Insets.s16),
@@ -176,10 +181,10 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('كيف كانت تجربتك؟', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
+        Text(l10n.howWasYourExperience, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
         SizedBox(height: 2.h),
         Text(
-          'ملاحظاتك تساعدنا في تحسين جودة خدماتنا وتطوير أداء السائقين.',
+          l10n.feedbackHelpsImprove,
           style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
           textAlign: TextAlign.center,
         ),
@@ -207,7 +212,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
           SizedBox(height: Insets.s16),
           Align(
             alignment: Alignment.centerRight,
-            child: Text('أضف ملاحظاتك', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+            child: Text(l10n.addNotes, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
           ),
           SizedBox(height: Insets.s8),
           Container(
@@ -224,7 +229,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
               textDirection: TextDirection.rtl,
               style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
               decoration: InputDecoration(
-                hintText: 'اكتب هنا أي تفاصيل إضافية تود مشاركتها...',
+                hintText: l10n.addNotesHint,
                 hintStyle: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
                 contentPadding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
                 border: InputBorder.none,
@@ -257,10 +262,10 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
       children: [
         Icon(Icons.check_circle_rounded, size: 48.sp, color: AppColors.primary),
         SizedBox(height: Insets.s8),
-        Text('شكراً لتقييمك!', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
+        Text(l10n.thankYouForRating, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
         SizedBox(height: 4.h),
         Text(
-          'تم إرسال تقييمك بنجاح. شكراً لمساعدتنا في تحسين خدماتنا.',
+          l10n.ratingSubmittedSuccess,
           style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14),
           textAlign: TextAlign.center,
         ),
@@ -292,7 +297,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
             padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.close_rounded, size: 24.sp, color: const Color(0xFF0E0E0E))),
-              Text('تمت التعبئة بنجاح', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
+              Text(l10n.fuelCompleteTitle, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
               Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
             ]),
           ),
@@ -311,7 +316,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
           onPressed: () => Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
           style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: AppColors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
-          child: Text('العودة للرئيسية', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+          child: Text(l10n.backToHome, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
         )),
       );
     }
@@ -331,14 +336,14 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
                 disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.4),
                 foregroundColor: AppColors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
-              child: Text('إرسال التقييم', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+              child: Text(l10n.submitRating, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
             )),
             SizedBox(height: 8.h),
             SizedBox(height: 40.h, width: double.infinity, child: TextButton(
               onPressed: () => Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
               style: TextButton.styleFrom(foregroundColor: AppColors.grey,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16))),
-              child: Text('تخطي', style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+              child: Text(l10n.skip, style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
             )),
           ],
         ),
@@ -357,14 +362,14 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
             onPressed: _onTapRating,
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: AppColors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
-            child: Text('تقييم الخدمة', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+            child: Text(l10n.rateService, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
           )),
           SizedBox(height: 8.h),
           SizedBox(height: 40.h, width: double.infinity, child: TextButton(
             onPressed: () => Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
             style: TextButton.styleFrom(foregroundColor: AppColors.grey,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16))),
-            child: Text('تخطي', style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+            child: Text(l10n.skip, style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
           )),
         ],
       ),

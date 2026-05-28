@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import '../../../domain/nominatim_result.dart';
 import 'picker_suggestion_tile.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class PickerSearchOverlay extends StatelessWidget {
   final TextEditingController controller;
@@ -58,7 +59,7 @@ class PickerSearchOverlay extends StatelessWidget {
                   textDirection: TextDirection.rtl, textInputAction: TextInputAction.search,
                   style: getMediumStyle(color: AppColors.black, fontSize: FontSize.s14),
                   decoration: InputDecoration(
-                    hintText: 'ابحث عن مدينة أو حي...', border: InputBorder.none, isDense: true,
+                    hintText: S.of(context).searchForCityOrDistrict, border: InputBorder.none, isDense: true,
                     hintStyle: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14),
                     contentPadding: EdgeInsets.symmetric(vertical: 12.h),
                   ),

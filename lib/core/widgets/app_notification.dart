@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 // ── Types ──────────────────────────────────────────────────
 
@@ -138,7 +139,7 @@ class AppConfirmDialog {
     required String title,
     required String subtitle,
     required String confirmLabel,
-    String cancelLabel = 'تراجع',
+    String? cancelLabel,
     bool destructive = false,
   }) async {
     final result = await showDialog<bool>(
@@ -164,7 +165,7 @@ class _ConfirmDialogContent extends StatelessWidget {
   final String title;
   final String subtitle;
   final String confirmLabel;
-  final String cancelLabel;
+  final String? cancelLabel;
   final bool destructive;
 
   const _ConfirmDialogContent({
@@ -173,12 +174,13 @@ class _ConfirmDialogContent extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.confirmLabel,
-    required this.cancelLabel,
+    this.cancelLabel,
     required this.destructive,
   });
 
   @override
   Widget build(BuildContext context) {
+    final resolvedCancelLabel = cancelLabel ?? S.of(context).goBack;
     final confirmColor = destructive ? AppColors.error : AppColors.primary;
 
     return Dialog(
@@ -255,7 +257,7 @@ class _ConfirmDialogContent extends StatelessWidget {
                         ),
                         alignment: Alignment.center,
                         child: Text(
-                          cancelLabel,
+                          resolvedCancelLabel,
                           style: getSemiBoldStyle(
                             color: AppColors.darkGrey,
                             fontSize: FontSize.s15,

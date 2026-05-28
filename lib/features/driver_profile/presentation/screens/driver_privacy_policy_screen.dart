@@ -6,85 +6,56 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/resources/assets_manager.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class DriverPrivacyPolicyScreen extends StatelessWidget {
   const DriverPrivacyPolicyScreen({super.key});
 
-  static const _sections = [
-    _PolicySection(
-      icon: Icons.info_outline_rounded,
-      title: 'مقدمة',
-      body:
-          'مرحباً بك في تطبيق GO FULL للسائقين. نحن نقدر خصوصيتك ونلتزم بحماية '
-          'بياناتك الشخصية. توضح هذه السياسة كيفية جمع واستخدام وحماية معلوماتك '
-          'عند استخدام خدماتنا كسائق أو مقدم خدمة.',
-    ),
-    _PolicySection(
-      icon: Icons.folder_outlined,
-      title: 'البيانات التي نجمعها',
-      body:
-          '• الاسم ورقم الهاتف وبيانات التسجيل\n'
-          '• صور الهوية ورخصة القيادة\n'
-          '• موقعك الجغرافي أثناء تقديم الخدمة\n'
-          '• تفاصيل الطلبات والمعاملات المالية\n'
-          '• بيانات المركبة ومعلومات التأمين\n'
-          '• معلومات الجهاز لتحسين الأداء',
-    ),
-    _PolicySection(
-      icon: Icons.settings_outlined,
-      title: 'كيف نستخدم بياناتك',
-      body:
-          '• تشغيل خدمات إمداد الوقود وسحب المركبات\n'
-          '• تحديد موقعك لتوجيه الطلبات القريبة إليك\n'
-          '• احتساب الأرباح ومعالجة المدفوعات\n'
-          '• تقييم جودة الخدمة وأدائك\n'
-          '• التواصل معك بشأن الطلبات والتحديثات\n'
-          '• ضمان أمان وسلامة المعاملات',
-    ),
-    _PolicySection(
-      icon: Icons.share_outlined,
-      title: 'مشاركة البيانات',
-      body:
-          '• نشارك اسمك ورقم هاتفك ومعلومات المركبة مع العميل أثناء الطلب\n'
-          '• نشارك موقعك الحالي مع العميل لتتبع وصولك\n'
-          '• لا نبيع بياناتك الشخصية لأي أطراف ثالثة\n'
-          '• قد نشارك بيانات مجهولة الهوية لأغراض تحليلية',
-    ),
-    _PolicySection(
-      icon: Icons.shield_outlined,
-      title: 'حماية البيانات',
-      body:
-          'نستخدم تقنيات تشفير متقدمة لحماية بياناتك. نحتفظ ببياناتك '
-          'فقط طالما كان حسابك نشطاً أو حسب ما يقتضيه القانون. يتم تخزين '
-          'جميع المعلومات على خوادم آمنة مع مراقبة مستمرة.',
-    ),
-    _PolicySection(
-      icon: Icons.location_on_outlined,
-      title: 'بيانات الموقع',
-      body:
-          'نستخدم موقعك الجغرافي فقط أثناء تفعيل حالة "متاح" أو أثناء تنفيذ '
-          'الطلبات. يمكنك إيقاف مشاركة الموقع في أي وقت عبر تغيير حالتك إلى '
-          '"غير متاح". لا يتم تتبع موقعك خارج أوقات العمل.',
-    ),
-    _PolicySection(
-      icon: Icons.gavel_outlined,
-      title: 'حقوقك',
-      body:
-          '• طلب الوصول إلى بياناتك الشخصية\n'
-          '• طلب تصحيح أو تحديث بياناتك\n'
-          '• طلب حذف حسابك وبياناتك\n'
-          '• سحب موافقتك في أي وقت\n'
-          '• تقديم شكوى للجهات المختصة',
-    ),
-    _PolicySection(
-      icon: Icons.headset_mic_outlined,
-      title: 'التواصل معنا',
-      body:
-          'إذا كان لديك أي استفسارات حول سياسة الخصوصية أو كيفية التعامل مع '
-          'بياناتك، يرجى التواصل معنا عبر قسم الدعم الفني في التطبيق أو '
-          'مراسلتنا على البريد الإلكتروني: support@gofull.ly',
-    ),
-  ];
+  static List<_PolicySection> _buildSections(BuildContext context) {
+    final l10n = S.of(context);
+    return [
+      _PolicySection(
+        icon: Icons.info_outline_rounded,
+        title: l10n.privacyPolicyIntroTitle,
+        body: l10n.privacyDriverIntroBody,
+      ),
+      _PolicySection(
+        icon: Icons.folder_outlined,
+        title: l10n.privacyDriverDataCollectedTitle,
+        body: l10n.privacyDriverDataCollectedBody,
+      ),
+      _PolicySection(
+        icon: Icons.settings_outlined,
+        title: l10n.privacyDriverDataUseTitle,
+        body: l10n.privacyDriverDataUseBody,
+      ),
+      _PolicySection(
+        icon: Icons.share_outlined,
+        title: l10n.privacyDriverDataShareTitle,
+        body: l10n.privacyDriverDataShareBody,
+      ),
+      _PolicySection(
+        icon: Icons.shield_outlined,
+        title: l10n.privacyDriverDataProtectionTitle,
+        body: l10n.privacyDriverDataProtectionBody,
+      ),
+      _PolicySection(
+        icon: Icons.location_on_outlined,
+        title: l10n.privacyDriverLocationTitle,
+        body: l10n.privacyDriverLocationBody,
+      ),
+      _PolicySection(
+        icon: Icons.gavel_outlined,
+        title: l10n.privacyDriverRightsTitle,
+        body: l10n.privacyDriverRightsBody,
+      ),
+      _PolicySection(
+        icon: Icons.headset_mic_outlined,
+        title: l10n.privacyDriverContactTitle,
+        body: l10n.privacyDriverContactBody,
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +65,7 @@ class DriverPrivacyPolicyScreen extends StatelessWidget {
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
-            const AppHeader(title: 'سياسة الخصوصية'),
+            AppHeader(title: S.of(context).privacyPolicyTitle),
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -140,7 +111,7 @@ class DriverPrivacyPolicyScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'GO FULL — سياسة الخصوصية',
+                                  'GO FULL — ${S.of(context).privacyPolicyTitle}',
                                   style: getBoldStyle(
                                     color: AppColors.white,
                                     fontSize: FontSize.s16,
@@ -148,7 +119,7 @@ class DriverPrivacyPolicyScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 4.h),
                                 Text(
-                                  'آخر تحديث: أبريل 2026',
+                                  S.of(context).privacyLastUpdate,
                                   style: getRegularStyle(
                                     color: Colors.white.withValues(alpha: 0.7),
                                     fontSize: FontSize.s12,
@@ -164,20 +135,20 @@ class DriverPrivacyPolicyScreen extends StatelessWidget {
                     SizedBox(height: 20.h),
 
                     // Policy sections
-                    for (int i = 0; i < _sections.length; i++) ...[
+                    ..._buildSections(context).asMap().entries.expand((entry) => [
                       _SectionCard(
-                        section: _sections[i],
-                        index: i,
+                        section: entry.value,
+                        index: entry.key,
                       ),
                       SizedBox(height: 12.h),
-                    ],
+                    ]),
 
                     SizedBox(height: 8.h),
 
                     // Footer
                     Center(
                       child: Text(
-                        '© 2026 GO FULL. جميع الحقوق محفوظة.',
+                        S.of(context).privacyCopyright,
                         style: getRegularStyle(
                           color: AppColors.grey,
                           fontSize: FontSize.s12,

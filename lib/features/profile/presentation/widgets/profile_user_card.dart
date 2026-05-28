@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class ProfileUserCard extends StatelessWidget {
   final String name;
@@ -72,7 +73,7 @@ class ProfileUserCard extends StatelessWidget {
               ),
               alignment: Alignment.center,
               child: Text(
-                'تعديل',
+                S.of(context).editBtn,
                 style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s14),
               ),
             ),

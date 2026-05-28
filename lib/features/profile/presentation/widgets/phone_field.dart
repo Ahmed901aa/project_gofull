@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class PhoneField extends StatelessWidget {
   final TextEditingController controller;
@@ -23,7 +24,7 @@ class PhoneField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('رقم الجوال', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16).copyWith(height: 1.4)),
+        Text(S.of(context).phoneLabel, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16).copyWith(height: 1.4)),
         SizedBox(height: Insets.s8),
         Container(
           height: 48.h,
@@ -62,7 +63,7 @@ class PhoneField extends StatelessWidget {
               else
                 GestureDetector(
                   onTap: onVerifyTap,
-                  child: Text('تأكيد الرقم', style: getBoldStyle(color: const Color(0xFF004B3B), fontSize: FontSize.s14).copyWith(height: 1.6)),
+                  child: Text(S.of(context).confirmNumber, style: getBoldStyle(color: const Color(0xFF004B3B), fontSize: FontSize.s14).copyWith(height: 1.6)),
                 ),
             ],
           ),

@@ -5,6 +5,7 @@ import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/edit_profile_avatar.dart';
 import '../widgets/edit_profile_bottom_buttons.dart';
 import '../widgets/edit_profile_fields.dart';
@@ -56,19 +57,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void _saveChanges() {
-    AppSnackbar.success(context, 'تم حفظ التغييرات بنجاح');
+    final l10n = S.of(context);
+    AppSnackbar.success(context, l10n.changesSaved);
     Navigator.pop(context);
   }
 
   void _deleteAccount() async {
+    final l10n = S.of(context);
     final confirmed = await AppConfirmDialog.show(
       context,
       icon: Icons.person_remove_outlined,
       iconColor: AppColors.error,
-      title: 'حذف الحساب؟',
-      subtitle: 'حذف الحساب يعني خسارة جميع بياناتك وسجل طلباتك. هذا الإجراء لا يمكن التراجع عنه.',
-      confirmLabel: 'تأكيد الحذف',
-      cancelLabel: 'تراجع',
+      title: l10n.deleteAccount,
+      subtitle: l10n.deleteAccountSubtitle,
+      confirmLabel: l10n.confirmDelete,
+      cancelLabel: l10n.cancel,
       destructive: true,
     );
     if (confirmed) {
@@ -84,7 +87,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
-            const AppHeader(title: 'تعديل بيانات الحساب'),
+            AppHeader(title: S.of(context).editProfile),
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),

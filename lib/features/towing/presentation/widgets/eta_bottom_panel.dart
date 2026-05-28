@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class EtaBottomPanel extends StatelessWidget {
   final String etaFormatted;
@@ -31,7 +32,7 @@ class EtaBottomPanel extends StatelessWidget {
       padding: EdgeInsets.all(Insets.s16),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Text(
-          label ?? 'الوقت المتوقع للوصول: $etaFormatted دقيقة',
+          label ?? S.of(context).etaLabel(etaFormatted),
           style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
           textDirection: TextDirection.rtl,
         ),
@@ -49,7 +50,7 @@ class EtaBottomPanel extends StatelessWidget {
         Row(children: [
           Expanded(
             child: _ActionButton(
-              label: 'اتصال بالسائق',
+              label: S.of(context).callDriver,
               icon: Icons.call_rounded,
               onPressed: onCall,
             ),
@@ -57,7 +58,7 @@ class EtaBottomPanel extends StatelessWidget {
           SizedBox(width: Insets.s12),
           Expanded(
             child: _ActionButton(
-              label: 'إرسال رسالة',
+              label: S.of(context).sendMessage,
               icon: Icons.chat_bubble_outline_rounded,
               onPressed: onMessage,
             ),

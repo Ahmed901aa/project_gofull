@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class TripPaymentSection extends StatelessWidget {
   final String subtotal;
@@ -23,7 +24,7 @@ class TripPaymentSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'ملخص الدفع',
+          S.of(context).paymentSummary,
           style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
           textAlign: TextAlign.right,
         ),
@@ -36,11 +37,11 @@ class TripPaymentSection extends StatelessWidget {
           ),
           child: Column(children: [
             SizedBox(height: Insets.s8),
-            _payRow('المجموع', subtotal),
-            _serviceFeeRow(),
+            _payRow(S.of(context).subtotal, subtotal),
+            _serviceFeeRow(context),
             const Divider(height: 1, color: AppColors.neutral500),
             SizedBox(height: Insets.s8),
-            _totalRow(),
+            _totalRow(context),
             SizedBox(height: Insets.s8),
           ]),
         ),
@@ -57,11 +58,11 @@ class TripPaymentSection extends StatelessWidget {
         ]),
       );
 
-  Widget _serviceFeeRow() => Padding(
+  Widget _serviceFeeRow(BuildContext context) => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
         child: Row(children: [
           Row(children: [
-            Text('رسوم الخدمة', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
+            Text(S.of(context).serviceFee, style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
             const SizedBox(width: 4),
             Icon(Icons.info_outline_rounded, size: 16, color: AppColors.primary),
           ]),
@@ -70,11 +71,11 @@ class TripPaymentSection extends StatelessWidget {
         ]),
       );
 
-  Widget _totalRow() => Padding(
+  Widget _totalRow(BuildContext context) => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16),
         child: Row(children: [
           Row(children: [
-            Text('الإجمالي', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s18)),
+            Text(S.of(context).totalAmount, style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s18)),
             SizedBox(width: Insets.s8),
             Container(
               padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
@@ -82,7 +83,7 @@ class TripPaymentSection extends StatelessWidget {
                 color: AppColors.primary50,
                 borderRadius: BorderRadius.circular(AppRadius.s16),
               ),
-              child: Text('كاش', style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12)),
+              child: Text(S.of(context).cashPayment, style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12)),
             ),
           ]),
           const Spacer(),

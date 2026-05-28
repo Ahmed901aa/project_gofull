@@ -18,11 +18,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_event
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/safety_section.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-const _safetyItems = [
-  'إغلاق النوافذ: تأكد من إغلاق جميع نوافذ السيارة وفتحاتها.',
-  'أمتعتك الشخصية: تأكد من أخذ جميع ممتلكاتك الشخصية من داخل السيارة.',
-];
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class TowingStartedScreen extends StatefulWidget {
   final TowingStartedArgs? args;
@@ -95,8 +91,8 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
       _polling.stop();
       NotiService().showNotification(
         id: req.id,
-        title: 'تم إلغاء الطلب',
-        body: 'تم إلغاء طلبك من قبل مزود الخدمة',
+        title: S.of(context).orderCancelledTitle,
+        body: S.of(context).orderCancelledByProviderBody,
       );
       Navigator.pushReplacementNamed(context, Routes.home);
     }
@@ -145,7 +141,7 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
                     _buildDestinationCard(),
                     SizedBox(height: Insets.s16),
                   ],
-                  const SafetySection(items: _safetyItems),
+                  SafetySection(items: [S.of(context).closeWindowsSafety, S.of(context).personalBelongingsSafety]),
                   SizedBox(height: Insets.s16),
                   _buildDriverSection(),
                   SizedBox(height: Insets.s16),
@@ -169,7 +165,7 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(width: 24.sp),
-                  Text('بدء عملية السحب',
+                  Text(S.of(context).towingStartHeader,
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20)),
@@ -195,7 +191,7 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('وجهة التوصيل',
+                Text(S.of(context).deliveryDestination,
                     style: getRegularStyle(
                         color: AppColors.neutral800, fontSize: FontSize.s12)),
                 SizedBox(height: 2.h),
@@ -213,7 +209,7 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
   Widget _buildDriverSection() => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('تفاصيل مزود الخدمة',
+          Text(S.of(context).providerDetails,
               style: getBoldStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
               textAlign: TextAlign.right),

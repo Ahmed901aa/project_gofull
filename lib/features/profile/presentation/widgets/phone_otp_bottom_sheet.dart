@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'otp_input_box.dart';
 import 'otp_resend_timer.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class PhoneOtpBottomSheet extends StatefulWidget {
   final String phoneNumber;
@@ -71,18 +72,18 @@ class _PhoneOtpBottomSheetState extends State<PhoneOtpBottomSheet> {
           child: Padding(
             padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s16, Insets.s16, Insets.s12),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Text('تأكيد الرقم الجديد', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20).copyWith(height: 1.6), textAlign: TextAlign.center),
+              Text(S.of(context).confirmNewNumber, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20).copyWith(height: 1.6), textAlign: TextAlign.center),
               SizedBox(height: Insets.s8),
               RichText(textAlign: TextAlign.center, text: TextSpan(
                 style: getRegularStyle(color: const Color(0xFF838485), fontSize: FontSize.s14).copyWith(height: 1.4),
                 children: [
-                  const TextSpan(text: 'دخل الكود اللي بعتناه في رسالة نصية (SMS) على الرقم '),
+                  TextSpan(text: S.of(context).enterSmsCode),
                   TextSpan(text: _maskedPhone, style: getMediumStyle(color: const Color(0xFF646565), fontSize: FontSize.s14).copyWith(height: 1.4)),
                 ],
               )),
               SizedBox(height: Insets.s8),
               GestureDetector(onTap: () => Navigator.pop(context, false),
-                child: Text('تغيير الرقم', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14).copyWith(decoration: TextDecoration.underline, height: 1.4), textAlign: TextAlign.center)),
+                child: Text(S.of(context).changeNumber, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14).copyWith(decoration: TextDecoration.underline, height: 1.4), textAlign: TextAlign.center)),
               SizedBox(height: Insets.s24),
               Directionality(textDirection: TextDirection.ltr,
                 child: Row(mainAxisAlignment: MainAxisAlignment.center, children: List.generate(5, (i) => OtpInputBox(controller: _controllers[i], focusNode: _focusNodes[i], onChanged: (v) => _onChanged(i, v))))),

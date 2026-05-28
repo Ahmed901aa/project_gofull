@@ -36,8 +36,8 @@ class NotiService {
         ?.createNotificationChannel(
           const AndroidNotificationChannel(
             'gofull_orders',
-            'إشعارات الطلبات',
-            description: 'إشعارات حالة طلبات الوقود والسحب',
+            'Order Notifications',
+            description: 'Notifications for fuel and tow order status',
             importance: Importance.high,
             playSound: true,
           ),
@@ -62,8 +62,8 @@ class NotiService {
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'gofull_orders',
-          'إشعارات الطلبات',
-          channelDescription: 'إشعارات حالة طلبات الوقود والسحب',
+          'Order Notifications',
+          channelDescription: 'Notifications for fuel and tow order status',
           importance: Importance.high,
           priority: Priority.high,
           icon: '@mipmap/ic_launcher',

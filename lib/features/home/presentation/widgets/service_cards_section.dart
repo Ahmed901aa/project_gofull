@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project_gofull/core/resources/assets_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'service_card.dart';
@@ -15,8 +15,8 @@ class ServiceCardsSection extends StatelessWidget {
         Expanded(
           child: ServiceCard(
             svgAsset: IconAssets.fuelTruck,
-            title: AppStrings.fuelSupply,
-            subtitle: AppStrings.fuelSupplyDesc,
+            title: S.of(context).fuelSupply,
+            subtitle: S.of(context).fuelSupplyDesc,
             flipIcon: true,
             onTap: () => Navigator.pushNamed(context, Routes.fuelType),
           ),
@@ -25,8 +25,8 @@ class ServiceCardsSection extends StatelessWidget {
         Expanded(
           child: ServiceCard(
             svgAsset: IconAssets.towTruck,
-            title: AppStrings.towTruckService,
-            subtitle: AppStrings.towTruckServiceDesc,
+            title: S.of(context).towTruckService,
+            subtitle: S.of(context).towTruckServiceDesc,
             flipIcon: true,
             onTap: () => Navigator.pushNamed(context, Routes.towingRequest),
           ),

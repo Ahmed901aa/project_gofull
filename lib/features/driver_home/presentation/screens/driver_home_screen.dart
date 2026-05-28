@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -131,7 +131,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       // Reload profile to get the restored availability
       _providerBloc.add(const LoadProfileEvent());
       if (mounted) {
-        AppSnackbar.success(context, 'تم إلغاء الطلب بنجاح');
+        AppSnackbar.success(context, S.of(context).orderCancelledSuccessSnack);
       }
       return;
     }
@@ -260,7 +260,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
   void _showCancelledSnackBar() {
     if (!mounted) return;
-    AppSnackbar.warning(context, 'تم إلغاء الطلب من قبل العميل');
+    AppSnackbar.warning(context, S.of(context).orderCancelledByCustomerSnack);
   }
 
   // ── Order actions ──
@@ -284,10 +284,10 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       context,
       icon: Icons.cancel_rounded,
       iconColor: AppColors.error,
-      title: 'إلغاء الطلب',
-      subtitle: 'هل أنت متأكد من إلغاء هذا الطلب؟\nسيتم إبلاغ العميل بالإلغاء.',
-      confirmLabel: 'إلغاء الطلب',
-      cancelLabel: 'تراجع',
+      title: S.of(context).cancelOrderDialogTitle,
+      subtitle: S.of(context).cancelOrderDialogSubtitle,
+      confirmLabel: S.of(context).cancelOrderDialogBtn,
+      cancelLabel: S.of(context).cancelOrderDialogGoBack,
       destructive: true,
     );
     if (confirmed) {
@@ -531,8 +531,8 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
                     SizedBox(height: 12.h),
                     Text(
                       isFuel
-                          ? 'جارٍ البحث عن طلبات الوقود...'
-                          : 'جارٍ البحث عن طلبات السحب...',
+                          ? S.of(context).searchingFuelOrders
+                          : S.of(context).searchingTowOrders,
                       style: getSemiBoldStyle(
                         fontSize: FontSize.s15,
                         color: const Color(0xFF111827),
@@ -541,7 +541,7 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
                     ),
                     SizedBox(height: 4.h),
                     Text(
-                      AppStrings.searchingSubtitle,
+                      S.of(context).searchingSubtitle,
                       style: getRegularStyle(
                         fontSize: FontSize.s12,
                         color: AppColors.grey,
@@ -577,7 +577,7 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
                           size: 20.sp, color: const Color(0xFFDC2626)),
                       SizedBox(width: 6.w),
                       Text(
-                        'إيقاف الدورية',
+                        S.of(context).stopPatrol,
                         style: getSemiBoldStyle(
                           color: const Color(0xFFDC2626),
                           fontSize: FontSize.s14,
@@ -634,7 +634,7 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            isFuel ? 'دورية إمداد الوقود' : 'دورية الساحبة',
+                            isFuel ? S.of(context).fuelPatrol : S.of(context).towingPatrol,
                             style: getBoldStyle(
                               color: Colors.white,
                               fontSize: FontSize.s15,
@@ -642,7 +642,7 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
                           ),
                           SizedBox(height: 2.h),
                           Text(
-                            'اضغط للبدء باستقبال الطلبات',
+                            S.of(context).tapToStartOrders,
                             style: getRegularStyle(
                               color: Colors.white.withValues(alpha: 0.85),
                               fontSize: FontSize.s12,
@@ -671,7 +671,7 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
                           ],
                         ),
                         child: Text(
-                          'ابدأ',
+                          S.of(context).startButton,
                           style: getBoldStyle(
                             color: accentColor,
                             fontSize: FontSize.s14,
@@ -849,12 +849,13 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
     super.dispose();
   }
 
-  String get _statusLabel {
+  String _statusLabel(BuildContext context) {
+    final l10n = S.of(context);
     switch (widget.request.status) {
-      case 'accepted':  return 'تم القبول';
-      case 'en_route':  return 'في الطريق للعميل';
-      case 'arrived':   return widget.request.isFuelDelivery ? 'جاري التعبئة' : 'وصلت';
-      case 'in_progress': return widget.request.isFuelDelivery ? 'تحصيل المبلغ' : 'قيد التنفيذ';
+      case 'accepted':  return l10n.statusAccepted;
+      case 'en_route':  return l10n.statusEnRouteToCustomer;
+      case 'arrived':   return widget.request.isFuelDelivery ? l10n.statusRefueling : l10n.statusArrived;
+      case 'in_progress': return widget.request.isFuelDelivery ? l10n.statusCollecting : l10n.statusInProgressLabel;
       default: return widget.request.status;
     }
   }
@@ -950,8 +951,8 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                       children: [
                         Text(
                           widget.request.isFuelDelivery
-                              ? 'طلب وقود نشط'
-                              : 'طلب ساحبة نشط',
+                              ? S.of(context).activeFuelOrder
+                              : S.of(context).activeTowOrder,
                           style: getBoldStyle(
                             color: const Color(0xFF111827),
                             fontSize: FontSize.s15,
@@ -978,7 +979,7 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                               ),
                               SizedBox(width: 4.w),
                               Text(
-                                _statusLabel,
+                                _statusLabel(context),
                                 style: getMediumStyle(
                                   color: accentColor,
                                   fontSize: FontSize.s12,
@@ -1037,7 +1038,7 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                           size: 20.sp, color: Colors.white),
                       SizedBox(width: 6.w),
                       Text(
-                        'متابعة الطلب',
+                        S.of(context).resumeOrderBtn,
                         style: getBoldStyle(
                           color: Colors.white,
                           fontSize: FontSize.s14,

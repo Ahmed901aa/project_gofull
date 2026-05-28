@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -33,9 +33,9 @@ class DriverCollectPaymentScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildInstructionsCard(),
+                    _buildInstructionsCard(context),
                     SizedBox(height: Insets.s24),
-                    _buildAmountSection(),
+                    _buildAmountSection(context),
                     SizedBox(height: Insets.s24),
                   ],
                 ),
@@ -67,7 +67,7 @@ class DriverCollectPaymentScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      AppStrings.collectPayment,
+                      S.of(context).collectPayment,
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20),
@@ -102,7 +102,7 @@ class DriverCollectPaymentScreen extends StatelessWidget {
 
   // ── Instructions Card ───────────────────────────────────────
 
-  Widget _buildInstructionsCard() => Container(
+  Widget _buildInstructionsCard(BuildContext context) => Container(
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
           color: const Color(0xFFE8F5E9),
@@ -118,16 +118,16 @@ class DriverCollectPaymentScreen extends StatelessWidget {
                     size: 22.sp, color: AppColors.primary),
                 SizedBox(width: Insets.s8),
                 Text(
-                  AppStrings.collectionInstructions,
+                  S.of(context).collectionInstructions,
                   style: getBoldStyle(
                       color: AppColors.primary, fontSize: FontSize.s14),
                 ),
               ],
             ),
             SizedBox(height: Insets.s12),
-            _buildBulletPoint(AppStrings.confirmFullAmount),
+            _buildBulletPoint(S.of(context).confirmFullAmount),
             SizedBox(height: Insets.s8),
-            _buildBulletPoint(AppStrings.cashOnly),
+            _buildBulletPoint(S.of(context).cashOnly),
           ],
         ),
       );
@@ -159,11 +159,11 @@ class DriverCollectPaymentScreen extends StatelessWidget {
 
   // ── Amount Section ──────────────────────────────────────────
 
-  Widget _buildAmountSection() => Column(
+  Widget _buildAmountSection(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppStrings.requiredAmount,
+            S.of(context).requiredAmount,
             style: getBoldStyle(
                 color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
           ),
@@ -181,7 +181,7 @@ class DriverCollectPaymentScreen extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      AppStrings.totalAmount,
+                      S.of(context).totalAmount,
                       style: getMediumStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s16),
@@ -205,7 +205,7 @@ class DriverCollectPaymentScreen extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  '${args.amount.toStringAsFixed(2)} ج.م',
+                  '${args.amount.toStringAsFixed(2)} ${S.of(context).currencyEGP}',
                   style: getBoldStyle(
                       color: AppColors.primary, fontSize: FontSize.s24),
                 ),
@@ -229,7 +229,7 @@ class DriverCollectPaymentScreen extends StatelessWidget {
           border: Border(top: BorderSide(color: Color(0xFFF5F5F5))),
         ),
         child: AppButton(
-          text: AppStrings.confirmReceived,
+          text: S.of(context).confirmReceived,
           onPressed: () {
             // Update status to 'completed'
             final orderId = int.tryParse(args.orderId);

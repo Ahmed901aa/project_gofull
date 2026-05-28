@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
@@ -31,17 +32,18 @@ class MapSearchOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildInputRow(),
+        _buildInputRow(l10n),
         const Divider(color: AppColors.divider, height: 1),
         _buildResults(),
       ],
     );
   }
 
-  Widget _buildInputRow() {
+  Widget _buildInputRow(S l10n) {
     return Container(
       color: AppColors.white,
       padding: EdgeInsets.fromLTRB(
@@ -86,7 +88,7 @@ class MapSearchOverlay extends StatelessWidget {
                           color: AppColors.black,
                           fontSize: FontSize.s14),
                       decoration: InputDecoration(
-                        hintText: 'ابحث عن مدينة أو منطقة...',
+                        hintText: l10n.searchCityOrArea,
                         hintStyle: getRegularStyle(
                             color: AppColors.grey,
                             fontSize: FontSize.s14),

@@ -35,13 +35,13 @@ class RequestMockDataSource implements RequestDataSource {
         id: 1, driverId: 1, providerId: 2,
         serviceType: 'fuel_delivery', status: 'completed',
         driverLatitude: '32.8872', driverLongitude: '13.1913',
-        driverAddress: 'طرابلس، ليبيا', fuelType: 'diesel', fuelQuantity: '20',
+        driverAddress: 'Tripoli, Libya', fuelType: 'diesel', fuelQuantity: '20',
         createdAt: '2026-04-01T10:00:00Z',
       ),
       const ServiceRequestModel(
         id: 2, driverId: 1, serviceType: 'towing', status: 'pending',
         driverLatitude: '32.9000', driverLongitude: '13.2000',
-        driverAddress: 'بنغازي، ليبيا', plateNumber: 'أ ب م - 3541',
+        driverAddress: 'Benghazi, Libya', plateNumber: 'ABM-3541',
         createdAt: '2026-04-02T14:00:00Z',
       ),
     ];
@@ -86,7 +86,7 @@ class RequestMockDataSource implements RequestDataSource {
       id: 1, driverId: 1, providerId: 2,
       serviceType: 'fuel_delivery', status: 'completed',
       driverLatitude: '32.8872', driverLongitude: '13.1913',
-      driverAddress: 'طرابلس، ليبيا',
+      driverAddress: 'Tripoli, Libya',
     );
   }
 
@@ -131,7 +131,7 @@ class RequestRemoteDataSource implements RequestDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل تحميل الطلبات');
+              'Failed to load requests');
     }
   }
 
@@ -157,7 +157,7 @@ class RequestRemoteDataSource implements RequestDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل إنشاء طلب الوقود');
+              'Operation failed');
     }
   }
 
@@ -187,7 +187,7 @@ class RequestRemoteDataSource implements RequestDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل إنشاء طلب السحب');
+              'Operation failed');
     }
   }
 
@@ -201,7 +201,7 @@ class RequestRemoteDataSource implements RequestDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل تحميل تفاصيل الطلب');
+              'Failed to load request details');
     }
   }
 
@@ -225,7 +225,7 @@ class RequestRemoteDataSource implements RequestDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل إلغاء الطلب');
+              'Failed to cancel request');
     }
   }
 
@@ -243,7 +243,7 @@ class RequestRemoteDataSource implements RequestDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل إرسال التقييم');
+              'Failed to submit rating');
     }
   }
 }

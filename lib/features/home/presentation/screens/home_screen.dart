@@ -21,6 +21,7 @@ import 'package:project_gofull/features/home/presentation/widgets/service_cards_
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'app_search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -93,28 +94,29 @@ class _HomeScreenState extends State<HomeScreen> {
       if (route != null && !route.isCurrent) return;
 
       // Fire local notification for status change
+      final l10n = S.of(context);
       final messages = <String, Map<String, String>>{
         'accepted': {
-          'title': 'تم قبول طلبك',
-          'body': 'مزود الخدمة وافق على طلبك وسيتحرك إليك قريباً',
+          'title': l10n.notifOrderAcceptedTitle,
+          'body': l10n.notifOrderAcceptedBody,
         },
         'en_route': {
-          'title': 'مزود الخدمة في الطريق',
-          'body': 'مزود الخدمة تحرك إلى موقعك',
+          'title': l10n.notifProviderEnRouteTitle,
+          'body': l10n.notifProviderEnRouteBody,
         },
         'arrived': {
-          'title': 'مزود الخدمة وصل',
-          'body': 'مزود الخدمة وصل إلى موقعك',
+          'title': l10n.notifProviderArrivedTitle,
+          'body': l10n.notifProviderArrivedBody,
         },
         'in_progress': {
-          'title': 'بدأت الخدمة',
+          'title': l10n.notifServiceStartedTitle,
           'body': order.isFuelDelivery
-              ? 'جاري تعبئة الوقود'
-              : 'جاري سحب السيارة',
+              ? l10n.notifFuelServiceBody
+              : l10n.notifTowServiceBody,
         },
         'cancelled': {
-          'title': 'تم إلغاء الطلب',
-          'body': 'تم إلغاء طلبك من قبل مزود الخدمة',
+          'title': l10n.notifOrderCancelledTitle,
+          'body': l10n.notifOrderCancelledBody,
         },
       };
 
@@ -145,10 +147,11 @@ class _HomeScreenState extends State<HomeScreen> {
     if (dismissed) return;
 
     _ratingShown = true;
+    final l10n = S.of(context);
     NotiService().showNotification(
       id: order.id,
-      title: 'تمت الخدمة بنجاح',
-      body: order.isFuelDelivery ? 'تم تعبئة الوقود بنجاح' : 'تم توصيل السيارة بنجاح',
+      title: l10n.notifServiceCompletedTitle,
+      body: order.isFuelDelivery ? l10n.notifFuelCompletedBody : l10n.notifTowCompletedBody,
     );
 
     // Fuel orders use inline rating on fuel_complete_screen — skip bottom sheet
@@ -175,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final user = sl<TokenStorage>().getUser();
-    final userName = (user?['name'] as String?) ?? 'المستخدم';
+    final userName = (user?['name'] as String?) ?? S.of(context).userDefault;
 
     return BlocProvider.value(
       value: _ratingCheckBloc,

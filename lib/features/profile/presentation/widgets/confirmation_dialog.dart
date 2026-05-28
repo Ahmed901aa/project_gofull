@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'dialog_action_buttons.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   final IconData icon;
@@ -23,7 +24,7 @@ class ConfirmationDialog extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.confirmLabel,
-    this.cancelLabel = 'إلغاء',
+    this.cancelLabel = 'Cancel',
     this.onConfirm,
     this.onCancel,
   });

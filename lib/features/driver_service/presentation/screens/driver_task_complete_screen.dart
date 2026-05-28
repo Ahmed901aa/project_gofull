@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -33,9 +33,9 @@ class DriverTaskCompleteScreen extends StatelessWidget {
                     SizedBox(height: Sizes.s40),
                     _buildSuccessIcon(),
                     SizedBox(height: Insets.s24),
-                    _buildSuccessText(),
+                    _buildSuccessText(context),
                     SizedBox(height: Sizes.s32),
-                    _buildEarningsCard(),
+                    _buildEarningsCard(context),
                     SizedBox(height: Insets.s24),
                   ],
                 ),
@@ -71,7 +71,7 @@ class DriverTaskCompleteScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      AppStrings.taskComplete,
+                      S.of(context).taskComplete,
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20),
@@ -98,17 +98,17 @@ class DriverTaskCompleteScreen extends StatelessWidget {
 
   // ── Success Text ────────────────────────────────────────────
 
-  Widget _buildSuccessText() => Column(
+  Widget _buildSuccessText(BuildContext context) => Column(
         children: [
           Text(
-            AppStrings.orderCompletedSuccess,
+            S.of(context).orderCompletedSuccess,
             style: getBoldStyle(
                 color: const Color(0xFF0E0E0E), fontSize: FontSize.s22),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: Insets.s8),
           Text(
-            AppStrings.earningsRecorded,
+            S.of(context).earningsRecorded,
             style: getRegularStyle(
                 color: AppColors.neutral800, fontSize: FontSize.s14),
             textAlign: TextAlign.center,
@@ -118,7 +118,7 @@ class DriverTaskCompleteScreen extends StatelessWidget {
 
   // ── Earnings Card ───────────────────────────────────────────
 
-  Widget _buildEarningsCard() => Container(
+  Widget _buildEarningsCard(BuildContext context) => Container(
         padding: EdgeInsets.all(Insets.s20),
         decoration: BoxDecoration(
           color: AppColors.white,
@@ -128,13 +128,13 @@ class DriverTaskCompleteScreen extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              AppStrings.addedEarnings,
+              S.of(context).addedEarnings,
               style: getMediumStyle(
                   color: AppColors.neutral800, fontSize: FontSize.s14),
             ),
             SizedBox(height: Insets.s8),
             Text(
-              '${args.earnings.toStringAsFixed(2)} ج.م',
+              '${args.earnings.toStringAsFixed(2)} ${S.of(context).currencyEGP}',
               style: getBoldStyle(
                   color: AppColors.primary, fontSize: FontSize.s28),
             ),
@@ -156,7 +156,7 @@ class DriverTaskCompleteScreen extends StatelessWidget {
           border: Border(top: BorderSide(color: Color(0xFFF5F5F5))),
         ),
         child: AppButton(
-          text: 'العودة للرئيسية',
+          text: S.of(context).backToHomeBtn,
           onPressed: () {
             Navigator.pushNamedAndRemoveUntil(
               context,

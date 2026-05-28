@@ -77,19 +77,19 @@ class DriverFoundArgs {
 }
 
 class TowingStartedArgs {
-  final String title;
-  final String subtitle;
+  final String? title;
+  final String? subtitle;
   final String imagePath;
-  final String vehicleLabel;
-  final String vehicleValue;
+  final String? vehicleLabel;
+  final String? vehicleValue;
   final Object? nextRouteArgs;
   final int? requestId;
   const TowingStartedArgs({
-    this.title = 'السائق وصل لموقعك.',
-    this.subtitle = 'يتم الآن تحميل وتأمين السيارة على الساحبة لبدء الرحلة إلى وجهتك.',
+    this.title,
+    this.subtitle,
     this.imagePath = 'assets/images/service_tools.gif',
-    this.vehicleLabel = 'نوع الساحبة',
-    this.vehicleValue = 'ساحبة هيدروليك',
+    this.vehicleLabel,
+    this.vehicleValue,
     this.nextRouteArgs,
     this.requestId,
   });
@@ -115,18 +115,18 @@ class TripInProgressArgs {
 }
 
 class ServiceArrivedArgs {
-  final String title;
-  final String subtitle;
+  final String? title;
+  final String? subtitle;
   final String imagePath;
-  final String vehicleLabel;
-  final String vehicleValue;
+  final String? vehicleLabel;
+  final String? vehicleValue;
   final int? requestId;
   const ServiceArrivedArgs({
-    this.title = 'جاري تعبئة الوقود',
-    this.subtitle = 'مزود الخدمة يقوم الآن بتعبئة وقود سيارتك. يرجى الانتظار حتى اكتمال العملية.',
+    this.title,
+    this.subtitle,
     this.imagePath = 'assets/images/refuel.gif',
-    this.vehicleLabel = 'نوع المركبة',
-    this.vehicleValue = 'سيارة إمداد وقود',
+    this.vehicleLabel,
+    this.vehicleValue,
     this.requestId,
   });
 }
@@ -144,7 +144,7 @@ class DriverOrderDetailsArgs {
   final String plateNumber;
   final double distance;
   final double amount;
-  final String paymentMethod;
+  final String? paymentMethod;
   final String? customerNotes;
   final List<String> carPhotos;
   // Fuel-specific
@@ -163,7 +163,7 @@ class DriverOrderDetailsArgs {
     required this.plateNumber,
     required this.distance,
     required this.amount,
-    this.paymentMethod = 'كاش',
+    this.paymentMethod,
     this.customerNotes,
     this.carPhotos = const [],
     this.fuelType,
@@ -213,13 +213,13 @@ class DriverDocumentationArgs {
 class DriverCollectPaymentArgs {
   final String orderId;
   final double amount;
-  final String paymentMethod;
+  final String? paymentMethod;
   final String? customerPhone;
 
   const DriverCollectPaymentArgs({
     required this.orderId,
     required this.amount,
-    this.paymentMethod = 'كاش',
+    this.paymentMethod,
     this.customerPhone,
   });
 }

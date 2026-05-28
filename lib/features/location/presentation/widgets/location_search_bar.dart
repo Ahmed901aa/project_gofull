@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 /// Search input: bg #F8F8F9, border #EFF0F1, radius 16px, height 48px.
 /// RTL Row: search icon (right) | text field | X clear (left).
@@ -44,7 +45,7 @@ class LocationSearchBar extends StatelessWidget {
                 style: getMediumStyle(
                     color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
                 decoration: InputDecoration(
-                  hintText: 'ابحث عن موقعك',
+                  hintText: S.of(context).searchForLocation,
                   hintStyle: getRegularStyle(
                       color: AppColors.neutral800, fontSize: FontSize.s16),
                   border: InputBorder.none,

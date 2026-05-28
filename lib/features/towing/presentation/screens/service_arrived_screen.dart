@@ -18,6 +18,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_event
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/safety_section.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class ServiceArrivedScreen extends StatefulWidget {
   final ServiceArrivedArgs? args;
@@ -68,10 +69,10 @@ class _ServiceArrivedScreenState extends State<ServiceArrivedScreen> {
       _polling.stop();
       NotiService().showNotification(
         id: req.id,
-        title: 'تمت الخدمة بنجاح',
+        title: S.of(context).serviceCompletedSuccessfully,
         body: req.isFuelDelivery
-            ? 'تم تعبئة سيارتك بالوقود بنجاح'
-            : 'تم سحب سيارتك بنجاح',
+            ? S.of(context).fuelCompletedBody
+            : S.of(context).towCompletedBody,
       );
       Navigator.pushReplacementNamed(context, Routes.fuelComplete,
           arguments: _args.requestId);
@@ -82,8 +83,8 @@ class _ServiceArrivedScreenState extends State<ServiceArrivedScreen> {
       _polling.stop();
       NotiService().showNotification(
         id: req.id,
-        title: 'تم إلغاء الطلب',
-        body: 'تم إلغاء طلبك من قبل مزود الخدمة',
+        title: S.of(context).orderCancelledTitle,
+        body: S.of(context).orderCancelledByProviderBody,
       );
       Navigator.pushReplacementNamed(context, Routes.home);
     }
@@ -161,7 +162,7 @@ class _ServiceArrivedScreenState extends State<ServiceArrivedScreen> {
                       onTap: () => Navigator.pop(context),
                       child: Icon(Icons.close_rounded,
                           size: 24.sp, color: const Color(0xFF0E0E0E))),
-                  Text('جاري التعبئة',
+                  Text(S.of(context).refuelingInProgressHeader,
                       style: getBoldStyle(
                           color: const Color(0xFF0E0E0E),
                           fontSize: FontSize.s20)),

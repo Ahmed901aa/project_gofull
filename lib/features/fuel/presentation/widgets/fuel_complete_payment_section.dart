@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class FuelCompletePaymentSection extends StatelessWidget {
   final Map<String, String> data;
@@ -11,10 +12,11 @@ class FuelCompletePaymentSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('ملخص الدفع', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
+        Text(l10n.paymentSummary, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
         SizedBox(height: Insets.s8),
         Container(
           decoration: BoxDecoration(
@@ -25,7 +27,7 @@ class FuelCompletePaymentSection extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: Insets.s8),
-              _payRow('المجموع', data['subtotal']!),
+              _payRow(l10n.subtotal, data['subtotal']!),
               _serviceFeeRow(),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: Insets.s16),
@@ -57,7 +59,7 @@ class FuelCompletePaymentSection extends StatelessWidget {
         child: Row(
           children: [
             Row(children: [
-              Text('رسوم الخدمة', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
+              Text(l10n.serviceFee, style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
               const SizedBox(width: 4),
               Icon(Icons.info_outline_rounded, size: 16, color: AppColors.primary),
             ]),
@@ -72,12 +74,12 @@ class FuelCompletePaymentSection extends StatelessWidget {
         child: Row(
           children: [
             Row(children: [
-              Text('الإجمالي', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s18)),
+              Text(l10n.totalAmount, style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s18)),
               SizedBox(width: Insets.s8),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
                 decoration: BoxDecoration(color: AppColors.primary50, borderRadius: BorderRadius.circular(AppRadius.s16)),
-                child: Text('كاش', style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12)),
+                child: Text(l10n.cashPayment, style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12)),
               ),
             ]),
             const Spacer(),

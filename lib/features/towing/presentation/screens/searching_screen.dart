@@ -16,6 +16,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_event
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/searching_animation.dart';
 import '../widgets/searching_header.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class SearchingScreen extends StatefulWidget {
   final SearchingArgs args;
@@ -112,13 +113,13 @@ class _SearchingScreenState extends State<SearchingScreen> {
     final providerUser =
         (request.providerInfo?['user'] as Map<String, dynamic>?) ?? {};
     final providerName =
-        (providerUser['name'] as String?) ?? 'مزود الخدمة';
+        (providerUser['name'] as String?) ?? S.of(context).serviceProviderDefault;
 
     // Fire a local notification so the user sees it even if app is backgrounded
     NotiService().showNotification(
       id: request.id,
-      title: isFuel ? 'تم قبول طلب الوقود' : 'تم قبول طلب السحب',
-      body: 'مزود الخدمة $providerName في طريقه إليك',
+      title: isFuel ? S.of(context).fuelRequestAccepted : S.of(context).towRequestAccepted,
+      body: S.of(context).providerOnWayToYouName(providerName),
     );
     final providerRating =
         request.providerInfo?['average_rating']?.toString();
@@ -133,9 +134,9 @@ class _SearchingScreenState extends State<SearchingScreen> {
         context,
         Routes.driverFound,
         arguments: DriverFoundArgs(
-          title: isFuel ? 'تم العثور على مزود وقود!' : 'تم العثور على ساحبة!',
-          vehicleLabel: isFuel ? 'نوع المركبة' : 'نوع الساحبة',
-          vehicleValue: isFuel ? 'سيارة إمداد وقود' : 'ساحبة هيدروليك',
+          title: isFuel ? S.of(context).fuelProviderFoundTitle : S.of(context).towTruckFoundTitle,
+          vehicleLabel: isFuel ? S.of(context).vehicleTypeLabel : S.of(context).towTruckTypeLabel,
+          vehicleValue: isFuel ? S.of(context).fuelSupplyVehicle : S.of(context).hydraulicTowTruck,
           showClose: true,
           imagePath: isFuel
               ? 'assets/images/tank_truck.gif'
@@ -213,7 +214,7 @@ class _SearchingScreenState extends State<SearchingScreen> {
                               border: Border.all(color: AppColors.primary),
                             ),
                             child: Text(
-                              'يرجى الانتظار في مكان آمن بعيداً عن حركة المرور وتشغيل أضواء التنبيه في سيارتك حتى وصول السائق.',
+                              S.of(context).waitSafeLocation,
                               style: getRegularStyle(
                                   color: AppColors.primary,
                                   fontSize: FontSize.s14),
@@ -243,7 +244,7 @@ class _SearchingScreenState extends State<SearchingScreen> {
                                 BorderRadius.circular(AppRadius.s12),
                           ),
                         ),
-                        child: Text('إلغاء الطلب',
+                        child: Text(S.of(context).cancelOrder,
                             style: getSemiBoldStyle(
                                 color: AppColors.error,
                                 fontSize: FontSize.s16)),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/features/home/domain/entities/offer_entity.dart';
 import 'offer_card.dart';
 
@@ -20,7 +21,7 @@ class OffersSection extends StatelessWidget {
           child: SizedBox(
             width: double.infinity,
             child: Text(
-              'عروض تهمك',
+              S.of(context).offersForYou,
               style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
               textAlign: TextAlign.right,
             ),

@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class TripLocationCard extends StatelessWidget {
   final String address;
@@ -12,6 +13,7 @@ class TripLocationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
       decoration: BoxDecoration(
@@ -37,7 +39,7 @@ class TripLocationCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('موقع السيارة', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
+                  Text(l10n.carLocationLabel, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
                   SizedBox(height: 2.h),
                   Text(address, style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s14),
                       maxLines: 2, overflow: TextOverflow.ellipsis),

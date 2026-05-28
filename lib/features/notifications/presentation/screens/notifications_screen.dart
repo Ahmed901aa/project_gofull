@@ -8,6 +8,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/notifications/domain/entities/notification_entity.dart';
 import 'package:project_gofull/features/notifications/presentation/bloc/notification_bloc.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
@@ -57,7 +58,7 @@ class NotificationsScreen extends StatelessWidget {
           children: [
             Icon(Icons.notifications_off_outlined, size: 56.sp, color: AppColors.neutral600),
             SizedBox(height: Insets.s12),
-            Text('لا توجد إشعارات',
+            Text(S.of(context).noNotifications,
                 style: getSemiBoldStyle(color: AppColors.darkGrey, fontSize: FontSize.s16)),
           ],
         ),
@@ -94,7 +95,7 @@ class NotificationsScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      'الإشعارات',
+                      S.of(context).notifications,
                       style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
                       textAlign: TextAlign.center,
                     ),
