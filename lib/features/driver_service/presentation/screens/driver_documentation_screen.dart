@@ -63,7 +63,8 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
           address: '',
           navigationType: 'to_destination',
           amount: widget.args.amount,
-        );
+        ),
+      );
     } else {
       Navigator.pushReplacementNamed(
         context,
@@ -101,7 +102,6 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
             _buildBottomSection(context),
           ],
         ),
-      ),
     );
   }
 

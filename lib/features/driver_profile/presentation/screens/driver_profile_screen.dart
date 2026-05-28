@@ -44,13 +44,13 @@ class DriverProfileScreen extends StatelessWidget {
                     _VehicleSection(profile: profile),
                     SizedBox(height: Insets.s24),
                   ],
-                );
+                ),
+              );
               },
               ),
             ),
           ],
         ),
-      ),
       ),
     );
   }

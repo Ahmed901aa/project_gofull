@@ -31,7 +31,8 @@ class NotificationsScreen extends StatelessWidget {
                     if (state is NotificationError) {
                       return Center(
                         child: Text(state.message,
-                            style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14));
+                            style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+                      );
                     }
                     if (state is NotificationsLoaded) {
                       return _buildList(context, state.notifications);

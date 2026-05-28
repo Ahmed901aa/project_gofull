@@ -77,7 +77,6 @@ class AppSnackbar {
               ),
             ],
           ),
-        ),
         backgroundColor: config.color,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
@@ -88,7 +87,8 @@ class AppSnackbar {
         duration: duration ?? const Duration(seconds: 3),
         dismissDirection: DismissDirection.horizontal,
         elevation: 6,
-      );
+      ),
+    );
   }
 
   static _SnackConfig _configFor(AppNotificationType type) {
@@ -150,7 +150,8 @@ class AppConfirmDialog {
         confirmLabel: confirmLabel,
         cancelLabel: cancelLabel,
         destructive: destructive,
-      );
+      ),
+    );
     return result == true;
   }
 }
@@ -287,7 +288,6 @@ class _ConfirmDialogContent extends StatelessWidget {
             ],
           ),
         ),
-      ),
     );
   }
 }

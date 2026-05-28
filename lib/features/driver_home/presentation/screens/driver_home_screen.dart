@@ -181,7 +181,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           serviceType: req.isFuelDelivery ? 'fuel' : 'towing',
           amount: double.tryParse(req.total ?? '0') ?? 0,
           customerPhone: customerPhone,
-        );
+        ),
+      );
     } else if (state is RequestRejected) {
       setState(() => _pendingRequest = null);
       // Resume polling after rejection
@@ -418,7 +419,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             ),
           ),
         ),
-      ),
     );
   }
 }

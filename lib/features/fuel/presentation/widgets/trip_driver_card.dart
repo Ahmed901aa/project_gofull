@@ -44,7 +44,8 @@ class TripDriverCard extends StatelessWidget {
             ],
           ),
         ],
-      );
+      ),
+    );
   }
 
   Widget _buildDriverInfo() => Row(
@@ -65,7 +66,6 @@ class TripDriverCard extends StatelessWidget {
               ],
             ),
           ],
-        ),
       );
 }
 

@@ -43,7 +43,8 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
         orderId: widget.args.orderId,
         amount: widget.args.amount,
         customerPhone: widget.args.customerPhone,
-      );
+      ),
+    );
   }
 
   @override
@@ -93,7 +94,6 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
             _buildBottomButton(context),
           ],
         ),
-      ),
     );
   }
 

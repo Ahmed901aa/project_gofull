@@ -58,7 +58,8 @@ class DriverSupportScreen extends StatelessWidget {
                         return _DirectCallSection(
                           phone: phone,
                           onCall: () => _callSupport(phone),
-                          onCopy: () => _copyPhone(ctx, phone);
+                          onCopy: () => _copyPhone(ctx, phone),
+                        );
                       }),
                     ),
                     SizedBox(height: Insets.s32),
@@ -68,7 +69,6 @@ class DriverSupportScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 

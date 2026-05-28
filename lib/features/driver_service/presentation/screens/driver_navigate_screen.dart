@@ -358,7 +358,6 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
             ),
           ],
         ),
-      ),
     );
   }
 

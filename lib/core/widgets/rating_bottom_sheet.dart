@@ -23,7 +23,8 @@ Future<bool> showRatingBottomSheet(
     isDismissible: true,
     enableDrag: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => _RatingSheet(request: request);
+    builder: (_) => _RatingSheet(request: request),
+  );
   return result == true;
 }
 
@@ -236,7 +237,6 @@ class _RatingSheetState extends State<_RatingSheet> {
             ),
           ),
         ),
-      ),
     );
   }
 
