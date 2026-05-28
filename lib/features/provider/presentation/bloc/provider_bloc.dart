@@ -1,4 +1,3 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/usecases/usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/accept_request_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/get_history_usecase.dart';
@@ -12,6 +11,7 @@ import 'package:project_gofull/features/provider/domain/usecases/cancel_order_us
 import 'package:project_gofull/features/provider/domain/usecases/update_status_usecase.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
   final GetProfileUseCase getProfile;

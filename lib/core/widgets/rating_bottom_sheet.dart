@@ -62,7 +62,11 @@ class _RatingSheetState extends State<_RatingSheet> {
   }
 
   void _submit() {
-    if (_rating == 0) return;
+    if (_rating == 0) {
+
+      return;
+
+    }
     setState(() => _submitting = true);
     _bloc.add(RateProviderEvent(
       requestId: widget.request.id,

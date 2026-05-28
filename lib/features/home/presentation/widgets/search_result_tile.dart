@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -42,7 +41,7 @@ class SearchResultTile extends StatelessWidget {
               width: 44.w,
               height: 44.w,
               decoration: BoxDecoration(
-                color: context.colors.primary.withOpacity(0.08),
+                color: context.colors.primary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(AppRadius.s12),
               ),
               child: Icon(icon, size: 22.sp, color: context.colors.primary),
@@ -58,7 +57,7 @@ class SearchResultTile extends StatelessWidget {
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 2.h),
                         decoration: BoxDecoration(
-                          color: context.colors.primary.withOpacity(0.08),
+                          color: context.colors.primary.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(AppRadius.s24),
                         ),
                         child: Text(

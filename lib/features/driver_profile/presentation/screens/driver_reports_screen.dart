@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/network/api_client.dart';
 import 'package:project_gofull/core/network/api_constants.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -414,7 +413,11 @@ class _BarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (data.isEmpty) return const SizedBox.shrink();
+    if (data.isEmpty) {
+
+      return const SizedBox.shrink();
+
+    }
 
     final maxVal = data.values.reduce((a, b) => a > b ? a : b);
     final peakEntry = data.entries.reduce((a, b) => a.value > b.value ? a : b);
@@ -555,7 +558,11 @@ class _AreaChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (values.isEmpty) return;
+    if (values.isEmpty) {
+
+      return;
+
+    }
 
     final maxVal = values.reduce(math.max);
     final minVal = values.reduce(math.min);

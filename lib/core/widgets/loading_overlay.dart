@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 
 class LoadingOverlay extends StatelessWidget {

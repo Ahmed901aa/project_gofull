@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/network/api_client.dart';
 import 'package:project_gofull/core/network/api_constants.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -145,7 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     trailing: localeCubit.isArabic ? 'English' : l10n.arabic,
                     onTap: () async {
                       final changed = await showLanguageSelectorSheet(context);
-                      if (changed && mounted) {
+                      if (changed && context.mounted) {
                         AppSnackbar.success(context, l10n.languageChanged);
                       }
                     },
@@ -157,7 +156,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     trailing: _themeTrailing(context),
                     onTap: () async {
                       final changed = await showThemeSelectorSheet(context);
-                      if (changed && mounted) {
+                      if (changed && context.mounted) {
                         AppSnackbar.success(context, l10n.themeChanged);
                       }
                     },

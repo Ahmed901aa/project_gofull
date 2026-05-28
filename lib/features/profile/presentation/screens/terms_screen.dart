@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -20,7 +19,7 @@ class TermsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    final _sections = _getTermsSections(l10n);
+    final sections = _getTermsSections(l10n);
     return Scaffold(
         backgroundColor: context.colors.background,
         body: Column(
@@ -32,7 +31,7 @@ class TermsScreen extends StatelessWidget {
                 padding: EdgeInsets.all(Insets.s16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _sections.map((s) => Padding(
+                  children: sections.map((s) => Padding(
                     padding: EdgeInsets.only(bottom: Insets.s16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,

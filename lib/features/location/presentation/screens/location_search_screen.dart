@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:project_gofull/core/cubits/location_cubit.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/gps_utils.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
@@ -48,7 +47,11 @@ class _State extends State<LocationSearchScreen> {
     setState(() => _isLoading = true);
     try {
       final r = await _service.search(q);
-      if (!mounted) return;
+      if (!mounted) {
+
+        return;
+
+      }
       setState(() {
         _results = r
             .map((n) => LocationItem(title: n.title, subtitle: n.subtitle,

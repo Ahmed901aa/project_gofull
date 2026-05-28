@@ -215,7 +215,11 @@ class ProviderRemoteDataSource implements ProviderDataSource {
     try {
       final response = await apiClient.dio.get(ApiConstants.providerActiveRequest);
       final data = response.data['data'];
-      if (data == null) return null;
+      if (data == null) {
+
+        return null;
+
+      }
       return ServiceRequestModel.fromJson(data as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ServerException((e.response?.data as Map?)?['message'] as String? ?? 'Failed to load active request');

@@ -3,7 +3,6 @@ import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -70,7 +69,11 @@ class _SearchingScreenState extends State<SearchingScreen> {
   }
 
   void _onStatusChanged(BuildContext context, RequestState state) {
-    if (_navigated || !mounted) return;
+    if (_navigated || !mounted) {
+
+      return;
+
+    }
 
     developer.log(
       'State changed → ${state.runtimeType}',
@@ -85,7 +88,13 @@ class _SearchingScreenState extends State<SearchingScreen> {
       return; // don't stop polling, try again next tick
     }
 
-    if (state is! RequestDetailsLoaded) return;
+    if (state is! RequestDetailsLoaded) {
+
+
+      return;
+
+
+    }
 
     final request = state.request;
     final status = request.status.trim().toLowerCase();
@@ -96,7 +105,11 @@ class _SearchingScreenState extends State<SearchingScreen> {
     );
 
     // Stay on searching while pending
-    if (status == 'pending') return;
+    if (status == 'pending') {
+
+      return;
+
+    }
 
     // Handle cancellation (from elsewhere)
     if (status == 'cancelled') {

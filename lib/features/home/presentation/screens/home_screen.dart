@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/services/noti_service.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
@@ -85,14 +84,22 @@ class _HomeScreenState extends State<HomeScreen> {
       _lastOrderId = orderId;
 
       // Don't notify on first load
-      if (oldStatus == null) return;
+      if (oldStatus == null) {
+
+        return;
+
+      }
 
       // Don't notify if home isn't the currently visible route —
       // the detail/tracking screen on top handles its own notifications.
       // This prevents duplicate notifications when the user taps
       // "متابعة الطلب" and both screens poll the same status change.
       final route = ModalRoute.of(context);
-      if (route != null && !route.isCurrent) return;
+      if (route != null && !route.isCurrent) {
+
+        return;
+
+      }
 
       // Fire local notification for status change
       final l10n = S.of(context);
@@ -139,13 +146,25 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onRatingCheckState(BuildContext context, RequestState state) async {
-    if (state is! UnratedOrderFound || _ratingShown) return;
+    if (state is! UnratedOrderFound || _ratingShown) {
+
+      return;
+
+    }
 
     final order = state.request;
     final prefs = await SharedPreferences.getInstance();
     final dismissed =
         prefs.getBool('rating_dismissed_${order.id}') ?? false;
-    if (dismissed) return;
+    if (dismissed) {
+
+      return;
+
+    }
+
+    if (!context.mounted) {
+      return;
+    }
 
     _ratingShown = true;
     final l10n = S.of(context);
@@ -163,7 +182,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // Delay slightly so the user sees the home screen first
     Future.delayed(const Duration(milliseconds: 800), () {
-      if (!mounted) return;
+      if (!context.mounted) {
+
+        return;
+
+      }
       showRatingBottomSheet(context, order).then((rated) {
         _ratingShown = false;
         if (rated) {

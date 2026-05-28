@@ -49,10 +49,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final password = _passwordController.text;
     final confirm = _confirmPasswordController.text;
 
-    if (name.isEmpty) return;
-    if (phone.isEmpty || phone.length < 9) return;
-    if (password.isEmpty || password.length < 6) return;
-    if (password != confirm) return;
+    if (name.isEmpty) {
+
+
+      return;
+
+
+    }
+    if (phone.isEmpty || phone.length < 9) {
+
+      return;
+
+    }
+    if (password.isEmpty || password.length < 6) {
+
+      return;
+
+    }
+    if (password != confirm) {
+
+      return;
+
+    }
 
     context.read<AuthBloc>().add(RegisterRequested(
           name: name,

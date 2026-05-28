@@ -1,4 +1,3 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/usecases/usecase.dart';
 import 'package:project_gofull/features/auth/data/models/user_model.dart';
@@ -7,6 +6,7 @@ import 'package:project_gofull/features/auth/domain/usecases/logout_usecase.dart
 import 'package:project_gofull/features/auth/domain/usecases/register_usecase.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_event.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUseCase loginUseCase;

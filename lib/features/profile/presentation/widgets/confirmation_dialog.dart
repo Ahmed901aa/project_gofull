@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'dialog_action_buttons.dart';
-import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 
 class ConfirmationDialog extends StatelessWidget {
@@ -18,7 +16,7 @@ class ConfirmationDialog extends StatelessWidget {
   final VoidCallback? onConfirm;
   final VoidCallback? onCancel;
 
-  ConfirmationDialog({
+  const ConfirmationDialog({
     super.key,
     required this.icon,
     this.iconColor,
@@ -50,7 +48,7 @@ class ConfirmationDialog extends StatelessWidget {
               SizedBox(height: 8.h),
               Container(
                 width: 80.w, height: 80.w,
-                decoration: BoxDecoration(color: resolvedIconColor.withOpacity(0.1), shape: BoxShape.circle),
+                decoration: BoxDecoration(color: resolvedIconColor.withValues(alpha: 0.1), shape: BoxShape.circle),
                 child: Icon(icon, size: 40.sp, color: resolvedIconColor),
               ),
               SizedBox(height: 8.h),

@@ -211,7 +211,11 @@ class RequestRemoteDataSource implements RequestDataSource {
       final response =
           await apiClient.dio.get(ApiConstants.driverUnratedRequest);
       final data = response.data['data'];
-      if (data == null) return null;
+      if (data == null) {
+
+        return null;
+
+      }
       return ServiceRequestModel.fromJson(data as Map<String, dynamic>);
     } on DioException catch (_) {
       return null;

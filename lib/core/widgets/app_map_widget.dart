@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../config/api_keys.dart';
-import '../resources/color_manager.dart';
 import '../resources/values_manager.dart';
 import 'app_map/map_suggestion.dart';
 import 'app_map/map_search_bar.dart';
@@ -100,8 +99,10 @@ class _AppMapWidgetState extends State<AppMapWidget> {
       }
 
       final pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 10),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 10),
+        ),
       );
       if (mounted) {
         setState(() {
@@ -140,12 +141,20 @@ class _AppMapWidgetState extends State<AppMapWidget> {
         permission = await Geolocator.requestPermission();
       }
       if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) return;
+          permission == LocationPermission.deniedForever) {
+        return;
+      }
       final pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 10),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 10),
+        ),
       );
-      if (!mounted) return;
+      if (!mounted) {
+
+        return;
+
+      }
       _mapController?.animateCamera(
         CameraUpdate.newLatLngZoom(
             LatLng(pos.latitude, pos.longitude), 15),
@@ -179,7 +188,11 @@ class _AppMapWidgetState extends State<AppMapWidget> {
       );
       final status = res.data['status'] as String;
       final list = status == 'OK' ? res.data['predictions'] as List : [];
-      if (!mounted) return;
+      if (!mounted) {
+
+        return;
+
+      }
       setState(() {
         _suggestions = list
             .map((p) => MapSuggestion(
@@ -211,7 +224,11 @@ class _AppMapWidgetState extends State<AppMapWidget> {
           'key': _apiKey,
         },
       );
-      if (res.data['status'] != 'OK') return;
+      if (res.data['status'] != 'OK') {
+
+        return;
+
+      }
       final loc = res.data['result']['geometry']['location'];
       final latLng = LatLng(
         (loc['lat'] as num).toDouble(),

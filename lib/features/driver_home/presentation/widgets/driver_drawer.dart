@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/network/api_client.dart';
 import 'package:project_gofull/core/network/api_constants.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
@@ -69,8 +68,6 @@ class _DriverDrawerState extends State<DriverDrawer> {
         double.tryParse('${_profileData?['average_rating'] ?? ''}') ?? 0.0;
     final totalRatings =
         int.tryParse('${_profileData?['total_ratings'] ?? ''}') ?? 0;
-    final totalIncome =
-        double.tryParse('${_profileData?['total_income'] ?? ''}') ?? 0.0;
     final initials = driverName.isNotEmpty ? driverName[0] : '؟';
 
     return Drawer(

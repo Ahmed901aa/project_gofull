@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/network/api_client.dart';
 import 'package:project_gofull/core/network/api_constants.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
@@ -57,14 +56,21 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
   String get _fuelQuantity => (_order?['fuel_quantity'] as String?) ?? '-';
   String _fuelType(BuildContext context) {
     final t = _order?['fuel_type'] as String?;
-    if (t == 'petrol' || t == 'gasoline') return S.of(context).gasolineLabel;
-    if (t == 'diesel') return S.of(context).dieselLabel;
+    if (t == 'petrol' || t == 'gasoline') {
+
+      return S.of(context).gasolineLabel;
+
+    }
+    if (t == 'diesel') {
+
+      return S.of(context).dieselLabel;
+
+    }
     return t ?? '-';
   }
   String get _pricePerLiter => (_order?['price_per_liter'] as String?) ?? '-';
   String get _plateNumber => (_order?['plate_number'] as String?) ?? '-';
-  String get _subtotal => (_order?['subtotal'] as String?) ?? '0.00';
-  String get _serviceFee => (_order?['service_fee'] as String?) ?? '0.00';
+
   String get _total => (_order?['total'] as String?) ?? '0.00';
   String _paymentMethod(BuildContext context) {
     final m = _order?['payment_method'] as String?;

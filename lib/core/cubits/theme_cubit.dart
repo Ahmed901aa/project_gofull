@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Supported app theme modes.
 enum AppThemeMode { system, light, dark }
@@ -64,8 +64,16 @@ class ThemeCubit extends Cubit<ThemeMode> {
   /// Whether the *resolved* brightness is currently dark.
   /// Accounts for system theme when mode == system.
   bool get isDark {
-    if (state == ThemeMode.dark) return true;
-    if (state == ThemeMode.light) return false;
+    if (state == ThemeMode.dark) {
+
+      return true;
+
+    }
+    if (state == ThemeMode.light) {
+
+      return false;
+
+    }
     // System: check platform brightness
     final brightness =
         SchedulerBinding.instance.platformDispatcher.platformBrightness;

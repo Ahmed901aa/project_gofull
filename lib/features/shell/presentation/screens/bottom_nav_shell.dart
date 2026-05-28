@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/widgets/rating_bottom_sheet.dart';
 import 'package:project_gofull/features/home/presentation/screens/home_screen.dart';
@@ -73,7 +72,11 @@ class _BottomNavShellState extends State<BottomNavShell>
   }
 
   Future<void> _checkIfCompletedWhileAway() async {
-    if (_ratingSheetShown) return;
+    if (_ratingSheetShown) {
+
+      return;
+
+    }
 
     final prefs = await SharedPreferences.getInstance();
     final activeOrderId = prefs.getInt('active_order_id');
@@ -85,29 +88,47 @@ class _BottomNavShellState extends State<BottomNavShell>
     // 1. There was an active order saved
     // 2. The customer was NOT in the app when it completed
     // 3. They haven't already dismissed this rating popup
-    if (activeOrderId == null || completedInApp || dismissed) return;
+    if (activeOrderId == null || completedInApp || dismissed) {
+
+      return;
+
+    }
 
     // Ask the backend if there's an unrated completed order
     _ratingBloc.add(const CheckUnratedOrderEvent());
   }
 
   void _onRatingState(BuildContext context, RequestState state) async {
-    if (state is! UnratedOrderFound || _ratingSheetShown) return;
+    if (state is! UnratedOrderFound || _ratingSheetShown) {
+
+      return;
+
+    }
 
     final order = state.request;
     final prefs = await SharedPreferences.getInstance();
     final activeOrderId = prefs.getInt('active_order_id');
 
     // Extra safety: only show for the order that was active when user left
-    if (activeOrderId != null && activeOrderId != order.id) return;
+    if (activeOrderId != null && activeOrderId != order.id) {
+
+      return;
+
+    }
 
     // Fuel orders use inline rating on fuel_complete_screen — skip bottom sheet
-    if (order.isFuelDelivery) return;
+    if (order.isFuelDelivery) {
+
+      return;
+
+    }
 
     _ratingSheetShown = true;
     // Delay so the home screen is visible first
     Future.delayed(const Duration(milliseconds: 800), () {
-      if (!mounted) return;
+      if (!context.mounted) {
+        return;
+      }
       showRatingBottomSheet(context, order).then((rated) {
         _ratingSheetShown = false;
         if (rated) {

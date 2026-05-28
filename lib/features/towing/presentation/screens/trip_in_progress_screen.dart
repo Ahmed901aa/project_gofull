@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/services/noti_service.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -36,7 +35,7 @@ String _calcDistance(double lat1, double lng1, double lat2, double lng2) {
           sin(dLng / 2) *
           sin(dLng / 2);
   final km = r * 2 * atan2(sqrt(a), sqrt(1 - a));
-  return '${km.toStringAsFixed(1)}'; // unit added by caller
+  return km.toStringAsFixed(1); // unit added by caller
 }
 
 class TripInProgressScreen extends StatefulWidget {
@@ -79,7 +78,11 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
   }
 
   void _onState(RequestState state) {
-    if (_navigated || state is! RequestDetailsLoaded) return;
+    if (_navigated || state is! RequestDetailsLoaded) {
+
+      return;
+
+    }
     final req = state.request;
     setState(() {
       _request = req;
@@ -231,7 +234,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
             title: S.of(context).deliveryDestination,
             address: destination,
             distanceLabel: S.of(context).remainingDistance,
-            distanceValue: '${distance} ${S.of(context).kmUnit}'),
+            distanceValue: '$distance ${S.of(context).kmUnit}'),
       ],
     );
   }

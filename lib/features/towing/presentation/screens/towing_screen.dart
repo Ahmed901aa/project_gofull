@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/cubits/location_cubit.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
@@ -52,7 +51,11 @@ class _TowingScreenState extends State<TowingScreen> {
   String? _getValidationError(BuildContext context) {
     final l10n = S.of(context);
     if (!_hasLocation(context)) return l10n.pleaseSelectLocation;
-    if (!_hasDestination) return l10n.pleaseSelectDestination;
+    if (!_hasDestination) {
+
+      return l10n.pleaseSelectDestination;
+
+    }
     if (_carTypeCtrl.text.trim().isEmpty) return l10n.pleaseEnterCarType;
     if (_plateCtrl.text.trim().isEmpty) return l10n.pleaseEnterPlateNumber;
     return null;
@@ -62,7 +65,11 @@ class _TowingScreenState extends State<TowingScreen> {
     final cubit = context.read<LocationCubit>();
     final prev = cubit.state;
     await Navigator.pushNamed(context, Routes.locationPicker);
-    if (!mounted) return;
+    if (!mounted) {
+
+      return;
+
+    }
     final selected = cubit.state;
     if (selected.address != prev.address) {
       setState(() {
@@ -78,8 +85,16 @@ class _TowingScreenState extends State<TowingScreen> {
 
   void _onSubmit(BuildContext blocContext) {
     final loc = context.read<LocationCubit>().state;
-    if (loc.lat == null || loc.lng == null) return;
-    if (_destinationLat == null || _destinationLng == null) return;
+    if (loc.lat == null || loc.lng == null) {
+
+      return;
+
+    }
+    if (_destinationLat == null || _destinationLng == null) {
+
+      return;
+
+    }
     if (_carTypeCtrl.text.trim().isEmpty) return;
 
     blocContext.read<RequestBloc>().add(CreateTowingRequestEvent(

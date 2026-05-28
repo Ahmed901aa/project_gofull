@@ -6,7 +6,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/network/api_client.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
@@ -85,8 +84,10 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
         return;
       }
       final pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 8),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 8),
+        ),
       );
       if (mounted) {
         _providerPosition = LatLng(pos.latitude, pos.longitude);
@@ -109,8 +110,10 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
   Future<void> _sendCurrentLocation() async {
     try {
       final pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 5),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 5),
+        ),
       );
 
       // Send to API
@@ -119,7 +122,13 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
         'longitude': pos.longitude,
       });
 
-      if (!mounted) return;
+      if (!mounted) {
+
+
+        return;
+
+
+      }
 
       final providerLatLng = LatLng(pos.latitude, pos.longitude);
       final km = _haversine(
@@ -151,7 +160,11 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
 
   /// Fit camera to show both provider and destination markers
   void _fitBounds() {
-    if (_providerPosition == null || _mapController == null) return;
+    if (_providerPosition == null || _mapController == null) {
+
+      return;
+
+    }
     final bounds = LatLngBounds(
       southwest: LatLng(
         min(_providerPosition!.latitude, _destination.latitude),
@@ -204,7 +217,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
         Polyline(
           polylineId: const PolylineId('route'),
           points: [_providerPosition!, _destination],
-          color: context.colors.primary.withOpacity(0.5),
+          color: context.colors.primary.withValues(alpha: 0.5),
           width: 3,
         ),
       };
@@ -227,12 +240,22 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
         permission = await Geolocator.requestPermission();
       }
       if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) return;
+          permission == LocationPermission.deniedForever) {
+
+        return;
+
+      }
       final pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 10),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 10),
+        ),
       );
-      if (!mounted) return;
+      if (!mounted) {
+
+        return;
+
+      }
       _mapController?.animateCamera(
         CameraUpdate.newLatLngZoom(LatLng(pos.latitude, pos.longitude), 15),
       );

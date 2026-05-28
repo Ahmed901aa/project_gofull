@@ -27,7 +27,11 @@ class ActiveOrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final order = activeOrder;
-    if (order == null) return const SizedBox.shrink();
+    if (order == null) {
+
+      return const SizedBox.shrink();
+
+    }
 
     final config = context.read<AppConfigBloc>().state;
     final cur = config.currency;

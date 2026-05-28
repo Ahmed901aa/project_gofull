@@ -35,8 +35,16 @@ class _LoginScreenState extends State<LoginScreen> {
   void _onLogin(BuildContext context) {
     final phone = _phoneController.text.trim();
     final password = _passwordController.text;
-    if (phone.isEmpty || phone.length < 9) return;
-    if (password.isEmpty || password.length < 6) return;
+    if (phone.isEmpty || phone.length < 9) {
+
+      return;
+
+    }
+    if (password.isEmpty || password.length < 6) {
+
+      return;
+
+    }
     context.read<AuthBloc>().add(
           LoginRequested(phone: phone, password: password),
         );

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 
-import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
 import '../../resources/styles_manager.dart';
 import '../../resources/values_manager.dart';
@@ -127,7 +126,11 @@ class MapSearchOverlay extends StatelessWidget {
         ),
       );
     }
-    if (suggestions.isEmpty) return const SizedBox.shrink();
+    if (suggestions.isEmpty) {
+
+      return const SizedBox.shrink();
+
+    }
     return Container(
       color: context.colors.surface,
       constraints: BoxConstraints(maxHeight: 300.h),

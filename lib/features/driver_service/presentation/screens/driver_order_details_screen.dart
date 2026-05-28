@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
@@ -160,63 +159,6 @@ class DriverOrderDetailsScreen extends StatelessWidget {
             ),
           ],
         ),
-      );
-
-  // ── Car Photos ──────────────────────────────────────────────
-
-  Widget _buildCarPhotos(BuildContext context) => Container(
-        padding: EdgeInsets.all(Insets.s16),
-        decoration: BoxDecoration(
-          color: context.colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.s12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              S.of(context).carPhotos,
-              style: getBoldStyle(
-                  color: context.colors.textPrimary, fontSize: FontSize.s16),
-            ),
-            SizedBox(height: Insets.s12),
-            SizedBox(
-              height: 100.h,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemCount: args.carPhotos.isNotEmpty ? args.carPhotos.length : 3,
-                separatorBuilder: (_, __) => SizedBox(width: Insets.s8),
-                itemBuilder: (_, index) {
-                  if (args.carPhotos.isNotEmpty) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(AppRadius.s8),
-                      child: Image.network(
-                        args.carPhotos[index],
-                        width: 120.w,
-                        height: 100.h,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
-                            _photoPlaceholder(context),
-                      ),
-                    );
-                  }
-                  return _photoPlaceholder(context);
-                },
-              ),
-            ),
-          ],
-        ),
-      );
-
-  Widget _photoPlaceholder(BuildContext context) => Container(
-        width: 120.w,
-        height: 100.h,
-        decoration: BoxDecoration(
-          color: context.colors.surfaceVariant,
-          borderRadius: BorderRadius.circular(AppRadius.s8),
-        ),
-        child: Icon(Icons.directions_car_rounded,
-            size: 36.sp, color: context.colors.textSecondary),
       );
 
   // ── Trip Route ──────────────────────────────────────────────

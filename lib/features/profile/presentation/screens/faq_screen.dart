@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -24,7 +23,7 @@ class _FaqScreenState extends State<FaqScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    final _faqs = _getFaqs(l10n);
+    final faqs = _getFaqs(l10n);
     return Scaffold(
         backgroundColor: context.colors.background,
         body: Column(
@@ -35,9 +34,9 @@ class _FaqScreenState extends State<FaqScreen> {
                 physics: const BouncingScrollPhysics(),
                 padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s16),
                 child: Column(
-                  children: List.generate(_faqs.length, (i) => FaqCard(
-                    question: _faqs[i]['question']!,
-                    answer: _faqs[i]['answer']!,
+                  children: List.generate(faqs.length, (i) => FaqCard(
+                    question: faqs[i]['question']!,
+                    answer: faqs[i]['answer']!,
                     isExpanded: _expandedIndex == i,
                     onTap: () => setState(() => _expandedIndex = _expandedIndex == i ? -1 : i),
                   )),

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 
@@ -18,7 +17,11 @@ class _PhotoPickerSectionState extends State<PhotoPickerSection> {
 
   Future<void> _pick(ImageSource source) async {
     final picked = await _picker.pickImage(source: source, imageQuality: 90);
-    if (picked == null || !mounted) return;
+    if (picked == null || !mounted) {
+
+      return;
+
+    }
     setState(() => _photo = File(picked.path));
   }
 

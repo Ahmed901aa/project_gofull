@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'color_manager.dart';
 
 // ─────────────────────────────────────────────────────────────
 // Semantic color tokens — the ONLY source of truth for UI colors.
@@ -171,7 +170,11 @@ class AppThemeColors extends ThemeExtension<AppThemeColors> {
   @override
   ThemeExtension<AppThemeColors> lerp(
       covariant ThemeExtension<AppThemeColors>? other, double t) {
-    if (other is! AppThemeColors) return this;
+    if (other is! AppThemeColors) {
+
+      return this;
+
+    }
     return AppThemeColors(
       textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,
       textSecondary: Color.lerp(textSecondary, other.textSecondary, t)!,

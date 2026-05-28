@@ -1,5 +1,4 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/usecases/usecase.dart';
 import 'package:project_gofull/features/requests/domain/usecases/cancel_request_usecase.dart';
 import 'package:project_gofull/features/requests/domain/usecases/create_fuel_request_usecase.dart';
@@ -10,6 +9,7 @@ import 'package:project_gofull/features/requests/domain/usecases/rate_provider_u
 import 'package:project_gofull/features/requests/domain/repositories/request_repository.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RequestBloc extends Bloc<RequestEvent, RequestState> {
   final CreateFuelRequestUseCase createFuel;

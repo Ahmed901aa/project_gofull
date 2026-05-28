@@ -1,6 +1,6 @@
 import 'dart:ui';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LocaleCubit extends Cubit<Locale> {
   static const _key = 'app_locale';

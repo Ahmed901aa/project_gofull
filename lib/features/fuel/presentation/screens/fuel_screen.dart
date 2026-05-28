@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/cubits/location_cubit.dart';
 import 'package:project_gofull/core/cubits/location_state.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -75,9 +74,21 @@ class _FuelScreenState extends State<FuelScreen> {
 
   String? _getValidationError(BuildContext context) {
     final l10n = S.of(context);
-    if (_selectedFuel == null) return l10n.pleaseSelectFuelType;
-    if (_selectedQuantity == null) return l10n.pleaseSelectQuantity;
-    if (!_isFullTank && _quantityNum <= 0) return l10n.pleaseSelectValidQuantity;
+    if (_selectedFuel == null) {
+
+      return l10n.pleaseSelectFuelType;
+
+    }
+    if (_selectedQuantity == null) {
+
+      return l10n.pleaseSelectQuantity;
+
+    }
+    if (!_isFullTank && _quantityNum <= 0) {
+
+      return l10n.pleaseSelectValidQuantity;
+
+    }
     if (!_hasLocation(context)) return l10n.pleaseSelectLocation;
     return null;
   }
@@ -95,18 +106,30 @@ class _FuelScreenState extends State<FuelScreen> {
   bool get _isFullTank => _selectedQuantityIndex == 4;
 
   double get _quantityNum {
-    if (_isFullTank) return 0; // full tank — price calculated by driver
+    if (_isFullTank) {
+
+      return 0;
+
+    } // full tank — price calculated by driver
     return double.tryParse((_selectedQuantity ?? '').replaceAll(RegExp(r'[^\d.]'), '')) ?? 0;
   }
 
   double get _subtotal {
-    if (_isFullTank) return 0; // will be determined after filling
+    if (_isFullTank) {
+
+      return 0;
+
+    } // will be determined after filling
     return (_selectedFuel?.pricePerLiter ?? 0) * _quantityNum;
   }
 
   void _onSubmit(BuildContext blocContext) {
     final loc = context.read<LocationCubit>().state;
-    if (loc.lat == null || loc.lng == null) return;
+    if (loc.lat == null || loc.lng == null) {
+
+      return;
+
+    }
 
     final l10n = S.of(context);
     final notes = _notesController.text.isNotEmpty ? _notesController.text : null;
@@ -289,7 +312,11 @@ class _FuelScreenState extends State<FuelScreen> {
 
   /// Normalize fuel prices: collapse 91/95 variants into just بنزين + ديزل.
   List<FuelPriceEntity> _normalizeFuelPrices(List<FuelPriceEntity> raw) {
-    if (raw.isEmpty) return List.of(_fallbackFuelPrices);
+    if (raw.isEmpty) {
+
+      return List.of(_fallbackFuelPrices);
+
+    }
 
     // Try to find gasoline price from backend (any 91/95/gasoline match)
     FuelPriceEntity? gasoline;

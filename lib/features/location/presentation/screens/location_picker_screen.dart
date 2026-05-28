@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:project_gofull/core/cubits/location_cubit.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/utils/gps_utils.dart';
 import '../../data/nominatim_service.dart';
@@ -96,8 +95,10 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
 
       // Get the actual position
       final pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 10),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 10),
+        ),
       );
 
       if (mounted) {
@@ -163,7 +164,11 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   }
 
   void _confirm() {
-    if (_center == null) return;
+    if (_center == null) {
+
+      return;
+
+    }
     context.read<LocationCubit>().setLocation(
         _address.isNotEmpty ? _address : S.of(context).selectedLocationLabel,
         _center!.latitude,

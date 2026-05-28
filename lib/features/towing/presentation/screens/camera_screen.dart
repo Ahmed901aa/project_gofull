@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -30,16 +29,28 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> _openCamera() async {
     final picked = await ImagePicker().pickImage(source: ImageSource.camera, imageQuality: 90);
-    if (!mounted) return;
+    if (!mounted) {
+
+      return;
+
+    }
     if (picked == null) { Navigator.pop(context); return; }
     setState(() => _photo = File(picked.path));
   }
 
   Future<void> _saveAndContinue() async {
-    if (_photo == null || _saving) return;
+    if (_photo == null || _saving) {
+
+      return;
+
+    }
     setState(() => _saving = true);
     await ImageGallerySaver.saveFile(_photo!.path);
-    if (!mounted) return;
+    if (!mounted) {
+
+      return;
+
+    }
     setState(() => _saving = false);
     Navigator.pop(context, _photo);
     if (mounted) {

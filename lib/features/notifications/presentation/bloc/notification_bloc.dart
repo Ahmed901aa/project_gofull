@@ -1,7 +1,7 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:project_gofull/features/notifications/data/datasources/notification_data_source.dart';
 import 'package:project_gofull/features/notifications/domain/entities/notification_entity.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Events
 abstract class NotificationEvent extends Equatable {

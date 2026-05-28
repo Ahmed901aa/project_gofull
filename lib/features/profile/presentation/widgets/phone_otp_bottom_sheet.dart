@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -46,14 +45,22 @@ class _PhoneOtpBottomSheetState extends State<PhoneOtpBottomSheet> {
   @override
   void dispose() {
     _timer?.cancel();
-    for (final c in _controllers) c.dispose();
-    for (final f in _focusNodes) f.dispose();
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    for (final f in _focusNodes) {
+      f.dispose();
+    }
     super.dispose();
   }
 
   String get _maskedPhone {
     final p = widget.phoneNumber;
-    if (p.length <= 5) return p;
+    if (p.length <= 5) {
+
+      return p;
+
+    }
     return '${p.substring(0, 3)}${'x' * (p.length - 5)}${p.substring(p.length - 2)}';
   }
 

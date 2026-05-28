@@ -36,7 +36,11 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _navigate() {
     Future.delayed(const Duration(seconds: 3), () {
-      if (!mounted) return;
+      if (!mounted) {
+
+        return;
+
+      }
 
       final tokenStorage = sl<TokenStorage>();
       if (tokenStorage.isLoggedIn) {

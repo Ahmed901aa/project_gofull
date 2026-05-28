@@ -5,7 +5,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:project_gofull/core/di/injection_container.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
@@ -79,7 +78,11 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
   void _onStatusChanged(bool active) {
     // Block manual toggle while an order is in progress
-    if (_statusLocked) return;
+    if (_statusLocked) {
+
+      return;
+
+    }
 
     setState(() {
       _isActive = active;
@@ -260,7 +263,11 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   }
 
   void _showCancelledSnackBar() {
-    if (!mounted) return;
+    if (!mounted) {
+
+      return;
+
+    }
     AppSnackbar.warning(context, S.of(context).orderCancelledByCustomerSnack);
   }
 
@@ -305,12 +312,22 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         permission = await Geolocator.requestPermission();
       }
       if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) return;
+          permission == LocationPermission.deniedForever) {
+
+        return;
+
+      }
       final pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 10),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 10),
+        ),
       );
-      if (!mounted) return;
+      if (!mounted) {
+
+        return;
+
+      }
       _mapController?.animateCamera(
         CameraUpdate.newLatLngZoom(LatLng(pos.latitude, pos.longitude), 15),
       );
@@ -683,59 +700,6 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
             ),
           ],
           SizedBox(height: 16.h),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Small status chip ──
-class _StatusChip extends StatelessWidget {
-  final Color dotColor;
-  final String label;
-  final Color labelColor;
-  final Color bgColor;
-  const _StatusChip({
-    required this.dotColor,
-    required this.label,
-    required this.labelColor,
-    required this.bgColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(20.r),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 7.w,
-            height: 7.w,
-            decoration: BoxDecoration(
-              color: dotColor,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: dotColor.withValues(alpha: 0.5),
-                  blurRadius: 5,
-                  spreadRadius: 1,
-                ),
-              ],
-            ),
-          ),
-          SizedBox(width: 6.w),
-          Text(
-            label,
-            style: getMediumStyle(
-              fontSize: FontSize.s12,
-              color: labelColor,
-            ),
-          ),
         ],
       ),
     );
@@ -1120,7 +1084,11 @@ class _SlideToActivateState extends State<SlideToActivate>
   double get _thumbSize => widget.height - 6;
 
   void _onDragUpdate(DragUpdateDetails details) {
-    if (_completed || _trackWidth <= _thumbSize) return;
+    if (_completed || _trackWidth <= _thumbSize) {
+
+      return;
+
+    }
     final travel = _trackWidth - _thumbSize;
     // RTL: dragging left (negative dx) should increase progress.
     setState(() {
@@ -1130,13 +1098,21 @@ class _SlideToActivateState extends State<SlideToActivate>
   }
 
   void _onDragEnd(DragEndDetails details) {
-    if (_completed) return;
+    if (_completed) {
+
+      return;
+
+    }
     if (_dragPosition >= _completionThreshold) {
       // Snap to fully completed, then fire callback.
       setState(() => _completed = true);
       _animateTo(1.0);
       Future.delayed(const Duration(milliseconds: 260), () {
-        if (!mounted) return;
+        if (!mounted) {
+
+          return;
+
+        }
         widget.onActivate();
       });
     } else {
