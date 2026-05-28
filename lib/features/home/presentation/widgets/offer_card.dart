@@ -32,7 +32,12 @@ class OfferCard extends StatelessWidget {
                 height: 120.h,
                 width: double.infinity,
                 color: Colors.white,
-                child: Transform.scale(scaleX: -1, child: Image.asset(ImageAssets.offerBanner, fit: BoxFit.cover)),
+                child: Builder(builder: (ctx) {
+                  final img = Image.asset(ImageAssets.offerBanner, fit: BoxFit.cover);
+                  return Directionality.of(ctx) == TextDirection.rtl
+                      ? Transform.scale(scaleX: -1, child: img)
+                      : img;
+                }),
               ),
             ),
             Padding(
@@ -43,7 +48,7 @@ class OfferCard extends StatelessWidget {
                   Text(
                     offer.title,
                     style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
-                    textAlign: TextAlign.right,
+                    textAlign: TextAlign.start,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -51,7 +56,7 @@ class OfferCard extends StatelessWidget {
                   Text(
                     '${S.of(context).useCodePrefix}${offer.code}',
                     style: getSemiBoldStyle(color: AppColors.primary, fontSize: FontSize.s14),
-                    textAlign: TextAlign.right,
+                    textAlign: TextAlign.start,
                   ),
                 ],
               ),

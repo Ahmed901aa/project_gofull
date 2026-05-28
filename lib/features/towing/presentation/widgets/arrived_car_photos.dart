@@ -14,14 +14,14 @@ class ArrivedCarPhotos extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(S.of(context).carPhotos, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
+        Text(S.of(context).carPhotos, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.start),
         SizedBox(height: Insets.s8),
         Row(
           children: List.generate(
             3,
             (i) => Expanded(
               child: Padding(
-                padding: EdgeInsets.only(right: i < 2 ? Insets.s8 : 0),
+                padding: EdgeInsetsDirectional.only(end: i < 2 ? Insets.s8 : 0),
                 child: const _PhotoPlaceholder(),
               ),
             ),

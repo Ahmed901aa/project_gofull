@@ -59,9 +59,7 @@ class DriverPrivacyPolicyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
@@ -79,8 +77,8 @@ class DriverPrivacyPolicyScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [Color(0xFF1A6B54), Color(0xFF004B3B)],
-                          begin: Alignment.topRight,
-                          end: Alignment.bottomLeft,
+                          begin: AlignmentDirectional.topEnd,
+                          end: AlignmentDirectional.bottomStart,
                         ),
                         borderRadius: BorderRadius.circular(AppRadius.s16),
                       ),
@@ -162,8 +160,7 @@ class DriverPrivacyPolicyScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
 

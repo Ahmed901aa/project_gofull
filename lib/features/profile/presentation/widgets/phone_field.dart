@@ -50,7 +50,7 @@ class PhoneField extends StatelessWidget {
                 child: TextField(
                   controller: controller,
                   textDirection: TextDirection.ltr,
-                  textAlign: TextAlign.right,
+                  textAlign: TextAlign.start,
                   keyboardType: TextInputType.phone,
                   decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero),
                   style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14).copyWith(height: 1.4),

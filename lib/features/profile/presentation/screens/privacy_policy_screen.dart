@@ -23,9 +23,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     final _sections = _getSections(l10n);
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
@@ -59,8 +57,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
 

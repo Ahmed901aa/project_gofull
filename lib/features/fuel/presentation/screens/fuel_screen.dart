@@ -42,6 +42,18 @@ class _FuelScreenState extends State<FuelScreen> {
     return [l10n.liters20Qty, l10n.liters30Qty, l10n.liters40Qty, l10n.liters50Qty, l10n.fullTankQty];
   }
 
+  /// Returns locale-aware display name for a fuel type.
+  String _fuelDisplayName(FuelPriceEntity fuel, S l10n) {
+    final type = fuel.fuelType.toLowerCase();
+    if (type.contains('gasoline') || fuel.nameAr.contains('بنزين')) {
+      return l10n.gasolineLabel;
+    }
+    if (type.contains('diesel') || fuel.nameAr.contains('ديزل')) {
+      return l10n.dieselLabel;
+    }
+    return fuel.nameAr; // fallback for unknown types
+  }
+
   // Fallback fuel types when backend has no data or has old 91/95 types
   static const _fallbackFuelPrices = [
     FuelPriceEntity(id: 1, fuelType: 'gasoline', nameAr: 'بنزين', pricePerLiter: 0.75),
@@ -125,7 +137,7 @@ class _FuelScreenState extends State<FuelScreen> {
     final config = context.watch<AppConfigBloc>().state;
     // Normalize: only show gasoline and diesel (no 91/95 variants)
     final fuelPrices = _normalizeFuelPrices(config.fuelPrices);
-    final fuelNames = fuelPrices.map((e) => e.nameAr).toList();
+    final fuelNames = fuelPrices.map((e) => _fuelDisplayName(e, l10n)).toList();
     final quantities = _getQuantities(context);
 
     return BlocProvider(
@@ -199,13 +211,16 @@ class _FuelScreenState extends State<FuelScreen> {
                               )
                             else
                             FuelDetailsForm(
-                              selectedFuelType: _selectedFuel?.nameAr,
+                              selectedFuelType: _selectedFuel != null ? _fuelDisplayName(_selectedFuel!, l10n) : null,
                               selectedQuantity: _selectedQuantity,
                               fuelTypes: fuelNames,
                               quantities: quantities,
                               onFuelTypeChanged: (v) {
                                 setState(() {
-                                  _selectedFuel = fuelPrices.firstWhere((e) => e.nameAr == v);
+                                  _selectedFuel = fuelPrices.firstWhere(
+                                    (e) => _fuelDisplayName(e, l10n) == v,
+                                    orElse: () => fuelPrices.first,
+                                  );
                                 });
                               },
                               onQuantityChanged: (v) {
@@ -223,7 +238,7 @@ class _FuelScreenState extends State<FuelScreen> {
                                 child: Text(
                                   l10n.pricePerLiterDisplay(_selectedFuel!.pricePerLiter.toStringAsFixed(2), config.currency),
                                   style: getMediumStyle(color: AppColors.primary, fontSize: FontSize.s14),
-                                  textAlign: TextAlign.right,
+                                  textAlign: TextAlign.start,
                                 ),
                               ),
                             _section(l10n.additionalNotesSection, gap: 8),
@@ -334,7 +349,7 @@ class _FuelScreenState extends State<FuelScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(title,
                 style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-                textAlign: TextAlign.right),
+                textAlign: TextAlign.start),
           ),
           SizedBox(height: gap),
         ],

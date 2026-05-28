@@ -63,9 +63,7 @@ class _PhoneOtpBottomSheetState extends State<PhoneOtpBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Container(
+    return Container(
         decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16))),
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: SafeArea(
@@ -94,7 +92,6 @@ class _PhoneOtpBottomSheetState extends State<PhoneOtpBottomSheet> {
             ]),
           ),
         ),
-      ),
-    );
+      );
   }
 }

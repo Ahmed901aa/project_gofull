@@ -41,7 +41,6 @@ class LocationSearchBar extends StatelessWidget {
               child: TextField(
                 controller: controller,
                 focusNode: focusNode,
-                textDirection: TextDirection.rtl,
                 style: getMediumStyle(
                     color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
                 decoration: InputDecoration(

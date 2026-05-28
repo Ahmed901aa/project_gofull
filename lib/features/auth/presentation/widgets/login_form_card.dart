@@ -107,7 +107,7 @@ class _LoginFormCardState extends State<LoginFormCard> {
         controller: widget.passwordController,
         obscureText: _obscurePassword,
         textDirection: TextDirection.ltr,
-        textAlign: TextAlign.right,
+        textAlign: TextAlign.start,
         style: getMediumStyle(color: AppColors.black, fontSize: 16.sp),
         decoration: InputDecoration(
           hintText: S.of(context).passwordHint,

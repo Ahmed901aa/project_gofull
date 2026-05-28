@@ -34,14 +34,14 @@ class ServiceDropdown extends StatelessWidget {
           isExpanded: true,
           value: value,
           hint: Align(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
             child: Text(hint, style: getRegularStyle(color: const Color(0xFFAAAAAB), fontSize: FontSize.s14)),
           ),
           icon: Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.neutral900, size: 20.sp),
           items: items.map((item) => DropdownMenuItem(
             value: item,
             child: Align(
-              alignment: Alignment.centerRight,
+              alignment: AlignmentDirectional.centerEnd,
               child: Text(item, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
             ),
           )).toList(),

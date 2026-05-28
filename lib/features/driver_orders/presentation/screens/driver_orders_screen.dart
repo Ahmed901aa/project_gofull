@@ -23,9 +23,7 @@ class DriverOrdersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<ProviderBloc>()..add(const LoadHistoryEvent()),
-      child: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Scaffold(
+      child: Scaffold(
           backgroundColor: AppColors.scaffoldBg,
           body: Column(
             children: [
@@ -55,8 +53,7 @@ class DriverOrdersScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildList(

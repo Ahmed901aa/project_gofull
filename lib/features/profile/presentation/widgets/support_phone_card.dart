@@ -69,7 +69,6 @@ class SupportPhoneCard extends StatelessWidget {
                       color: const Color(0xFF646565),
                       fontSize: FontSize.s14,
                     ),
-                    textDirection: TextDirection.rtl,
                   ),
                 ],
               ),

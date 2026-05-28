@@ -109,9 +109,7 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
@@ -238,8 +236,7 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildHeader(BuildContext context) => Container(
@@ -493,7 +490,7 @@ class _AreaChart extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Align(
-          alignment: Alignment.centerRight,
+          alignment: AlignmentDirectional.centerEnd,
           child: Container(
             padding:
                 EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),

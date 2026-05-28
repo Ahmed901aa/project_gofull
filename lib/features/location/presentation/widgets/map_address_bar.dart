@@ -42,7 +42,6 @@ class MapAddressBar extends StatelessWidget {
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  textDirection: TextDirection.rtl,
                 ),
               ),
               SizedBox(width: Insets.s8),

@@ -207,7 +207,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
               onClear: () { _searchCtrl.clear(); setState(() => _suggestions = []); },
               onSelect: _select),
           ]))),
-      Positioned(left: Insets.s16, bottom: 140.h,
+      PositionedDirectional(start: Insets.s16, bottom: 140.h,
         child: PickerMyLocationBtn(onTap: () => animateToCurrentLocation(_ctrl))),
       Positioned(left: 0, right: 0, bottom: 0,
         child: PickerConfirmCard(address: _address, isLoading: _loadingAddr, onConfirm: _confirm)),

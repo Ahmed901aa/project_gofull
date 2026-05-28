@@ -18,8 +18,7 @@ class SafetyNoticeCard extends StatelessWidget {
         border: Border.all(color: const Color(0xFFE63946)),
       ),
       child: RichText(
-        textAlign: TextAlign.right,
-        textDirection: TextDirection.rtl,
+        textAlign: TextAlign.start,
         text: TextSpan(
           children: [
             TextSpan(

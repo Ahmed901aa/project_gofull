@@ -63,8 +63,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
           address: '',
           navigationType: 'to_destination',
           amount: widget.args.amount,
-        ),
-      );
+        );
     } else {
       Navigator.pushReplacementNamed(
         context,
@@ -79,9 +78,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [

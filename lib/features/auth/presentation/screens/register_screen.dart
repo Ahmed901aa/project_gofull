@@ -216,7 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       child: TextField(
         controller: controller,
-        textAlign: TextAlign.right,
+        textAlign: TextAlign.start,
         style: getMediumStyle(color: AppColors.black, fontSize: 16.sp),
         decoration: InputDecoration(
           hintText: hint,
@@ -245,7 +245,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         controller: controller,
         obscureText: obscure,
         textDirection: TextDirection.ltr,
-        textAlign: TextAlign.right,
+        textAlign: TextAlign.start,
         style: getMediumStyle(color: AppColors.black, fontSize: 16.sp),
         decoration: InputDecoration(
           hintText: hint,

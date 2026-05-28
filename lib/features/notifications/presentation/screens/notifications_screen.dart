@@ -17,9 +17,7 @@ class NotificationsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<NotificationBloc>()..add(const LoadNotificationsEvent()),
-      child: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Scaffold(
+      child: Scaffold(
           backgroundColor: AppColors.scaffoldBg,
           body: Column(
             children: [
@@ -33,8 +31,7 @@ class NotificationsScreen extends StatelessWidget {
                     if (state is NotificationError) {
                       return Center(
                         child: Text(state.message,
-                            style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
-                      );
+                            style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14));
                     }
                     if (state is NotificationsLoaded) {
                       return _buildList(context, state.notifications);
@@ -46,8 +43,7 @@ class NotificationsScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildList(BuildContext context, List<NotificationEntity> notifications) {

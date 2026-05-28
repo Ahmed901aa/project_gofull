@@ -21,9 +21,7 @@ class TripLocationCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.s16),
         border: Border.all(color: AppColors.neutral500),
       ),
-      child: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Row(
+      child: Row(
           children: [
             Container(
               width: 56.w,
@@ -48,7 +46,6 @@ class TripLocationCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }

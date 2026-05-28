@@ -205,7 +205,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
         if (_rating > 0) ...[
           SizedBox(height: Insets.s16),
           Align(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
             child: Text(S.of(context).addNotes, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
           ),
           SizedBox(height: Insets.s8),
@@ -219,8 +219,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
               controller: _notesController,
               maxLength: _maxNoteLength,
               maxLines: 3,
-              textAlign: TextAlign.right,
-              textDirection: TextDirection.rtl,
+              textAlign: TextAlign.start,
               style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
               decoration: InputDecoration(
                 hintText: S.of(context).addNotesHint,
@@ -234,7 +233,7 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
           ),
           SizedBox(height: 4.h),
           Align(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: Insets.s8),
               child: Text(

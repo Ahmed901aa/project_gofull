@@ -43,14 +43,19 @@ class PromoBannerCard extends StatelessWidget {
               decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withValues(alpha: 0.06)),
             ),
           ),
-          Positioned(
-            right: -10.w, top: -5.h, bottom: -5.h, width: 140.w,
-            child: Transform.scale(scaleX: -1, child: Image.asset(ImageAssets.promoTruck, fit: BoxFit.contain)),
+          PositionedDirectional(
+            end: -10.w, top: -5.h, bottom: -5.h, width: 140.w,
+            child: Builder(builder: (ctx) {
+              final img = Image.asset(ImageAssets.promoTruck, fit: BoxFit.contain);
+              return Directionality.of(ctx) == TextDirection.rtl
+                  ? Transform.scale(scaleX: -1, child: img)
+                  : img;
+            }),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(Insets.s12, 0, 140.w, 0),
+            padding: EdgeInsetsDirectional.fromSTEB(Insets.s12, 0, 140.w, 0),
             child: Align(
-              alignment: Alignment.centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -62,7 +67,6 @@ class PromoBannerCard extends StatelessWidget {
                   ),
                   SizedBox(height: 6.h),
                   RichText(
-                    textDirection: TextDirection.rtl,
                     text: TextSpan(
                       style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
                       children: [

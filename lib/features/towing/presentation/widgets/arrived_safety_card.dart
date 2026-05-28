@@ -33,7 +33,7 @@ class _ArrivedSafetyCardState extends State<ArrivedSafetyCard> {
         Text(
           l10n.safetyGuidelines,
           style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-          textAlign: TextAlign.right,
+          textAlign: TextAlign.start,
         ),
         SizedBox(height: Insets.s8),
         Container(
@@ -50,11 +50,11 @@ class _ArrivedSafetyCardState extends State<ArrivedSafetyCard> {
                 Text(
                   l10n.ensureAtDestination,
                   style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s14),
-                  textAlign: TextAlign.right,
+                  textAlign: TextAlign.start,
                 ),
               if (_expanded)
                 for (final item in safetyItems) ...[
-                  Text(item, style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s14), textAlign: TextAlign.right),
+                  Text(item, style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s14), textAlign: TextAlign.start),
                   SizedBox(height: Insets.s12),
                 ],
               SizedBox(height: 4.h),
@@ -63,7 +63,7 @@ class _ArrivedSafetyCardState extends State<ArrivedSafetyCard> {
                 child: Text(
                   _expanded ? l10n.hideDisplay : l10n.showAll,
                   style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s14),
-                  textAlign: TextAlign.right,
+                  textAlign: TextAlign.start,
                 ),
               ),
             ],

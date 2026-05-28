@@ -41,9 +41,7 @@ class SupportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
@@ -140,7 +138,6 @@ class SupportScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 
@@ -249,7 +246,7 @@ class _ContactOptionCard extends StatelessWidget {
               ),
             ),
             Icon(
-              Icons.arrow_forward_ios_rounded,
+              Icons.arrow_forward_rounded,
               size: 16.sp,
               color: AppColors.neutral800,
             ),

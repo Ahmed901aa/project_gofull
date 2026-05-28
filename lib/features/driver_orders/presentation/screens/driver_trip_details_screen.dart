@@ -81,9 +81,7 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
@@ -113,8 +111,7 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
               _buildBottomButton(context),
           ],
         ),
-      ),
-    );
+      );
   }
 
   // ── Header ──────────────────────────────────────────────

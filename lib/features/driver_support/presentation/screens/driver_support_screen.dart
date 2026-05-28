@@ -38,9 +38,7 @@ class DriverSupportScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
@@ -60,8 +58,7 @@ class DriverSupportScreen extends StatelessWidget {
                         return _DirectCallSection(
                           phone: phone,
                           onCall: () => _callSupport(phone),
-                          onCopy: () => _copyPhone(ctx, phone),
-                        );
+                          onCopy: () => _copyPhone(ctx, phone);
                       }),
                     ),
                     SizedBox(height: Insets.s32),

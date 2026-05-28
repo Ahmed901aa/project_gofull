@@ -23,8 +23,7 @@ Future<bool> showRatingBottomSheet(
     isDismissible: true,
     enableDrag: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => _RatingSheet(request: request),
-  );
+    builder: (_) => _RatingSheet(request: request);
   return result == true;
 }
 
@@ -87,9 +86,7 @@ class _RatingSheetState extends State<_RatingSheet> {
             AppSnackbar.error(context, l10n.ratingFailed);
           }
         },
-        child: Directionality(
-          textDirection: TextDirection.rtl,
-          child: Container(
+        child: Container(
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius:
@@ -171,7 +168,6 @@ class _RatingSheetState extends State<_RatingSheet> {
                 TextField(
                   controller: _commentController,
                   maxLines: 3,
-                  textDirection: TextDirection.rtl,
                   decoration: InputDecoration(
                     hintText: l10n.writeCommentHint,
                     hintStyle: getRegularStyle(

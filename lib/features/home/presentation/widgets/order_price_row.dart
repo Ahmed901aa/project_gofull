@@ -14,7 +14,7 @@ class OrderPriceRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: Insets.s16, right: Insets.s16, bottom: Insets.s12),
+      padding: EdgeInsetsDirectional.only(start: Insets.s16, end: Insets.s16, bottom: Insets.s12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

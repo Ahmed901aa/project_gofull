@@ -76,9 +76,7 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
         ? '${req?.fuelType ?? ''} - ${req?.fuelQuantity ?? ''} ${S.of(context).litersUnit}'
         : '';
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Container(
+    return Container(
         margin: EdgeInsets.symmetric(horizontal: Insets.s16),
         decoration: BoxDecoration(
           color: AppColors.white,
@@ -267,7 +265,6 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }

@@ -44,13 +44,10 @@ class TripDriverCard extends StatelessWidget {
             ],
           ),
         ],
-      ),
-    );
+      );
   }
 
-  Widget _buildDriverInfo() => Directionality(
-        textDirection: TextDirection.rtl,
-        child: Row(
+  Widget _buildDriverInfo() => Row(
           children: [
             Container(
               width: 56.w,

@@ -34,7 +34,6 @@ class EtaBottomPanel extends StatelessWidget {
         Text(
           label ?? S.of(context).etaLabel(etaFormatted),
           style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
-          textDirection: TextDirection.rtl,
         ),
         SizedBox(height: Insets.s8),
         ClipRRect(

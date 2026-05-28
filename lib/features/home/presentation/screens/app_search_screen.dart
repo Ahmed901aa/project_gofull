@@ -55,9 +55,7 @@ class _AppSearchScreenState extends State<AppSearchScreen> {
   @override
   Widget build(BuildContext context) {
     final query = _controller.text.trim();
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
@@ -88,7 +86,6 @@ class _AppSearchScreenState extends State<AppSearchScreen> {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }

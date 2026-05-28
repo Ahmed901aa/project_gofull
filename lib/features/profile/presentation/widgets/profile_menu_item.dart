@@ -69,7 +69,7 @@ class ProfileMenuItem extends StatelessWidget {
                   ),
                   SizedBox(width: Insets.s8),
                 ],
-                Icon(Icons.arrow_forward_ios_rounded, size: 16.sp, color: const Color(0xFF0E0E0E)),
+                Icon(Icons.arrow_forward_rounded, size: 16.sp, color: const Color(0xFF0E0E0E)),
               ],
             ),
           ],

@@ -23,7 +23,7 @@ class ArrivedPaymentCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(S.of(context).paymentSummary, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
+        Text(S.of(context).paymentSummary, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.start),
         SizedBox(height: Insets.s8),
         Container(
           decoration: BoxDecoration(

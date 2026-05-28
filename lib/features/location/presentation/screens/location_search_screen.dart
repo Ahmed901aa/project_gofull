@@ -84,9 +84,7 @@ class _State extends State<LocationSearchScreen> {
   @override
   Widget build(BuildContext context) {
     final hasQuery = _ctrl.text.isNotEmpty;
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.white,
         resizeToAvoidBottomInset: true,
         body: SafeArea(child: Column(children: [
@@ -103,7 +101,6 @@ class _State extends State<LocationSearchScreen> {
             Expanded(child: LocationResultsList(
                 items: _results, onItemTap: _onResultTap)),
         ])),
-      ),
-    );
+      );
   }
 }

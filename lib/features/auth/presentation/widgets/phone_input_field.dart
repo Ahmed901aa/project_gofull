@@ -62,7 +62,7 @@ class PhoneInputField extends StatelessWidget {
                   controller: controller,
                   keyboardType: TextInputType.phone,
                   textDirection: TextDirection.ltr,
-                  textAlign: TextAlign.right,
+                  textAlign: TextAlign.start,
                   style: getMediumStyle(
                     color: AppColors.black,
                     fontSize: 16.sp,
@@ -86,7 +86,7 @@ class PhoneInputField extends StatelessWidget {
         ),
         if (errorText != null)
           Padding(
-            padding: EdgeInsets.only(top: 6.h, right: 4.w),
+            padding: EdgeInsetsDirectional.only(top: 6.h, end: 4.w),
             child: Text(
               errorText!,
               style: getRegularStyle(

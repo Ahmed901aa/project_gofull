@@ -51,7 +51,7 @@ class ActiveOrderCard extends StatelessWidget {
             child: Text(l10n.currentOrder,
                 style: getSemiBoldStyle(
                     color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-                textAlign: TextAlign.right),
+                textAlign: TextAlign.start),
           ),
           InkWell(
             onTap: () => _resumeOrder(context, order),
@@ -155,7 +155,7 @@ class ActiveOrderCard extends StatelessWidget {
                                         color: AppColors.white,
                                         fontSize: FontSize.s14)),
                                 SizedBox(width: 6.w),
-                                Icon(Icons.chevron_left_rounded,
+                                Icon(Icons.arrow_forward_rounded,
                                     size: 22.sp,
                                     color: AppColors.white,
                                     textDirection: TextDirection.ltr),

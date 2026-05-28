@@ -302,9 +302,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         body: Stack(
           children: [
             // Map

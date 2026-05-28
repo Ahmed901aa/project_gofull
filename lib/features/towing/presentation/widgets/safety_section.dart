@@ -24,7 +24,7 @@ class SafetySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(l10n.safetyGuidelines, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
+        Text(l10n.safetyGuidelines, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.start),
         SizedBox(height: Insets.s8),
         Container(
           padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
@@ -54,17 +54,16 @@ class _BulletItem extends StatelessWidget {
       padding: EdgeInsets.only(bottom: last ? 0 : 6.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        textDirection: TextDirection.rtl,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 6.h, left: 6.w),
+            padding: EdgeInsetsDirectional.only(top: 6.h, start: 6.w),
             child: Container(
               width: 5.w, height: 5.w,
               decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.primary),
             ),
           ),
           Expanded(
-            child: Text(text, style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s14), textAlign: TextAlign.right),
+            child: Text(text, style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s14), textAlign: TextAlign.start),
           ),
         ],
       ),

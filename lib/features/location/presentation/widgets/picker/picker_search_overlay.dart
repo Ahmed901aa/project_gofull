@@ -55,8 +55,7 @@ class PickerSearchOverlay extends StatelessWidget {
                 Icon(Icons.search_rounded, color: AppColors.grey, size: 18.sp),
                 SizedBox(width: Insets.s8),
                 Expanded(child: TextField(
-                  controller: controller, focusNode: focusNode, autofocus: true,
-                  textDirection: TextDirection.rtl, textInputAction: TextInputAction.search,
+                  controller: controller, focusNode: focusNode, autofocus: true, textInputAction: TextInputAction.search,
                   style: getMediumStyle(color: AppColors.black, fontSize: FontSize.s14),
                   decoration: InputDecoration(
                     hintText: S.of(context).searchForCityOrDistrict, border: InputBorder.none, isDense: true,

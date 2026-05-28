@@ -20,11 +20,10 @@ class ServiceInputField extends StatelessWidget {
         border: Border.all(color: const Color(0xFFEFF0F1)),
       ),
       child: Align(
-        alignment: Alignment.centerRight,
+        alignment: AlignmentDirectional.centerEnd,
         child: TextField(
           controller: controller,
-          textAlign: TextAlign.right,
-          textDirection: TextDirection.rtl,
+          textAlign: TextAlign.start,
           style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
           decoration: InputDecoration(
             hintText: hint,

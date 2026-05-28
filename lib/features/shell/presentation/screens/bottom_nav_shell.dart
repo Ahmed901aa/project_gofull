@@ -151,7 +151,7 @@ class _BottomNavShellState extends State<BottomNavShell>
               top: false,
               child: Padding(
                 padding:
-                    EdgeInsets.only(top: 12.h, left: 24.w, right: 24.w),
+                    EdgeInsetsDirectional.only(top: 12.h, start: 24.w, end: 24.w),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [

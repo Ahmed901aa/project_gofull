@@ -20,9 +20,7 @@ class TermsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     final _sections = _getTermsSections(l10n);
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
@@ -55,8 +53,7 @@ class TermsScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildHeader(BuildContext context) => Container(

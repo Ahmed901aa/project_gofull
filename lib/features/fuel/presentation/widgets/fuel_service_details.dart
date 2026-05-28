@@ -15,7 +15,7 @@ class FuelServiceDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(l10n.serviceDetails, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
+        Text(l10n.serviceDetails, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.start),
         SizedBox(height: Insets.s8),
         _row(l10n.actualQuantity, data['quantity']!),
         _row(l10n.fuelType, data['fuelType']!),

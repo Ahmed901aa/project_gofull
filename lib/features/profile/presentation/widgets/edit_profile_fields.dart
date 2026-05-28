@@ -30,11 +30,11 @@ class NameField extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppRadius.s16),
             border: Border.all(color: const Color(0xFFEFF0F1)),
           ),
-          alignment: Alignment.centerRight,
+          alignment: AlignmentDirectional.centerEnd,
           child: TextField(
             controller: controller,
             textDirection: TextDirection.ltr,
-            textAlign: TextAlign.right,
+            textAlign: TextAlign.start,
             decoration: const InputDecoration(
               border: InputBorder.none,
               isDense: true,

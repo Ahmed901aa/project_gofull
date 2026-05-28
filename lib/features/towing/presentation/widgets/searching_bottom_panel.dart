@@ -30,7 +30,6 @@ class SearchingBottomPanel extends StatelessWidget {
       child: Column(
         children: [
           RichText(
-            textDirection: TextDirection.rtl,
             text: TextSpan(children: [
               TextSpan(text: S.of(context).expectedTimeFindDriver, style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
               TextSpan(text: S.of(context).minutesFormatted('$mm:$ss'), style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
@@ -44,7 +43,7 @@ class SearchingBottomPanel extends StatelessWidget {
               decoration: BoxDecoration(color: const Color(0xFFD9DADB), borderRadius: BorderRadius.circular(AppRadius.s16)),
               child: FractionallySizedBox(
                 widthFactor: progressAnimation.value,
-                alignment: Alignment.centerRight,
+                alignment: AlignmentDirectional.centerEnd,
                 child: Container(decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(AppRadius.s16))),
               ),
             ),

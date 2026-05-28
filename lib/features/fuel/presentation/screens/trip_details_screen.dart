@@ -161,7 +161,7 @@ class TripDetailsScreen extends StatelessWidget {
           Text(title,
               style: getBoldStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-              textAlign: TextAlign.right),
+              textAlign: TextAlign.start),
           SizedBox(height: Insets.s8),
           content,
         ],
@@ -179,7 +179,7 @@ class TripDetailsScreen extends StatelessWidget {
               children: [
                 GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_ios_new_rounded,
+                    child: Icon(Icons.arrow_back_rounded,
                         size: 20.sp, color: const Color(0xFF0E0E0E))),
                 Text(S.of(context).driverTripDetails,
                     style: getBoldStyle(

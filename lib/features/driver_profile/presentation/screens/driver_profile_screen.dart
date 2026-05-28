@@ -19,8 +19,6 @@ class DriverProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<ProviderBloc>()..add(const LoadProfileEvent()),
-      child: Directionality(
-      textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
@@ -46,8 +44,7 @@ class DriverProfileScreen extends StatelessWidget {
                     _VehicleSection(profile: profile),
                     SizedBox(height: Insets.s24),
                   ],
-                ),
-              );
+                );
               },
               ),
             ),

@@ -67,7 +67,7 @@ class _PhotoLogSectionState extends State<PhotoLogSection> {
                   3,
                   (i) => Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(right: i > 0 ? Insets.s8 : 0),
+                      padding: EdgeInsetsDirectional.only(end: i > 0 ? Insets.s8 : 0),
                       child: const _PhotoPlaceholder(),
                     ),
                   ),

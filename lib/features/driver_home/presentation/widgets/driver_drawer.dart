@@ -271,7 +271,7 @@ class _DrawerMenuItem extends StatelessWidget {
               ),
             ),
             Icon(
-              Icons.arrow_forward_ios_rounded,
+              Icons.arrow_forward_rounded,
               size: 14.sp,
               color: AppColors.grey,
             ),

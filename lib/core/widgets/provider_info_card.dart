@@ -61,9 +61,7 @@ class ProviderInfoCard extends StatelessWidget {
       if (vehicleModel != null && vehicleModel!.isNotEmpty) vehicleModel,
     ].whereType<String>().join(' ');
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Container(
+    return Container(
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
           color: AppColors.white,
@@ -199,8 +197,7 @@ class ProviderInfoCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
 

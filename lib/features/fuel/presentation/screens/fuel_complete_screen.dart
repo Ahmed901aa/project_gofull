@@ -213,7 +213,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
         if (_rating > 0) ...[
           SizedBox(height: Insets.s16),
           Align(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
             child: Text(l10n.addNotes, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
           ),
           SizedBox(height: Insets.s8),
@@ -227,8 +227,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
               controller: _notesController,
               maxLength: _maxNoteLength,
               maxLines: 3,
-              textAlign: TextAlign.right,
-              textDirection: TextDirection.rtl,
+              textAlign: TextAlign.start,
               style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
               decoration: InputDecoration(
                 hintText: l10n.addNotesHint,
@@ -242,7 +241,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
           ),
           SizedBox(height: 4.h),
           Align(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: Insets.s8),
               child: Text(

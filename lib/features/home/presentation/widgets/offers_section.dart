@@ -23,7 +23,7 @@ class OffersSection extends StatelessWidget {
             child: Text(
               S.of(context).offersForYou,
               style: getSemiBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-              textAlign: TextAlign.right,
+              textAlign: TextAlign.start,
             ),
           ),
         ),

@@ -22,15 +22,15 @@ class TowingCarDetailsForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(S.of(context).carTypeHint, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.right),
+          Text(S.of(context).carTypeHint, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.start),
           const SizedBox(height: 8),
           ServiceInputField(hint: S.of(context).enterCarType, controller: carTypeCtrl),
           const SizedBox(height: 12),
-          Text(S.of(context).plateNumber, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.right),
+          Text(S.of(context).plateNumber, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.start),
           const SizedBox(height: 8),
           ServiceInputField(hint: S.of(context).enterPlateNumber, controller: plateCtrl),
           const SizedBox(height: 12),
-          Text(S.of(context).photoCapture, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.right),
+          Text(S.of(context).photoCapture, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.start),
           const SizedBox(height: 8),
           const PhotoPickerSection(),
         ],

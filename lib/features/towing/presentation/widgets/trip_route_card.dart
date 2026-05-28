@@ -28,9 +28,7 @@ class TripRouteCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.s16),
         border: Border.all(color: AppColors.neutral500),
       ),
-      child: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Row(
+      child: Row(
           children: [
             Container(
               width: 56.w,
@@ -52,7 +50,6 @@ class TripRouteCard extends StatelessWidget {
                   if (distanceLabel != null && distanceValue != null) ...[
                     SizedBox(height: 2.h),
                     RichText(
-                      textDirection: TextDirection.rtl,
                       text: TextSpan(children: [
                         TextSpan(
                           text: '$distanceLabel ',
@@ -70,7 +67,6 @@ class TripRouteCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }

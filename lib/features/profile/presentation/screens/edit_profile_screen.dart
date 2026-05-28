@@ -81,9 +81,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
@@ -112,7 +110,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             EditProfileBottomButtons(onSave: _saveChanges, onDelete: _deleteAccount),
           ],
         ),
-      ),
-    );
+      );
   }
 }

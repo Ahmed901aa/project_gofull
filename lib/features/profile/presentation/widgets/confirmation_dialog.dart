@@ -34,9 +34,7 @@ class ConfirmationDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(horizontal: Insets.s24),
-      child: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Container(
+      child: Container(
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: 12.h),
           decoration: BoxDecoration(
@@ -65,7 +63,6 @@ class ConfirmationDialog extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }

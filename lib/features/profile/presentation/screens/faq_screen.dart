@@ -24,9 +24,7 @@ class _FaqScreenState extends State<FaqScreen> {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     final _faqs = _getFaqs(l10n);
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
@@ -47,8 +45,7 @@ class _FaqScreenState extends State<FaqScreen> {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildHeader(BuildContext context) => Container(

@@ -43,15 +43,12 @@ class _DriverRefuelingScreenState extends State<DriverRefuelingScreen> {
         orderId: widget.args.orderId,
         amount: widget.args.amount,
         customerPhone: widget.args.customerPhone,
-      ),
-    );
+      );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [

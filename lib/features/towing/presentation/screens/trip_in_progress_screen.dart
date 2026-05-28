@@ -222,7 +222,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
         Text(S.of(context).routeSection,
             style: getBoldStyle(
                 color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-            textAlign: TextAlign.right),
+            textAlign: TextAlign.start),
         SizedBox(height: Insets.s8),
         TripRouteCard(title: S.of(context).departurePoint, address: origin),
         SizedBox(height: Insets.s8),
@@ -241,7 +241,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
           Text(S.of(context).carPhotos,
               style: getBoldStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-              textAlign: TextAlign.right),
+              textAlign: TextAlign.start),
           SizedBox(height: Insets.s8),
           Row(
               children: List.generate(
@@ -249,7 +249,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
                   (i) => Expanded(
                       child: Padding(
                           padding:
-                              EdgeInsets.only(right: i < 2 ? Insets.s8 : 0),
+                              EdgeInsetsDirectional.only(end: i < 2 ? Insets.s8 : 0),
                           child: const TripPhotoPlaceholder())))),
         ],
       );
@@ -260,7 +260,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
           Text(S.of(context).providerDetails,
               style: getBoldStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-              textAlign: TextAlign.right),
+              textAlign: TextAlign.start),
           SizedBox(height: Insets.s8),
           ProviderInfoCard.fromRequest(
             _request,

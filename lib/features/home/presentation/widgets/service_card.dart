@@ -38,9 +38,11 @@ class ServiceCard extends StatelessWidget {
           children: [
             SizedBox(
               width: 72.w, height: 48.h,
-              child: flipIcon
-                  ? Transform.scale(scaleX: -1, child: SvgPicture.asset(svgAsset, fit: BoxFit.contain, colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn)))
-                  : SvgPicture.asset(svgAsset, fit: BoxFit.contain, colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn)),
+              child: Builder(builder: (ctx) {
+                final isRtl = Directionality.of(ctx) == TextDirection.rtl;
+                final icon = SvgPicture.asset(svgAsset, fit: BoxFit.contain, colorFilter: const ColorFilter.mode(AppColors.primary, BlendMode.srcIn));
+                return (flipIcon && isRtl) ? Transform.scale(scaleX: -1, child: icon) : icon;
+              }),
             ),
             SizedBox(height: Insets.s8),
             Text(title, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.center),

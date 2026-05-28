@@ -30,9 +30,7 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(children: [
           _buildHeader(context),
@@ -65,8 +63,7 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
             ),
           ),
         ]),
-      ),
-    );
+      );
   }
 
   Widget _buildHeader(BuildContext context) => Container(

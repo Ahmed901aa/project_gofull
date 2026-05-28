@@ -19,9 +19,7 @@ class DriverCollectPaymentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
@@ -44,8 +42,7 @@ class DriverCollectPaymentScreen extends StatelessWidget {
             _buildBottomButton(context),
           ],
         ),
-      ),
-    );
+      );
   }
 
   // ── Header ──────────────────────────────────────────────────

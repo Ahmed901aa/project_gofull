@@ -218,7 +218,7 @@ class _SearchingScreenState extends State<SearchingScreen> {
                               style: getRegularStyle(
                                   color: AppColors.primary,
                                   fontSize: FontSize.s14),
-                              textAlign: TextAlign.right,
+                              textAlign: TextAlign.start,
                             ),
                           ),
                         ],

@@ -76,7 +76,7 @@ class SearchResultTile extends StatelessWidget {
               ),
             ),
             SizedBox(width: Insets.s8),
-            Icon(Icons.arrow_back_ios_new_rounded, size: 12.sp, color: const Color(0xFFD9DADB)),
+            Icon(Icons.arrow_back_rounded, size: 12.sp, color: const Color(0xFFD9DADB)),
           ],
         ),
       ),

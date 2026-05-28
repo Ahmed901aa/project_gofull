@@ -82,7 +82,6 @@ class MapSearchOverlay extends StatelessWidget {
                       controller: controller,
                       focusNode: focusNode,
                       autofocus: true,
-                      textDirection: TextDirection.rtl,
                       textInputAction: TextInputAction.search,
                       style: getMediumStyle(
                           color: AppColors.black,

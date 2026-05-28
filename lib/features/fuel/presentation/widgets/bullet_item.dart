@@ -15,10 +15,9 @@ class BulletItem extends StatelessWidget {
       padding: EdgeInsets.only(bottom: last ? 0 : 6.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        textDirection: TextDirection.rtl,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 6.h, left: 6.w),
+            padding: EdgeInsetsDirectional.only(top: 6.h, start: 6.w),
             child: Container(
               width: 5.w,
               height: 5.w,
@@ -29,7 +28,7 @@ class BulletItem extends StatelessWidget {
             child: Text(
               text,
               style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s14),
-              textAlign: TextAlign.right,
+              textAlign: TextAlign.start,
             ),
           ),
         ],

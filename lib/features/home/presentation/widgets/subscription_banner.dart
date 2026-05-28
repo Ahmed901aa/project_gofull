@@ -17,8 +17,8 @@ class SubscriptionBanner extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Color(0xFFF5E6C5), Color(0xFFFDF6EB)],
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
+          begin: AlignmentDirectional.topEnd,
+          end: AlignmentDirectional.bottomStart,
         ),
         borderRadius: BorderRadius.circular(AppRadius.s16),
         border: Border.all(

@@ -212,7 +212,7 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
           Text(S.of(context).providerDetails,
               style: getBoldStyle(
                   color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-              textAlign: TextAlign.right),
+              textAlign: TextAlign.start),
           SizedBox(height: Insets.s8),
           ProviderInfoCard.fromRequest(
             _request,

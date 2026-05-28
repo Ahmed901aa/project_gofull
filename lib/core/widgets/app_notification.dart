@@ -52,9 +52,7 @@ class AppSnackbar {
 
     messenger.showSnackBar(
       SnackBar(
-        content: Directionality(
-          textDirection: TextDirection.rtl,
-          child: Row(
+        content: Row(
             children: [
               Container(
                 width: 32.w,
@@ -90,8 +88,7 @@ class AppSnackbar {
         duration: duration ?? const Duration(seconds: 3),
         dismissDirection: DismissDirection.horizontal,
         elevation: 6,
-      ),
-    );
+      );
   }
 
   static _SnackConfig _configFor(AppNotificationType type) {
@@ -153,8 +150,7 @@ class AppConfirmDialog {
         confirmLabel: confirmLabel,
         cancelLabel: cancelLabel,
         destructive: destructive,
-      ),
-    );
+      );
     return result == true;
   }
 }
@@ -186,9 +182,7 @@ class _ConfirmDialogContent extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(horizontal: Insets.s24),
-      child: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Container(
+      child: Container(
           width: double.infinity,
           padding: EdgeInsets.symmetric(horizontal: Insets.s20, vertical: 20.h),
           decoration: BoxDecoration(

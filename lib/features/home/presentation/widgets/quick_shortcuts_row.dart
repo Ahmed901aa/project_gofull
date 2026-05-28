@@ -18,7 +18,7 @@ class QuickShortcutsRow extends StatelessWidget {
         final isLast = s == shortcuts.last;
         return Expanded(
           child: Padding(
-            padding: EdgeInsets.only(left: isLast ? 0 : Insets.s8),
+            padding: EdgeInsetsDirectional.only(start: isLast ? 0 : Insets.s8),
             child: GestureDetector(
               onTap: () => onNavigate(s['route'] as String),
               child: Container(

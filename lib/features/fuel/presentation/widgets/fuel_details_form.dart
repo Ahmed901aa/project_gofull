@@ -31,13 +31,13 @@ class FuelDetailsForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l10n.fuelType, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.right),
+          Text(l10n.fuelType, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.start),
           const SizedBox(height: 8),
           ServiceDropdown(hint: l10n.selectFuelTypeHint, value: selectedFuelType, items: fuelTypes, onChanged: onFuelTypeChanged),
           const SizedBox(height: 12),
-          Text(l10n.requestedQuantity, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.right),
+          Text(l10n.requestedQuantity, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16), textAlign: TextAlign.start),
           const SizedBox(height: 4),
-          Text(l10n.serviceFeeDeliveryNote, style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.right),
+          Text(l10n.serviceFeeDeliveryNote, style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.start),
           const SizedBox(height: 8),
           ServiceDropdown(hint: l10n.selectQuantityHint, value: selectedQuantity, items: quantities, onChanged: onQuantityChanged),
         ],

@@ -181,8 +181,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           serviceType: req.isFuelDelivery ? 'fuel' : 'towing',
           amount: double.tryParse(req.total ?? '0') ?? 0,
           customerPhone: customerPhone,
-        ),
-      );
+        );
     } else if (state is RequestRejected) {
       setState(() => _pendingRequest = null);
       // Resume polling after rejection
@@ -328,9 +327,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       value: _providerBloc,
       child: BlocListener<ProviderBloc, ProviderState>(
         listener: (context, state) => _onProviderState(state),
-        child: Directionality(
-          textDirection: TextDirection.rtl,
-          child: Scaffold(
+        child: Scaffold(
             key: _scaffoldKey,
             drawer: const DriverDrawer(),
             body: Stack(
@@ -507,8 +504,8 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
                 padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
+                    begin: AlignmentDirectional.topEnd,
+                    end: AlignmentDirectional.bottomStart,
                     colors: [
                       accentColor.withValues(alpha: 0.06),
                       accentLight.withValues(alpha: 0.02),
@@ -596,8 +593,8 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
                 padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
+                    begin: AlignmentDirectional.topEnd,
+                    end: AlignmentDirectional.bottomStart,
                     colors: [accentColor, accentLight],
                   ),
                   borderRadius: BorderRadius.circular(20.r),
@@ -777,8 +774,8 @@ class _RadarSearchAnimation extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+                    begin: AlignmentDirectional.topStart,
+                    end: AlignmentDirectional.bottomEnd,
                     colors: [
                       color,
                       color.withValues(alpha: 0.8),
@@ -919,8 +916,8 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                     height: 48.w,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                        begin: AlignmentDirectional.topStart,
+                        end: AlignmentDirectional.bottomEnd,
                         colors: [
                           accentColor,
                           accentColor.withValues(alpha: 0.75),
@@ -1172,8 +1169,8 @@ class _SlideToActivateState extends State<SlideToActivate>
           height: widget.height,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.centerRight,
-              end: Alignment.centerLeft,
+              begin: AlignmentDirectional.centerEnd,
+              end: AlignmentDirectional.centerStart,
               colors: fillColors,
             ),
             borderRadius: BorderRadius.circular(widget.height / 2),
@@ -1197,7 +1194,6 @@ class _SlideToActivateState extends State<SlideToActivate>
                       child: Text(
                         widget.label,
                         textAlign: TextAlign.center,
-                        textDirection: TextDirection.rtl,
                         style: TextStyle(
                           fontFamily: FontConstants.fontFamily,
                           fontWeight: FontWeightManager.bold,

@@ -21,10 +21,9 @@ class DiscountCodeInput extends StatelessWidget {
           height: 48.h,
           padding: EdgeInsets.symmetric(horizontal: Insets.s16),
           decoration: BoxDecoration(color: AppColors.neutral200, borderRadius: BorderRadius.circular(AppRadius.s16), border: Border.all(color: AppColors.neutral500)),
-          alignment: Alignment.centerRight,
+          alignment: AlignmentDirectional.centerEnd,
           child: TextField(
-            controller: controller, textDirection: TextDirection.rtl,
-            decoration: InputDecoration(hintText: S.of(context).enterDiscountCode, hintStyle: getRegularStyle(color: const Color(0xFFAAAAAB), fontSize: FontSize.s14), border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero),
+            controller: controller,            decoration: InputDecoration(hintText: S.of(context).enterDiscountCode, hintStyle: getRegularStyle(color: const Color(0xFFAAAAAB), fontSize: FontSize.s14), border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero),
             style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
           ),
         ),

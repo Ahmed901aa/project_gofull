@@ -36,8 +36,7 @@ class RatingNotesSection extends StatelessWidget {
             controller: controller,
             maxLength: maxLength,
             maxLines: 4,
-            textAlign: TextAlign.right,
-            textDirection: TextDirection.rtl,
+            textAlign: TextAlign.start,
             style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
             decoration: InputDecoration(
               hintText: l10n.addNotesHint,
@@ -51,7 +50,7 @@ class RatingNotesSection extends StatelessWidget {
         ),
         SizedBox(height: 4.h),
         Align(
-          alignment: Alignment.centerRight,
+          alignment: AlignmentDirectional.centerEnd,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: Insets.s8),
             child: Text(

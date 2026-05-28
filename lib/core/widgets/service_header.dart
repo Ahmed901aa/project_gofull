@@ -23,7 +23,7 @@ class ServiceHeader extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Icon(Icons.arrow_back_ios_rounded, size: 22.sp, color: const Color(0xFF0E0E0E)),
+                  child: Icon(Icons.arrow_back_rounded, size: 22.sp, color: const Color(0xFF0E0E0E)),
                 ),
                 Text(title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
                 const SizedBox(width: 24),

@@ -17,9 +17,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
+    return Scaffold(
         backgroundColor: AppColors.scaffoldBg,
         body: Column(
           children: [
@@ -49,8 +47,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
             _buildBottomButtons(context),
           ],
         ),
-      ),
-    );
+      );
   }
 
   // ── Header ──────────────────────────────────────────────────
@@ -280,7 +277,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
 
             // Dotted connector
             Padding(
-              padding: EdgeInsets.only(right: 17.w),
+              padding: EdgeInsetsDirectional.only(end: 17.w),
               child: Column(
                 children: List.generate(
                   3,

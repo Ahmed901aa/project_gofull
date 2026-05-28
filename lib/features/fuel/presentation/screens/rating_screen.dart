@@ -69,7 +69,7 @@ class _RatingScreenState extends State<RatingScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back_ios_new_rounded, size: 20.sp, color: const Color(0xFF0E0E0E))),
+                  GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back_rounded, size: 20.sp, color: const Color(0xFF0E0E0E))),
                   Text(S.of(context).rateTrip, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
                   Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
                 ],

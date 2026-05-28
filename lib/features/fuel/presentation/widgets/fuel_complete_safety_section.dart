@@ -23,7 +23,7 @@ class _FuelCompleteSafetySectionState extends State<FuelCompleteSafetySection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(l10n.safetyGuidelines, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
+        Text(l10n.safetyGuidelines, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.start),
         SizedBox(height: Insets.s8),
         Container(
           padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
@@ -51,7 +51,7 @@ class _FuelCompleteSafetySectionState extends State<FuelCompleteSafetySection> {
                 child: Text(
                   _expanded ? l10n.hideAll : l10n.viewAll,
                   style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s14),
-                  textAlign: TextAlign.right,
+                  textAlign: TextAlign.start,
                 ),
               ),
             ],
