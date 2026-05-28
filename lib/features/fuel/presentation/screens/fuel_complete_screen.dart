@@ -49,6 +49,8 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
   final _scrollController = ScrollController();
   final _ratingKey = GlobalKey();
 
+  S get l10n => S.of(context);
+
   @override
   void initState() {
     super.initState();

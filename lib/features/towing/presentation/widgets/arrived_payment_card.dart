@@ -34,10 +34,10 @@ class ArrivedPaymentCard extends StatelessWidget {
           child: Column(children: [
             SizedBox(height: Insets.s8),
             _payRow(S.of(context).subtotal, subtotal),
-            _serviceFeeRow(),
+            _serviceFeeRow(context),
             const Divider(height: 1, color: AppColors.neutral500),
             SizedBox(height: Insets.s8),
-            _totalRow(),
+            _totalRow(context),
             SizedBox(height: Insets.s8),
           ]),
         ),
@@ -54,7 +54,7 @@ class ArrivedPaymentCard extends StatelessWidget {
         ]),
       );
 
-  Widget _serviceFeeRow() => Padding(
+  Widget _serviceFeeRow(BuildContext context) => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
         child: Row(children: [
           Row(children: [
@@ -67,7 +67,7 @@ class ArrivedPaymentCard extends StatelessWidget {
         ]),
       );
 
-  Widget _totalRow() => Padding(
+  Widget _totalRow(BuildContext context) => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16),
         child: Row(children: [
           Row(children: [

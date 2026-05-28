@@ -54,7 +54,7 @@ class SupportScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     // Hero section
-                    _buildHeroSection(),
+                    _buildHeroSection(l10n),
                     SizedBox(height: 24.h),
 
                     // Contact options
@@ -110,22 +110,22 @@ class SupportScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 12.h),
-                          const _FaqItem(
+                          _FaqItem(
                             question: l10n.faqHowFuel,
                             answer:
                                 l10n.faqHowFuelAnswer,
                           ),
-                          const _FaqItem(
+                          _FaqItem(
                             question: l10n.faqHowTow,
                             answer:
                                 l10n.faqHowTowAnswer,
                           ),
-                          const _FaqItem(
+                          _FaqItem(
                             question: l10n.faqCanCancel,
                             answer:
                                 l10n.faqCanCancelAnswer,
                           ),
-                          const _FaqItem(
+                          _FaqItem(
                             question: l10n.faqPaymentMethods,
                             answer:
                                 l10n.faqPaymentMethodsAnswer,
@@ -144,7 +144,7 @@ class SupportScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeroSection() {
+  Widget _buildHeroSection(S l10n) {
     return Builder(builder: (context) {
       final screenWidth = MediaQuery.of(context).size.width;
       return Column(

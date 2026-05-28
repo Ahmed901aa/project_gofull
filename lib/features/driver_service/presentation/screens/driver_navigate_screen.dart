@@ -255,7 +255,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
       title: S.of(context).cancelOrderDialogTitle,
       subtitle: S.of(context).cancelOrderDialogSubtitle,
       confirmLabel: S.of(context).cancelOrderDialogBtn,
-      cancelLabel: S.of(context).cancelOrderGoBack,
+      cancelLabel: S.of(context).cancelOrderDialogGoBack,
       destructive: true,
     );
     if (confirmed) {

@@ -30,10 +30,10 @@ class TripPaymentCard extends StatelessWidget {
       child: Column(children: [
         SizedBox(height: Insets.s8),
         _payRow(l10n.subtotal, subtotal),
-        _feeRow(),
+        _feeRow(l10n),
         const Divider(height: 1, color: AppColors.neutral500),
         SizedBox(height: Insets.s8),
-        _totalRow(),
+        _totalRow(l10n),
         SizedBox(height: Insets.s8),
       ]),
     );
@@ -48,7 +48,7 @@ class TripPaymentCard extends StatelessWidget {
         ]),
       );
 
-  Widget _feeRow() => Padding(
+  Widget _feeRow(S l10n) => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
         child: Row(children: [
           Row(children: [
@@ -61,7 +61,7 @@ class TripPaymentCard extends StatelessWidget {
         ]),
       );
 
-  Widget _totalRow() => Padding(
+  Widget _totalRow(S l10n) => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16),
         child: Row(children: [
           Row(children: [

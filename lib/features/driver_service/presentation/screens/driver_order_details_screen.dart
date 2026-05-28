@@ -420,7 +420,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(AppRadius.s8),
                       ),
                       child: Text(
-                        args.paymentMethod,
+                        args.paymentMethod ?? S.of(context).cashPayment,
                         style: getMediumStyle(
                             color: AppColors.primary, fontSize: FontSize.s12),
                       ),

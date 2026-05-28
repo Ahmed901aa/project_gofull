@@ -77,7 +77,7 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
             padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
             child: Row(children: [
               GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: const Color(0xFF0E0E0E))),
-              Expanded(child: Text(l10n.discountCodes, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20), textAlign: TextAlign.center)),
+              Expanded(child: Text(S.of(context).discountCodes, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20), textAlign: TextAlign.center)),
               SizedBox(width: 24.sp),
             ]),
           ),

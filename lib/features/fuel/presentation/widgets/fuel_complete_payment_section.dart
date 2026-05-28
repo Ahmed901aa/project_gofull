@@ -28,13 +28,13 @@ class FuelCompletePaymentSection extends StatelessWidget {
             children: [
               SizedBox(height: Insets.s8),
               _payRow(l10n.subtotal, data['subtotal']!),
-              _serviceFeeRow(),
+              _serviceFeeRow(l10n),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: Insets.s16),
                 child: const Divider(height: 1, color: AppColors.neutral600),
               ),
               SizedBox(height: Insets.s8),
-              _totalRow(),
+              _totalRow(l10n),
               SizedBox(height: Insets.s8),
             ],
           ),
@@ -54,7 +54,7 @@ class FuelCompletePaymentSection extends StatelessWidget {
         ),
       );
 
-  Widget _serviceFeeRow() => Padding(
+  Widget _serviceFeeRow(S l10n) => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
         child: Row(
           children: [
@@ -69,7 +69,7 @@ class FuelCompletePaymentSection extends StatelessWidget {
         ),
       );
 
-  Widget _totalRow() => Padding(
+  Widget _totalRow(S l10n) => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16),
         child: Row(
           children: [

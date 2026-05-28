@@ -54,7 +54,8 @@
       "Bash(rm /Users/usermac/Desktop/project_Gofull/project_gofull/.git/index.lock)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(echo \"=== exit code: $? \\(grep found nothing = no errors\\) ===\")"
     ]
   }
 }

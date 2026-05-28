@@ -119,13 +119,13 @@ class _ServiceArrivedScreenState extends State<ServiceArrivedScreen> {
                     SizedBox(height: Insets.s16),
                     Center(child: DottedCircleContainer(imagePath: _args.imagePath)),
                     SizedBox(height: Insets.s16),
-                    Text(_args.title,
+                    Text(_args.title ?? S.of(context).serviceArrived,
                         style: getBoldStyle(
                             color: const Color(0xFF0E0E0E),
                             fontSize: FontSize.s18),
                         textAlign: TextAlign.center),
                     SizedBox(height: 4.h),
-                    Text(_args.subtitle,
+                    Text(_args.subtitle ?? S.of(context).arrivedMsg,
                         style: getRegularStyle(
                             color: AppColors.neutral800,
                             fontSize: FontSize.s14),

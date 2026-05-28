@@ -61,7 +61,7 @@ class _FaqScreenState extends State<FaqScreen> {
               child: Row(
                 children: [
                   GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: const Color(0xFF0E0E0E))),
-                  Expanded(child: Text(l10n.faq, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20), textAlign: TextAlign.center)),
+                  Expanded(child: Text(S.of(context).faq, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20), textAlign: TextAlign.center)),
                   SizedBox(width: 24.sp),
                 ],
               ),

@@ -43,10 +43,10 @@ class OrderCard extends StatelessWidget {
             SizedBox(height: Sizes.s8),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: Insets.s16),
-              child: order.serviceType == ServiceType.tow ? _buildRouteCard() : _buildFuelLocationRow(),
+              child: order.serviceType == ServiceType.tow ? _buildRouteCard(context) : _buildFuelLocationRow(context),
             ),
             SizedBox(height: Sizes.s8),
-            Padding(padding: EdgeInsets.symmetric(horizontal: Insets.s16), child: _buildDetailRows()),
+            Padding(padding: EdgeInsets.symmetric(horizontal: Insets.s16), child: _buildDetailRows(context)),
             SizedBox(height: Sizes.s8),
             Divider(color: AppColors.neutral500, height: 1, thickness: 1),
             SizedBox(height: Sizes.s8),
@@ -57,7 +57,7 @@ class OrderCard extends StatelessWidget {
     );
   }
 
-  Widget _buildRouteCard() => Container(
+  Widget _buildRouteCard(BuildContext context) => Container(
         padding: EdgeInsets.all(Insets.s12),
         decoration: BoxDecoration(
           color: AppColors.scaffoldBg, borderRadius: BorderRadius.circular(AppRadius.s16),
@@ -77,7 +77,7 @@ class OrderCard extends StatelessWidget {
         ]),
       );
 
-  Widget _buildFuelLocationRow() => Container(
+  Widget _buildFuelLocationRow(BuildContext context) => Container(
         padding: EdgeInsets.all(Insets.s12),
         decoration: BoxDecoration(
           color: AppColors.scaffoldBg, borderRadius: BorderRadius.circular(AppRadius.s16),
@@ -113,7 +113,7 @@ class OrderCard extends StatelessWidget {
         ]),
       );
 
-  Widget _buildDetailRows() {
+  Widget _buildDetailRows(BuildContext context) {
     final rows = order.serviceType == ServiceType.tow
         ? [OrderDetailRow(label: S.of(context).carTypeLabel, value: order.carType), OrderDetailRow(label: S.of(context).plateNumberLabel, value: order.plateNumber), OrderDetailRow(label: S.of(context).towTruckType, value: order.winchType ?? '')]
         : [OrderDetailRow(label: S.of(context).fuelType, value: order.fuelType ?? ''), OrderDetailRow(label: S.of(context).fuelQuantity, value: order.quantity ?? ''), OrderDetailRow(label: S.of(context).vehicleTypeLabel, value: order.carType), OrderDetailRow(label: S.of(context).plateNumberLabel, value: order.plateNumber)];

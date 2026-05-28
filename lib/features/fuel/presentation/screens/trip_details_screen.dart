@@ -181,7 +181,7 @@ class TripDetailsScreen extends StatelessWidget {
                     onTap: () => Navigator.pop(context),
                     child: Icon(Icons.arrow_back_ios_new_rounded,
                         size: 20.sp, color: const Color(0xFF0E0E0E))),
-                Text(l10n.driverTripDetails,
+                Text(S.of(context).driverTripDetails,
                     style: getBoldStyle(
                         color: const Color(0xFF0E0E0E),
                         fontSize: FontSize.s20)),

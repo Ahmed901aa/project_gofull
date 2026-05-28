@@ -74,7 +74,7 @@ class TermsScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      l10n.terms,
+                      S.of(context).terms,
                       style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
                       textAlign: TextAlign.center,
                     ),
