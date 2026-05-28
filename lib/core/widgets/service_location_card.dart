@@ -41,7 +41,7 @@ class ServiceLocationCard extends StatelessWidget {
               ],
             ),
           ),
-          const Spacer(),
+          SizedBox(width: Insets.s8),
           Icon(Icons.arrow_forward_rounded, size: 16.sp, color: context.colors.textPrimary),
         ],
       ),

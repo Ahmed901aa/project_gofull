@@ -304,14 +304,14 @@ const _darkColors = AppThemeColors(
   primarySurface: Color(0xFF1A3A30),    // dark tinted surface
   onPrimary: Color(0xFFFFFFFF),
 
-  // Borders — subtle light on dark
-  border: Color(0xFF3A3A3A),
-  borderSubtle: Color(0xFF2C2C2C),
-  divider: Color(0xFF2E2E2E),
+  // Borders — visible on dark surfaces
+  border: Color(0xFF444444),
+  borderSubtle: Color(0xFF353535),
+  divider: Color(0xFF363636),
 
-  // Inputs
-  inputFill: Color(0xFF252525),
-  inputBorder: Color(0xFF3A3A3A),
+  // Inputs — brighter fill for clear contrast against surface (0xFF1E1E1E)
+  inputFill: Color(0xFF2C2C2C),
+  inputBorder: Color(0xFF484848),
   inputFocusBorder: Color(0xFF2E9B7F),  // dark primary
 
   // Status — desaturated slightly for dark mode harmony
@@ -430,22 +430,14 @@ ThemeData _buildTheme({
     ),
 
     // Input
+    // TextFields are always wrapped in a styled Container (ServiceInputField etc.)
+    // so the theme must NOT add its own fill/border — that causes double containers.
     inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: colors.inputFill,
+      filled: false,
       hintStyle: TextStyle(color: colors.textDisabled),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: colors.inputBorder),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: colors.inputBorder),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: colors.inputFocusBorder, width: 1.5),
-      ),
+      border: InputBorder.none,
+      enabledBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
     ),
 
     // Dialog

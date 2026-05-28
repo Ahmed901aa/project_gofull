@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/cubits/locale_cubit.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 
-/// Shows a polished language selection bottom sheet.
+/// Shows a minimal language selection bottom sheet.
 ///
+/// Tapping a language applies it instantly and closes.
 /// Returns `true` if the language was changed, `false` otherwise.
 Future<bool> showLanguageSelectorSheet(BuildContext context) async {
   final result = await showModalBottomSheet<bool>(
     context: context,
-    isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (_) => BlocProvider.value(
       value: context.read<LocaleCubit>(),
@@ -24,26 +23,12 @@ Future<bool> showLanguageSelectorSheet(BuildContext context) async {
   return result ?? false;
 }
 
-class _LanguageSelectorContent extends StatefulWidget {
+class _LanguageSelectorContent extends StatelessWidget {
   const _LanguageSelectorContent();
 
   @override
-  State<_LanguageSelectorContent> createState() =>
-      _LanguageSelectorContentState();
-}
-
-class _LanguageSelectorContentState extends State<_LanguageSelectorContent> {
-  late String _selected;
-
-  @override
-  void initState() {
-    super.initState();
-    _selected = context.read<LocaleCubit>().state.languageCode;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final cubit = context.read<LocaleCubit>();
+    final cubit = context.watch<LocaleCubit>();
     final current = cubit.state.languageCode;
 
     return Container(
@@ -83,56 +68,38 @@ class _LanguageSelectorContentState extends State<_LanguageSelectorContent> {
               ],
             ),
             SizedBox(height: 20.h),
-            // Arabic option
+            // Arabic — one tap applies instantly
             _LanguageOption(
               flag: '🇱🇾',
               title: 'العربية',
               subtitle: 'Arabic',
-              isSelected: _selected == 'ar',
-              onTap: () => setState(() => _selected = 'ar'),
+              isSelected: current == 'ar',
+              onTap: () async {
+                if (current != 'ar') {
+                  await cubit.setLocale(const Locale('ar'));
+                }
+                if (context.mounted) {
+                  Navigator.pop(context, current != 'ar');
+                }
+              },
             ),
             SizedBox(height: 10.h),
-            // English option
+            // English — one tap applies instantly
             _LanguageOption(
               flag: '🇬🇧',
               title: 'English',
               subtitle: 'الإنجليزية',
-              isSelected: _selected == 'en',
-              onTap: () => setState(() => _selected = 'en'),
+              isSelected: current == 'en',
+              onTap: () async {
+                if (current != 'en') {
+                  await cubit.setLocale(const Locale('en'));
+                }
+                if (context.mounted) {
+                  Navigator.pop(context, current != 'en');
+                }
+              },
             ),
-            SizedBox(height: 24.h),
-            // Confirm button
-            SizedBox(
-              width: double.infinity,
-              height: 48.h,
-              child: ElevatedButton(
-                onPressed: () async {
-                  if (_selected != current) {
-                    await cubit.setLocale(Locale(_selected));
-                    if (context.mounted) {
-                      Navigator.pop(context, true);
-                    }
-                  } else {
-                    Navigator.pop(context, false);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.colors.primary,
-                  foregroundColor: AppColors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.s16),
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  _selected != current
-                      ? (_selected == 'ar' ? 'تأكيد' : 'Confirm')
-                      : (current == 'ar' ? 'إغلاق' : 'Close'),
-                  style: getBoldStyle(
-                      color: context.colors.surface, fontSize: FontSize.s16),
-                ),
-              ),
-            ),
+            SizedBox(height: 16.h),
           ],
         ),
       ),
@@ -165,7 +132,7 @@ class _LanguageOption extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? context.colors.primary.withValues(alpha: 0.06)
-              : AppColors.white,
+              : context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.s16),
           border: Border.all(
             color: isSelected ? context.colors.primary : context.colors.border,

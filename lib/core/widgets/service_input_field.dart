@@ -20,18 +20,19 @@ class ServiceInputField extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.s16),
         border: Border.all(color: context.colors.border),
       ),
-      child: Align(
-        alignment: AlignmentDirectional.centerEnd,
-        child: TextField(
-          controller: controller,
-          textAlign: TextAlign.start,
-          style: getRegularStyle(color: context.colors.textPrimary, fontSize: FontSize.s14),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: getRegularStyle(color: context.colors.textDisabled, fontSize: FontSize.s14),
-            border: InputBorder.none,
-            isDense: true,
-          ),
+      child: TextField(
+        controller: controller,
+        textAlign: TextAlign.start,
+        style: getRegularStyle(color: context.colors.textPrimary, fontSize: FontSize.s14),
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: getRegularStyle(color: context.colors.textDisabled, fontSize: FontSize.s14),
+          border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          filled: false,
+          isDense: true,
+          contentPadding: EdgeInsets.zero,
         ),
       ),
     );

@@ -13,6 +13,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/routes/route_generator.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/noti_service.dart';
+import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
 
@@ -64,7 +65,10 @@ class GoFullApp extends StatelessWidget {
                   ],
 
                   // ── Theme system ──
-                  themeMode: themeMode,
+                  // Providers are locked to light mode regardless of user preference
+                  themeMode: sl<TokenStorage>().userRole == 'provider'
+                      ? ThemeMode.light
+                      : themeMode,
                   theme: buildLightTheme(fontFamily: fontFamily),
                   darkTheme: buildDarkTheme(fontFamily: fontFamily),
 

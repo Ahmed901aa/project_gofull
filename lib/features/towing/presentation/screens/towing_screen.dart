@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/cubits/location_cubit.dart';
+import 'package:project_gofull/core/cubits/location_state.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
@@ -34,6 +35,12 @@ class _TowingScreenState extends State<TowingScreen> {
   double? _destinationLat;
   double? _destinationLng;
 
+  /// Guards against double-submission between tap and bloc emitting RequestLoading.
+  bool _isSubmitting = false;
+
+  /// Guards against the BlocListener pushing a route twice.
+  bool _hasNavigated = false;
+
   bool _hasLocation(BuildContext context) {
     final loc = context.read<LocationCubit>().state;
     return loc.lat != null && loc.lng != null;
@@ -50,14 +57,18 @@ class _TowingScreenState extends State<TowingScreen> {
 
   String? _getValidationError(BuildContext context) {
     final l10n = S.of(context);
-    if (!_hasLocation(context)) return l10n.pleaseSelectLocation;
-    if (!_hasDestination) {
-
-      return l10n.pleaseSelectDestination;
-
+    if (!_hasLocation(context)) {
+      return l10n.pleaseSelectLocation;
     }
-    if (_carTypeCtrl.text.trim().isEmpty) return l10n.pleaseEnterCarType;
-    if (_plateCtrl.text.trim().isEmpty) return l10n.pleaseEnterPlateNumber;
+    if (!_hasDestination) {
+      return l10n.pleaseSelectDestination;
+    }
+    if (_carTypeCtrl.text.trim().isEmpty) {
+      return l10n.pleaseEnterCarType;
+    }
+    if (_plateCtrl.text.trim().isEmpty) {
+      return l10n.pleaseEnterPlateNumber;
+    }
     return null;
   }
 
@@ -66,9 +77,7 @@ class _TowingScreenState extends State<TowingScreen> {
     final prev = cubit.state;
     await Navigator.pushNamed(context, Routes.locationPicker);
     if (!mounted) {
-
       return;
-
     }
     final selected = cubit.state;
     if (selected.address != prev.address) {
@@ -84,18 +93,23 @@ class _TowingScreenState extends State<TowingScreen> {
   }
 
   void _onSubmit(BuildContext blocContext) {
+    // Prevent double-submission
+    if (_isSubmitting) {
+      return;
+    }
+
     final loc = context.read<LocationCubit>().state;
     if (loc.lat == null || loc.lng == null) {
-
       return;
-
     }
     if (_destinationLat == null || _destinationLng == null) {
-
       return;
-
     }
-    if (_carTypeCtrl.text.trim().isEmpty) return;
+    if (_carTypeCtrl.text.trim().isEmpty) {
+      return;
+    }
+
+    setState(() => _isSubmitting = true);
 
     blocContext.read<RequestBloc>().add(CreateTowingRequestEvent(
           latitude: loc.lat!,
@@ -106,8 +120,7 @@ class _TowingScreenState extends State<TowingScreen> {
           destinationAddress: _destinationAddress,
           plateNumber: _plateCtrl.text.trim(),
           carType: _carTypeCtrl.text.trim(),
-          notes:
-              _notesCtrl.text.isNotEmpty ? _notesCtrl.text : null,
+          notes: _notesCtrl.text.isNotEmpty ? _notesCtrl.text : null,
         ));
   }
 
@@ -133,8 +146,9 @@ class _TowingScreenState extends State<TowingScreen> {
       create: (_) => sl<RequestBloc>(),
       child: BlocListener<RequestBloc, RequestState>(
         listener: (context, state) {
-          final l10n = S.of(context);
-          if (state is RequestCreated) {
+          if (state is RequestCreated && !_hasNavigated) {
+            _hasNavigated = true;
+            final l10n = S.of(context);
             BottomNavShell.markOrderActive(state.request.id);
             Navigator.pushNamed(
               context,
@@ -148,6 +162,9 @@ class _TowingScreenState extends State<TowingScreen> {
               ),
             );
           } else if (state is RequestError) {
+            // Reset submission guard so the user can retry
+            setState(() => _isSubmitting = false);
+            final l10n = S.of(context);
             if (state.message.contains('active')) {
               AppSnackbar.warning(context, l10n.activeOrderWarning);
             } else {
@@ -202,22 +219,26 @@ class _TowingScreenState extends State<TowingScreen> {
                       ),
                     ),
                   ),
+                  // Wrap in BOTH RequestBloc AND LocationCubit builders
+                  // so the button reacts to location changes too
                   BlocBuilder<RequestBloc, RequestState>(
-                    builder: (context, state) {
-                      final isValid = _isValid(context);
-                      return ServiceBottomButton(
-                        isLoading: state is RequestLoading,
-                        isEnabled: isValid,
-                        onPressed: isValid
-                            ? () => _onSubmit(blocContext)
-                            : () {
-                                final err = _getValidationError(context);
-                                if (err != null) {
-                                  AppSnackbar.warning(context, err);
-                                }
-                              },
-                      );
-                    },
+                    builder: (context, state) => BlocBuilder<LocationCubit, LocationState>(
+                      builder: (context, loc) {
+                        final isLoading = state is RequestLoading || _isSubmitting;
+                        final isValid = _isValid(context);
+                        return ServiceBottomButton(
+                          isLoading: isLoading,
+                          isEnabled: isValid,
+                          onPressed: () => _onSubmit(blocContext),
+                          onDisabledTap: () {
+                            final err = _getValidationError(context);
+                            if (err != null) {
+                              AppSnackbar.warning(context, err);
+                            }
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),

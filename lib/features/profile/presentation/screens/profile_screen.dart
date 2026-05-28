@@ -12,13 +12,12 @@ import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
 import 'package:project_gofull/core/cubits/locale_cubit.dart';
 import 'package:project_gofull/core/widgets/app_notification.dart';
-import 'package:project_gofull/core/widgets/language_selector_sheet.dart';
-import 'package:project_gofull/core/widgets/theme_selector_sheet.dart';
 import 'package:project_gofull/core/cubits/theme_cubit.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/profile_menu_item.dart';
 import '../widgets/profile_user_card.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/service_dropdown.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -59,19 +58,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         return l10n.towingService;
       default:
         return type ?? '-';
-    }
-  }
-
-  String _themeTrailing(BuildContext context) {
-    final l10n = S.of(context);
-    final mode = context.watch<ThemeCubit>().appThemeMode;
-    switch (mode) {
-      case AppThemeMode.system:
-        return l10n.themeSystem;
-      case AppThemeMode.light:
-        return l10n.themeLight;
-      case AppThemeMode.dark:
-        return l10n.themeDark;
     }
   }
 
@@ -138,27 +124,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Navigator.pushNamed(context, Routes.discountCodes),
                   ),
                   SizedBox(height: Sizes.s12),
-                  ProfileMenuItem(
-                    icon: Icons.language_rounded,
-                    label: l10n.language,
-                    trailing: localeCubit.isArabic ? 'English' : l10n.arabic,
-                    onTap: () async {
-                      final changed = await showLanguageSelectorSheet(context);
-                      if (changed && context.mounted) {
-                        AppSnackbar.success(context, l10n.languageChanged);
+                  // ── Language selector (same style as fuel type dropdown) ──
+                  Text(l10n.language,
+                      style: getMediumStyle(
+                          color: context.colors.textPrimary,
+                          fontSize: FontSize.s16)),
+                  SizedBox(height: Sizes.s8),
+                  ServiceDropdown(
+                    hint: l10n.language,
+                    value: localeCubit.isArabic
+                        ? l10n.arabic
+                        : l10n.english,
+                    items: [l10n.arabic, l10n.english],
+                    onChanged: (val) {
+                      if (val == null) return;
+                      final wantArabic = val == l10n.arabic;
+                      if (wantArabic != localeCubit.isArabic) {
+                        localeCubit.toggleLocale();
                       }
                     },
                   ),
                   SizedBox(height: Sizes.s12),
-                  ProfileMenuItem(
-                    icon: Icons.brightness_6_rounded,
-                    label: l10n.appearance,
-                    trailing: _themeTrailing(context),
-                    onTap: () async {
-                      final changed = await showThemeSelectorSheet(context);
-                      if (changed && context.mounted) {
-                        AppSnackbar.success(context, l10n.themeChanged);
-                      }
+                  // ── Theme selector (same style as fuel type dropdown) ──
+                  Text(l10n.appearance,
+                      style: getMediumStyle(
+                          color: context.colors.textPrimary,
+                          fontSize: FontSize.s16)),
+                  SizedBox(height: Sizes.s8),
+                  ServiceDropdown(
+                    hint: l10n.appearance,
+                    value: context.watch<ThemeCubit>().isDark
+                        ? l10n.themeDark
+                        : l10n.themeLight,
+                    items: [l10n.themeLight, l10n.themeDark],
+                    onChanged: (val) {
+                      if (val == null) return;
+                      final cubit = context.read<ThemeCubit>();
+                      final next = val == l10n.themeDark
+                          ? AppThemeMode.dark
+                          : AppThemeMode.light;
+                      cubit.setThemeMode(next);
                     },
                   ),
                   SizedBox(height: Sizes.s12),

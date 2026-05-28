@@ -37,6 +37,12 @@ class _FuelScreenState extends State<FuelScreen> {
   int? _selectedQuantityIndex;
   final _notesController = TextEditingController();
 
+  /// Guards against double-submission between tap and bloc emitting RequestLoading.
+  bool _isSubmitting = false;
+
+  /// Guards against the BlocListener pushing a route twice.
+  bool _hasNavigated = false;
+
   List<String> _getQuantities(BuildContext context) {
     final l10n = S.of(context);
     return [l10n.liters20Qty, l10n.liters30Qty, l10n.liters40Qty, l10n.liters50Qty, l10n.fullTankQty];
@@ -75,21 +81,17 @@ class _FuelScreenState extends State<FuelScreen> {
   String? _getValidationError(BuildContext context) {
     final l10n = S.of(context);
     if (_selectedFuel == null) {
-
       return l10n.pleaseSelectFuelType;
-
     }
     if (_selectedQuantity == null) {
-
       return l10n.pleaseSelectQuantity;
-
     }
     if (!_isFullTank && _quantityNum <= 0) {
-
       return l10n.pleaseSelectValidQuantity;
-
     }
-    if (!_hasLocation(context)) return l10n.pleaseSelectLocation;
+    if (!_hasLocation(context)) {
+      return l10n.pleaseSelectLocation;
+    }
     return null;
   }
 
@@ -107,29 +109,30 @@ class _FuelScreenState extends State<FuelScreen> {
 
   double get _quantityNum {
     if (_isFullTank) {
-
       return 0;
-
     } // full tank — price calculated by driver
     return double.tryParse((_selectedQuantity ?? '').replaceAll(RegExp(r'[^\d.]'), '')) ?? 0;
   }
 
   double get _subtotal {
     if (_isFullTank) {
-
       return 0;
-
     } // will be determined after filling
     return (_selectedFuel?.pricePerLiter ?? 0) * _quantityNum;
   }
 
   void _onSubmit(BuildContext blocContext) {
+    // Prevent double-submission
+    if (_isSubmitting) {
+      return;
+    }
+
     final loc = context.read<LocationCubit>().state;
     if (loc.lat == null || loc.lng == null) {
-
       return;
-
     }
+
+    setState(() => _isSubmitting = true);
 
     final l10n = S.of(context);
     final notes = _notesController.text.isNotEmpty ? _notesController.text : null;
@@ -168,8 +171,9 @@ class _FuelScreenState extends State<FuelScreen> {
       create: (_) => sl<RequestBloc>(),
       child: BlocListener<RequestBloc, RequestState>(
         listener: (context, state) {
-          final l10n = S.of(context);
-          if (state is RequestCreated) {
+          if (state is RequestCreated && !_hasNavigated) {
+            _hasNavigated = true;
+            final l10n = S.of(context);
             BottomNavShell.markOrderActive(state.request.id);
             Navigator.pushNamed(context, Routes.searchingDriver,
               arguments: SearchingArgs(
@@ -180,6 +184,9 @@ class _FuelScreenState extends State<FuelScreen> {
                 serviceType: 'fuel_delivery',
               ));
           } else if (state is RequestError) {
+            // Reset submission guard so the user can retry
+            setState(() => _isSubmitting = false);
+            final l10n = S.of(context);
             if (state.message.contains('active')) {
               AppSnackbar.warning(context, l10n.activeOrderWarning);
             } else {
@@ -285,18 +292,18 @@ class _FuelScreenState extends State<FuelScreen> {
                   BlocBuilder<RequestBloc, RequestState>(
                     builder: (context, state) => BlocBuilder<LocationCubit, LocationState>(
                       builder: (context, loc) {
+                        final isLoading = state is RequestLoading || _isSubmitting;
                         final isValid = _isValid(context);
                         return ServiceBottomButton(
-                          isLoading: state is RequestLoading,
+                          isLoading: isLoading,
                           isEnabled: isValid,
-                          onPressed: isValid
-                              ? () => _onSubmit(blocContext)
-                              : () {
-                                  final err = _getValidationError(context);
-                                  if (err != null) {
-                                    AppSnackbar.warning(context, err);
-                                  }
-                                },
+                          onPressed: () => _onSubmit(blocContext),
+                          onDisabledTap: () {
+                            final err = _getValidationError(context);
+                            if (err != null) {
+                              AppSnackbar.warning(context, err);
+                            }
+                          },
                         );
                       },
                     ),
@@ -313,9 +320,7 @@ class _FuelScreenState extends State<FuelScreen> {
   /// Normalize fuel prices: collapse 91/95 variants into just بنزين + ديزل.
   List<FuelPriceEntity> _normalizeFuelPrices(List<FuelPriceEntity> raw) {
     if (raw.isEmpty) {
-
       return List.of(_fallbackFuelPrices);
-
     }
 
     // Try to find gasoline price from backend (any 91/95/gasoline match)
