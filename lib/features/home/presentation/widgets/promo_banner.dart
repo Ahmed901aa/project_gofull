@@ -50,7 +50,7 @@ class _PromoBannerState extends State<PromoBanner> {
         ClipRRect(
           borderRadius: BorderRadius.circular(AppRadius.s16),
           child: SizedBox(
-            height: 140.h,
+            height: 160.h,
             child: PageView.builder(
               controller: _pageController,
               itemCount: _totalPages,

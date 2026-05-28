@@ -29,9 +29,24 @@ class ServiceCard extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
         decoration: BoxDecoration(
-          color: context.colors.surfaceElevated,
+          color: context.isDarkMode
+              ? context.colors.surface
+              : context.colors.surfaceElevated,
           borderRadius: BorderRadius.circular(AppRadius.s16),
-          border: Border.all(color: context.colors.border),
+          border: Border.all(
+            color: context.isDarkMode
+                ? context.colors.border.withValues(alpha: 0.6)
+                : context.colors.border,
+          ),
+          boxShadow: context.isDarkMode
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

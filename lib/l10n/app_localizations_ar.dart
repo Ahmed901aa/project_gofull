@@ -965,40 +965,40 @@ class SAr extends S {
   String get useCodeBtn => 'استخدم الكود';
 
   @override
-  String get bannerAllServicesIn => 'جميع خدمات الطوارئ في ';
+  String get bannerAllServicesIn => 'وقود وسحب في\n';
 
   @override
-  String get bannerOneSubscription => 'اشتراك واحد';
+  String get bannerOneSubscription => 'باقة واحدة';
 
   @override
-  String get bannerFreeVouchers => 'قسائم مجانية + خصومات حصرية';
+  String get bannerFreeVouchers => 'قسائم مجانية + خصومات VIP';
 
   @override
-  String get bannerExclusiveOffer => 'عرض حصري';
+  String get bannerExclusiveOffer => 'مميز';
 
   @override
-  String get bannerTowRoundClock => 'خدمة الساحبة على مدار ';
+  String get bannerTowRoundClock => 'إنقاذ على الطريق\n';
 
   @override
-  String get bannerTwentyFourHours => '24 ساعة';
+  String get bannerTwentyFourHours => '24/7';
 
   @override
-  String get bannerFastResponse => 'استجابة سريعة في أي وقت';
+  String get bannerFastResponse => 'أسرع استجابة مضمونة';
 
   @override
-  String get bannerAvailableNow => 'متاح الآن';
+  String get bannerAvailableNow => 'دائماً متاح';
 
   @override
-  String get bannerGetDiscount => 'احصل على خصم ';
+  String get bannerGetDiscount => 'وفّر ';
 
   @override
-  String get bannerTwentyPercent => '20%';
+  String get bannerTwentyPercent => '20% اليوم';
 
   @override
-  String get bannerUseCodeGO20 => 'استخدم الكود: GO20';
+  String get bannerUseCodeGO20 => 'الكود: GO20';
 
   @override
-  String get bannerLimitedTime => 'لفترة محدودة';
+  String get bannerLimitedTime => 'ينتهي قريباً';
 
   @override
   String get searchFuelDelivery => 'إمداد وقود';

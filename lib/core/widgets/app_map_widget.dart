@@ -269,7 +269,14 @@ class _AppMapWidgetState extends State<AppMapWidget> {
       );
     }
 
-    return Directionality(
+    // Force light theme for all map overlays (search bar, confirm card, etc.)
+    final lightTheme = buildLightTheme(
+      fontFamily: Theme.of(context).textTheme.bodyMedium?.fontFamily,
+    );
+
+    return Theme(
+      data: lightTheme,
+      child: Builder(builder: (context) => Directionality(
       textDirection: Directionality.of(context),
       child: Stack(
         children: [
@@ -285,6 +292,7 @@ class _AppMapWidgetState extends State<AppMapWidget> {
             mapToolbarEnabled: false,
             markers: _markers,
             onTap: (latLng) => _placeMarker(latLng, ''),
+            style: '[]', // Force light mode regardless of app theme
           ),
           SafeArea(
             child: Material(
@@ -352,6 +360,7 @@ class _AppMapWidgetState extends State<AppMapWidget> {
             ),
         ],
       ),
+    )),
     );
   }
 }

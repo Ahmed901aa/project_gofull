@@ -245,7 +245,9 @@ class _ContactOptionCard extends StatelessWidget {
               ),
             ),
             Icon(
-              Icons.arrow_forward_rounded,
+              Directionality.of(context) == TextDirection.rtl
+                  ? Icons.arrow_back_ios_rounded
+                  : Icons.arrow_forward_ios_rounded,
               size: 16.sp,
               color: context.colors.textSecondary,
             ),

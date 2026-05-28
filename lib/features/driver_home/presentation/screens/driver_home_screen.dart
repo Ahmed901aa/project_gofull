@@ -365,6 +365,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   zoomControlsEnabled: false,
                   mapToolbarEnabled: false,
                   compassEnabled: false,
+                  style: '[]', // Force light mode regardless of app theme
                 ),
 
                 // ── Top bar overlay ──

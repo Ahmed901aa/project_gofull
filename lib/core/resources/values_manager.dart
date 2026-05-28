@@ -15,6 +15,7 @@ class Insets {
 
 class Sizes {
   const Sizes._();
+  static double s4 = 4.0.h;
   static double s8 = 8.0.h;
   static double s12 = 12.0.h;
   static double s16 = 16.0.h;

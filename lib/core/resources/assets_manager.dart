@@ -3,6 +3,8 @@ class ImageAssets {
   static const String _path = 'assets/images';
   static const String logo = '$_path/logo_1.png';
   static const String promoTruck = '$_path/car.png';
+  static const String bannerPremium = '$_path/banner_premium.png';
+  static const String bannerDiscount = '$_path/banner_discount.png';
   static const String offerBanner = '$_path/Frame 1984080691.png';
 }
 

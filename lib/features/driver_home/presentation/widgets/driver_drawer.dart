@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/network/api_client.dart';
@@ -9,6 +10,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
+import 'package:project_gofull/core/cubits/locale_cubit.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverDrawer extends StatefulWidget {
@@ -68,7 +70,7 @@ class _DriverDrawerState extends State<DriverDrawer> {
         double.tryParse('${_profileData?['average_rating'] ?? ''}') ?? 0.0;
     final totalRatings =
         int.tryParse('${_profileData?['total_ratings'] ?? ''}') ?? 0;
-    final initials = driverName.isNotEmpty ? driverName[0] : '؟';
+    final initials = driverName.isNotEmpty ? driverName[0] : '?';
 
     return Drawer(
       backgroundColor: context.colors.surface,
@@ -196,6 +198,17 @@ class _DriverDrawerState extends State<DriverDrawer> {
               },
             ),
             _DrawerMenuItem(
+              icon: Icons.language_rounded,
+              title: S.of(context).language,
+              trailing: context.watch<LocaleCubit>().isArabic
+                  ? 'العربية'
+                  : 'English',
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, Routes.languageSettings);
+              },
+            ),
+            _DrawerMenuItem(
               icon: Icons.privacy_tip_outlined,
               title: S.of(context).privacyPolicy,
               onTap: () {
@@ -237,12 +250,14 @@ class _DrawerMenuItem extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
   final Color? color;
+  final String? trailing;
 
   const _DrawerMenuItem({
     required this.icon,
     required this.title,
     required this.onTap,
     this.color,
+    this.trailing,
   });
 
   @override
@@ -268,8 +283,20 @@ class _DrawerMenuItem extends StatelessWidget {
                 ),
               ),
             ),
+            if (trailing != null) ...[
+              Text(
+                trailing!,
+                style: getRegularStyle(
+                  fontSize: FontSize.s14,
+                  color: context.colors.textSecondary,
+                ),
+              ),
+              SizedBox(width: 4.w),
+            ],
             Icon(
-              Icons.arrow_forward_rounded,
+              Directionality.of(context) == TextDirection.rtl
+                  ? Icons.arrow_back_ios_rounded
+                  : Icons.arrow_forward_ios_rounded,
               size: 14.sp,
               color: context.colors.iconSecondary,
             ),

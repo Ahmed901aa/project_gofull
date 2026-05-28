@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_gofull/core/resources/assets_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 
@@ -10,6 +11,8 @@ class BannerData {
   final String tag;
   final IconData icon;
   final String ctaLabel;
+  final String image;
+  final bool flipImageInRtl;
   const BannerData({
     required this.gradientColors,
     required this.headline,
@@ -18,6 +21,8 @@ class BannerData {
     required this.tag,
     required this.icon,
     required this.ctaLabel,
+    required this.image,
+    this.flipImageInRtl = false,
   });
 }
 
@@ -32,6 +37,7 @@ List<BannerData> getBannerSlides(BuildContext context) {
       tag: l10n.bannerExclusiveOffer,
       icon: Icons.workspace_premium_rounded,
       ctaLabel: l10n.subscribeNow,
+      image: ImageAssets.bannerPremium,
     ),
     BannerData(
       gradientColors: [context.colors.primaryLight, context.colors.primary, Color(0xFF003329)],
@@ -41,6 +47,8 @@ List<BannerData> getBannerSlides(BuildContext context) {
       tag: l10n.bannerAvailableNow,
       icon: Icons.fire_truck_rounded,
       ctaLabel: l10n.orderNow,
+      image: ImageAssets.promoTruck,
+      flipImageInRtl: true,
     ),
     BannerData(
       gradientColors: [Color(0xFF2979FF), Color(0xFF1565C0), Color(0xFF0D47A1)],
@@ -50,6 +58,7 @@ List<BannerData> getBannerSlides(BuildContext context) {
       tag: l10n.bannerLimitedTime,
       icon: Icons.local_offer_rounded,
       ctaLabel: l10n.useCodeBtn,
+      image: ImageAssets.bannerDiscount,
     ),
   ];
 }

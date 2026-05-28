@@ -166,8 +166,16 @@ class _BottomNavShellState extends State<BottomNavShell>
           body: IndexedStack(index: _currentIndex, children: _screens),
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
-              color: context.colors.background,
-              border: Border(top: BorderSide(color: context.colors.surfaceVariant)),
+              color: context.isDarkMode
+                  ? context.colors.surface
+                  : context.colors.background,
+              border: Border(
+                top: BorderSide(
+                  color: context.isDarkMode
+                      ? context.colors.border
+                      : context.colors.surfaceVariant,
+                ),
+              ),
             ),
             child: SafeArea(
               top: false,

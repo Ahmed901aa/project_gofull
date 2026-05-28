@@ -30,6 +30,7 @@ class PickerMap extends StatelessWidget {
           mapToolbarEnabled: false,
           onCameraMove: onCameraMove,
           onCameraIdle: onCameraIdle,
+          style: '[]', // Force light mode regardless of app theme
         ),
         // Fixed centre pin — tip stays at map center
         Center(

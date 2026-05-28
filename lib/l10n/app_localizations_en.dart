@@ -970,40 +970,40 @@ class SEn extends S {
   String get useCodeBtn => 'Use Code';
 
   @override
-  String get bannerAllServicesIn => 'All emergency services in ';
+  String get bannerAllServicesIn => 'Fuel & towing covered in\n';
 
   @override
-  String get bannerOneSubscription => 'one subscription';
+  String get bannerOneSubscription => 'one plan';
 
   @override
-  String get bannerFreeVouchers => 'Free vouchers + exclusive discounts';
+  String get bannerFreeVouchers => 'Free vouchers + VIP discounts';
 
   @override
-  String get bannerExclusiveOffer => 'Exclusive Offer';
+  String get bannerExclusiveOffer => 'Premium';
 
   @override
-  String get bannerTowRoundClock => 'Tow service available ';
+  String get bannerTowRoundClock => 'Roadside rescue\n';
 
   @override
   String get bannerTwentyFourHours => '24/7';
 
   @override
-  String get bannerFastResponse => 'Fast response anytime';
+  String get bannerFastResponse => 'Fastest response guaranteed';
 
   @override
-  String get bannerAvailableNow => 'Available Now';
+  String get bannerAvailableNow => 'Always On';
 
   @override
-  String get bannerGetDiscount => 'Get ';
+  String get bannerGetDiscount => 'Save ';
 
   @override
-  String get bannerTwentyPercent => '20% off';
+  String get bannerTwentyPercent => '20% today';
 
   @override
-  String get bannerUseCodeGO20 => 'Use code: GO20';
+  String get bannerUseCodeGO20 => 'Code: GO20';
 
   @override
-  String get bannerLimitedTime => 'Limited Time';
+  String get bannerLimitedTime => 'Ends Soon';
 
   @override
   String get searchFuelDelivery => 'Fuel Delivery';

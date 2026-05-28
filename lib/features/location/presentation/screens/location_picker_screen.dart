@@ -178,6 +178,15 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Force the entire map screen to use light theme so search bar,
+    // bottom sheet, and all overlays stay light even in dark mode.
+    final lightTheme = buildLightTheme(
+      fontFamily: Theme.of(context).textTheme.bodyMedium?.fontFamily,
+    );
+
+    return Theme(
+      data: lightTheme,
+      child: Builder(builder: (context) {
     // Show a loading spinner while resolving GPS
     if (_resolvingGps || _center == null) {
       return Scaffold(
@@ -218,5 +227,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
       Positioned(left: 0, right: 0, bottom: 0,
         child: PickerConfirmCard(address: _address, isLoading: _loadingAddr, onConfirm: _confirm)),
     ]));
+      }),
+    );
   }
 }

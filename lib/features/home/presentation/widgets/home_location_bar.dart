@@ -22,18 +22,31 @@ class HomeSearchBar extends StatelessWidget {
           height: 48.h,
           padding: EdgeInsets.symmetric(horizontal: Insets.s16),
           decoration: BoxDecoration(
-            color: context.colors.inputFill,
+            color: context.isDarkMode
+                ? Colors.white.withValues(alpha: 0.15)
+                : context.colors.inputFill,
             borderRadius: BorderRadius.circular(AppRadius.s16),
-            border: Border.all(color: context.colors.border),
+            border: Border.all(
+              color: context.isDarkMode
+                  ? Colors.white.withValues(alpha: 0.2)
+                  : context.colors.border,
+            ),
           ),
           child: Row(
             children: [
-              Icon(Icons.search_rounded, size: 20.sp, color: context.colors.textSecondary),
+              Icon(Icons.search_rounded, size: 20.sp,
+                  color: context.isDarkMode
+                      ? Colors.white70
+                      : context.colors.textSecondary),
               SizedBox(width: Insets.s8),
               Expanded(
                 child: Text(
                   S.of(context).searchServiceHelp,
-                  style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14),
+                  style: getRegularStyle(
+                      color: context.isDarkMode
+                          ? Colors.white70
+                          : context.colors.textSecondary,
+                      fontSize: FontSize.s14),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

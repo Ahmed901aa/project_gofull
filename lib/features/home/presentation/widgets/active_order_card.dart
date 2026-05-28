@@ -345,15 +345,21 @@ class _StatusBadge extends StatelessWidget {
             l10n.pendingAcceptance, context.colors.warning, context.colors.warningSurface);
       case 'accepted':
         return _StatusInfo(
-            l10n.orderAccepted, context.colors.info, context.isDarkMode ? const Color(0xFF1A2E3A) : const Color(0xFFE3F2FD));
+            l10n.orderAccepted,
+            context.isDarkMode ? const Color(0xFF64B5F6) : context.colors.info,
+            context.isDarkMode ? const Color(0xFF1A2E3A) : const Color(0xFFE3F2FD));
       case 'en_route':
         return _StatusInfo(
             l10n.enRoute, context.colors.success, context.colors.successSurface);
       case 'arrived':
         return _StatusInfo(
-            l10n.arrived, context.isDarkMode ? const Color(0xFF4DB6AC) : const Color(0xFF0C5460), context.isDarkMode ? const Color(0xFF1A3A35) : const Color(0xFFD1ECF1));
+            l10n.arrived,
+            context.isDarkMode ? const Color(0xFF4DB6AC) : const Color(0xFF0C5460),
+            context.isDarkMode ? const Color(0xFF1A3A35) : const Color(0xFFD1ECF1));
       case 'in_progress':
-        return _StatusInfo(l10n.inProgress, context.isDarkMode ? const Color(0xFFCE93D8) : const Color(0xFF4A148C),
+        return _StatusInfo(
+            l10n.inProgress,
+            context.isDarkMode ? const Color(0xFFCE93D8) : const Color(0xFF4A148C),
             context.isDarkMode ? const Color(0xFF2A1A3A) : const Color(0xFFE2D5F1));
       default:
         return _StatusInfo(

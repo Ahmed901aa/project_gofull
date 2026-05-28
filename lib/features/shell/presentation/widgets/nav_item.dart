@@ -23,7 +23,11 @@ class NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isActive = currentIndex == index;
-    final color = isActive ? context.colors.primary : context.colors.primaryLight;
+    final color = isActive
+        ? context.colors.primary
+        : context.isDarkMode
+            ? context.colors.iconSecondary
+            : context.colors.primaryLight;
 
     return GestureDetector(
       onTap: () => onTap(index),

@@ -348,6 +348,7 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
               myLocationButtonEnabled: false,
               zoomControlsEnabled: false,
               mapToolbarEnabled: false,
+              style: '[]', // Force light mode regardless of app theme
             ),
 
             // Header

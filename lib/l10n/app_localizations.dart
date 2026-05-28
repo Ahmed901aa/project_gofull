@@ -1978,31 +1978,31 @@ abstract class S {
   /// No description provided for @bannerAllServicesIn.
   ///
   /// In en, this message translates to:
-  /// **'All emergency services in '**
+  /// **'Fuel & towing covered in\n'**
   String get bannerAllServicesIn;
 
   /// No description provided for @bannerOneSubscription.
   ///
   /// In en, this message translates to:
-  /// **'one subscription'**
+  /// **'one plan'**
   String get bannerOneSubscription;
 
   /// No description provided for @bannerFreeVouchers.
   ///
   /// In en, this message translates to:
-  /// **'Free vouchers + exclusive discounts'**
+  /// **'Free vouchers + VIP discounts'**
   String get bannerFreeVouchers;
 
   /// No description provided for @bannerExclusiveOffer.
   ///
   /// In en, this message translates to:
-  /// **'Exclusive Offer'**
+  /// **'Premium'**
   String get bannerExclusiveOffer;
 
   /// No description provided for @bannerTowRoundClock.
   ///
   /// In en, this message translates to:
-  /// **'Tow service available '**
+  /// **'Roadside rescue\n'**
   String get bannerTowRoundClock;
 
   /// No description provided for @bannerTwentyFourHours.
@@ -2014,37 +2014,37 @@ abstract class S {
   /// No description provided for @bannerFastResponse.
   ///
   /// In en, this message translates to:
-  /// **'Fast response anytime'**
+  /// **'Fastest response guaranteed'**
   String get bannerFastResponse;
 
   /// No description provided for @bannerAvailableNow.
   ///
   /// In en, this message translates to:
-  /// **'Available Now'**
+  /// **'Always On'**
   String get bannerAvailableNow;
 
   /// No description provided for @bannerGetDiscount.
   ///
   /// In en, this message translates to:
-  /// **'Get '**
+  /// **'Save '**
   String get bannerGetDiscount;
 
   /// No description provided for @bannerTwentyPercent.
   ///
   /// In en, this message translates to:
-  /// **'20% off'**
+  /// **'20% today'**
   String get bannerTwentyPercent;
 
   /// No description provided for @bannerUseCodeGO20.
   ///
   /// In en, this message translates to:
-  /// **'Use code: GO20'**
+  /// **'Code: GO20'**
   String get bannerUseCodeGO20;
 
   /// No description provided for @bannerLimitedTime.
   ///
   /// In en, this message translates to:
-  /// **'Limited Time'**
+  /// **'Ends Soon'**
   String get bannerLimitedTime;
 
   /// No description provided for @searchFuelDelivery.
