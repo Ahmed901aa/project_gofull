@@ -522,6 +522,8 @@
   "analyticsNotFound": "Analytics data not found",
   "failedToLoadReports": "Failed to load reports",
   "retryButton": "Retry",
+  "syncingWithServer": "Syncing with server…",
+  "connectionFailed": "Connection failed",
   "privacyPolicyTitle": "Privacy Policy",
   "privacyPolicyAppTitle": "GO FULL — Privacy Policy",
   "privacyPolicyLastUpdate": "Last updated: April 2026",

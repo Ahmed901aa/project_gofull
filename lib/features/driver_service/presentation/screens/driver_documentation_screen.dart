@@ -61,9 +61,15 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
         Routes.driverNavigate,
         arguments: DriverNavigateArgs(
           orderId: widget.args.orderId,
-          address: '',
+          address: widget.args.destinationAddress ?? '',
+          lat: widget.args.destinationLat,
+          lng: widget.args.destinationLng,
           navigationType: 'to_destination',
           amount: widget.args.amount,
+          customerPhone: widget.args.customerPhone,
+          destinationLat: widget.args.destinationLat,
+          destinationLng: widget.args.destinationLng,
+          destinationAddress: widget.args.destinationAddress,
         ),
       );
     } else {

@@ -1559,6 +1559,12 @@ class SEn extends S {
   String get retryButton => 'Retry';
 
   @override
+  String get syncingWithServer => 'Syncing with server…';
+
+  @override
+  String get connectionFailed => 'Connection failed';
+
+  @override
   String get privacyPolicyTitle => 'Privacy Policy';
 
   @override

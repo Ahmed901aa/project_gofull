@@ -117,7 +117,7 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
             _buildHeader(context),
             Expanded(
               child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? Center(child: CircularProgressIndicator(color: context.colors.primary))
                   : _error != null
                       ? Center(
                           child: Column(

@@ -1552,6 +1552,12 @@ class SAr extends S {
   String get retryButton => 'إعادة المحاولة';
 
   @override
+  String get syncingWithServer => 'جارٍ المزامنة مع الخادم…';
+
+  @override
+  String get connectionFailed => 'فشل الاتصال';
+
+  @override
   String get privacyPolicyTitle => 'سياسة الخصوصية';
 
   @override

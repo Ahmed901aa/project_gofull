@@ -51,7 +51,10 @@ class ProviderBloc extends Bloc<ProviderEvent, ProviderState> {
 
   Future<void> _onLoadActive(LoadActiveRequestEvent e, Emitter<ProviderState> emit) async {
     final r = await getActiveRequest(const NoParams());
-    r.fold((_) {}, (req) => emit(ActiveRequestLoaded(req)));
+    r.fold(
+      (f) => emit(ActiveRequestFailed(f.message)),
+      (req) => emit(ActiveRequestLoaded(req)),
+    );
   }
 
   Future<void> _onLoadProfile(LoadProfileEvent e, Emitter<ProviderState> emit) async {

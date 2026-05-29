@@ -224,9 +224,9 @@ class _FuelScreenState extends State<FuelScreen> {
                             ),
                             _section(l10n.fuelDetailsSection, gap: 16),
                             if (config.isLoading && fuelNames.isEmpty)
-                              const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16),
-                                child: Center(child: CircularProgressIndicator()),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Center(child: CircularProgressIndicator(color: context.colors.primary)),
                               )
                             else if (fuelNames.isEmpty)
                               Padding(

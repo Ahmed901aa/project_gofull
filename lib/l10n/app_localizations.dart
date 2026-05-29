@@ -3127,6 +3127,18 @@ abstract class S {
   /// **'Retry'**
   String get retryButton;
 
+  /// No description provided for @syncingWithServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing with server…'**
+  String get syncingWithServer;
+
+  /// No description provided for @connectionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection failed'**
+  String get connectionFailed;
+
   /// No description provided for @privacyPolicyTitle.
   ///
   /// In en, this message translates to:

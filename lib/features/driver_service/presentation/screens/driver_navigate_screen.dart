@@ -68,8 +68,14 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
     if (orderId != null && _isToCustomer) {
       sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'en_route'));
     }
-    _rebuildMapObjects(); // show destination marker immediately
     _initLocation();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Build destination marker once dependencies (Localizations, Theme) are ready.
+    _rebuildMapObjects();
   }
 
   /// Get initial position then start periodic updates
@@ -320,6 +326,9 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
           documentationType: _isToCustomer ? 'pickup' : 'delivery',
           amount: widget.args.amount,
           customerPhone: widget.args.customerPhone,
+          destinationLat: widget.args.destinationLat,
+          destinationLng: widget.args.destinationLng,
+          destinationAddress: widget.args.destinationAddress,
         ),
       );
     }

@@ -30,7 +30,8 @@ class DriverHomeScreen extends StatefulWidget {
   State<DriverHomeScreen> createState() => _DriverHomeScreenState();
 }
 
-class _DriverHomeScreenState extends State<DriverHomeScreen> {
+class _DriverHomeScreenState extends State<DriverHomeScreen>
+    with WidgetsBindingObserver {
   static const _defaultLat = 32.1194;
   static const _defaultLng = 20.0868;
 
@@ -45,14 +46,31 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   ServiceRequestEntity? _activeRequest;  // accepted/en_route/arrived/in_progress
   Timer? _activeRequestTimer;
 
+  // ── Startup guard flags ──
+  // Prevents showing "searching" until we've confirmed the backend state.
+  bool _profileLoaded = false;
+  bool _activeRequestChecked = false;
+  bool get _initialLoadDone => _profileLoaded && _activeRequestChecked;
+  bool _initialLoadFailed = false; // network failure on first check
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _providerBloc = sl<ProviderBloc>();
-    // Load provider profile to determine service type
+    _fetchBackendState();
+  }
+
+  /// Central startup: query backend for profile + active order.
+  /// Called on init AND on app resume from background.
+  void _fetchBackendState() {
     _providerBloc.add(const LoadProfileEvent());
-    // Check for any active/in-progress order (resumes after back navigation)
     _providerBloc.add(const LoadActiveRequestEvent());
+    _startActiveRequestPolling();
+  }
+
+  void _startActiveRequestPolling() {
+    _activeRequestTimer?.cancel();
     _activeRequestTimer = Timer.periodic(const Duration(seconds: 5), (_) {
       if (mounted) {
         _providerBloc.add(const LoadActiveRequestEvent());
@@ -62,10 +80,19 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _polling.dispose();
     _activeRequestTimer?.cancel();
     _mapController?.dispose();
     super.dispose();
+  }
+
+  /// Re-sync with backend when app returns from background.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && mounted) {
+      _fetchBackendState();
+    }
   }
 
   // ── Auto-status rule ──
@@ -74,15 +101,30 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   bool get _effectivelyActive => _activeRequest != null || _isActive;
   bool get _statusLocked => _activeRequest != null;
 
+  // ── Pending-request polling ──
+
+  /// Starts polling for new orders only when ALL conditions are met:
+  /// 1. Profile loaded (we know the service type)
+  /// 2. Active-request checked (no active order exists)
+  /// 3. Provider is available
+  /// 4. Not already polling
+  void _maybeStartPendingPolling() {
+    if (!_initialLoadDone || _activeRequest != null || !_isActive) return;
+    if (_polling.isPolling) return;
+    _polling.start(
+      interval: const Duration(seconds: 5),
+      callback: () async {
+        if (_isActive && _pendingRequest == null) {
+          _providerBloc.add(const LoadPendingRequestsEvent());
+        }
+      },
+    );
+  }
+
   // ── Status toggle ──
 
   void _onStatusChanged(bool active) {
-    // Block manual toggle while an order is in progress
-    if (_statusLocked) {
-
-      return;
-
-    }
+    if (_statusLocked) return;
 
     setState(() {
       _isActive = active;
@@ -92,14 +134,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     _providerBloc.add(ToggleAvailabilityEvent(active));
 
     if (active) {
-      _polling.start(
-        interval: const Duration(seconds: 5),
-        callback: () async {
-          if (_isActive) {
-            _providerBloc.add(const LoadPendingRequestsEvent());
-          }
-        },
-      );
+      _maybeStartPendingPolling();
     } else {
       _polling.stop();
     }
@@ -109,22 +144,16 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
 
   void _onProviderState(ProviderState state) {
     if (state is ProfileLoaded) {
+      final wasLoaded = _profileLoaded;
       setState(() {
         _serviceType = state.profile.serviceType;
-        // Sync the toggle with the backend availability
         _isActive = state.profile.isAvailable;
+        _profileLoaded = true;
+        _initialLoadFailed = false;
       });
-      // If already active, start polling for orders
-      if (_isActive && _activeRequest == null) {
-        _polling.start(
-          interval: const Duration(seconds: 5),
-          callback: () async {
-            if (_isActive && _pendingRequest == null) {
-              _providerBloc.add(const LoadPendingRequestsEvent());
-            }
-          },
-        );
-      }
+      // Start pending-request polling only after BOTH checks are done and
+      // there is no active order.
+      if (!wasLoaded) _maybeStartPendingPolling();
       return;
     }
     if (state is OrderCancelledByProvider) {
@@ -132,7 +161,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         _activeRequest = null;
         _pendingRequest = null;
       });
-      // Reload profile to get the restored availability
       _providerBloc.add(const LoadProfileEvent());
       if (mounted) {
         AppSnackbar.success(context, S.of(context).orderCancelledSuccessSnack);
@@ -142,24 +170,46 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     if (state is ActiveRequestLoaded) {
       final req = state.request;
 
-      // Only treat as cancelled if the API explicitly returns 'cancelled' status
+      // Detect real cancellation (had order → now cancelled)
       final wasCancelled = _activeRequest != null &&
           req != null &&
           req.status == 'cancelled';
 
-      // Update state: clear if cancelled or null (completed/no order)
       if (req == null || req.status == 'cancelled' || req.status == 'completed') {
-        setState(() => _activeRequest = null);
+        setState(() {
+          _activeRequest = null;
+          _activeRequestChecked = true;
+          _initialLoadFailed = false;
+        });
       } else {
-        setState(() => _activeRequest = req);
+        setState(() {
+          _activeRequest = req;
+          _activeRequestChecked = true;
+          _initialLoadFailed = false;
+        });
       }
 
-      // Show cancellation message only for actual cancellations
       if (wasCancelled && mounted) {
         Navigator.popUntil(context,
             (route) => route.settings.name == Routes.driverHome || route.isFirst);
         _showCancelledSnackBar();
       }
+
+      // When an active order exists, stop the pending-request polling —
+      // we don't need new orders while one is in progress.
+      if (_activeRequest != null) {
+        _polling.stop();
+      } else {
+        _maybeStartPendingPolling();
+      }
+    } else if (state is ActiveRequestFailed) {
+      // Network/auth failure checking active order.
+      // Mark as checked so the UI doesn't stay in limbo forever,
+      // but flag the failure so we can show a retry option.
+      setState(() {
+        _activeRequestChecked = true;
+        if (!_profileLoaded) _initialLoadFailed = true;
+      });
     } else if (state is PendingRequestsLoaded) {
       setState(() {
         _pendingRequest = state.requests.isNotEmpty ? state.requests.first : null;
@@ -185,6 +235,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           serviceType: req.isFuelDelivery ? 'fuel' : 'towing',
           amount: double.tryParse(req.total ?? '0') ?? 0,
           customerPhone: customerPhone,
+          destinationLat: double.tryParse(req.destinationLatitude ?? ''),
+          destinationLng: double.tryParse(req.destinationLongitude ?? ''),
+          destinationAddress: req.destinationAddress,
         ),
       );
     } else if (state is RequestRejected) {
@@ -218,6 +271,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               serviceType: req.isFuelDelivery ? 'fuel' : 'towing',
               amount: double.tryParse(req.total ?? '0') ?? 0,
               customerPhone: customerPhone,
+              destinationLat: double.tryParse(req.destinationLatitude ?? ''),
+              destinationLng: double.tryParse(req.destinationLongitude ?? ''),
+              destinationAddress: req.destinationAddress,
             ));
         break;
       case 'en_route':
@@ -231,6 +287,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               serviceType: req.isFuelDelivery ? 'fuel' : 'towing',
               amount: double.tryParse(req.total ?? '0') ?? 0,
               customerPhone: customerPhone,
+              destinationLat: double.tryParse(req.destinationLatitude ?? ''),
+              destinationLng: double.tryParse(req.destinationLongitude ?? ''),
+              destinationAddress: req.destinationAddress,
             ));
         break;
       case 'arrived':
@@ -248,6 +307,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 documentationType: 'pickup',
                 amount: double.tryParse(req.total ?? '0') ?? 0,
                 customerPhone: customerPhone,
+                destinationLat: double.tryParse(req.destinationLatitude ?? ''),
+                destinationLng: double.tryParse(req.destinationLongitude ?? ''),
+                destinationAddress: req.destinationAddress,
               ));
         }
         break;
@@ -379,7 +441,14 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                         children: [
                           _MapControlButton(icon: Icons.menu_rounded, onTap: () => _scaffoldKey.currentState?.openDrawer()),
                           const Spacer(),
-                          DriverStatusToggle(isActive: _effectivelyActive, onChanged: _statusLocked ? null : _onStatusChanged),
+                          DriverStatusToggle(
+                            isActive: _effectivelyActive,
+                            // Disable toggle until initial load is done or when
+                            // an active order locks the status.
+                            onChanged: (!_initialLoadDone || _statusLocked)
+                                ? null
+                                : _onStatusChanged,
+                          ),
                           const Spacer(),
                           _MapControlButton(icon: Icons.notifications_outlined, onTap: () => Navigator.pushNamed(context, Routes.notifications)),
                         ],
@@ -429,9 +498,73 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   Positioned(
                     left: 0, right: 0, bottom: 0,
                     child: _ProviderBottomPanel(
-                      isActive: _effectivelyActive,
+                      // Show "searching" ONLY when:
+                      // 1. Initial load is complete (profile + active-request check)
+                      // 2. No active order exists
+                      // 3. Provider is available (_isActive)
+                      isActive: _initialLoadDone && _activeRequest == null && _isActive,
                       serviceType: _serviceType,
+                      // Always allow the toggle to stop searching — never lock it
+                      // unless there's an active order in progress.
                       onToggle: _statusLocked ? null : () => _onStatusChanged(!_isActive),
+                    ),
+                  ),
+
+                // ── Loading overlay during initial sync ──
+                if (!_initialLoadDone && _activeRequest == null)
+                  Positioned(
+                    left: 0, right: 0, bottom: 0,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 24.h),
+                      decoration: BoxDecoration(
+                        color: context.colors.surface,
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 24,
+                            offset: const Offset(0, -4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: 24.w, height: 24.w,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: context.colors.primary,
+                            ),
+                          ),
+                          SizedBox(height: 12.h),
+                          Text(
+                            _initialLoadFailed
+                                ? S.of(context).connectionFailed
+                                : S.of(context).syncingWithServer,
+                            style: getRegularStyle(
+                              fontSize: FontSize.s14,
+                              color: context.colors.textSecondary,
+                            ),
+                          ),
+                          if (_initialLoadFailed) ...[
+                            SizedBox(height: 8.h),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() => _initialLoadFailed = false);
+                                _fetchBackendState();
+                              },
+                              child: Text(
+                                S.of(context).retryButton,
+                                style: getSemiBoldStyle(
+                                  fontSize: FontSize.s14,
+                                  color: context.colors.primary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
                   ),
               ],
@@ -480,12 +613,8 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
   @override
   Widget build(BuildContext context) {
     final isFuel = widget.serviceType != 'towing';
-    final accentColor = isFuel
-        ? context.colors.primaryLight
-        : const Color(0xFF1565C0);
-    final accentLight = isFuel
-        ? const Color(0xFF2A9D6E)
-        : const Color(0xFF2979FF);
+    final accentColor = context.colors.primaryLight;
+    final accentLight = const Color(0xFF2A9D6E);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 350),
@@ -975,7 +1104,7 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                     ),
                   ),
                   SizedBox(width: 10.w),
-                  // Resume button
+                  // Resume button — always gold/yellow
                   Expanded(child: GestureDetector(
                 onTap: widget.onResume,
                 child: Container(
@@ -983,12 +1112,12 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                   padding: EdgeInsets.symmetric(vertical: 12.h),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [accentColor, accentColor.withValues(alpha: 0.85)],
+                      colors: [context.colors.gold, context.colors.gold.withValues(alpha: 0.85)],
                     ),
                     borderRadius: BorderRadius.circular(14.r),
                     boxShadow: [
                       BoxShadow(
-                        color: accentColor.withValues(alpha: 0.35),
+                        color: context.colors.gold.withValues(alpha: 0.35),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),

@@ -522,6 +522,8 @@
   "analyticsNotFound": "لم يتم العثور على بيانات التحليلات",
   "failedToLoadReports": "تعذّر تحميل التقارير",
   "retryButton": "إعادة المحاولة",
+  "syncingWithServer": "جارٍ المزامنة مع الخادم…",
+  "connectionFailed": "فشل الاتصال",
   "privacyPolicyTitle": "سياسة الخصوصية",
   "privacyPolicyAppTitle": "GO FULL — سياسة الخصوصية",
   "privacyPolicyLastUpdate": "آخر تحديث: أبريل 2026",
