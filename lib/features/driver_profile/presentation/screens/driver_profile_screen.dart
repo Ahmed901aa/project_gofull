@@ -165,23 +165,6 @@ class _ProfileCard extends StatelessWidget {
               ],
             ),
           ),
-          // Edit icon
-          GestureDetector(
-            onTap: () {
-              // replace with navigation to edit profile
-            },
-            child: Container(
-              width: 36.w,
-              height: 36.w,
-              decoration: BoxDecoration(
-                color: context.colors.surface.withValues(alpha: 0.15),
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child:
-                  Icon(Icons.edit_rounded, size: 18.sp, color: context.colors.surface),
-            ),
-          ),
         ],
       ),
     );
