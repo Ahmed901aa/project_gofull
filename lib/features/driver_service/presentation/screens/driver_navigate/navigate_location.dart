@@ -1,8 +1,5 @@
 part of '../driver_navigate_screen.dart';
 
-/// Live-location tracking, camera fitting and map-object caching for the
-/// navigation screen. Kept as a private extension so it shares the State's
-/// fields while living in its own file.
 extension _NavigateLocation on _DriverNavigateScreenState {
   LatLng get _destination => LatLng(
         widget.args.lat ?? _defaultLat,
@@ -44,7 +41,7 @@ extension _NavigateLocation on _DriverNavigateScreenState {
       if (mounted) {
         _providerPosition = LatLng(pos.latitude, pos.longitude);
         _rebuildMapObjects();
-        _rebuild();
+        setState(() {});
         _fitBounds();
       }
     } catch (_) {}
@@ -78,7 +75,7 @@ extension _NavigateLocation on _DriverNavigateScreenState {
       _providerPosition = providerLatLng;
       _remainingDistance = '${km.toStringAsFixed(1)} ${S.of(context).kmUnit}';
       _rebuildMapObjects();
-      _rebuild();
+      setState(() {});
       _mapController?.animateCamera(CameraUpdate.newLatLng(providerLatLng));
     } catch (_) {}
   }

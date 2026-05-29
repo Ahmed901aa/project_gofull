@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
