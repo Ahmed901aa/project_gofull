@@ -14,6 +14,7 @@ import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class DriverDocumentationScreen extends StatefulWidget {
   final DriverDocumentationArgs args;
@@ -119,7 +120,7 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_rounded,
+                    child: Icon(backArrowIcon(context),
                         size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(

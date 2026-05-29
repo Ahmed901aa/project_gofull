@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class AppHeader extends StatelessWidget {
   final String title;
@@ -29,7 +30,7 @@ class AppHeader extends StatelessWidget {
                 if (showBack)
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: context.colors.textPrimary),
+                    child: Icon(backArrowIcon(context), size: 24.sp, color: context.colors.textPrimary),
                   )
                 else
                   SizedBox(width: 24.sp),

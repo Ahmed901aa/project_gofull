@@ -13,6 +13,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class RatingScreen extends StatefulWidget {
   final RatingArgs? args;
@@ -70,7 +71,7 @@ class _RatingScreenState extends State<RatingScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back_rounded, size: 20.sp, color: context.colors.textPrimary)),
+                  GestureDetector(onTap: () => Navigator.pop(context), child: Icon(backArrowIcon(context), size: 20.sp, color: context.colors.textPrimary)),
                   Text(S.of(context).rateTrip, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s20)),
                   Icon(Icons.info_outline_rounded, size: 24.sp, color: context.colors.textPrimary),
                 ],

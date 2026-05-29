@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/profile/presentation/widgets/faq_card.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 List<Map<String, String>> _getFaqs(S l10n) => [
   {'question': l10n.faqTripCost, 'answer': l10n.faqTripCostAnswer},
@@ -57,7 +58,7 @@ class _FaqScreenState extends State<FaqScreen> {
               padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
               child: Row(
                 children: [
-                  GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: context.colors.textPrimary)),
+                  GestureDetector(onTap: () => Navigator.pop(context), child: Icon(backArrowIcon(context), size: 24.sp, color: context.colors.textPrimary)),
                   Expanded(child: Text(S.of(context).faq, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s20), textAlign: TextAlign.center)),
                   SizedBox(width: 24.sp),
                 ],

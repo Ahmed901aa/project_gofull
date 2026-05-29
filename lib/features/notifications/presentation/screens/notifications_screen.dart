@@ -9,6 +9,7 @@ import 'package:project_gofull/features/notifications/domain/entities/notificati
 import 'package:project_gofull/features/notifications/presentation/bloc/notification_bloc.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
@@ -88,7 +89,7 @@ class NotificationsScreen extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: context.colors.textPrimary),
+                    child: Icon(backArrowIcon(context), size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(
                     child: Text(

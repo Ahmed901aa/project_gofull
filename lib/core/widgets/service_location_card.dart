@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class ServiceLocationCard extends StatelessWidget {
   final String topLabel;
@@ -43,9 +44,7 @@ class ServiceLocationCard extends StatelessWidget {
           ),
           SizedBox(width: Insets.s8),
           Icon(
-            Directionality.of(context) == TextDirection.rtl
-                ? Icons.arrow_back_ios_rounded
-                : Icons.arrow_forward_ios_rounded,
+            forwardChevronIcon(context),
             size: 16.sp,
             color: context.colors.textPrimary,
           ),

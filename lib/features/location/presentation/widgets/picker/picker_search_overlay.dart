@@ -7,6 +7,7 @@ import '../../../domain/nominatim_result.dart';
 import 'picker_suggestion_tile.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class PickerSearchOverlay extends StatelessWidget {
   final TextEditingController controller;
@@ -43,7 +44,7 @@ class PickerSearchOverlay extends StatelessWidget {
               child: Container(
                 width: 36.w, height: 36.w,
                 decoration: BoxDecoration(color: context.colors.surfaceVariant, shape: BoxShape.circle),
-                child: Icon(Icons.arrow_back, size: 18.sp, color: context.colors.textPrimary),
+                child: Icon(backArrowIcon(context), size: 18.sp, color: context.colors.textPrimary),
               ),
             ),
             SizedBox(width: Insets.s8),

@@ -9,6 +9,7 @@ import 'package:project_gofull/features/profile/presentation/widgets/discount_ta
 import 'package:project_gofull/features/profile/presentation/widgets/expired_coupon_card.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 // TODO: Connect to coupons API when backend endpoint is available
 const List<Map<String, String>> _activeCoupons = [];
@@ -73,7 +74,7 @@ class _DiscountCodesScreenState extends State<DiscountCodesScreen> {
           Padding(
             padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
             child: Row(children: [
-              GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: context.colors.textPrimary)),
+              GestureDetector(onTap: () => Navigator.pop(context), child: Icon(backArrowIcon(context), size: 24.sp, color: context.colors.textPrimary)),
               Expanded(child: Text(S.of(context).discountCodes, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s20), textAlign: TextAlign.center)),
               SizedBox(width: 24.sp),
             ]),

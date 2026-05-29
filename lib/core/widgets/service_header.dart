@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class ServiceHeader extends StatelessWidget {
   final String title;
@@ -23,7 +24,7 @@ class ServiceHeader extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Icon(Icons.arrow_back_rounded, size: 22.sp, color: context.colors.textPrimary),
+                  child: Icon(backArrowIcon(context), size: 22.sp, color: context.colors.textPrimary),
                 ),
                 Text(title, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s20)),
                 const SizedBox(width: 24),

@@ -11,6 +11,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class DriverReportsScreen extends StatefulWidget {
   const DriverReportsScreen({super.key});
@@ -251,7 +252,7 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_rounded,
+                    child: Icon(backArrowIcon(context),
                         size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(

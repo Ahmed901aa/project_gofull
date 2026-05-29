@@ -12,6 +12,7 @@ import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/cubits/locale_cubit.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class DriverDrawer extends StatefulWidget {
   const DriverDrawer({super.key});
@@ -294,9 +295,7 @@ class _DrawerMenuItem extends StatelessWidget {
               SizedBox(width: 4.w),
             ],
             Icon(
-              Directionality.of(context) == TextDirection.rtl
-                  ? Icons.arrow_back_ios_rounded
-                  : Icons.arrow_forward_ios_rounded,
+              forwardChevronIcon(context),
               size: 14.sp,
               color: context.colors.iconSecondary,
             ),

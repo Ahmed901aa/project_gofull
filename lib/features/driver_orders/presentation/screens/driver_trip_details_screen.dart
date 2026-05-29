@@ -11,6 +11,7 @@ import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class DriverTripDetailsScreen extends StatefulWidget {
   final DriverTripDetailsArgs args;
@@ -135,7 +136,7 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_rounded,
+                    child: Icon(backArrowIcon(context),
                         size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(

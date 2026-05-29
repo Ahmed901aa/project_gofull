@@ -10,11 +10,15 @@ import 'package:project_gofull/core/resources/app_theme.dart';
 class EditProfileBottomButtons extends StatelessWidget {
   final VoidCallback onSave;
   final VoidCallback onDelete;
+  final bool saveEnabled;
+  final bool saving;
 
   const EditProfileBottomButtons({
     super.key,
     required this.onSave,
     required this.onDelete,
+    this.saveEnabled = true,
+    this.saving = false,
   });
 
   @override
@@ -31,24 +35,35 @@ class EditProfileBottomButtons extends StatelessWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
+          padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
           child: Row(
             children: [
               Expanded(
                 child: SizedBox(
                   height: 48.h,
                   child: ElevatedButton(
-                    onPressed: onSave,
+                    onPressed: saveEnabled ? onSave : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.colors.primary,
                       foregroundColor: AppColors.white,
+                      disabledBackgroundColor: context.colors.primary.withValues(alpha: 0.4),
+                      disabledForegroundColor: AppColors.white.withValues(alpha: 0.6),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
                       elevation: 0,
                     ),
-                    child: Text(
-                      S.of(context).saveChanges,
-                      style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s16).copyWith(height: 1.6),
-                    ),
+                    child: saving
+                        ? SizedBox(
+                            width: 22.w,
+                            height: 22.w,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: AppColors.white,
+                            ),
+                          )
+                        : Text(
+                            S.of(context).saveChanges,
+                            style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16).copyWith(height: 1.6),
+                          ),
                   ),
                 ),
               ),
@@ -56,7 +71,7 @@ class EditProfileBottomButtons extends StatelessWidget {
               SizedBox(
                 height: 48.h,
                 child: OutlinedButton(
-                  onPressed: onDelete,
+                  onPressed: saving ? null : onDelete,
                   style: OutlinedButton.styleFrom(
                     backgroundColor: context.colors.errorSurface,
                     foregroundColor: context.colors.error,

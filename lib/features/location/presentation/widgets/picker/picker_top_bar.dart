@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class PickerTopBar extends StatelessWidget {
   final VoidCallback onBack;
@@ -32,7 +33,7 @@ class PickerTopBar extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [BoxShadow(color: context.colors.shadow, blurRadius: 8)],
               ),
-              child: Icon(Icons.arrow_back, size: 20.sp, color: context.colors.textPrimary),
+              child: Icon(backArrowIcon(context), size: 20.sp, color: context.colors.textPrimary),
             ),
           ),
           SizedBox(width: Insets.s12),

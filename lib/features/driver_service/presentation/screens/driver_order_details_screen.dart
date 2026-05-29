@@ -10,6 +10,7 @@ import 'package:project_gofull/core/widgets/app_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/confirm_acceptance_dialog.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class DriverOrderDetailsScreen extends StatelessWidget {
   final DriverOrderDetailsArgs args;
@@ -64,7 +65,7 @@ class DriverOrderDetailsScreen extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_rounded,
+                    child: Icon(backArrowIcon(context),
                         size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(

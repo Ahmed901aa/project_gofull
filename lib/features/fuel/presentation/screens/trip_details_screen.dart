@@ -18,6 +18,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_state
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class TripDetailsScreen extends StatelessWidget {
   final TripDetailsArgs? args;
@@ -179,7 +180,7 @@ class TripDetailsScreen extends StatelessWidget {
               children: [
                 GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_rounded,
+                    child: Icon(backArrowIcon(context),
                         size: 20.sp, color: context.colors.textPrimary)),
                 Text(S.of(context).driverTripDetails,
                     style: getBoldStyle(

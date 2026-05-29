@@ -12,6 +12,7 @@ import 'package:project_gofull/features/app_config/presentation/bloc/app_config_
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class SupportScreen extends StatelessWidget {
   final bool showBack;
@@ -245,9 +246,7 @@ class _ContactOptionCard extends StatelessWidget {
               ),
             ),
             Icon(
-              Directionality.of(context) == TextDirection.rtl
-                  ? Icons.arrow_back_ios_rounded
-                  : Icons.arrow_forward_ios_rounded,
+              forwardChevronIcon(context),
               size: 16.sp,
               color: context.colors.textSecondary,
             ),
