@@ -389,8 +389,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 ),
 
                 // ── Map control buttons ──
-                Positioned(
-                  left: Insets.s16,
+                PositionedDirectional(
+                  start: Insets.s16,
                   bottom: _pendingRequest != null
                       ? 380.h
                       : _effectivelyActive ? 280.h : 140.h,
@@ -1091,10 +1091,11 @@ class _SlideToActivateState extends State<SlideToActivate>
 
     }
     final travel = _trackWidth - _thumbSize;
-    // RTL: dragging left (negative dx) should increase progress.
+    // In LTR drag left to confirm; in RTL drag right to confirm.
+    final rtlSign = Directionality.of(context) == TextDirection.rtl ? 1.0 : -1.0;
     setState(() {
       _dragPosition =
-          (_dragPosition + (-details.delta.dx / travel)).clamp(0.0, 1.0);
+          (_dragPosition + (rtlSign * details.delta.dx / travel)).clamp(0.0, 1.0);
     });
   }
 
@@ -1191,9 +1192,9 @@ class _SlideToActivateState extends State<SlideToActivate>
                   ),
                 ),
               ),
-              // Animated arrow hint on the left (drag direction).
-              Positioned(
-                left: 16.w,
+              // Animated arrow hint — drag direction indicator.
+              PositionedDirectional(
+                start: 16.w,
                 top: 0,
                 bottom: 0,
                 child: IgnorePointer(
@@ -1204,10 +1205,13 @@ class _SlideToActivateState extends State<SlideToActivate>
                       builder: (context, _) {
                         final t = _shimmerController.value;
                         final nudge = (1 - (t - 0.5).abs() * 2) * 5.w;
+                        final isRtl = Directionality.of(context) == TextDirection.rtl;
                         return Transform.translate(
-                          offset: Offset(-nudge, 0),
+                          offset: Offset(isRtl ? nudge : -nudge, 0),
                           child: Icon(
-                            Icons.keyboard_double_arrow_left_rounded,
+                            isRtl
+                                ? Icons.keyboard_double_arrow_right_rounded
+                                : Icons.keyboard_double_arrow_left_rounded,
                             color: Colors.white.withValues(alpha: 0.85),
                             size: 22.sp,
                           ),
@@ -1218,8 +1222,8 @@ class _SlideToActivateState extends State<SlideToActivate>
                 ),
               ),
               // Thumb
-              Positioned(
-                right: 3 + thumbRight,
+              PositionedDirectional(
+                end: 3 + thumbRight,
                 top: 3,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,

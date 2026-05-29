@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
@@ -160,10 +161,9 @@ class ActiveOrderCard extends StatelessWidget {
                                         color: context.colors.surface,
                                         fontSize: FontSize.s14)),
                                 SizedBox(width: 6.w),
-                                Icon(Icons.arrow_forward_rounded,
+                                Icon(forwardArrowIcon(context),
                                     size: 22.sp,
-                                    color: context.colors.surface,
-                                    textDirection: TextDirection.ltr),
+                                    color: context.colors.surface),
                               ],
                             ),
                           ),

@@ -339,8 +339,8 @@ class _AppMapWidgetState extends State<AppMapWidget> {
                     ),
             ),
           ),
-          Positioned(
-            left: Insets.s16,
+          PositionedDirectional(
+            start: Insets.s16,
             bottom: widget.showConfirmButton && _pickedLocation != null
                 ? 124.h
                 : 24.h,

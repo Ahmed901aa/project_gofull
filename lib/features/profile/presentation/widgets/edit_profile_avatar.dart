@@ -21,9 +21,9 @@ class EditProfileAvatar extends StatelessWidget {
               backgroundColor: context.colors.border,
               child: Icon(Icons.person, size: 52.sp, color: context.colors.textSecondary),
             ),
-            Positioned(
+            PositionedDirectional(
               bottom: 0,
-              left: 0,
+              start: 0,
               child: GestureDetector(
                 onTap: onEditTap,
                 child: Container(

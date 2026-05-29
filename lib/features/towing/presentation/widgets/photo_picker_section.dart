@@ -59,12 +59,12 @@ class _PhotoPickerSectionState extends State<PhotoPickerSection> {
       child: _photo != null
           ? Stack(children: [
               Positioned.fill(child: Image.file(_photo!, fit: BoxFit.cover)),
-              Positioned(
-                top: 4.h, right: 4.w,
+              PositionedDirectional(
+                top: 4.h, end: 4.w,
                 child: _badge(color: context.colors.primary, icon: Icons.edit_outlined, onTap: () => _pick(ImageSource.camera)),
               ),
-              Positioned(
-                top: 4.h, left: 4.w,
+              PositionedDirectional(
+                top: 4.h, start: 4.w,
                 child: _badge(color: context.colors.error, icon: Icons.close_rounded, onTap: () => setState(() => _photo = null)),
               ),
             ])

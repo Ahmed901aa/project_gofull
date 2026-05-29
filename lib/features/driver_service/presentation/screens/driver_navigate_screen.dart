@@ -356,8 +356,8 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
             _buildHeader(context),
 
             // Side action buttons
-            Positioned(
-              left: Insets.s16,
+            PositionedDirectional(
+              start: Insets.s16,
               bottom: 280.h,
               child: Column(
                 children: [
