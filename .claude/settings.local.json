@@ -58,7 +58,9 @@
       "Bash(echo \"=== exit code: $? \\(grep found nothing = no errors\\) ===\")",
       "Bash(echo \"=== error count: $\\(flutter analyze lib/ 2>&1)",
       "Bash(awk NR==87||NR==88||NR==90||NR==93||NR==94||NR==108||NR==109||NR==121||NR==122{printf \"%d:[%s]\\\\n\",NR,$0} *)",
-      "Bash(flutter gen-l10n *)"
+      "Bash(flutter gen-l10n *)",
+      "Bash(mkdir -p lib/features/driver_service/presentation/screens/driver_navigate)",
+      "Bash(mkdir -p lib/features/driver_service/presentation/widgets/driver_navigate)"
     ]
   }
 }
