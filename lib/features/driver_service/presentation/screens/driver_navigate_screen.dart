@@ -1,33 +1,18 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
-import 'package:project_gofull/core/network/api_client.dart';
-import 'package:project_gofull/l10n/app_localizations.dart';
-import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
-import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
-import 'package:project_gofull/core/widgets/app_notification.dart';
-import 'package:project_gofull/features/driver_service/presentation/screens/driver_refueling_screen.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
-import 'package:project_gofull/features/driver_service/presentation/screens/driver_navigate/navigate_geo.dart';
-import 'package:project_gofull/features/driver_service/presentation/screens/driver_navigate/navigate_map_objects.dart';
+import 'package:project_gofull/features/driver_service/presentation/screens/driver_navigate/navigate_map_state_mixin.dart';
+import 'package:project_gofull/features/driver_service/presentation/screens/driver_navigate/navigate_location_mixin.dart';
+import 'package:project_gofull/features/driver_service/presentation/screens/driver_navigate/navigate_actions_mixin.dart';
 import 'package:project_gofull/features/driver_service/presentation/widgets/driver_navigate/navigate_map.dart';
 import 'package:project_gofull/features/driver_service/presentation/widgets/driver_navigate/navigate_header.dart';
 import 'package:project_gofull/features/driver_service/presentation/widgets/driver_navigate/navigate_side_buttons.dart';
 import 'package:project_gofull/features/driver_service/presentation/widgets/driver_navigate/navigate_bottom_panel.dart';
-
-part 'driver_navigate/navigate_location.dart';
-part 'driver_navigate/navigate_actions.dart';
-
-// Default map center: Tripoli, Libya.
-const _defaultLat = 32.8872;
-const _defaultLng = 13.1913;
 
 class DriverNavigateScreen extends StatefulWidget {
   final DriverNavigateArgs args;
@@ -37,40 +22,42 @@ class DriverNavigateScreen extends StatefulWidget {
   State<DriverNavigateScreen> createState() => _DriverNavigateScreenState();
 }
 
-class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
-  GoogleMapController? _mapController;
-  Timer? _locationTimer;
-  String _remainingDistance = '';
-  LatLng? _providerPosition;
-  Set<Marker> _cachedMarkers = {};
-  Set<Polyline> _cachedPolylines = {};
+class _DriverNavigateScreenState extends State<DriverNavigateScreen>
+    with
+        NavigateMapStateMixin<DriverNavigateScreen>,
+        NavigateLocationMixin<DriverNavigateScreen>,
+        NavigateActionsMixin<DriverNavigateScreen> {
+  @override
+  DriverNavigateArgs get navArgs => widget.args;
 
   @override
   void initState() {
     super.initState();
     final orderId = int.tryParse(widget.args.orderId);
-    if (orderId != null && _isToCustomer) {
+    if (orderId != null && isToCustomer) {
       sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'en_route'));
     }
-    _initLocation();
+    initLocation();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Build markers once dependencies (Localizations, Theme) are ready.
-    _rebuildMapObjects();
+    rebuildMapObjects();
   }
 
   @override
   void dispose() {
-    _locationTimer?.cancel();
-    _mapController?.dispose();
+    disposeLocation();
     super.dispose();
   }
 
-  void _rebuild() {
-    if (mounted) setState(() {});
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+    if (providerPosition != null) {
+      Future.delayed(const Duration(milliseconds: 500), fitBounds);
+    }
   }
 
   @override
@@ -79,35 +66,30 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
       body: Stack(
         children: [
           NavigateMap(
-            destination: _destination,
-            markers: _cachedMarkers,
-            polylines: _cachedPolylines,
-            onMapCreated: (controller) {
-              _mapController = controller;
-              if (_providerPosition != null) {
-                Future.delayed(const Duration(milliseconds: 500), _fitBounds);
-              }
-            },
+            destination: destination,
+            markers: markers,
+            polylines: polylines,
+            onMapCreated: _onMapCreated,
           ),
-          NavigateHeader(isToCustomer: _isToCustomer, onBack: () => Navigator.pop(context)),
+          NavigateHeader(isToCustomer: isToCustomer, onBack: () => Navigator.pop(context)),
           PositionedDirectional(
             start: Insets.s16,
             bottom: 280.h,
-            child: NavigateSideButtons(onFit: _fitBounds, onMyLocation: _moveToCurrentLocation),
+            child: NavigateSideButtons(onFit: fitBounds, onMyLocation: moveToCurrentLocation),
           ),
           Positioned(
             left: 0,
             right: 0,
             bottom: 0,
             child: NavigateBottomPanel(
-              isToCustomer: _isToCustomer,
+              isToCustomer: isToCustomer,
               isFuel: widget.args.isFuel,
               address: widget.args.address,
-              remainingDistance: _remainingDistance,
+              remainingDistance: remainingDistance,
               customerPhone: widget.args.customerPhone,
-              onOpenMaps: _openInGoogleMaps,
-              onArrived: _onArrivedTapped,
-              onCancel: _onCancelOrder,
+              onOpenMaps: openInGoogleMaps,
+              onArrived: onArrivedTapped,
+              onCancel: onCancelOrder,
             ),
           ),
         ],
