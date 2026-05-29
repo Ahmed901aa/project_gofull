@@ -69,6 +69,10 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen> {
     super.dispose();
   }
 
+  void _rebuild() {
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
