@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:gal/gal.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -45,7 +45,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
     }
     setState(() => _saving = true);
-    await ImageGallerySaver.saveFile(_photo!.path);
+    await Gal.putImage(_photo!.path);
     if (!mounted) {
 
       return;

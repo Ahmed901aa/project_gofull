@@ -15,5 +15,6 @@
     "python.testing.unittestEnabled": true,
     "githubPullRequests.ignoredPullRequestBranches": [
         "main"
-    ]
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
