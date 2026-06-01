@@ -250,6 +250,12 @@ class SAr extends S {
   String get ourServices => 'خدماتنا';
 
   @override
+  String get helpAndInfo => 'المساعدة والمعلومات';
+
+  @override
+  String get preferences => 'التفضيلات';
+
+  @override
   String get distanceAway => 'على بعد';
 
   @override

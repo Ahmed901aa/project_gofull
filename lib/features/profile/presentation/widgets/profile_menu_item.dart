@@ -13,6 +13,10 @@ class ProfileMenuItem extends StatelessWidget {
   final Color? iconColor;
   final VoidCallback? onTap;
 
+  /// If `true`, the icon container uses an error tint (for destructive
+  /// actions like logout).
+  final bool destructive;
+
   const ProfileMenuItem({
     super.key,
     required this.icon,
@@ -20,64 +24,76 @@ class ProfileMenuItem extends StatelessWidget {
     this.trailing,
     this.iconColor,
     this.onTap,
+    this.destructive = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 48.h,
-        padding: EdgeInsets.symmetric(horizontal: Insets.s16),
-        decoration: BoxDecoration(
-          color: context.colors.background,
-          borderRadius: BorderRadius.circular(AppRadius.s24),
-          border: Border.all(color: context.colors.border),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // RIGHT side: icon + label
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 32.w,
-                  height: 32.w,
-                  decoration: BoxDecoration(
-                    color: context.colors.background,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: context.colors.border),
-                  ),
-                  alignment: Alignment.center,
-                  child: Icon(icon, size: 16.sp, color: iconColor ?? context.colors.textPrimary),
+    final accent = destructive
+        ? context.colors.error
+        : (iconColor ?? context.colors.primary);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadius.s16),
+        splashColor: accent.withValues(alpha: 0.10),
+        highlightColor: accent.withValues(alpha: 0.04),
+        child: Container(
+          height: 56.h,
+          padding: EdgeInsetsDirectional.symmetric(horizontal: Insets.s14),
+          decoration: BoxDecoration(
+            color: context.colors.surface,
+            borderRadius: BorderRadius.circular(AppRadius.s16),
+            border: Border.all(color: context.colors.border),
+          ),
+          child: Row(
+            children: [
+              // Tinted icon container
+              Container(
+                width: 36.w,
+                height: 36.w,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: accent.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(AppRadius.s12),
                 ),
+                child: Icon(icon, size: 18.sp, color: accent),
+              ),
+              SizedBox(width: Insets.s12),
+              // Label
+              Expanded(
+                child: Text(
+                  label,
+                  style: getMediumStyle(
+                    color: destructive
+                        ? context.colors.error
+                        : context.colors.textPrimary,
+                    fontSize: FontSize.s15,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (trailing != null) ...[
                 SizedBox(width: Insets.s8),
                 Text(
-                  label,
-                  style: getRegularStyle(color: context.colors.textPrimary, fontSize: FontSize.s16),
-                ),
-              ],
-            ),
-            // LEFT side: trailing text + arrow
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (trailing != null) ...[
-                  Text(
-                    trailing!,
-                    style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14),
+                  trailing!,
+                  style: getRegularStyle(
+                    color: context.colors.textSecondary,
+                    fontSize: FontSize.s13,
                   ),
-                  SizedBox(width: Insets.s8),
-                ],
-                Icon(
-                  forwardChevronIcon(context),
-                  size: 16.sp,
-                  color: context.colors.textPrimary,
                 ),
+                SizedBox(width: 6.w),
               ],
-            ),
-          ],
+              Icon(
+                forwardChevronIcon(context),
+                size: 14.sp,
+                color: context.colors.textSecondary,
+              ),
+            ],
+          ),
         ),
       ),
     );

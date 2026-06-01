@@ -252,6 +252,12 @@ class SEn extends S {
   String get ourServices => 'Our Services';
 
   @override
+  String get helpAndInfo => 'Help & Info';
+
+  @override
+  String get preferences => 'Preferences';
+
+  @override
   String get distanceAway => 'away';
 
   @override

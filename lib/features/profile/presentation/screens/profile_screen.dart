@@ -92,12 +92,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     name: userName,
                     phone: userPhone,
                     initials: initials,
-                    onEdit: () =>
+                    onView: () =>
                         Navigator.pushNamed(context, Routes.editProfile),
                   ),
-                  SizedBox(height: Insets.s16),
-                  // ── Provider Info Card ──
-                  if (!_isLoading && isProvider)
+                  SizedBox(height: Sizes.s20),
+
+                  // ── Provider Info Card (provider role only) ──
+                  if (!_isLoading && isProvider) ...[
                     _ProviderInfoSection(
                       serviceType: _serviceTypeLabel(
                           _profileData?['service_type'] as String?, l10n),
@@ -113,15 +114,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           _profileData?['verification_status'] as String? ??
                               'pending',
                     ),
-                  if (!_isLoading && isProvider) SizedBox(height: Insets.s16),
-                  SizedBox(height: Insets.s16),
+                    SizedBox(height: Sizes.s20),
+                  ],
+
+                  // ── Section: My Activity ──
                   ProfileMenuItem(
                     icon: Icons.local_offer_outlined,
                     label: l10n.discountCodes,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.discountCodes),
                   ),
-                  SizedBox(height: Sizes.s12),
+                  SizedBox(height: Sizes.s20),
+
+                  // ── Section: Preferences ──
+                  _SectionLabel(text: l10n.preferences),
+                  SizedBox(height: Sizes.s8),
                   ProfileMenuItem(
                     icon: Icons.language_rounded,
                     label: l10n.language,
@@ -129,52 +136,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.languageSettings),
                   ),
-                  SizedBox(height: Sizes.s12),
+                  SizedBox(height: Sizes.s8),
                   ProfileMenuItem(
                     icon: Icons.brightness_6_rounded,
                     label: l10n.appearance,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.appearanceSettings),
                   ),
-                  SizedBox(height: Sizes.s12),
+                  SizedBox(height: Sizes.s20),
+
+                  // ── Section: Help & Info ──
+                  _SectionLabel(text: l10n.helpAndInfo),
+                  SizedBox(height: Sizes.s8),
                   ProfileMenuItem(
                     icon: Icons.headset_mic_outlined,
                     label: l10n.technicalSupport,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.support),
                   ),
-                  SizedBox(height: Sizes.s12),
+                  SizedBox(height: Sizes.s8),
                   ProfileMenuItem(
                     icon: Icons.help_outline_rounded,
                     label: l10n.faq,
                     onTap: () => Navigator.pushNamed(context, Routes.faq),
                   ),
-                  SizedBox(height: Sizes.s12),
+                  SizedBox(height: Sizes.s8),
                   ProfileMenuItem(
                     icon: Icons.description_outlined,
                     label: l10n.terms,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.terms),
                   ),
-                  SizedBox(height: Sizes.s12),
+                  SizedBox(height: Sizes.s8),
                   ProfileMenuItem(
                     icon: Icons.privacy_tip_outlined,
                     label: l10n.privacyPolicy,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.privacyPolicy),
                   ),
-                  SizedBox(height: Sizes.s12),
+                  SizedBox(height: Sizes.s8),
                   ProfileMenuItem(
                     icon: Icons.info_outline_rounded,
                     label: l10n.aboutGoFull,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.aboutApp),
                   ),
-                  SizedBox(height: Sizes.s12),
+                  SizedBox(height: Sizes.s20),
+
+                  // ── Destructive: logout ──
                   ProfileMenuItem(
                     icon: Icons.logout_rounded,
                     label: l10n.logout,
-                    iconColor: context.colors.error,
+                    destructive: true,
                     onTap: () => _showLogoutDialog(context),
                   ),
                   SizedBox(height: Sizes.s16),
@@ -206,6 +219,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
             .pushNamedAndRemoveUntil(Routes.login, (r) => false);
       }
     }
+  }
+}
+
+// ── Section label (subtle heading above grouped menu items) ──
+
+class _SectionLabel extends StatelessWidget {
+  final String text;
+  const _SectionLabel({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.symmetric(horizontal: 4.w),
+      child: Text(
+        text.toUpperCase(),
+        style: getSemiBoldStyle(
+          color: context.colors.textSecondary,
+          fontSize: FontSize.s11,
+        ).copyWith(letterSpacing: 0.6),
+      ),
+    );
   }
 }
 

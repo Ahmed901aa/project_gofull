@@ -577,6 +577,18 @@ abstract class S {
   /// **'Our Services'**
   String get ourServices;
 
+  /// No description provided for @helpAndInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Info'**
+  String get helpAndInfo;
+
+  /// No description provided for @preferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get preferences;
+
   /// No description provided for @distanceAway.
   ///
   /// In en, this message translates to:
