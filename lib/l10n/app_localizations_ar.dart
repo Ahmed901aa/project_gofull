@@ -2117,6 +2117,9 @@ class SAr extends S {
   String get requestedQuantity => 'الكمية المطلوبة';
 
   @override
+  String get quantityShort => 'الكمية';
+
+  @override
   String get orderConfirmation => 'تأكيد الطلب';
 
   @override

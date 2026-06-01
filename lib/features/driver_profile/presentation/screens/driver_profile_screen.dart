@@ -12,6 +12,7 @@ import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_state.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/utils/vehicle_translator.dart';
 import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class DriverProfileScreen extends StatelessWidget {
@@ -231,9 +232,14 @@ class _VehicleSection extends StatelessWidget {
   const _VehicleSection({this.profile});
   @override
   Widget build(BuildContext context) {
-    final vehicleName = profile != null
-        ? '${profile!.vehicleMake} ${profile!.vehicleModel}'
-        : '—';
+    final localizedVehicle = profile != null
+        ? VehicleTranslator.localizeMakeModel(
+            context,
+            make: profile!.vehicleMake,
+            model: profile!.vehicleModel,
+          )
+        : '';
+    final vehicleName = localizedVehicle.isEmpty ? '—' : localizedVehicle;
     final plate = profile?.vehiclePlate ?? '—';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -4189,6 +4189,12 @@ abstract class S {
   /// **'Requested Quantity'**
   String get requestedQuantity;
 
+  /// No description provided for @quantityShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get quantityShort;
+
   /// No description provided for @orderConfirmation.
   ///
   /// In en, this message translates to:

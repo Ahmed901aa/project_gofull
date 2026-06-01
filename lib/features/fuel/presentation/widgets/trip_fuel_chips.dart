@@ -30,7 +30,7 @@ class TripFuelChips extends StatelessWidget {
         children: [
           Expanded(child: _Chip(label: l10n.fuelType, value: fuelType)),
           SizedBox(width: Insets.s16),
-          Expanded(child: _Chip(label: l10n.requestedQuantity, value: quantity)),
+          Expanded(child: _Chip(label: l10n.quantityShort, value: quantity)),
         ],
       ),
     );

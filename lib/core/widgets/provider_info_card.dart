@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/utils/vehicle_translator.dart';
 import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
@@ -21,6 +22,11 @@ class ProviderInfoCard extends StatelessWidget {
   final String? vehicleMake;
   final VoidCallback? onCall;
 
+  /// Whether to render the "Provider Information" title inside the card.
+  /// Set to `false` when the caller already provides a section title above
+  /// the card to avoid duplicated headings.
+  final bool showTitle;
+
   const ProviderInfoCard({
     super.key,
     required this.providerName,
@@ -30,6 +36,7 @@ class ProviderInfoCard extends StatelessWidget {
     this.vehicleModel,
     this.vehicleMake,
     this.onCall,
+    this.showTitle = true,
   });
 
   /// Factory constructor that extracts all fields from a ServiceRequestEntity.
@@ -37,6 +44,7 @@ class ProviderInfoCard extends StatelessWidget {
   factory ProviderInfoCard.fromRequest(
     ServiceRequestEntity? request, {
     VoidCallback? onCall,
+    bool showTitle = true,
   }) {
     final providerInfo = request?.providerInfo ?? {};
     final user = (providerInfo['user'] as Map<String, dynamic>?) ?? {};
@@ -49,6 +57,7 @@ class ProviderInfoCard extends StatelessWidget {
       vehicleModel: providerInfo['vehicle_model'] as String?,
       vehicleMake: providerInfo['vehicle_make'] as String?,
       onCall: onCall,
+      showTitle: showTitle,
     );
   }
 
@@ -56,10 +65,11 @@ class ProviderInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     final displayName = providerName.isEmpty ? l10n.serviceProviderDefault : providerName;
-    final vehicleDesc = [
-      if (vehicleMake != null && vehicleMake!.isNotEmpty) vehicleMake,
-      if (vehicleModel != null && vehicleModel!.isNotEmpty) vehicleModel,
-    ].whereType<String>().join(' ');
+    final vehicleDesc = VehicleTranslator.localizeMakeModel(
+      context,
+      make: vehicleMake,
+      model: vehicleModel,
+    );
 
     return Container(
         padding: EdgeInsets.all(Insets.s16),
@@ -78,14 +88,16 @@ class ProviderInfoCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              l10n.providerInfoTitle,
-              style: getBoldStyle(
-                color: context.colors.textPrimary,
-                fontSize: FontSize.s14,
+            if (showTitle) ...[
+              Text(
+                l10n.providerInfoTitle,
+                style: getBoldStyle(
+                  color: context.colors.textPrimary,
+                  fontSize: FontSize.s14,
+                ),
               ),
-            ),
-            SizedBox(height: Insets.s12),
+              SizedBox(height: Insets.s12),
+            ],
             Row(
               children: [
                 // Avatar

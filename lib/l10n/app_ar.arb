@@ -699,6 +699,7 @@
   "failedCancelOrder": "فشل إلغاء الطلب",
   "failedUploadFile": "فشل تحميل الملف",
   "requestedQuantity": "الكمية المطلوبة",
+  "quantityShort": "الكمية",
   "orderConfirmation": "تأكيد الطلب",
   "onTheWayToYou": "في الطريق لك",
   "driverAcceptedSubtitle": "وافق السائق على طلبك وهو الآن في طريقه إليك.",

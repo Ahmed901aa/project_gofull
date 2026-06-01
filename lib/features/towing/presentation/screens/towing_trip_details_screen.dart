@@ -105,6 +105,7 @@ class TowingTripDetailsScreen extends StatelessWidget {
             S.of(context).providerDetails,
             ProviderInfoCard.fromRequest(
               req,
+              showTitle: false,
               onCall: () {
                 final userInfo =
                     (req.providerInfo?['user'] as Map<String, dynamic>?) ?? {};

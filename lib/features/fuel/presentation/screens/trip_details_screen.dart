@@ -94,6 +94,7 @@ class TripDetailsScreen extends StatelessWidget {
             l10n.providerDetails,
             ProviderInfoCard.fromRequest(
               req,
+              showTitle: false,
               onCall: () {
                 final userInfo =
                     (req.providerInfo?['user'] as Map<String, dynamic>?) ?? {};

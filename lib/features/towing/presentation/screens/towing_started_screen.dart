@@ -220,6 +220,7 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
           SizedBox(height: Insets.s8),
           ProviderInfoCard.fromRequest(
             _request,
+            showTitle: false,
             onCall: _callProvider,
           ),
         ],

@@ -2128,6 +2128,9 @@ class SEn extends S {
   String get requestedQuantity => 'Requested Quantity';
 
   @override
+  String get quantityShort => 'Quantity';
+
+  @override
   String get orderConfirmation => 'Order Confirmation';
 
   @override

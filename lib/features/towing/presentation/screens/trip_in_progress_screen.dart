@@ -268,6 +268,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
           SizedBox(height: Insets.s8),
           ProviderInfoCard.fromRequest(
             _request,
+            showTitle: false,
             onCall: _callProvider,
           ),
         ],
