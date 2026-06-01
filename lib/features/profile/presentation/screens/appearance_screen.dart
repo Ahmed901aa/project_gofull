@@ -16,8 +16,7 @@ class AppearanceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = S.of(context);
     final cubit = context.watch<ThemeCubit>();
-    final appMode = cubit.appThemeMode;
-    final isSystem = appMode == AppThemeMode.system;
+    final isDark = cubit.appThemeMode == AppThemeMode.dark;
 
     return Scaffold(
       backgroundColor: context.colors.background,
@@ -29,45 +28,15 @@ class AppearanceScreen extends StatelessWidget {
               padding: EdgeInsets.all(Insets.s16),
               child: Column(
                 children: [
-                  // ── Toggle 1: Match System Theme ──
                   _ToggleTile(
-                    icon: Icons.settings_brightness_rounded,
-                    label: l10n.matchSystemTheme,
-                    subtitle: l10n.matchSystemThemeDesc,
-                    value: isSystem,
+                    icon: Icons.dark_mode_rounded,
+                    label: l10n.darkThemeToggle,
+                    value: isDark,
                     onChanged: (on) {
-                      if (on) {
-                        cubit.setThemeMode(AppThemeMode.system);
-                      } else {
-                        // Turning off system → default to light
-                        cubit.setThemeMode(
-                          cubit.isDark ? AppThemeMode.dark : AppThemeMode.light,
-                        );
-                      }
+                      cubit.setThemeMode(
+                        on ? AppThemeMode.dark : AppThemeMode.light,
+                      );
                     },
-                  ),
-                  // ── Toggle 2: Dark Theme (only when system is OFF) ──
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                    alignment: Alignment.topCenter,
-                    child: isSystem
-                        ? const SizedBox.shrink()
-                        : Column(
-                            children: [
-                              SizedBox(height: Sizes.s12),
-                              _ToggleTile(
-                                icon: Icons.dark_mode_rounded,
-                                label: l10n.darkThemeToggle,
-                                value: appMode == AppThemeMode.dark,
-                                onChanged: (on) {
-                                  cubit.setThemeMode(
-                                    on ? AppThemeMode.dark : AppThemeMode.light,
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
                   ),
                 ],
               ),
@@ -82,14 +51,12 @@ class AppearanceScreen extends StatelessWidget {
 class _ToggleTile extends StatelessWidget {
   final IconData icon;
   final String label;
-  final String? subtitle;
   final bool value;
   final ValueChanged<bool> onChanged;
 
   const _ToggleTile({
     required this.icon,
     required this.label,
-    this.subtitle,
     required this.value,
     required this.onChanged,
   });
@@ -118,16 +85,6 @@ class _ToggleTile extends StatelessWidget {
                     fontSize: FontSize.s16,
                   ),
                 ),
-                if (subtitle != null) ...[
-                  SizedBox(height: 2.h),
-                  Text(
-                    subtitle!,
-                    style: getRegularStyle(
-                      color: context.colors.textSecondary,
-                      fontSize: FontSize.s12,
-                    ),
-                  ),
-                ],
               ],
             ),
           ),

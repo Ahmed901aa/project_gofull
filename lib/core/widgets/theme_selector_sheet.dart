@@ -8,7 +8,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 
-/// Shows a bottom sheet with System / Light / Dark theme options.
+/// Shows a bottom sheet with Light / Dark theme options.
 /// Returns `true` if the user changed the theme, `false` otherwise.
 Future<bool> showThemeSelectorSheet(BuildContext context) async {
   final result = await showModalBottomSheet<bool>(
@@ -33,12 +33,6 @@ class _ThemeSelectorContent extends StatelessWidget {
     final current = cubit.appThemeMode;
 
     final options = [
-      _ThemeOption(
-        mode: AppThemeMode.system,
-        icon: Icons.settings_brightness_rounded,
-        label: l10n.themeSystem,
-        isSelected: current == AppThemeMode.system,
-      ),
       _ThemeOption(
         mode: AppThemeMode.light,
         icon: Icons.light_mode_rounded,
