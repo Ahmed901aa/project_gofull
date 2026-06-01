@@ -9,45 +9,54 @@ import 'package:project_gofull/core/widgets/app_header.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 
+/// Minimal language picker: a single list of language names with a check mark
+/// next to the active one.
 class LanguageScreen extends StatelessWidget {
   const LanguageScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    final localeCubit = context.watch<LocaleCubit>();
-    final isArabic = localeCubit.isArabic;
+    final cubit = context.watch<LocaleCubit>();
+    final isArabic = cubit.isArabic;
 
     return Scaffold(
       backgroundColor: context.colors.background,
       body: Column(
         children: [
           AppHeader(title: l10n.selectLanguage),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(Insets.s16),
-              child: Column(
-                children: [
-                  _LanguageOption(
-                    label: 'العربية',
-                    subtitle: 'Arabic',
-                    isSelected: isArabic,
-                    onTap: () {
-                      if (!isArabic) localeCubit.toggleLocale();
-                    },
-                  ),
-                  SizedBox(height: Sizes.s12),
-                  _LanguageOption(
-                    label: 'English',
-                    subtitle: 'الإنجليزية',
-                    isSelected: !isArabic,
-                    onTap: () {
-                      if (isArabic) localeCubit.toggleLocale();
-                    },
-                  ),
-                ],
-              ),
+          SizedBox(height: Sizes.s24),
+
+          // Icon + word above the list
+          Icon(
+            Icons.language_rounded,
+            color: context.colors.primary,
+            size: 36.sp,
+          ),
+          SizedBox(height: Sizes.s8),
+          Text(
+            l10n.selectLanguage,
+            style: getBoldStyle(
+              color: context.colors.textPrimary,
+              fontSize: FontSize.s16,
             ),
+          ),
+
+          SizedBox(height: Sizes.s20),
+          _LanguageRow(
+            title: 'العربية',
+            isSelected: isArabic,
+            onTap: () {
+              if (!isArabic) cubit.toggleLocale();
+            },
+          ),
+          Divider(height: 1, color: context.colors.borderSubtle),
+          _LanguageRow(
+            title: 'English',
+            isSelected: !isArabic,
+            onTap: () {
+              if (isArabic) cubit.toggleLocale();
+            },
           ),
         ],
       ),
@@ -55,71 +64,44 @@ class LanguageScreen extends StatelessWidget {
   }
 }
 
-class _LanguageOption extends StatelessWidget {
-  final String label;
-  final String subtitle;
+class _LanguageRow extends StatelessWidget {
+  final String title;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _LanguageOption({
-    required this.label,
-    required this.subtitle,
+  const _LanguageRow({
+    required this.title,
     required this.isSelected,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
-        decoration: BoxDecoration(
-          color: isSelected ? context.colors.primarySurface : context.colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.s16),
-          border: Border.all(
-            color: isSelected ? context.colors.primary : context.colors.border,
-            width: isSelected ? 1.5 : 1,
-          ),
+      child: Container(
+        color: context.colors.surface,
+        padding: EdgeInsetsDirectional.symmetric(
+          horizontal: Insets.s16,
+          vertical: 18.h,
         ),
         child: Row(
           children: [
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: getBoldStyle(
-                      color: isSelected ? context.colors.primary : context.colors.textPrimary,
-                      fontSize: FontSize.s16,
-                    ),
-                  ),
-                  SizedBox(height: 2.h),
-                  Text(
-                    subtitle,
-                    style: getRegularStyle(
-                      color: context.colors.textSecondary,
-                      fontSize: FontSize.s12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 22.w,
-              height: 22.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected ? context.colors.primary : context.colors.border,
-                  width: isSelected ? 6 : 1.5,
+              child: Text(
+                title,
+                style: getMediumStyle(
+                  color: context.colors.textPrimary,
+                  fontSize: FontSize.s16,
                 ),
-                color: context.colors.surface,
               ),
             ),
+            if (isSelected)
+              Icon(
+                Icons.check_rounded,
+                color: context.colors.primary,
+                size: 22.sp,
+              ),
           ],
         ),
       ),
