@@ -130,7 +130,7 @@ abstract class S {
   /// No description provided for @phoneHint.
   ///
   /// In en, this message translates to:
-  /// **'Enter phone number'**
+  /// **'Enter mobile number'**
   String get phoneHint;
 
   /// No description provided for @phoneLabel.

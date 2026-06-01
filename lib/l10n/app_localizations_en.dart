@@ -25,7 +25,7 @@ class SEn extends S {
   String get createAccount => 'Create Account';
 
   @override
-  String get phoneHint => 'Enter phone number';
+  String get phoneHint => 'Enter mobile number';
 
   @override
   String get phoneLabel => 'Phone Number';

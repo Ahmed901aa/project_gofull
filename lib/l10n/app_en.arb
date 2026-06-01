@@ -5,7 +5,7 @@
   "loginSubtitle": "Enter your phone number and password to sign in.",
   "noAccount": "Don't have an account?",
   "createAccount": "Create Account",
-  "phoneHint": "Enter phone number",
+  "phoneHint": "Enter mobile number",
   "phoneLabel": "Phone Number",
   "passwordLabel": "Password",
   "passwordHint": "Enter password",
