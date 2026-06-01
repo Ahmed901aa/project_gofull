@@ -54,7 +54,6 @@ class EditProfileScreen extends StatelessWidget {
                     label: l10n.phoneLabel,
                     value: phone?.isNotEmpty == true ? phone! : '—',
                     icon: Icons.phone_outlined,
-                    forceLtr: true,
                   ),
                 ],
               ),
@@ -71,14 +70,10 @@ class _ReadOnlyField extends StatelessWidget {
   final String value;
   final IconData icon;
 
-  /// Forces the value text to render left-to-right (e.g. phone numbers).
-  final bool forceLtr;
-
   const _ReadOnlyField({
     required this.label,
     required this.value,
     required this.icon,
-    this.forceLtr = false,
   });
 
   @override
@@ -111,10 +106,19 @@ class _ReadOnlyField extends StatelessWidget {
               Icon(icon, size: 18.sp, color: context.colors.textSecondary),
               SizedBox(width: 10.w),
               Expanded(
+                // No `textDirection` forced here — the Text inherits the
+                // ambient Directionality. That makes `TextAlign.start`
+                // resolve to the right in Arabic (RTL) and the left in
+                // English (LTR), so phone and name share the same
+                // direction-aware alignment.
+                //
+                // The digits themselves still render in their natural
+                // left-to-right order (Unicode classifies digits 0–9 as
+                // strong-LTR), so "0915909734" stays "0915909734" — it
+                // is only the *position* of the run that follows the
+                // layout direction.
                 child: Text(
                   value,
-                  textDirection:
-                      forceLtr ? TextDirection.ltr : null,
                   textAlign: TextAlign.start,
                   style: getMediumStyle(
                     color: context.colors.textPrimary,
