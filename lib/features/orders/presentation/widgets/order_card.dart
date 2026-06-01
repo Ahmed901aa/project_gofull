@@ -119,17 +119,29 @@ class OrderCard extends StatelessWidget {
           ]),
           if (order.fuelType != null && order.fuelType!.isNotEmpty) ...[
             Divider(color: context.colors.border, height: 16.h),
-            Row(children: [
-              Icon(Icons.local_gas_station_rounded, size: 20.sp, color: context.colors.primary),
-              SizedBox(width: 8.w),
-              Text(S.of(context).fuelTypeLabel, style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s12)),
-              Text(_localizedFuelType(context, order.fuelType), style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s12)),
-              if (order.quantity != null && order.quantity!.isNotEmpty) ...[
-                SizedBox(width: 12.w),
-                Text(S.of(context).quantityLabel, style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s12)),
-                Text(order.quantity!, style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s12)),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.local_gas_station_rounded, size: 20.sp, color: context.colors.primary),
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: Wrap(
+                    spacing: 6.w,
+                    runSpacing: 4.h,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(S.of(context).fuelTypeLabel, style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s12)),
+                      Text(_localizedFuelType(context, order.fuelType), style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s12)),
+                      if (order.quantity != null && order.quantity!.isNotEmpty) ...[
+                        SizedBox(width: 6.w),
+                        Text(S.of(context).quantityLabel, style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s12)),
+                        Text(order.quantity!, style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s12)),
+                      ],
+                    ],
+                  ),
+                ),
               ],
-            ]),
+            ),
           ],
         ]),
       );
