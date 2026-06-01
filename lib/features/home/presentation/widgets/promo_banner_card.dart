@@ -22,7 +22,7 @@ class PromoBannerCard extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.s20),
+        borderRadius: BorderRadius.circular(AppRadius.s32),
         splashColor: Colors.white.withValues(alpha: 0.10),
         highlightColor: Colors.white.withValues(alpha: 0.05),
         child: Ink(
@@ -32,10 +32,10 @@ class PromoBannerCard extends StatelessWidget {
               end: const Alignment(0.95, -0.45),
               colors: slide.gradientColors,
             ),
-            borderRadius: BorderRadius.circular(AppRadius.s20),
+            borderRadius: BorderRadius.circular(AppRadius.s32),
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadius.s20),
+            borderRadius: BorderRadius.circular(AppRadius.s32),
             child: Stack(
               children: [
                 // ── Decorative layered halos ────────────────────────
@@ -112,7 +112,7 @@ class PromoBannerCard extends StatelessWidget {
                                 color:
                                     Colors.white.withValues(alpha: 0.22),
                                 borderRadius:
-                                    BorderRadius.circular(AppRadius.s20),
+                                    BorderRadius.circular(AppRadius.s32),
                                 border: Border.all(
                                   color: Colors.white.withValues(alpha: 0.30),
                                   width: 0.8,
@@ -171,19 +171,19 @@ class PromoBannerCard extends StatelessWidget {
                                 Flexible(
                                   child: Container(
                                     padding: EdgeInsetsDirectional.symmetric(
-                                      horizontal: Insets.s10,
-                                      vertical: 4.h,
+                                      horizontal: Insets.s12,
+                                      vertical: 5.h,
                                     ),
                                     decoration: BoxDecoration(
                                       color: AppColors.white,
                                       borderRadius: BorderRadius.circular(
-                                          AppRadius.s24),
+                                          AppRadius.s32),
                                       boxShadow: [
                                         BoxShadow(
                                           color: Colors.black
-                                              .withValues(alpha: 0.10),
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 2),
+                                              .withValues(alpha: 0.12),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 3),
                                         ),
                                       ],
                                     ),
@@ -198,24 +198,38 @@ class PromoBannerCard extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 6.w),
+                                SizedBox(width: 8.w),
                                 // Round arrow chip
                                 Container(
-                                  width: 26.w,
-                                  height: 26.w,
+                                  width: 30.w,
+                                  height: 30.w,
                                   decoration: BoxDecoration(
-                                    color: Colors.white
-                                        .withValues(alpha: 0.22),
+                                    gradient: LinearGradient(
+                                      begin: AlignmentDirectional.topStart,
+                                      end: AlignmentDirectional.bottomEnd,
+                                      colors: [
+                                        Colors.white.withValues(alpha: 0.32),
+                                        Colors.white.withValues(alpha: 0.18),
+                                      ],
+                                    ),
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                       color: Colors.white
-                                          .withValues(alpha: 0.35),
-                                      width: 0.8,
+                                          .withValues(alpha: 0.42),
+                                      width: 1,
                                     ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black
+                                            .withValues(alpha: 0.10),
+                                        blurRadius: 6,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
                                   ),
                                   child: Icon(
                                     forwardArrowIcon(context),
-                                    size: 14.sp,
+                                    size: 16.sp,
                                     color: AppColors.white,
                                   ),
                                 ),

@@ -56,7 +56,7 @@ class _PromoBannerState extends State<PromoBanner> {
         // Card with soft shadow
         Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppRadius.s20),
+            borderRadius: BorderRadius.circular(AppRadius.s32),
             boxShadow: [
               BoxShadow(
                 color: context.colors.primary.withValues(alpha: 0.20),
@@ -71,7 +71,7 @@ class _PromoBannerState extends State<PromoBanner> {
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadius.s20),
+            borderRadius: BorderRadius.circular(AppRadius.s32),
             child: SizedBox(
               height: 170.h,
               child: PageView.builder(
