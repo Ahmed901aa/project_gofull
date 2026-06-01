@@ -1,7 +1,7 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/features/app_config/domain/repositories/app_config_repository.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppConfigBloc extends Bloc<AppConfigEvent, AppConfigState> {
   final AppConfigRepository repository;

@@ -1,59 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:project_gofull/core/resources/assets_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class DriverSupportScreen extends StatelessWidget {
   const DriverSupportScreen({super.key});
 
-  static const _supportPhone = '+96545345368';
+  String _getPhone(BuildContext context) {
+    try {
+      return context.read<AppConfigBloc>().state.supportPhone;
+    } catch (_) {
+      return '0915909734';
+    }
+  }
 
-  Future<void> _callSupport() async {
-    final uri = Uri.parse('tel:$_supportPhone');
+  Future<void> _callSupport(String phone) async {
+    final uri = Uri.parse('tel:$phone');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     }
   }
 
-  void _copyPhone(BuildContext context) {
-    Clipboard.setData(const ClipboardData(text: _supportPhone));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'تم نسخ الرقم',
-          style: getRegularStyle(color: AppColors.white, fontSize: FontSize.s14),
-        ),
-        backgroundColor: AppColors.primary,
-        duration: const Duration(seconds: 2),
-      ),
-    );
+  void _copyPhone(BuildContext context, String phone) {
+    Clipboard.setData(ClipboardData(text: phone));
+    AppSnackbar.info(context, S.of(context).numberCopiedSnack);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+    return Scaffold(
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             _buildHeader(context),
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.all(Insets.s16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _SupportIllustration(),
                     SizedBox(height: Insets.s24),
-                    _DirectCallSection(
-                      onCall: _callSupport,
-                      onCopy: () => _copyPhone(context),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+                      child: Builder(builder: (ctx) {
+                        final phone = _getPhone(ctx);
+                        return _DirectCallSection(
+                          phone: phone,
+                          onCall: () => _callSupport(phone),
+                          onCopy: () => _copyPhone(ctx, phone),
+                        );
+                      }),
                     ),
                     SizedBox(height: Insets.s32),
                   ],
@@ -62,12 +70,11 @@ class DriverSupportScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(
           children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
@@ -78,14 +85,14 @@ class DriverSupportScreen extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_rounded,
-                        size: 24.sp, color: const Color(0xFF0E0E0E)),
+                    child: Icon(backArrowIcon(context),
+                        size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(
                     child: Text(
-                      'الدعم الفني',
+                      S.of(context).technicalSupportTitle,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20),
                       textAlign: TextAlign.center,
                     ),
@@ -94,7 +101,7 @@ class DriverSupportScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF5F5F5)),
+            Divider(height: 1, color: context.colors.borderSubtle),
           ],
         ),
       );
@@ -105,27 +112,21 @@ class DriverSupportScreen extends StatelessWidget {
 class _SupportIllustration extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 160.h,
-      decoration: BoxDecoration(
-        color: AppColors.primary50,
-        borderRadius: BorderRadius.circular(AppRadius.s24),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.headset_mic_rounded,
-                size: 56.sp, color: AppColors.primary),
-            SizedBox(height: Insets.s8),
-            Text(
-              'فريق الدعم متاح لمساعدتك',
-              style: getMediumStyle(
-                  color: AppColors.primary, fontSize: FontSize.s14),
-            ),
-          ],
+    final screenWidth = MediaQuery.of(context).size.width;
+    return Column(
+      children: [
+        SvgPicture.asset(
+          SvgAssets.helpUser,
+          width: screenWidth,
+          fit: BoxFit.cover,
         ),
-      ),
+        SizedBox(height: Insets.s12),
+        Text(
+          S.of(context).supportTeamAvailable,
+          style: getMediumStyle(
+              color: context.colors.primary, fontSize: FontSize.s16),
+        ),
+      ],
     );
   }
 }
@@ -133,10 +134,11 @@ class _SupportIllustration extends StatelessWidget {
 // ── Direct Call Section ──────────────────────────────────
 
 class _DirectCallSection extends StatelessWidget {
+  final String phone;
   final VoidCallback onCall;
   final VoidCallback onCopy;
 
-  const _DirectCallSection({required this.onCall, required this.onCopy});
+  const _DirectCallSection({required this.phone, required this.onCall, required this.onCopy});
 
   @override
   Widget build(BuildContext context) {
@@ -144,17 +146,17 @@ class _DirectCallSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'اتصال مباشر',
+          S.of(context).directCallLabel,
           style: getBoldStyle(
-              color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+              color: context.colors.textPrimary, fontSize: FontSize.s16),
         ),
         SizedBox(height: Insets.s8),
         Container(
           padding: EdgeInsets.all(Insets.s16),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: context.colors.surface,
             borderRadius: BorderRadius.circular(AppRadius.s16),
-            border: Border.all(color: AppColors.neutral500),
+            border: Border.all(color: context.colors.border),
           ),
           child: Row(
             children: [
@@ -165,12 +167,12 @@ class _DirectCallSection extends StatelessWidget {
                   width: 44.w,
                   height: 44.w,
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: context.colors.primary,
                     borderRadius: BorderRadius.circular(AppRadius.s12),
                   ),
                   alignment: Alignment.center,
                   child: Icon(Icons.phone_rounded,
-                      size: 22.sp, color: AppColors.white),
+                      size: 22.sp, color: context.colors.surface),
                 ),
               ),
               SizedBox(width: Insets.s12),
@@ -180,15 +182,15 @@ class _DirectCallSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'رقم الجوال:',
+                      S.of(context).phoneNumberLabel2,
                       style: getRegularStyle(
-                          color: AppColors.grey, fontSize: FontSize.s12),
+                          color: context.colors.iconSecondary, fontSize: FontSize.s12),
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      '+965 4534 5368',
+                      phone,
                       style: getSemiBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s16),
                       textDirection: TextDirection.ltr,
                     ),
@@ -202,12 +204,12 @@ class _DirectCallSection extends StatelessWidget {
                   width: 36.w,
                   height: 36.w,
                   decoration: BoxDecoration(
-                    color: AppColors.neutral400,
+                    color: context.colors.surfaceElevated,
                     borderRadius: BorderRadius.circular(AppRadius.s8),
                   ),
                   alignment: Alignment.center,
                   child: Icon(Icons.copy_rounded,
-                      size: 18.sp, color: AppColors.darkGrey),
+                      size: 18.sp, color: context.colors.textSecondary),
                 ),
               ),
             ],

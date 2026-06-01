@@ -18,7 +18,11 @@ class BannerEntity extends Equatable {
   });
 
   int get colorValue {
-    if (colorHex == null) return 0xFF004B3B;
+    if (colorHex == null) {
+
+      return 0xFF004B3B;
+
+    }
     final hex = colorHex!.replaceFirst('#', '');
     return int.parse('FF$hex', radix: 16);
   }

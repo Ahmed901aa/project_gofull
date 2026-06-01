@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class NavItem extends StatelessWidget {
   final IconData icon;
@@ -23,7 +23,11 @@ class NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isActive = currentIndex == index;
-    final color = isActive ? AppColors.primary : AppColors.primary200;
+    final color = isActive
+        ? context.colors.primary
+        : context.isDarkMode
+            ? context.colors.iconSecondary
+            : context.colors.primaryLight;
 
     return GestureDetector(
       onTap: () => onTap(index),

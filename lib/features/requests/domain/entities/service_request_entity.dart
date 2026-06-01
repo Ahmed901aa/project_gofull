@@ -9,9 +9,13 @@ class ServiceRequestEntity extends Equatable {
   final String driverLatitude;
   final String driverLongitude;
   final String? driverAddress;
+  final String? destinationLatitude;
+  final String? destinationLongitude;
+  final String? destinationAddress;
   final String? fuelType;
   final String? fuelQuantity;
   final String? plateNumber;
+  final String? carType;
   final String? notes;
   final String? acceptedAt;
   final String? arrivedAt;
@@ -41,9 +45,13 @@ class ServiceRequestEntity extends Equatable {
     required this.driverLatitude,
     required this.driverLongitude,
     this.driverAddress,
+    this.destinationLatitude,
+    this.destinationLongitude,
+    this.destinationAddress,
     this.fuelType,
     this.fuelQuantity,
     this.plateNumber,
+    this.carType,
     this.notes,
     this.acceptedAt,
     this.arrivedAt,
@@ -72,5 +80,13 @@ class ServiceRequestEntity extends Equatable {
   bool get isRated => ratingInfo != null;
 
   @override
-  List<Object?> get props => [id, status];
+  List<Object?> get props => [
+        id,
+        status,
+        providerId,
+        acceptedAt,
+        arrivedAt,
+        completedAt,
+        cancelledAt,
+      ];
 }

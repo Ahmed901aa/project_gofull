@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
-import 'package:project_gofull/features/app_config/presentation/bloc/app_config_state.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_state.dart';
 import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class DriverOrdersScreen extends StatelessWidget {
   const DriverOrdersScreen({super.key});
@@ -22,10 +23,8 @@ class DriverOrdersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<ProviderBloc>()..add(const LoadHistoryEvent()),
-      child: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Scaffold(
-          backgroundColor: AppColors.scaffoldBg,
+      child: Scaffold(
+          backgroundColor: context.colors.background,
           body: Column(
             children: [
               _buildHeader(context),
@@ -33,15 +32,15 @@ class DriverOrdersScreen extends StatelessWidget {
                 child: BlocBuilder<ProviderBloc, ProviderState>(
                   builder: (context, state) {
                     if (state is ProviderLoading) {
-                      return const Center(
+                      return Center(
                           child: CircularProgressIndicator(
-                              color: AppColors.primary));
+                              color: context.colors.primary));
                     }
                     if (state is ProviderError) {
                       return Center(
                           child: Text(state.message,
                               style: getRegularStyle(
-                                  color: AppColors.grey,
+                                  color: context.colors.iconSecondary,
                                   fontSize: FontSize.s16)));
                     }
                     if (state is HistoryLoaded) {
@@ -54,17 +53,16 @@ class DriverOrdersScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildList(
       BuildContext context, List<ServiceRequestEntity> requests) {
     if (requests.isEmpty) {
       return Center(
-          child: Text('لا توجد طلبات سابقة',
+          child: Text(S.of(context).noRecentOrders,
               style: getRegularStyle(
-                  color: AppColors.grey, fontSize: FontSize.s16)));
+                  color: context.colors.iconSecondary, fontSize: FontSize.s16)));
     }
     final config = context.read<AppConfigBloc>().state;
     final cur = config.currency;
@@ -74,14 +72,14 @@ class DriverOrdersScreen extends StatelessWidget {
       padding: EdgeInsets.all(Insets.s16),
       itemCount: requests.length,
       separatorBuilder: (_, __) =>
-          Divider(color: AppColors.divider, height: 1),
+          Divider(color: context.colors.divider, height: 1),
       itemBuilder: (context, index) =>
           _OrderCard(request: requests[index], currency: cur),
     );
   }
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(children: [
           SizedBox(height: MediaQuery.of(context).padding.top),
           Padding(
@@ -90,18 +88,18 @@ class DriverOrdersScreen extends StatelessWidget {
             child: Row(children: [
               GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Icon(Icons.arrow_back_rounded,
-                      size: 24.sp, color: const Color(0xFF0E0E0E))),
+                  child: Icon(backArrowIcon(context),
+                      size: 24.sp, color: context.colors.textPrimary)),
               Expanded(
-                  child: Text('الطلبات الأخيرة',
+                  child: Text(S.of(context).recentOrdersTitle,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20),
                       textAlign: TextAlign.center)),
               SizedBox(width: 24.sp),
             ]),
           ),
-          const Divider(height: 1, color: Color(0xFFF5F5F5)),
+          Divider(height: 1, color: context.colors.borderSubtle),
         ]),
       );
 }
@@ -142,48 +140,48 @@ class _OrderCard extends StatelessWidget {
             SizedBox(height: Insets.s12),
             Row(children: [
               Icon(Icons.location_on_outlined,
-                  size: 18.sp, color: AppColors.grey),
+                  size: 18.sp, color: context.colors.iconSecondary),
               SizedBox(width: 4.w),
               Expanded(
                   child: Text(address,
                       style: getRegularStyle(
-                          color: AppColors.darkGrey, fontSize: FontSize.s14),
+                          color: context.colors.textSecondary, fontSize: FontSize.s14),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis)),
             ]),
             SizedBox(height: Insets.s8),
             Row(children: [
               Icon(Icons.access_time_rounded,
-                  size: 16.sp, color: AppColors.grey),
+                  size: 16.sp, color: context.colors.iconSecondary),
               SizedBox(width: 4.w),
               Text(date,
                   style: getRegularStyle(
-                      color: AppColors.grey, fontSize: FontSize.s12)),
+                      color: context.colors.iconSecondary, fontSize: FontSize.s12)),
             ]),
             SizedBox(height: Insets.s12),
             Row(children: [
-              Text('الإجمالي',
+              Text(S.of(context).totalLabel,
                   style: getRegularStyle(
-                      color: AppColors.grey, fontSize: FontSize.s14)),
+                      color: context.colors.iconSecondary, fontSize: FontSize.s14)),
               SizedBox(width: 4.w),
               Text(total,
                   style: getBoldStyle(
-                      color: const Color(0xFF0E0E0E),
+                      color: context.colors.textPrimary,
                       fontSize: FontSize.s16)),
               const Spacer(),
               Container(
                 padding: EdgeInsets.symmetric(
                     horizontal: Insets.s8, vertical: 4.h),
                 decoration: BoxDecoration(
-                    color: AppColors.primary50,
+                    color: context.colors.primarySurface,
                     borderRadius: BorderRadius.circular(AppRadius.s16)),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
                   Icon(Icons.check_circle_rounded,
-                      size: 14.sp, color: AppColors.primary),
+                      size: 14.sp, color: context.colors.primary),
                   SizedBox(width: 4.w),
-                  Text('كاش',
+                  Text(S.of(context).cashLabel,
                       style: getMediumStyle(
-                          color: AppColors.primary, fontSize: FontSize.s12)),
+                          color: context.colors.primary, fontSize: FontSize.s12)),
                 ]),
               ),
             ]),
@@ -204,52 +202,21 @@ class _ServiceBadge extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
       decoration: BoxDecoration(
           color: isTow
-              ? AppColors.primary.withValues(alpha: 0.1)
-              : AppColors.gold.withValues(alpha: 0.1),
+              ? context.colors.primary.withValues(alpha: 0.1)
+              : context.colors.gold.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppRadius.s8)),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(
+        DirectionalServiceIcon(
             isTow ? Icons.fire_truck_rounded : Icons.local_gas_station_rounded,
             size: 14.sp,
-            color: isTow ? AppColors.primary : AppColors.gold),
+            color: isTow ? context.colors.primary : context.colors.gold),
         SizedBox(width: 4.w),
-        Text(isTow ? 'خدمة ونش' : 'خدمة وقود',
+        Text(isTow ? S.of(context).towService : S.of(context).fuelService,
             style: getMediumStyle(
-                color: isTow ? AppColors.primary : AppColors.gold,
+                color: isTow ? context.colors.primary : context.colors.gold,
                 fontSize: FontSize.s12)),
       ]),
     );
   }
 }
 
-class _StatusBadge extends StatelessWidget {
-  final String status;
-  final bool isRated;
-  const _StatusBadge({required this.status, required this.isRated});
-
-  @override
-  Widget build(BuildContext context) {
-    Color bg, fg;
-    String label;
-    if (status == 'cancelled') {
-      bg = AppColors.error.withValues(alpha: 0.1);
-      fg = AppColors.error;
-      label = 'ملغي';
-    } else if (status == 'completed' && isRated) {
-      bg = AppColors.success.withValues(alpha: 0.1);
-      fg = AppColors.success;
-      label = 'مكتمل';
-    } else {
-      bg = AppColors.gold.withValues(alpha: 0.1);
-      fg = AppColors.gold;
-      label = 'غير مقيّم';
-    }
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
-      decoration: BoxDecoration(
-          color: bg, borderRadius: BorderRadius.circular(AppRadius.s8)),
-      child: Text(label,
-          style: getMediumStyle(color: fg, fontSize: FontSize.s12)),
-    );
-  }
-}

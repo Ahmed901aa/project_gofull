@@ -51,6 +51,14 @@ class LoadActiveRequestEvent extends ProviderEvent {
   const LoadActiveRequestEvent();
 }
 
+class CancelOrderEvent extends ProviderEvent {
+  final int id;
+  final String? reason;
+  const CancelOrderEvent({required this.id, this.reason});
+  @override
+  List<Object?> get props => [id, reason];
+}
+
 class RateDriverEvent extends ProviderEvent {
   final int requestId;
   final int rating;

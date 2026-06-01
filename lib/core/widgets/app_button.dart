@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class AppButton extends StatelessWidget {
   final String text;
@@ -36,17 +37,17 @@ class AppButton extends StatelessWidget {
           ? OutlinedButton(
               onPressed: isLoading ? null : onPressed,
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: AppColors.primary),
+                side: BorderSide(color: context.colors.primary),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.s12),
                 ),
               ),
-              child: _buildChild(AppColors.primary),
+              child: _buildChild(context.colors.primary),
             )
           : ElevatedButton(
               onPressed: isLoading ? null : onPressed,
               style: ElevatedButton.styleFrom(
-                backgroundColor: backgroundColor ?? AppColors.primary,
+                backgroundColor: backgroundColor ?? context.colors.primary,
                 foregroundColor: textColor ?? AppColors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.s12),

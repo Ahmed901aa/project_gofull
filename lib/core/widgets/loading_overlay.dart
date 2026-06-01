@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class LoadingOverlay extends StatelessWidget {
   final bool isLoading;
@@ -18,10 +18,10 @@ class LoadingOverlay extends StatelessWidget {
         child,
         if (isLoading)
           Container(
-            color: AppColors.black.withValues(alpha: 0.3),
-            child: const Center(
+            color: context.colors.textPrimary.withValues(alpha: 0.3),
+            child: Center(
               child: CircularProgressIndicator(
-                color: AppColors.primary,
+                color: context.colors.primary,
               ),
             ),
           ),

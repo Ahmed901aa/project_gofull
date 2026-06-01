@@ -21,7 +21,7 @@ class RequestRepositoryImpl implements RequestRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 
@@ -41,19 +41,23 @@ class RequestRepositoryImpl implements RequestRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غير مت��قع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 
   @override
   Future<Either<Failure, ServiceRequestEntity>> createTowingRequest({
     required double latitude, required double longitude, String? address,
-    required String plateNumber, String? notes,
+    required double destinationLatitude, required double destinationLongitude, String? destinationAddress,
+    required String plateNumber, required String carType, String? notes,
   }) async {
     try {
       final result = await dataSource.createTowingRequest(
         latitude: latitude, longitude: longitude, address: address,
-        plateNumber: plateNumber, notes: notes,
+        destinationLatitude: destinationLatitude,
+        destinationLongitude: destinationLongitude,
+        destinationAddress: destinationAddress,
+        plateNumber: plateNumber, carType: carType, notes: notes,
       );
       return Right(result);
     } on ServerException catch (e) {
@@ -61,7 +65,7 @@ class RequestRepositoryImpl implements RequestRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غي�� متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 
@@ -76,7 +80,19 @@ class RequestRepositoryImpl implements RequestRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ServiceRequestEntity?>> getUnratedOrder() async {
+    try {
+      final result = await dataSource.getUnratedOrder();
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (_) {
+      return const Right(null);
     }
   }
 
@@ -90,7 +106,7 @@ class RequestRepositoryImpl implements RequestRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 
@@ -108,7 +124,7 @@ class RequestRepositoryImpl implements RequestRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خط�� غير متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 }

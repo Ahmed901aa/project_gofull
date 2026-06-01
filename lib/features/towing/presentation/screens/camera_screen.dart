@@ -2,12 +2,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:gal/gal.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/camera_actions_bar.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -27,23 +29,33 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> _openCamera() async {
     final picked = await ImagePicker().pickImage(source: ImageSource.camera, imageQuality: 90);
-    if (!mounted) return;
+    if (!mounted) {
+
+      return;
+
+    }
     if (picked == null) { Navigator.pop(context); return; }
     setState(() => _photo = File(picked.path));
   }
 
   Future<void> _saveAndContinue() async {
-    if (_photo == null || _saving) return;
+    if (_photo == null || _saving) {
+
+      return;
+
+    }
     setState(() => _saving = true);
-    await ImageGallerySaver.saveFile(_photo!.path);
-    if (!mounted) return;
+    await Gal.putImage(_photo!.path);
+    if (!mounted) {
+
+      return;
+
+    }
     setState(() => _saving = false);
     Navigator.pop(context, _photo);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('تم حفظ الصورة في المعرض', style: getRegularStyle(color: AppColors.white, fontSize: FontSize.s14), textAlign: TextAlign.right),
-      backgroundColor: AppColors.primary, behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s12)),
-    ));
+    if (mounted) {
+      AppSnackbar.success(context, S.of(context).photoSavedToGallery);
+    }
   }
 
   @override
@@ -51,7 +63,7 @@ class _CameraScreenState extends State<CameraScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: _photo == null
-          ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+          ? Center(child: CircularProgressIndicator(color: context.colors.primary))
           : Column(children: [
               _buildHeader(),
               Expanded(child: ClipRRect(borderRadius: BorderRadius.circular(AppRadius.s16), child: Image.file(_photo!, fit: BoxFit.contain, width: double.infinity))),
@@ -68,8 +80,8 @@ class _CameraScreenState extends State<CameraScreen> {
           Padding(
             padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.close_rounded, size: 24.sp, color: AppColors.white)),
-              Text('صورة السيارة', style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s20)),
+              GestureDetector(onTap: () => Navigator.pop(context), child: Icon(Icons.close_rounded, size: 24.sp, color: context.colors.surface)),
+              Text(S.of(context).photoCapture, style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s20)),
               const SizedBox(width: 24),
             ]),
           ),

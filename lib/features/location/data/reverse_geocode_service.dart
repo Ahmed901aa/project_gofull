@@ -22,7 +22,11 @@ class ReverseGeocodeService {
       });
       if (res.data['status'] == 'OK') {
         final results = res.data['results'] as List;
-        if (results.isNotEmpty) return results.first['formatted_address'] as String;
+        if (results.isNotEmpty) {
+
+          return results.first['formatted_address'] as String;
+
+        }
       }
       debugPrint('[Geocode] status=${res.data['status']} — using Nominatim fallback');
     } catch (_) {
@@ -43,7 +47,11 @@ class ReverseGeocodeService {
           addr['suburb'],
           addr['city'] ?? addr['town'] ?? addr['village'],
         ].whereType<String>().where((s) => s.isNotEmpty).toList();
-        if (parts.isNotEmpty) return parts.join('، ');
+        if (parts.isNotEmpty) {
+
+          return parts.join('، ');
+
+        }
       }
       return r.data['display_name'] as String? ?? '$lat, $lng';
     } catch (_) {

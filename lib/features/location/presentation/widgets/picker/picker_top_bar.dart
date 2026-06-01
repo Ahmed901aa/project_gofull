@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class PickerTopBar extends StatelessWidget {
   final VoidCallback onBack;
@@ -26,12 +28,12 @@ class PickerTopBar extends StatelessWidget {
             behavior: HitTestBehavior.opaque,
             child: Container(
               width: 40.w, height: 40.w,
-              decoration: const BoxDecoration(
-                color: AppColors.white,
+              decoration: BoxDecoration(
+                color: context.colors.surface,
                 shape: BoxShape.circle,
-                boxShadow: [BoxShadow(color: AppColors.shadow, blurRadius: 8)],
+                boxShadow: [BoxShadow(color: context.colors.shadow, blurRadius: 8)],
               ),
-              child: Icon(Icons.arrow_back, size: 20.sp, color: AppColors.black),
+              child: Icon(backArrowIcon(context), size: 20.sp, color: context.colors.textPrimary),
             ),
           ),
           SizedBox(width: Insets.s12),
@@ -43,16 +45,16 @@ class PickerTopBar extends StatelessWidget {
                 height: 44.h,
                 padding: EdgeInsets.symmetric(horizontal: Insets.s12),
                 decoration: BoxDecoration(
-                  color: AppColors.white,
+                  color: context.colors.surface,
                   borderRadius: BorderRadius.circular(AppRadius.s12),
-                  boxShadow: const [BoxShadow(color: AppColors.shadow, blurRadius: 8, offset: Offset(0, 2))],
+                  boxShadow: [BoxShadow(color: context.colors.shadow, blurRadius: 8, offset: const Offset(0, 2))],
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.search_rounded, color: AppColors.primary, size: 20.sp),
+                    Icon(Icons.search_rounded, color: context.colors.primary, size: 20.sp),
                     SizedBox(width: Insets.s8),
-                    Text('ابحث عن موقع...',
-                        style: getRegularStyle(color: AppColors.grey, fontSize: FontSize.s14)),
+                    Text(S.of(context).searchForLocationDots,
+                        style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s14)),
                   ],
                 ),
               ),

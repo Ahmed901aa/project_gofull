@@ -4,6 +4,7 @@ import 'package:project_gofull/core/cubits/location_cubit.dart';
 import 'package:project_gofull/core/cubits/location_state.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/widgets/service_location_card.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class TowingRouteSection extends StatelessWidget {
   final String destinationAddress;
@@ -23,7 +24,7 @@ class TowingRouteSection extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: BlocBuilder<LocationCubit, LocationState>(
             builder: (context, loc) => ServiceLocationCard(
-              topLabel: 'نقطة الانطلاق',
+              topLabel: S.of(context).departurePoint,
               bottomLabel: loc.address,
               onTap: () => Navigator.pushNamed(context, Routes.locationPicker),
             ),
@@ -33,7 +34,7 @@ class TowingRouteSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: ServiceLocationCard(
-            topLabel: 'وجهة التوصيل',
+            topLabel: S.of(context).deliveryDestination,
             bottomLabel: destinationAddress,
             onTap: onDestinationTap,
           ),

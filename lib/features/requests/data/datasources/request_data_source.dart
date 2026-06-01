@@ -13,9 +13,11 @@ abstract class RequestDataSource {
   });
   Future<ServiceRequestModel> createTowingRequest({
     required double latitude, required double longitude, String? address,
-    required String plateNumber, String? notes,
+    required double destinationLatitude, required double destinationLongitude, String? destinationAddress,
+    required String plateNumber, required String carType, String? notes,
   });
   Future<ServiceRequestModel> getRequestDetails(int id);
+  Future<ServiceRequestModel?> getUnratedOrder();
   Future<void> cancelRequest(int id);
   Future<RatingModel> rateProvider({
     required int requestId, required int rating, String? comment,
@@ -33,13 +35,13 @@ class RequestMockDataSource implements RequestDataSource {
         id: 1, driverId: 1, providerId: 2,
         serviceType: 'fuel_delivery', status: 'completed',
         driverLatitude: '32.8872', driverLongitude: '13.1913',
-        driverAddress: 'طرابلس، ليبيا', fuelType: 'diesel', fuelQuantity: '20',
+        driverAddress: 'Tripoli, Libya', fuelType: 'diesel', fuelQuantity: '20',
         createdAt: '2026-04-01T10:00:00Z',
       ),
       const ServiceRequestModel(
         id: 2, driverId: 1, serviceType: 'towing', status: 'pending',
         driverLatitude: '32.9000', driverLongitude: '13.2000',
-        driverAddress: 'بنغازي، ليبيا', plateNumber: 'أ ب م - 3541',
+        driverAddress: 'Benghazi, Libya', plateNumber: 'ABM-3541',
         createdAt: '2026-04-02T14:00:00Z',
       ),
     ];
@@ -62,13 +64,18 @@ class RequestMockDataSource implements RequestDataSource {
   @override
   Future<ServiceRequestModel> createTowingRequest({
     required double latitude, required double longitude, String? address,
-    required String plateNumber, String? notes,
+    required double destinationLatitude, required double destinationLongitude, String? destinationAddress,
+    required String plateNumber, required String carType, String? notes,
   }) async {
     await Future.delayed(const Duration(milliseconds: 800));
     return ServiceRequestModel(
       id: 11, driverId: 1, serviceType: 'towing', status: 'pending',
       driverLatitude: latitude.toString(), driverLongitude: longitude.toString(),
-      driverAddress: address, plateNumber: plateNumber, notes: notes,
+      driverAddress: address,
+      destinationLatitude: destinationLatitude.toString(),
+      destinationLongitude: destinationLongitude.toString(),
+      destinationAddress: destinationAddress,
+      plateNumber: plateNumber, notes: notes,
     );
   }
 
@@ -79,8 +86,14 @@ class RequestMockDataSource implements RequestDataSource {
       id: 1, driverId: 1, providerId: 2,
       serviceType: 'fuel_delivery', status: 'completed',
       driverLatitude: '32.8872', driverLongitude: '13.1913',
-      driverAddress: 'طرابلس، ليبيا',
+      driverAddress: 'Tripoli, Libya',
     );
+  }
+
+  @override
+  Future<ServiceRequestModel?> getUnratedOrder() async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    return null;
   }
 
   @override
@@ -118,7 +131,7 @@ class RequestRemoteDataSource implements RequestDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل تحميل الطلبات');
+              'Failed to load requests');
     }
   }
 
@@ -144,14 +157,15 @@ class RequestRemoteDataSource implements RequestDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل إنشاء طلب الوقود');
+              'Operation failed');
     }
   }
 
   @override
   Future<ServiceRequestModel> createTowingRequest({
     required double latitude, required double longitude, String? address,
-    required String plateNumber, String? notes,
+    required double destinationLatitude, required double destinationLongitude, String? destinationAddress,
+    required String plateNumber, required String carType, String? notes,
   }) async {
     try {
       final response = await apiClient.dio.post(
@@ -160,7 +174,11 @@ class RequestRemoteDataSource implements RequestDataSource {
           'driver_latitude': latitude,
           'driver_longitude': longitude,
           'driver_address': address,
+          'destination_latitude': destinationLatitude,
+          'destination_longitude': destinationLongitude,
+          if (destinationAddress != null) 'destination_address': destinationAddress,
           'plate_number': plateNumber,
+          'car_type': carType,
           if (notes != null) 'notes': notes,
         },
       );
@@ -169,7 +187,7 @@ class RequestRemoteDataSource implements RequestDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل إنشاء طلب السحب');
+              'Operation failed');
     }
   }
 
@@ -183,7 +201,24 @@ class RequestRemoteDataSource implements RequestDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل تحميل تفاصيل الطلب');
+              'Failed to load request details');
+    }
+  }
+
+  @override
+  Future<ServiceRequestModel?> getUnratedOrder() async {
+    try {
+      final response =
+          await apiClient.dio.get(ApiConstants.driverUnratedRequest);
+      final data = response.data['data'];
+      if (data == null) {
+
+        return null;
+
+      }
+      return ServiceRequestModel.fromJson(data as Map<String, dynamic>);
+    } on DioException catch (_) {
+      return null;
     }
   }
 
@@ -194,7 +229,7 @@ class RequestRemoteDataSource implements RequestDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل إلغاء الطلب');
+              'Failed to cancel request');
     }
   }
 
@@ -212,7 +247,7 @@ class RequestRemoteDataSource implements RequestDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل إرسال التقييم');
+              'Failed to submit rating');
     }
   }
 }

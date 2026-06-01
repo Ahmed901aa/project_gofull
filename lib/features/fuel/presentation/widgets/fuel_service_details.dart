@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class FuelServiceDetails extends StatelessWidget {
   final Map<String, String> data;
@@ -10,25 +11,26 @@ class FuelServiceDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('تفاصيل الخدمة', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.right),
+        Text(l10n.serviceDetails, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18), textAlign: TextAlign.start),
         SizedBox(height: Insets.s8),
-        _row('الكمية الفعلية', data['quantity']!),
-        _row('نوع الوقود', data['fuelType']!),
-        _row('سعر لتر اليوم', data['pricePerLiter']!),
+        _row(context, l10n.actualQuantity, data['quantity']!),
+        _row(context, l10n.fuelType, data['fuelType']!),
+        _row(context, l10n.todayPricePerLiter, data['pricePerLiter']!),
       ],
     );
   }
 
-  Widget _row(String label, String value) => Padding(
+  Widget _row(BuildContext context, String label, String value) => Padding(
         padding: EdgeInsets.symmetric(vertical: Insets.s8),
         child: Row(
           children: [
-            Text(label, style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
+            Text(label, style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s16)),
             const Spacer(),
-            Text(value, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
+            Text(value, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s16)),
           ],
         ),
       );

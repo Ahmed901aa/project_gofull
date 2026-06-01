@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -11,6 +10,8 @@ import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class DriverRateCustomerScreen extends StatefulWidget {
   final DriverRateArgs args;
@@ -54,10 +55,8 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+    return Scaffold(
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             _buildHeader(context),
@@ -84,14 +83,13 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
             _buildBottomButton(context),
           ],
         ),
-      ),
-    );
+      );
   }
 
   // ── Header ──────────────────────────────────────────────────
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(
           children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
@@ -102,24 +100,24 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_rounded,
-                        size: 24.sp, color: const Color(0xFF0E0E0E)),
+                    child: Icon(backArrowIcon(context),
+                        size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(
                     child: Text(
-                      AppStrings.rateTrip,
+                      S.of(context).rateTrip,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Icon(Icons.info_outline_rounded,
-                      size: 24.sp, color: const Color(0xFF0E0E0E)),
+                      size: 24.sp, color: context.colors.textPrimary),
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF5F5F5)),
+            Divider(height: 1, color: context.colors.borderSubtle),
           ],
         ),
       );
@@ -129,18 +127,18 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
   Widget _buildQuestion() => Column(
         children: [
           Text(
-            AppStrings.howWasCustomer,
+            S.of(context).howWasCustomer,
             style: getBoldStyle(
-                color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
+                color: context.colors.textPrimary, fontSize: FontSize.s20),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: Insets.s8),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: Insets.s16),
             child: Text(
-              AppStrings.ratingHelps,
+              S.of(context).ratingHelps,
               style: getRegularStyle(
-                  color: AppColors.neutral800, fontSize: FontSize.s14),
+                  color: context.colors.textSecondary, fontSize: FontSize.s14),
               textAlign: TextAlign.center,
             ),
           ),
@@ -161,7 +159,7 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
               child: Icon(
                 isSelected ? Icons.star_rounded : Icons.star_outline_rounded,
                 size: 44.sp,
-                color: isSelected ? AppColors.gold : AppColors.neutral600,
+                color: isSelected ? context.colors.gold : context.colors.border,
               ),
             ),
           );
@@ -173,16 +171,16 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
   Widget _buildNotesField() => Container(
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.s12),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppStrings.additionalNotes,
+              S.of(context).additionalNotes,
               style: getSemiBoldStyle(
-                  color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+                  color: context.colors.textPrimary, fontSize: FontSize.s16),
             ),
             SizedBox(height: Insets.s12),
             TextField(
@@ -191,13 +189,13 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
               maxLines: 3,
               onChanged: (_) => setState(() {}),
               style: getRegularStyle(
-                  color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+                  color: context.colors.textPrimary, fontSize: FontSize.s14),
               decoration: InputDecoration(
-                hintText: AppStrings.additionalNotesHint,
+                hintText: S.of(context).additionalNotesHint,
                 hintStyle: getRegularStyle(
-                    color: AppColors.neutral800, fontSize: FontSize.s14),
+                    color: context.colors.textSecondary, fontSize: FontSize.s14),
                 filled: true,
-                fillColor: AppColors.neutral300,
+                fillColor: context.colors.surfaceVariant,
                 counterText: '',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppRadius.s8),
@@ -212,7 +210,7 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
               child: Text(
                 '${_notesController.text.length}/$_maxChars',
                 style: getRegularStyle(
-                    color: AppColors.neutral800, fontSize: FontSize.s12),
+                    color: context.colors.textSecondary, fontSize: FontSize.s12),
               ),
             ),
           ],
@@ -228,15 +226,15 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
           Insets.s16,
           Insets.s12 + MediaQuery.of(context).padding.bottom,
         ),
-        decoration: const BoxDecoration(
-          color: AppColors.white,
-          border: Border(top: BorderSide(color: Color(0xFFF5F5F5))),
+        decoration: BoxDecoration(
+          color: context.colors.surface,
+          border: Border(top: BorderSide(color: context.colors.borderSubtle)),
         ),
         child: AppButton(
-          text: AppStrings.submitRating,
+          text: S.of(context).submitRating,
           onPressed: _selectedStars > 0 ? _onSubmit : () {},
           backgroundColor:
-              _selectedStars > 0 ? AppColors.primary : AppColors.neutral600,
+              _selectedStars > 0 ? context.colors.primary : context.colors.border,
         ),
       );
 }

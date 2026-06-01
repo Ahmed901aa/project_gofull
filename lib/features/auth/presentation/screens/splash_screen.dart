@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -35,7 +36,11 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _navigate() {
     Future.delayed(const Duration(seconds: 3), () {
-      if (!mounted) return;
+      if (!mounted) {
+
+        return;
+
+      }
 
       final tokenStorage = sl<TokenStorage>();
       if (tokenStorage.isLoggedIn) {
@@ -58,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: context.colors.primary,
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnimation,

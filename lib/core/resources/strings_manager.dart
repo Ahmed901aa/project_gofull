@@ -32,7 +32,7 @@ class AppStrings {
   static const String welcomeSubtitle = 'نتمنى لك سلامة الطريق';
   static const String fuelSupply = 'إمداد وقود';
   static const String fuelSupplyDesc = 'توصيل لحد مكانك';
-  static const String towTruckService = 'خدمة ونش';
+  static const String towTruckService = 'خدمة ساحبة';
   static const String towTruckServiceDesc = 'سحب وإنقاذ سريع';
   static const String currentOrder = 'طلبك الحالي';
   static const String inProgress = 'قيد التنفيذ';
@@ -97,7 +97,7 @@ class AppStrings {
   static const String orderDetails = 'تفاصيل الطلب';
   static const String acceptOrder = 'قبول الطلب';
   static const String rejectOrder = 'رفض الطلب';
-  static const String towService = 'خدمة ونش';
+  static const String towService = 'خدمة ساحبة';
   static const String fuelService = 'خدمة وقود';
   static const String distanceAway = 'على بعد';
   static const String km = 'كم';
@@ -110,7 +110,7 @@ class AppStrings {
   static const String privacyPolicy = 'سياسة الخصوصية';
   static const String logout = 'تسجيل الخروج';
   static const String wallet = 'المحفظة';
-  static const String towDriver = 'سائق ونش';
+  static const String towDriver = 'سائق ساحبة';
 
   // Driver Order Details
   static const String customerInfo = 'معلومات العميل';
@@ -174,7 +174,7 @@ class AppStrings {
   static const String salary = 'المرتب';
   static const String fixedSalary = 'مرتب ثابت:';
   static const String vehicle = 'المعهدة';
-  static const String vehicleType = 'نوع الونش';
+  static const String vehicleType = 'نوع الساحبة';
   static const String plateNumber = 'رقم الوحدة';
   static const String documents = 'الوثائق';
   static const String nationalId = 'الرقم القومي';
@@ -184,7 +184,7 @@ class AppStrings {
   static const String required_ = 'مطلوب';
   static const String view = 'عرض';
   static const String uploadFile = 'رفع الملف';
-  static const String hydraulicWinch = 'ونش هيدروليك';
+  static const String hydraulicWinch = 'ساحبة هيدروليك';
 
   // Driver Reports
   static const String workHours = 'ساعات العمل';

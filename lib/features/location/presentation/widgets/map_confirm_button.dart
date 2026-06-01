@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 
@@ -11,14 +11,15 @@ class MapConfirmButton extends StatelessWidget {
 
   const MapConfirmButton({super.key, required this.address});
 
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s16, Insets.s16, 32.h),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s24)),
-        boxShadow: [BoxShadow(color: AppColors.shadow, blurRadius: 16, offset: const Offset(0, -4))],
+        boxShadow: [BoxShadow(color: context.colors.shadow, blurRadius: 16, offset: const Offset(0, -4))],
       ),
       child: SizedBox(
         width: double.infinity,
@@ -26,12 +27,12 @@ class MapConfirmButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () => Navigator.pop(context, address),
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            foregroundColor: AppColors.white,
+            backgroundColor: context.colors.primary,
+            foregroundColor: context.colors.onPrimary,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s12)),
             elevation: 0,
           ),
-          child: Text(AppStrings.confirm, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+          child: Text(S.of(context).confirm, style: getBoldStyle(color: context.colors.onPrimary, fontSize: FontSize.s16)),
         ),
       ),
     );

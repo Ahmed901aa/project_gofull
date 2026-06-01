@@ -1,11 +1,13 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/services/noti_service.dart';
 import 'package:project_gofull/core/services/order_polling_service.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
@@ -13,6 +15,8 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_event
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/searching_animation.dart';
 import '../widgets/searching_header.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class SearchingScreen extends StatefulWidget {
   final SearchingArgs args;
@@ -31,15 +35,29 @@ class _SearchingScreenState extends State<SearchingScreen> {
     super.initState();
     _requestBloc = sl<RequestBloc>();
 
+    developer.log(
+      'SearchingScreen initState — requestId=${widget.args.requestId}, serviceType=${widget.args.serviceType}',
+      name: 'SearchingScreen',
+    );
+
     // Start polling for status changes every 3 seconds
     if (widget.args.requestId != null) {
       _polling.start(
         interval: const Duration(seconds: 3),
         callback: () async {
           if (!_navigated) {
+            developer.log(
+              'Polling → LoadRequestDetailsEvent(${widget.args.requestId})',
+              name: 'SearchingScreen',
+            );
             _requestBloc.add(LoadRequestDetailsEvent(widget.args.requestId!));
           }
         },
+      );
+    } else {
+      developer.log(
+        '⚠️ No requestId — polling NOT started!',
+        name: 'SearchingScreen',
       );
     }
   }
@@ -50,41 +68,105 @@ class _SearchingScreenState extends State<SearchingScreen> {
     super.dispose();
   }
 
-  void _onStatusChanged(RequestState state) {
-    if (_navigated) return;
+  void _onStatusChanged(BuildContext context, RequestState state) {
+    if (_navigated || !mounted) {
 
-    if (state is RequestDetailsLoaded) {
-      final request = state.request;
+      return;
 
-      // When a provider accepts → navigate to DriverFound
-      if (request.status != 'pending') {
-        _navigated = true;
-        _polling.stop();
+    }
 
-        final isFuel = widget.args.serviceType == 'fuel_delivery';
-        final providerName =
-            (request.providerInfo?['user'] as Map?)?['name'] as String? ??
-                'مزود الخدمة';
+    developer.log(
+      'State changed → ${state.runtimeType}',
+      name: 'SearchingScreen',
+    );
 
-        Navigator.pushReplacementNamed(
-          context,
-          Routes.driverFound,
-          arguments: DriverFoundArgs(
-            title: isFuel ? 'تم العثور على مزود وقود!' : 'تم العثور على ونش!',
-            vehicleLabel: isFuel ? 'نوع المركبة' : 'نوع الونش',
-            vehicleValue: isFuel ? 'سيارة إمداد وقود' : 'ونش هيدروليك',
-            showClose: true,
-            imagePath: isFuel
-                ? 'assets/images/tank_truck.gif'
-                : 'assets/images/magnifying_glass.gif',
-            nextRoute:
-                isFuel ? Routes.serviceArrived : Routes.towingStarted,
-            requestId: request.id,
-            providerName: providerName,
-            serviceType: widget.args.serviceType,
-          ),
-        );
-      }
+    if (state is RequestError) {
+      developer.log(
+        '⚠️ Polling error: ${state.message}',
+        name: 'SearchingScreen',
+      );
+      return; // don't stop polling, try again next tick
+    }
+
+    if (state is! RequestDetailsLoaded) {
+
+
+      return;
+
+
+    }
+
+    final request = state.request;
+    final status = request.status.trim().toLowerCase();
+
+    developer.log(
+      'Request #${request.id} status="$status"',
+      name: 'SearchingScreen',
+    );
+
+    // Stay on searching while pending
+    if (status == 'pending') {
+
+      return;
+
+    }
+
+    // Handle cancellation (from elsewhere)
+    if (status == 'cancelled') {
+      _navigated = true;
+      _polling.stop();
+      if (mounted) Navigator.pop(context);
+      return;
+    }
+
+    // Status advanced — notify + navigate to DriverFoundScreen
+    _navigated = true;
+    _polling.stop();
+
+    final isFuel = widget.args.serviceType == 'fuel_delivery';
+    final providerUser =
+        (request.providerInfo?['user'] as Map<String, dynamic>?) ?? {};
+    final providerName =
+        (providerUser['name'] as String?) ?? S.of(context).serviceProviderDefault;
+
+    // Fire a local notification so the user sees it even if app is backgrounded
+    NotiService().showNotification(
+      id: request.id,
+      title: isFuel ? S.of(context).fuelRequestAccepted : S.of(context).towRequestAccepted,
+      body: S.of(context).providerOnWayToYouName(providerName),
+    );
+    final providerRating =
+        request.providerInfo?['average_rating']?.toString();
+
+    developer.log(
+      'Navigating → driverFound with providerName="$providerName"',
+      name: 'SearchingScreen',
+    );
+
+    try {
+      Navigator.pushReplacementNamed(
+        context,
+        Routes.driverFound,
+        arguments: DriverFoundArgs(
+          title: isFuel ? S.of(context).fuelProviderFoundTitle : S.of(context).towTruckFoundTitle,
+          vehicleLabel: isFuel ? S.of(context).vehicleTypeLabel : S.of(context).towTruckTypeLabel,
+          vehicleValue: isFuel ? S.of(context).fuelSupplyVehicle : S.of(context).hydraulicTowTruck,
+          showClose: true,
+          imagePath: isFuel
+              ? 'assets/images/tank_truck.gif'
+              : 'assets/images/magnifying_glass.gif',
+          nextRoute: isFuel ? Routes.serviceArrived : Routes.towingStarted,
+          requestId: request.id,
+          providerName: providerName,
+          providerRating: providerRating,
+          serviceType: widget.args.serviceType,
+        ),
+      );
+    } catch (e, stack) {
+      developer.log(
+        '❌ Navigation error: $e\n$stack',
+        name: 'SearchingScreen',
+      );
     }
   }
 
@@ -93,7 +175,10 @@ class _SearchingScreenState extends State<SearchingScreen> {
     if (widget.args.requestId != null) {
       _requestBloc.add(CancelRequestEvent(widget.args.requestId!));
     }
-    Navigator.pop(context);
+    // Small delay so the cancel API call fires before navigating away
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) Navigator.pop(context);
+    });
   }
 
   @override
@@ -101,14 +186,14 @@ class _SearchingScreenState extends State<SearchingScreen> {
     return BlocProvider.value(
       value: _requestBloc,
       child: BlocListener<RequestBloc, RequestState>(
-        listener: (context, state) => _onStatusChanged(state),
+        listener: _onStatusChanged,
         child: PopScope(
           canPop: false,
           onPopInvokedWithResult: (didPop, _) {
             if (!didPop) _onCancel();
           },
           child: Scaffold(
-            backgroundColor: AppColors.white,
+            backgroundColor: context.colors.surface,
             body: Column(
               children: [
                 const SearchingHeader(),
@@ -123,13 +208,13 @@ class _SearchingScreenState extends State<SearchingScreen> {
                           SizedBox(height: Insets.s16),
                           Text(widget.args.searchingText,
                               style: getBoldStyle(
-                                  color: const Color(0xFF0E0E0E),
+                                  color: context.colors.textPrimary,
                                   fontSize: FontSize.s18),
                               textAlign: TextAlign.center),
                           SizedBox(height: Insets.s8),
                           Text(widget.args.subtitleText,
                               style: getRegularStyle(
-                                  color: AppColors.neutral800,
+                                  color: context.colors.textSecondary,
                                   fontSize: FontSize.s14),
                               textAlign: TextAlign.center),
                           SizedBox(height: Insets.s16),
@@ -137,17 +222,17 @@ class _SearchingScreenState extends State<SearchingScreen> {
                             padding: EdgeInsets.symmetric(
                                 horizontal: Insets.s16, vertical: Insets.s12),
                             decoration: BoxDecoration(
-                              color: AppColors.primary50,
+                              color: context.colors.primarySurface,
                               borderRadius:
                                   BorderRadius.circular(AppRadius.s16),
-                              border: Border.all(color: AppColors.primary),
+                              border: Border.all(color: context.colors.primary),
                             ),
                             child: Text(
-                              'يرجى الانتظار في مكان آمن بعيداً عن حركة المرور وتشغيل أضواء التنبيه في سيارتك حتى وصول السائق.',
+                              S.of(context).waitSafeLocation,
                               style: getRegularStyle(
-                                  color: AppColors.primary,
+                                  color: context.colors.primary,
                                   fontSize: FontSize.s14),
-                              textAlign: TextAlign.right,
+                              textAlign: TextAlign.start,
                             ),
                           ),
                         ],
@@ -166,16 +251,16 @@ class _SearchingScreenState extends State<SearchingScreen> {
                       child: OutlinedButton(
                         onPressed: _onCancel,
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: AppColors.error),
+                          side: BorderSide(color: context.colors.error),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.circular(AppRadius.s12),
                           ),
                         ),
-                        child: Text('إلغاء الطلب',
+                        child: Text(S.of(context).cancelOrder,
                             style: getSemiBoldStyle(
-                                color: AppColors.error,
+                                color: context.colors.error,
                                 fontSize: FontSize.s16)),
                       ),
                     ),

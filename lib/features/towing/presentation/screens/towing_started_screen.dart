@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/core/services/noti_service.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -10,16 +10,15 @@ import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/order_polling_service.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
+import 'package:project_gofull/core/widgets/provider_info_card.dart';
+import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
-import 'package:project_gofull/features/towing/presentation/widgets/driver_details_card.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/safety_section.dart';
-
-const _safetyItems = [
-  'إغلاق النوافذ: تأكد من إغلاق جميع نوافذ السيارة وفتحاتها.',
-  'أمتعتك الشخصية: تأكد من أخذ جميع ممتلكاتك الشخصية من داخل السيارة.',
-];
+import 'package:url_launcher/url_launcher.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class TowingStartedScreen extends StatefulWidget {
   final TowingStartedArgs? args;
@@ -33,10 +32,9 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
   final _polling = OrderPollingService();
   late final RequestBloc _requestBloc;
   bool _navigated = false;
+  ServiceRequestEntity? _request;
 
-  String _providerName = 'مزود الخدمة';
-  String _providerRating = '-';
-  String _providerPlate = '';
+  String _destinationAddress = '';
 
   TowingStartedArgs get _args => widget.args ?? const TowingStartedArgs();
 
@@ -63,16 +61,15 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
   }
 
   void _onState(RequestState state) {
-    if (_navigated || state is! RequestDetailsLoaded) return;
+    if (_navigated || state is! RequestDetailsLoaded) {
+
+      return;
+
+    }
     final req = state.request;
-    final provUser =
-        (req.providerInfo?['user'] as Map<String, dynamic>?) ?? {};
     setState(() {
-      _providerName = (provUser['name'] as String?) ?? 'مزود الخدمة';
-      _providerRating =
-          (req.providerInfo?['average_rating']?.toString()) ?? '-';
-      _providerPlate =
-          (req.providerInfo?['vehicle_plate'] as String?) ?? '';
+      _request = req;
+      _destinationAddress = req.destinationAddress ?? '';
     });
 
     if (req.status == 'in_progress' || req.status == 'completed') {
@@ -81,13 +78,36 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
       Navigator.pushReplacementNamed(
         context,
         Routes.tripInProgress,
-        arguments: _args.nextRouteArgs ??
-            TripInProgressArgs(
-              originAddress: req.driverAddress ?? '',
-              destinationAddress: '',
-              requestId: _args.requestId,
-            ),
+        arguments: TripInProgressArgs(
+          originAddress: req.driverAddress ?? '',
+          destinationAddress: req.destinationAddress ?? '',
+          originLat: double.tryParse(req.driverLatitude),
+          originLng: double.tryParse(req.driverLongitude),
+          destinationLat: double.tryParse(req.destinationLatitude ?? ''),
+          destinationLng: double.tryParse(req.destinationLongitude ?? ''),
+          requestId: _args.requestId,
+        ),
       );
+    }
+
+    if (req.status == 'cancelled') {
+      _navigated = true;
+      _polling.stop();
+      NotiService().showNotification(
+        id: req.id,
+        title: S.of(context).orderCancelledTitle,
+        body: S.of(context).orderCancelledByProviderBody,
+      );
+      Navigator.pushReplacementNamed(context, Routes.home);
+    }
+  }
+
+  void _callProvider() {
+    final userInfo =
+        (_request?.providerInfo?['user'] as Map<String, dynamic>?) ?? {};
+    final phone = userInfo['phone'] as String?;
+    if (phone != null && phone.isNotEmpty) {
+      launchUrl(Uri.parse('tel:$phone'));
     }
   }
 
@@ -98,7 +118,7 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
       child: BlocListener<RequestBloc, RequestState>(
         listener: (context, state) => _onState(state),
         child: Scaffold(
-          backgroundColor: AppColors.scaffoldBg,
+          backgroundColor: context.colors.background,
           body: Column(children: [
             _buildHeader(context),
             Expanded(
@@ -109,19 +129,23 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
                   SizedBox(height: Insets.s16),
                   DottedCircleContainer(imagePath: _args.imagePath),
                   SizedBox(height: Insets.s16),
-                  Text(_args.title,
+                  Text(_args.title ?? S.of(context).towingStartHeader,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s18),
                       textAlign: TextAlign.center),
                   SizedBox(height: 4.h),
-                  Text(_args.subtitle,
+                  Text(_args.subtitle ?? S.of(context).carBeingTransported,
                       style: getRegularStyle(
-                          color: AppColors.neutral800,
+                          color: context.colors.textSecondary,
                           fontSize: FontSize.s14),
                       textAlign: TextAlign.center),
                   SizedBox(height: Insets.s16),
-                  const SafetySection(items: _safetyItems),
+                  if (_destinationAddress.isNotEmpty) ...[
+                    _buildDestinationCard(),
+                    SizedBox(height: Insets.s16),
+                  ],
+                  SafetySection(items: [S.of(context).closeWindowsSafety, S.of(context).personalBelongingsSafety]),
                   SizedBox(height: Insets.s16),
                   _buildDriverSection(),
                   SizedBox(height: Insets.s16),
@@ -135,7 +159,7 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
   }
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(children: [
           SizedBox(height: MediaQuery.of(context).padding.top),
           Padding(
@@ -145,34 +169,59 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(width: 24.sp),
-                  Text('بدء عملية السحب',
+                  Text(S.of(context).towingStartHeader,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20)),
                   Icon(Icons.info_outline_rounded,
-                      size: 24.sp, color: const Color(0xFF0E0E0E)),
+                      size: 24.sp, color: context.colors.textPrimary),
                 ]),
           ),
-          const Divider(height: 1, color: Color(0xFFF5F5F5)),
+          Divider(height: 1, color: context.colors.borderSubtle),
+        ]),
+      );
+
+  Widget _buildDestinationCard() => Container(
+        padding: EdgeInsets.all(Insets.s16),
+        decoration: BoxDecoration(
+          color: context.colors.surface,
+          borderRadius: BorderRadius.circular(AppRadius.s12),
+          border: Border.all(color: context.colors.border),
+        ),
+        child: Row(children: [
+          Icon(Icons.location_on_rounded, size: 22.sp, color: context.colors.primary),
+          SizedBox(width: Insets.s12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(S.of(context).deliveryDestination,
+                    style: getRegularStyle(
+                        color: context.colors.textSecondary, fontSize: FontSize.s12)),
+                SizedBox(height: 2.h),
+                Text(_destinationAddress,
+                    style: getMediumStyle(
+                        color: context.colors.textPrimary, fontSize: FontSize.s14),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis),
+              ],
+            ),
+          ),
         ]),
       );
 
   Widget _buildDriverSection() => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('تفاصيل السائق',
+          Text(S.of(context).providerDetails,
               style: getBoldStyle(
-                  color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-              textAlign: TextAlign.right),
+                  color: context.colors.textPrimary, fontSize: FontSize.s18),
+              textAlign: TextAlign.start),
           SizedBox(height: Insets.s8),
-          DriverDetailsCard(
-            name: _providerName,
-            rating: _providerRating,
-            reviewCount: '',
-            plateNumber: _providerPlate,
-            vehicleLabel: _args.vehicleLabel,
-            vehicleValue: _args.vehicleValue,
-            showActionIcons: true,
+          ProviderInfoCard.fromRequest(
+            _request,
+            showTitle: false,
+            onCall: _callProvider,
           ),
         ],
       );

@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:project_gofull/core/usecases/usecase.dart';
 import 'package:project_gofull/features/requests/domain/usecases/cancel_request_usecase.dart';
 import 'package:project_gofull/features/requests/domain/usecases/create_fuel_request_usecase.dart';
@@ -6,8 +6,10 @@ import 'package:project_gofull/features/requests/domain/usecases/create_towing_r
 import 'package:project_gofull/features/requests/domain/usecases/get_request_details_usecase.dart';
 import 'package:project_gofull/features/requests/domain/usecases/get_requests_usecase.dart';
 import 'package:project_gofull/features/requests/domain/usecases/rate_provider_usecase.dart';
+import 'package:project_gofull/features/requests/domain/repositories/request_repository.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RequestBloc extends Bloc<RequestEvent, RequestState> {
   final CreateFuelRequestUseCase createFuel;
@@ -16,6 +18,7 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
   final GetRequestDetailsUseCase getDetails;
   final CancelRequestUseCase cancelRequest;
   final RateProviderUseCase rateProvider;
+  final RequestRepository repository;
 
   RequestBloc({
     required this.createFuel,
@@ -24,12 +27,16 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     required this.getDetails,
     required this.cancelRequest,
     required this.rateProvider,
+    required this.repository,
   }) : super(const RequestInitial()) {
     on<LoadRequestsEvent>(_onLoadRequests);
     on<CreateFuelRequestEvent>(_onCreateFuel);
     on<CreateTowingRequestEvent>(_onCreateTowing);
-    on<LoadRequestDetailsEvent>(_onLoadDetails);
+    // Drop concurrent polls — only process the latest. Prevents racing
+    // between overlapping GET /driver/requests/{id} calls.
+    on<LoadRequestDetailsEvent>(_onLoadDetails, transformer: droppable());
     on<CancelRequestEvent>(_onCancel);
+    on<CheckUnratedOrderEvent>(_onCheckUnrated);
     on<RateProviderEvent>(_onRate);
   }
 
@@ -62,7 +69,12 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     emit(const RequestLoading());
     final result = await createTowing(CreateTowingRequestParams(
       latitude: event.latitude, longitude: event.longitude,
-      address: event.address, plateNumber: event.plateNumber, notes: event.notes,
+      address: event.address,
+      destinationLatitude: event.destinationLatitude,
+      destinationLongitude: event.destinationLongitude,
+      destinationAddress: event.destinationAddress,
+      plateNumber: event.plateNumber, carType: event.carType,
+      notes: event.notes,
     ));
     result.fold(
       (f) => emit(RequestError(f.message)),
@@ -72,7 +84,11 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
 
   Future<void> _onLoadDetails(
       LoadRequestDetailsEvent event, Emitter<RequestState> emit) async {
-    emit(const RequestLoading());
+    // Only emit Loading for the VERY FIRST fetch (initial state).
+    // Subsequent polls should not disrupt the UI with a Loading state.
+    if (state is RequestInitial) {
+      emit(const RequestLoading());
+    }
     final result = await getDetails(GetRequestDetailsParams(id: event.id));
     result.fold(
       (f) => emit(RequestError(f.message)),
@@ -87,6 +103,17 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
     result.fold(
       (f) => emit(RequestError(f.message)),
       (_) => emit(const RequestCancelled()),
+    );
+  }
+
+  Future<void> _onCheckUnrated(
+      CheckUnratedOrderEvent event, Emitter<RequestState> emit) async {
+    final result = await repository.getUnratedOrder();
+    result.fold(
+      (_) => emit(const NoUnratedOrder()),
+      (req) => req != null
+          ? emit(UnratedOrderFound(req))
+          : emit(const NoUnratedOrder()),
     );
   }
 

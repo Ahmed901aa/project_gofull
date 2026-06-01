@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../resources/color_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class MapMyLocationButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -16,18 +16,18 @@ class MapMyLocationButton extends StatelessWidget {
       child: Container(
         width: 48.w,
         height: 48.w,
-        decoration: const BoxDecoration(
-          color: AppColors.white,
+        decoration: BoxDecoration(
+          color: context.colors.surface,
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-                color: AppColors.shadow,
+                color: context.colors.shadow,
                 blurRadius: 10,
                 offset: Offset(0, 3))
           ],
         ),
         child: Icon(Icons.my_location_rounded,
-            color: AppColors.primary, size: 22.sp),
+            color: context.colors.primary, size: 22.sp),
       ),
     );
   }

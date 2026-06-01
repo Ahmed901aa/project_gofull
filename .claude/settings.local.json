@@ -48,7 +48,21 @@
       "Bash(find /Users/usermac/Desktop/project_Gofull/project_gofull/lib/features/towing/presentation/screens -type f -name *.dart)",
       "Bash(git worktree:*)",
       "Bash(xargs basename:*)",
-      "Bash(grep -E \"\\\\.\\(dart|swift\\)$\")"
+      "Bash(grep -E \"\\\\.\\(dart|swift\\)$\")",
+      "Bash(flutter test:*)",
+      "Bash(git config:*)",
+      "Bash(rm /Users/usermac/Desktop/project_Gofull/project_gofull/.git/index.lock)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(echo \"=== exit code: $? \\(grep found nothing = no errors\\) ===\")",
+      "Bash(echo \"=== error count: $\\(flutter analyze lib/ 2>&1)",
+      "Bash(awk NR==87||NR==88||NR==90||NR==93||NR==94||NR==108||NR==109||NR==121||NR==122{printf \"%d:[%s]\\\\n\",NR,$0} *)",
+      "Bash(flutter gen-l10n *)",
+      "Bash(mkdir -p lib/features/driver_service/presentation/screens/driver_navigate)",
+      "Bash(mkdir -p lib/features/driver_service/presentation/widgets/driver_navigate)",
+      "Bash(xcrun simctl *)",
+      "mcp__ide__getDiagnostics"
     ]
   }
 }

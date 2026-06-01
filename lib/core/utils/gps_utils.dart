@@ -16,8 +16,10 @@ Future<void> animateToCurrentLocation(GoogleMapController? controller) async {
   if (!await _ensurePermission()) return;
   try {
     final pos = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-      timeLimit: const Duration(seconds: 10),
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        timeLimit: Duration(seconds: 10),
+      ),
     );
     controller?.animateCamera(
       CameraUpdate.newLatLngZoom(LatLng(pos.latitude, pos.longitude), 15),
@@ -34,8 +36,10 @@ Future<GpsLocation?> fetchCurrentGpsLocation(
   if (!await _ensurePermission()) return null;
   try {
     final pos = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-      timeLimit: const Duration(seconds: 10),
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        timeLimit: Duration(seconds: 10),
+      ),
     );
     final name = await reverseGeocode(pos.latitude, pos.longitude);
     return (address: name, lat: pos.latitude, lng: pos.longitude);

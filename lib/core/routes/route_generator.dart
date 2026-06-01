@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/auth/presentation/screens/splash_screen.dart';
@@ -29,6 +30,8 @@ import 'package:project_gofull/features/profile/presentation/screens/privacy_pol
 import 'package:project_gofull/features/profile/presentation/screens/about_screen.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 import 'package:project_gofull/features/notifications/presentation/screens/notifications_screen.dart';
+import 'package:project_gofull/features/profile/presentation/screens/language_screen.dart';
+import 'package:project_gofull/features/profile/presentation/screens/appearance_screen.dart';
 // Driver App imports
 import 'package:project_gofull/features/driver_home/presentation/screens/driver_home_screen.dart';
 import 'package:project_gofull/features/driver_profile/presentation/screens/driver_profile_screen.dart';
@@ -39,9 +42,11 @@ import 'package:project_gofull/features/driver_support/presentation/screens/driv
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_order_details_screen.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_navigate_screen.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_documentation_screen.dart';
+import 'package:project_gofull/features/driver_service/presentation/screens/driver_refueling_screen.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_collect_payment_screen.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_task_complete_screen.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_rate_customer_screen.dart';
+import 'package:project_gofull/features/driver_profile/presentation/screens/driver_privacy_policy_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
@@ -68,7 +73,8 @@ class RouteGenerator {
         final args = settings.arguments as ServiceArrivedArgs?;
         return _buildRoute(ServiceArrivedScreen(args: args), settings);
       case Routes.fuelComplete:
-        return _buildRoute(const FuelCompleteScreen(), settings);
+        final requestId = settings.arguments as int?;
+        return _buildRoute(FuelCompleteScreen(requestId: requestId), settings);
       case Routes.tripDetails:
         final args = settings.arguments as TripDetailsArgs?;
         return _buildRoute(TripDetailsScreen(args: args), settings);
@@ -113,6 +119,10 @@ class RouteGenerator {
         return _buildRoute(const AboutScreen(), settings);
       case Routes.notifications:
         return _buildRoute(const NotificationsScreen(), settings);
+      case Routes.languageSettings:
+        return _buildRoute(const LanguageScreen(), settings);
+      case Routes.appearanceSettings:
+        return _buildRoute(const AppearanceScreen(), settings);
 
       // ── Driver App Routes ──────────────────────────────
       case Routes.driverHome:
@@ -134,6 +144,9 @@ class RouteGenerator {
       case Routes.driverDocumentation:
         final args = settings.arguments as DriverDocumentationArgs;
         return _buildRoute(DriverDocumentationScreen(args: args), settings);
+      case Routes.driverRefueling:
+        final args = settings.arguments as DriverRefuelingArgs;
+        return _buildRoute(DriverRefuelingScreen(args: args), settings);
       case Routes.driverCollectPayment:
         final args = settings.arguments as DriverCollectPaymentArgs;
         return _buildRoute(DriverCollectPaymentScreen(args: args), settings);
@@ -147,9 +160,7 @@ class RouteGenerator {
         final args = settings.arguments as DriverTripDetailsArgs;
         return _buildRoute(DriverTripDetailsScreen(args: args), settings);
       case Routes.driverPrivacyPolicy:
-        return _buildRoute(const Scaffold(
-          body: Center(child: Text('سياسة الخصوصية')),
-        ), settings);
+        return _buildRoute(const DriverPrivacyPolicyScreen(), settings);
 
       default:
         return _undefinedRoute();
@@ -160,8 +171,8 @@ class RouteGenerator {
       MaterialPageRoute(builder: (_) => page, settings: settings);
 
   static Route<dynamic> _undefinedRoute() => MaterialPageRoute(
-        builder: (_) => const Scaffold(
-          body: Center(child: Text('الصفحة غير موجودة')),
+        builder: (context) => Scaffold(
+          body: Center(child: Text(S.of(context).pageNotFound)),
         ),
       );
 }

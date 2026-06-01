@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class ServiceHeader extends StatelessWidget {
   final String title;
@@ -12,7 +13,7 @@ class ServiceHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.white,
+      color: context.colors.surface,
       child: Column(
         children: [
           SizedBox(height: MediaQuery.of(context).padding.top),
@@ -23,14 +24,14 @@ class ServiceHeader extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Icon(Icons.arrow_back_ios_rounded, size: 22.sp, color: const Color(0xFF0E0E0E)),
+                  child: Icon(backArrowIcon(context), size: 22.sp, color: context.colors.textPrimary),
                 ),
-                Text(title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
+                Text(title, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s20)),
                 const SizedBox(width: 24),
               ],
             ),
           ),
-          const Divider(height: 1, color: Color(0xFFF5F5F5)),
+          Divider(height: 1, color: context.colors.borderSubtle),
         ],
       ),
     );

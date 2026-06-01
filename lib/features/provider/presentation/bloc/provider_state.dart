@@ -77,6 +77,18 @@ class ActiveRequestLoaded extends ProviderState {
   List<Object?> get props => [request];
 }
 
+/// Emitted when the active-request check fails (network, auth, etc.).
+class ActiveRequestFailed extends ProviderState {
+  final String message;
+  const ActiveRequestFailed(this.message);
+  @override
+  List<Object?> get props => [message];
+}
+
+class OrderCancelledByProvider extends ProviderState {
+  const OrderCancelledByProvider();
+}
+
 class ProviderError extends ProviderState {
   final String message;
   const ProviderError(this.message);

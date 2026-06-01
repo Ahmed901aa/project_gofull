@@ -12,6 +12,7 @@ import 'package:project_gofull/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_event.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_state.dart';
 import 'package:project_gofull/features/auth/presentation/widgets/login_form_card.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -34,8 +35,16 @@ class _LoginScreenState extends State<LoginScreen> {
   void _onLogin(BuildContext context) {
     final phone = _phoneController.text.trim();
     final password = _passwordController.text;
-    if (phone.isEmpty || phone.length < 9) return;
-    if (password.isEmpty || password.length < 6) return;
+    if (phone.isEmpty || phone.length < 9) {
+
+      return;
+
+    }
+    if (password.isEmpty || password.length < 6) {
+
+      return;
+
+    }
     context.read<AuthBloc>().add(
           LoginRequested(phone: phone, password: password),
         );
@@ -58,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         child: Builder(
           builder: (context) => Scaffold(
-            backgroundColor: AppColors.primary,
+            backgroundColor: context.colors.primary,
             body: Column(
               children: [
                 Expanded(
@@ -80,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: AppColors.white,
+                      color: context.colors.surface,
                       borderRadius: BorderRadius.vertical(
                           top: Radius.circular(AppRadius.s32)),
                     ),

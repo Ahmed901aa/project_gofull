@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_gofull/core/cubits/location_cubit.dart';
+import 'package:project_gofull/core/cubits/location_state.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/payment_summary.dart';
 import 'package:project_gofull/core/widgets/safety_notice_card.dart';
@@ -13,9 +14,12 @@ import 'package:project_gofull/core/widgets/service_input_field.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/service_section_header.dart';
 import '../widgets/towing_car_details_form.dart';
 import '../widgets/towing_route_section.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class TowingScreen extends StatefulWidget {
   const TowingScreen({super.key});
@@ -24,22 +28,61 @@ class TowingScreen extends StatefulWidget {
 }
 
 class _TowingScreenState extends State<TowingScreen> {
-  String? _selectedCarType;
-  final _carTypes = ['سيدان', 'SUV', 'بيك أب', 'شاحنة', 'هاتشباك'];
+  final _carTypeCtrl = TextEditingController();
   final _plateCtrl = TextEditingController();
   final _notesCtrl = TextEditingController();
-  String _destinationAddress = 'وجهة سحب السيارة';
+  String? _destinationAddress;
   double? _destinationLat;
   double? _destinationLng;
 
-  bool get _isValid =>
-      _selectedCarType != null && _plateCtrl.text.trim().isNotEmpty;
+  /// Guards against double-submission between tap and bloc emitting RequestLoading.
+  bool _isSubmitting = false;
+
+  /// Guards against the BlocListener pushing a route twice.
+  bool _hasNavigated = false;
+
+  /// Flips to `true` the first time the user taps the submit button so
+  /// the input fields can show inline validation messages.
+  bool _showValidation = false;
+
+  bool _hasLocation(BuildContext context) {
+    final loc = context.read<LocationCubit>().state;
+    return loc.lat != null && loc.lng != null;
+  }
+
+  bool get _hasDestination => _destinationLat != null && _destinationLng != null;
+
+  bool get _isFormValid =>
+      _plateCtrl.text.trim().isNotEmpty &&
+      _carTypeCtrl.text.trim().isNotEmpty &&
+      _hasDestination;
+
+  bool _isValid(BuildContext context) => _isFormValid && _hasLocation(context);
+
+  String? _getValidationError(BuildContext context) {
+    final l10n = S.of(context);
+    if (!_hasLocation(context)) {
+      return l10n.pleaseSelectLocation;
+    }
+    if (!_hasDestination) {
+      return l10n.pleaseSelectDestination;
+    }
+    if (_carTypeCtrl.text.trim().isEmpty) {
+      return l10n.pleaseEnterCarType;
+    }
+    if (_plateCtrl.text.trim().isEmpty) {
+      return l10n.pleaseEnterPlateNumber;
+    }
+    return null;
+  }
 
   Future<void> _onDestinationTap() async {
     final cubit = context.read<LocationCubit>();
     final prev = cubit.state;
     await Navigator.pushNamed(context, Routes.locationPicker);
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     final selected = cubit.state;
     if (selected.address != prev.address) {
       setState(() {
@@ -54,27 +97,47 @@ class _TowingScreenState extends State<TowingScreen> {
   }
 
   void _onSubmit(BuildContext blocContext) {
+    // Prevent double-submission
+    if (_isSubmitting) {
+      return;
+    }
+
     final loc = context.read<LocationCubit>().state;
-    if (loc.lat == null || loc.lng == null) return;
+    if (loc.lat == null || loc.lng == null) {
+      return;
+    }
+    if (_destinationLat == null || _destinationLng == null) {
+      return;
+    }
+    if (_carTypeCtrl.text.trim().isEmpty) {
+      return;
+    }
+
+    setState(() => _isSubmitting = true);
 
     blocContext.read<RequestBloc>().add(CreateTowingRequestEvent(
           latitude: loc.lat!,
           longitude: loc.lng!,
           address: loc.address,
+          destinationLatitude: _destinationLat!,
+          destinationLongitude: _destinationLng!,
+          destinationAddress: _destinationAddress,
           plateNumber: _plateCtrl.text.trim(),
-          notes:
-              _notesCtrl.text.isNotEmpty ? _notesCtrl.text : null,
+          carType: _carTypeCtrl.text.trim(),
+          notes: _notesCtrl.text.isNotEmpty ? _notesCtrl.text : null,
         ));
   }
 
   @override
   void initState() {
     super.initState();
+    _carTypeCtrl.addListener(() => setState(() {}));
     _plateCtrl.addListener(() => setState(() {}));
   }
 
   @override
   void dispose() {
+    _carTypeCtrl.dispose();
     _plateCtrl.dispose();
     _notesCtrl.dispose();
     super.dispose();
@@ -82,37 +145,45 @@ class _TowingScreenState extends State<TowingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return BlocProvider(
       create: (_) => sl<RequestBloc>(),
       child: BlocListener<RequestBloc, RequestState>(
         listener: (context, state) {
-          if (state is RequestCreated) {
+          if (state is RequestCreated && !_hasNavigated) {
+            _hasNavigated = true;
+            final l10n = S.of(context);
+            BottomNavShell.markOrderActive(state.request.id);
             Navigator.pushNamed(
               context,
               Routes.searchingDriver,
               arguments: SearchingArgs(
-                searchingText: 'جاري البحث عن أقرب سائق ونش',
-                subtitleText:
-                    'نقوم الآن بمطابقة طلبك مع أقرب سيارة ونش متاحة في منطقتك.',
+                searchingText: l10n.searchingForTowProvider,
+                subtitleText: l10n.searchingTowSubtitle,
                 nextRoute: Routes.driverFound,
                 requestId: state.request.id,
                 serviceType: 'towing',
               ),
             );
           } else if (state is RequestError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            // Reset submission guard so the user can retry
+            setState(() => _isSubmitting = false);
+            final l10n = S.of(context);
+            if (state.message.contains('active')) {
+              AppSnackbar.warning(context, l10n.activeOrderWarning);
+            } else {
+              AppSnackbar.error(context, state.message);
+            }
           }
         },
         child: Builder(
           builder: (blocContext) => Scaffold(
-            backgroundColor: AppColors.white,
+            backgroundColor: context.colors.surface,
             body: SafeArea(
               top: false,
               child: Column(
                 children: [
-                  const ServiceHeader(title: 'خدمة ونش'),
+                  ServiceHeader(title: l10n.towingScreenTitle),
                   Expanded(
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
@@ -124,30 +195,28 @@ class _TowingScreenState extends State<TowingScreen> {
                             const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 16),
                                 child: SafetyNoticeCard()),
-                            const ServiceSectionHeader(
-                                title: 'مسار الرحلة', gap: 16),
+                            ServiceSectionHeader(
+                                title: l10n.tripRouteSection, gap: 16),
                             TowingRouteSection(
-                                destinationAddress: _destinationAddress,
+                                destinationAddress: _destinationAddress ?? l10n.towingDestinationPlaceholder,
                                 onDestinationTap: _onDestinationTap),
-                            const ServiceSectionHeader(
-                                title: 'تفاصيل السيارة', gap: 16),
+                            ServiceSectionHeader(
+                                title: l10n.carDetailsSectionTitle, gap: 16),
                             TowingCarDetailsForm(
-                                selectedCarType: _selectedCarType,
-                                carTypes: _carTypes,
+                                carTypeCtrl: _carTypeCtrl,
                                 plateCtrl: _plateCtrl,
-                                onCarTypeChanged: (v) =>
-                                    setState(() => _selectedCarType = v)),
-                            const ServiceSectionHeader(
-                                title: 'ملاحظات إضافية', gap: 8),
+                                showValidation: _showValidation),
+                            ServiceSectionHeader(
+                                title: l10n.additionalNotesSection, gap: 8),
                             Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16),
                                 child: ServiceInputField(
-                                  hint: 'ملاحظات إضافية عن حالة السيارة',
+                                  hint: l10n.additionalNotesHintField,
                                   controller: _notesCtrl,
                                 )),
-                            const ServiceSectionHeader(
-                                title: 'ملخص الدفع', gap: 16),
+                            ServiceSectionHeader(
+                                title: l10n.paymentSummarySection, gap: 16),
                             const PaymentSummary(),
                             const SizedBox(height: 16),
                           ],
@@ -155,11 +224,28 @@ class _TowingScreenState extends State<TowingScreen> {
                       ),
                     ),
                   ),
+                  // Wrap in BOTH RequestBloc AND LocationCubit builders
+                  // so the button reacts to location changes too
                   BlocBuilder<RequestBloc, RequestState>(
-                    builder: (context, state) => ServiceBottomButton(
-                      isLoading: state is RequestLoading,
-                      onPressed:
-                          _isValid ? () => _onSubmit(blocContext) : null,
+                    builder: (context, state) => BlocBuilder<LocationCubit, LocationState>(
+                      builder: (context, loc) {
+                        final isLoading = state is RequestLoading || _isSubmitting;
+                        final isValid = _isValid(context);
+                        return ServiceBottomButton(
+                          isLoading: isLoading,
+                          isEnabled: isValid,
+                          onPressed: () => _onSubmit(blocContext),
+                          onDisabledTap: () {
+                            if (!_showValidation) {
+                              setState(() => _showValidation = true);
+                            }
+                            final err = _getValidationError(context);
+                            if (err != null) {
+                              AppSnackbar.warning(context, err);
+                            }
+                          },
+                        );
+                      },
                     ),
                   ),
                 ],

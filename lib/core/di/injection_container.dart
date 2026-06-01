@@ -50,9 +50,12 @@ import 'package:project_gofull/features/provider/domain/usecases/accept_request_
 import 'package:project_gofull/features/provider/domain/usecases/reject_request_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/update_status_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/rate_driver_usecase.dart';
+import 'package:project_gofull/features/provider/domain/usecases/cancel_order_usecase.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 
 // Notifications
+import 'package:project_gofull/core/cubits/locale_cubit.dart';
+import 'package:project_gofull/core/cubits/theme_cubit.dart';
 import 'package:project_gofull/features/notifications/data/datasources/notification_data_source.dart';
 import 'package:project_gofull/features/notifications/presentation/bloc/notification_bloc.dart';
 
@@ -69,6 +72,8 @@ Future<void> initDependencies() async {
   // ── Core Services ────────────────────────────────────────
   sl.registerLazySingleton<TokenStorage>(() => TokenStorage(sl()));
   sl.registerLazySingleton<ApiClient>(() => ApiClient(sl()));
+  sl.registerLazySingleton<LocaleCubit>(() => LocaleCubit(sl()));
+  sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit(sl()));
 
   // ── Feature: Auth ────────────────────────────────────────
   sl.registerLazySingleton<AuthDataSource>(
@@ -137,6 +142,7 @@ Future<void> initDependencies() async {
       getDetails: sl(),
       cancelRequest: sl(),
       rateProvider: sl(),
+      repository: sl(),
     ),
   );
 
@@ -158,6 +164,7 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => RejectRequestUseCase(sl()));
   sl.registerLazySingleton(() => UpdateStatusUseCase(sl()));
   sl.registerLazySingleton(() => RateDriverUseCase(sl()));
+  sl.registerLazySingleton(() => CancelOrderUseCase(sl()));
   // ── Feature: Notifications ──────────────────────────────
   sl.registerLazySingleton<NotificationDataSource>(
     () => NotificationRemoteDataSource(sl()),
@@ -177,6 +184,7 @@ Future<void> initDependencies() async {
       rejectRequest: sl(),
       updateStatus: sl(),
       rateDriver: sl(),
+      cancelOrder: sl(),
     ),
   );
 }

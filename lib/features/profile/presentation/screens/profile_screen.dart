@@ -1,30 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/core/network/api_client.dart';
+import 'package:project_gofull/core/network/api_constants.dart';
+import 'package:project_gofull/core/resources/font_manager.dart';
+import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
-import '../widgets/confirmation_dialog.dart';
+import 'package:project_gofull/core/cubits/locale_cubit.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/profile_menu_item.dart';
 import '../widgets/profile_user_card.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  Map<String, dynamic>? _profileData;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    try {
+      final response = await sl<ApiClient>().dio.get(ApiConstants.profile);
+      if (mounted) {
+        setState(() {
+          _profileData = response.data['data'] as Map<String, dynamic>?;
+          _isLoading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  String _serviceTypeLabel(String? type, S l10n) {
+    switch (type) {
+      case 'fuel_delivery':
+        return l10n.fuelDelivery;
+      case 'towing':
+        return l10n.towingService;
+      default:
+        return type ?? '-';
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final tokenStorage = sl<TokenStorage>();
-    final user = tokenStorage.getUser();
-    final userName = (user?['name'] as String?) ?? 'المستخدم';
-    final userPhone = (user?['phone'] as String?) ?? '';
-    final initials = userName.isNotEmpty ? userName[0] : '؟';
+    final l10n = S.of(context);
+    final localeCubit = context.watch<LocaleCubit>();
+    // Use API data first, fall back to cached token data
+    final userName = (_profileData?['name'] as String?) ??
+        (sl<TokenStorage>().getUser()?['name'] as String?) ??
+        l10n.appName;
+    final userPhone = (_profileData?['phone'] as String?) ??
+        (sl<TokenStorage>().getUser()?['phone'] as String?) ??
+        '';
+    final userRole = (_profileData?['role'] as String?) ??
+        (sl<TokenStorage>().getUser()?['role'] as String?) ??
+        'driver';
+    final initials = userName.isNotEmpty ? userName[0] : '?';
+    final isProvider = userRole == 'provider';
 
     return Scaffold(
-      backgroundColor: AppColors.scaffoldBg,
+      backgroundColor: context.colors.background,
       body: Column(
         children: [
-          const AppHeader(title: 'حسابي', showBack: false),
+          AppHeader(title: l10n.myAccount, showBack: false),
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -36,62 +92,102 @@ class ProfileScreen extends StatelessWidget {
                     name: userName,
                     phone: userPhone,
                     initials: initials,
-                    onEdit: () =>
+                    onView: () =>
                         Navigator.pushNamed(context, Routes.editProfile),
                   ),
-                  SizedBox(height: Insets.s16),
+                  SizedBox(height: Sizes.s20),
+
+                  // ── Provider Info Card (provider role only) ──
+                  if (!_isLoading && isProvider) ...[
+                    _ProviderInfoSection(
+                      serviceType: _serviceTypeLabel(
+                          _profileData?['service_type'] as String?, l10n),
+                      vehicleMake:
+                          _profileData?['vehicle_make'] as String? ?? '-',
+                      vehicleModel:
+                          _profileData?['vehicle_model'] as String? ?? '-',
+                      vehiclePlate:
+                          _profileData?['vehicle_plate'] as String? ?? '-',
+                      isAvailable:
+                          _profileData?['is_available'] as bool? ?? false,
+                      verificationStatus:
+                          _profileData?['verification_status'] as String? ??
+                              'pending',
+                    ),
+                    SizedBox(height: Sizes.s20),
+                  ],
+
+                  // ── Section: My Activity ──
                   ProfileMenuItem(
                     icon: Icons.local_offer_outlined,
-                    label: 'أكواد الخصم',
+                    label: l10n.discountCodes,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.discountCodes),
                   ),
-                  SizedBox(height: Sizes.s12),
+                  SizedBox(height: Sizes.s20),
+
+                  // ── Section: Preferences ──
+                  _SectionLabel(text: l10n.preferences),
+                  SizedBox(height: Sizes.s8),
                   ProfileMenuItem(
                     icon: Icons.language_rounded,
-                    label: 'اللغة',
-                    trailing: 'English',
-                    onTap: () {},
+                    label: l10n.language,
+                    trailing: localeCubit.isArabic ? 'العربية' : 'English',
+                    onTap: () =>
+                        Navigator.pushNamed(context, Routes.languageSettings),
                   ),
-                  SizedBox(height: Sizes.s12),
+                  SizedBox(height: Sizes.s8),
+                  ProfileMenuItem(
+                    icon: Icons.brightness_6_rounded,
+                    label: l10n.appearance,
+                    onTap: () =>
+                        Navigator.pushNamed(context, Routes.appearanceSettings),
+                  ),
+                  SizedBox(height: Sizes.s20),
+
+                  // ── Section: Help & Info ──
+                  _SectionLabel(text: l10n.helpAndInfo),
+                  SizedBox(height: Sizes.s8),
                   ProfileMenuItem(
                     icon: Icons.headset_mic_outlined,
-                    label: 'الدعم الفني',
+                    label: l10n.technicalSupport,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.support),
                   ),
-                  SizedBox(height: Sizes.s12),
+                  SizedBox(height: Sizes.s8),
                   ProfileMenuItem(
                     icon: Icons.help_outline_rounded,
-                    label: 'الأسئلة الشائعة',
+                    label: l10n.faq,
                     onTap: () => Navigator.pushNamed(context, Routes.faq),
                   ),
-                  SizedBox(height: Sizes.s12),
+                  SizedBox(height: Sizes.s8),
                   ProfileMenuItem(
                     icon: Icons.description_outlined,
-                    label: 'الشروط والأحكام',
+                    label: l10n.terms,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.terms),
                   ),
-                  SizedBox(height: Sizes.s12),
+                  SizedBox(height: Sizes.s8),
                   ProfileMenuItem(
                     icon: Icons.privacy_tip_outlined,
-                    label: 'سياسة الخصوصية',
+                    label: l10n.privacyPolicy,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.privacyPolicy),
                   ),
-                  SizedBox(height: Sizes.s12),
+                  SizedBox(height: Sizes.s8),
                   ProfileMenuItem(
                     icon: Icons.info_outline_rounded,
-                    label: 'عن Go Full',
+                    label: l10n.aboutGoFull,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.aboutApp),
                   ),
-                  SizedBox(height: Sizes.s12),
+                  SizedBox(height: Sizes.s20),
+
+                  // ── Destructive: logout ──
                   ProfileMenuItem(
                     icon: Icons.logout_rounded,
-                    label: 'تسجيل الخروج',
-                    iconColor: AppColors.error,
+                    label: l10n.logout,
+                    destructive: true,
                     onTap: () => _showLogoutDialog(context),
                   ),
                   SizedBox(height: Sizes.s16),
@@ -104,25 +200,210 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (dialogCtx) => ConfirmationDialog(
-        icon: Icons.logout_rounded,
-        iconColor: AppColors.primary,
-        title: 'تسجيل الخروج؟',
-        subtitle:
-            'متأكد إنك عاوز تخرج من حسابك؟ تقدر ترجع لنا في أي وقت وتكمل توفير.',
-        confirmLabel: 'تسجيل الخروج',
-        onConfirm: () async {
-          Navigator.pop(dialogCtx); // close dialog
-          await sl<TokenStorage>().clearAll();
-          if (context.mounted) {
-            Navigator.of(context, rootNavigator: true)
-                .pushNamedAndRemoveUntil(Routes.login, (r) => false);
-          }
-        },
+  void _showLogoutDialog(BuildContext context) async {
+    final l10n = S.of(context);
+    final confirmed = await AppConfirmDialog.show(
+      context,
+      icon: Icons.logout_rounded,
+      iconColor: context.colors.warning,
+      title: l10n.logoutTitle,
+      subtitle: l10n.logoutSubtitle,
+      confirmLabel: l10n.logoutBtn,
+      cancelLabel: l10n.stayBtn,
+      destructive: true,
+    );
+    if (confirmed && context.mounted) {
+      await sl<TokenStorage>().clearAll();
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true)
+            .pushNamedAndRemoveUntil(Routes.login, (r) => false);
+      }
+    }
+  }
+}
+
+// ── Section label (subtle heading above grouped menu items) ──
+
+class _SectionLabel extends StatelessWidget {
+  final String text;
+  const _SectionLabel({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.symmetric(horizontal: 4.w),
+      child: Text(
+        text.toUpperCase(),
+        style: getSemiBoldStyle(
+          color: context.colors.textSecondary,
+          fontSize: FontSize.s11,
+        ).copyWith(letterSpacing: 0.6),
       ),
+    );
+  }
+}
+
+// ── Provider Info Section ───────────────────────────────────
+
+class _ProviderInfoSection extends StatelessWidget {
+  final String serviceType;
+  final String vehicleMake;
+  final String vehicleModel;
+  final String vehiclePlate;
+  final bool isAvailable;
+  final String verificationStatus;
+
+  const _ProviderInfoSection({
+    required this.serviceType,
+    required this.vehicleMake,
+    required this.vehicleModel,
+    required this.vehiclePlate,
+    required this.isAvailable,
+    required this.verificationStatus,
+  });
+
+  String _statusLabel(BuildContext context, String status) {
+    final l10n = S.of(context);
+    switch (status) {
+      case 'approved':
+        return l10n.verified;
+      case 'pending':
+        return l10n.pendingReview;
+      case 'rejected':
+        return l10n.rejected;
+      default:
+        return status;
+    }
+  }
+
+  Color _statusColor(BuildContext context, String status) {
+    switch (status) {
+      case 'approved':
+        return context.colors.success;
+      case 'pending':
+        return context.colors.warning;
+      case 'rejected':
+        return context.colors.error;
+      default:
+        return context.colors.iconSecondary;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = S.of(context);
+    return Container(
+      padding: EdgeInsets.all(Insets.s16),
+      decoration: BoxDecoration(
+        color: context.colors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.s16),
+        border: Border.all(color: context.colors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header row: service type + status badges
+          Row(
+            children: [
+              Icon(
+                serviceType == l10n.towingService
+                    ? Icons.car_crash_rounded
+                    : Icons.local_gas_station_rounded,
+                color: context.colors.primary,
+                size: 20.sp,
+              ),
+              SizedBox(width: 6.w),
+              Flexible(
+                child: Text(
+                  serviceType,
+                  style: getBoldStyle(
+                      color: context.colors.primary, fontSize: FontSize.s14),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const Spacer(),
+              // Verification badge
+              Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: Insets.s8, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: _statusColor(context, verificationStatus).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppRadius.s8),
+                ),
+                child: Text(
+                  _statusLabel(context, verificationStatus),
+                  style: getBoldStyle(
+                    color: _statusColor(context, verificationStatus),
+                    fontSize: FontSize.s12,
+                  ),
+                ),
+              ),
+              SizedBox(width: 6.w),
+              // Availability badge
+              Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: Insets.s8, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: (isAvailable ? context.colors.success : context.colors.iconSecondary)
+                      .withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppRadius.s8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 6.w,
+                      height: 6.w,
+                      decoration: BoxDecoration(
+                        color:
+                            isAvailable ? context.colors.success : context.colors.iconSecondary,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    SizedBox(width: 4.w),
+                    Text(
+                      isAvailable ? l10n.available : l10n.unavailable,
+                      style: getBoldStyle(
+                        color:
+                            isAvailable ? context.colors.success : context.colors.iconSecondary,
+                        fontSize: FontSize.s12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: Insets.s12),
+          // Vehicle info
+          _infoRow(context, Icons.directions_car_rounded, l10n.vehicleInfo,
+              '$vehicleMake $vehicleModel'),
+          SizedBox(height: 8.h),
+          _infoRow(context, Icons.confirmation_number_rounded, l10n.carPlate, vehiclePlate),
+        ],
+      ),
+    );
+  }
+
+  Widget _infoRow(BuildContext context, IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(icon, size: 16.sp, color: context.colors.iconSecondary),
+        SizedBox(width: 6.w),
+        Text(
+          '$label: ',
+          style: getRegularStyle(
+              color: context.colors.iconSecondary, fontSize: FontSize.s12),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: getBoldStyle(
+                color: context.colors.textPrimary, fontSize: FontSize.s12),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 }

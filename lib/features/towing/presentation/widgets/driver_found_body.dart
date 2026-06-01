@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
 import 'driver_details_card.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverFoundBody extends StatelessWidget {
   final String imagePath;
   final String title;
+  final String subtitle;
   final String driverName;
   final String driverRating;
   final String driverReviewCount;
@@ -21,6 +22,7 @@ class DriverFoundBody extends StatelessWidget {
     super.key,
     required this.imagePath,
     required this.title,
+    this.subtitle = '',
     required this.driverName,
     required this.driverRating,
     required this.driverReviewCount,
@@ -32,7 +34,7 @@ class DriverFoundBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.scaffoldBg,
+      color: context.colors.background,
       child: Center(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: Insets.s16),
@@ -41,9 +43,9 @@ class DriverFoundBody extends StatelessWidget {
             children: [
               DottedCircleContainer(imagePath: imagePath),
               SizedBox(height: Insets.s16),
-              Text(title, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18), textAlign: TextAlign.center),
+              Text(title, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18), textAlign: TextAlign.center),
               SizedBox(height: 4.h),
-              Text('وافق السائق على طلبك وهو الآن في طريقه إليك.', style: getRegularStyle(color: AppColors.neutral800, fontSize: FontSize.s14), textAlign: TextAlign.center),
+              Text(subtitle, style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14), textAlign: TextAlign.center),
               SizedBox(height: Insets.s16),
               DriverDetailsCard(
                 name: driverName,

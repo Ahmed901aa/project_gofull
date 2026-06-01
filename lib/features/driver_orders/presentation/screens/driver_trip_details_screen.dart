@@ -1,50 +1,131 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/core/di/injection_container.dart';
+import 'package:project_gofull/core/network/api_client.dart';
+import 'package:project_gofull/core/network/api_constants.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
-class DriverTripDetailsScreen extends StatelessWidget {
+class DriverTripDetailsScreen extends StatefulWidget {
   final DriverTripDetailsArgs args;
 
   const DriverTripDetailsScreen({super.key, required this.args});
 
-  bool get _isTow => args.serviceType == 'tow';
+  @override
+  State<DriverTripDetailsScreen> createState() =>
+      _DriverTripDetailsScreenState();
+}
+
+class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
+  Map<String, dynamic>? _order;
+  bool _isLoading = true;
+
+  bool get _isTow => widget.args.serviceType == 'tow' || widget.args.serviceType == 'towing';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadOrderDetails();
+  }
+
+  Future<void> _loadOrderDetails() async {
+    try {
+      final response = await sl<ApiClient>()
+          .dio
+          .get(ApiConstants.providerRequestDetails(int.parse(widget.args.orderId)));
+      if (mounted) {
+        setState(() {
+          _order = response.data['data'] as Map<String, dynamic>?;
+          _isLoading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  // ── Helpers to extract data safely ──
+  String _driverAddress(BuildContext context) => (_order?['driver_address'] as String?) ?? S.of(context).notSpecified;
+  String _destinationAddress(BuildContext context) => (_order?['destination_address'] as String?) ?? S.of(context).notSpecified;
+  String get _fuelQuantity => (_order?['fuel_quantity'] as String?) ?? '-';
+  String _fuelType(BuildContext context) {
+    final t = _order?['fuel_type'] as String?;
+    if (t == 'petrol' || t == 'gasoline') {
+
+      return S.of(context).gasolineLabel;
+
+    }
+    if (t == 'diesel') {
+
+      return S.of(context).dieselLabel;
+
+    }
+    return t ?? '-';
+  }
+  String get _pricePerLiter => (_order?['price_per_liter'] as String?) ?? '-';
+  String get _plateNumber => (_order?['plate_number'] as String?) ?? '-';
+
+  String get _total => (_order?['total'] as String?) ?? '0.00';
+  String _paymentMethod(BuildContext context) {
+    final m = _order?['payment_method'] as String?;
+    final cash = S.of(context).cashLabel;
+    return m == 'cash' ? cash : (m ?? cash);
+  }
+  String _customerName(BuildContext context) {
+    final driver = _order?['driver'] as Map<String, dynamic>?;
+    return (driver?['name'] as String?) ?? S.of(context).customerDefault;
+  }
+  String get _customerPhone {
+    final driver = _order?['driver'] as Map<String, dynamic>?;
+    return (driver?['phone'] as String?) ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+    return Scaffold(
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             _buildHeader(context),
             Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.all(Insets.s16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _isTow ? _towSections() : _fuelSections(),
-                ),
-              ),
+              child: _isLoading
+                  ? Center(
+                      child:
+                          CircularProgressIndicator(color: context.colors.primary))
+                  : _order == null
+                      ? Center(
+                          child: Text(S.of(context).failedToLoadTripDetails,
+                              style: getRegularStyle(
+                                  color: context.colors.iconSecondary,
+                                  fontSize: FontSize.s14)))
+                      : SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          padding: EdgeInsets.all(Insets.s16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children:
+                                _isTow ? _towSections() : _fuelSections(),
+                          ),
+                        ),
             ),
-            if (!args.isRated) _buildBottomButton(context),
+            if (!widget.args.isRated && !_isLoading && _order != null)
+              _buildBottomButton(context),
           ],
         ),
-      ),
-    );
+      );
   }
 
   // ── Header ──────────────────────────────────────────────
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(
           children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
@@ -55,24 +136,24 @@ class DriverTripDetailsScreen extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_rounded,
-                        size: 24.sp, color: const Color(0xFF0E0E0E)),
+                    child: Icon(backArrowIcon(context),
+                        size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(
                     child: Text(
-                      'تفاصيل الرحلة',
+                      S.of(context).tripDetailsTitle,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Icon(Icons.info_outline_rounded,
-                      size: 24.sp, color: AppColors.grey),
+                      size: 24.sp, color: context.colors.iconSecondary),
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF5F5F5)),
+            Divider(height: 1, color: context.colors.borderSubtle),
           ],
         ),
       );
@@ -86,16 +167,17 @@ class DriverTripDetailsScreen extends StatelessWidget {
           Insets.s16,
           Insets.s24,
         ),
-        decoration: const BoxDecoration(
-          color: AppColors.white,
-          border: Border(top: BorderSide(color: AppColors.divider)),
+        decoration: BoxDecoration(
+          color: context.colors.surface,
+          border: Border(top: BorderSide(color: context.colors.divider)),
         ),
         child: SafeArea(
           top: false,
           child: AppButton(
-            text: 'تقييم الرحلة',
+            text: S.of(context).rateTripBtn,
             onPressed: () =>
-                Navigator.pushNamed(context, Routes.driverRateCustomer),
+                Navigator.pushNamed(context, Routes.driverRateCustomer,
+                    arguments: DriverRateArgs(orderId: widget.args.orderId)),
           ),
         ),
       );
@@ -103,143 +185,115 @@ class DriverTripDetailsScreen extends StatelessWidget {
   // ── Towing Sections ─────────────────────────────────────
 
   List<Widget> _towSections() => [
-        _sectionTitle('مسار الرحلة'),
+        _sectionTitle(S.of(context).tripRouteLabel),
         SizedBox(height: Insets.s8),
-        _TripRouteTimeline(),
-        SizedBox(height: Insets.s20),
-        _sectionTitle('تفاصيل السيارة'),
-        SizedBox(height: Insets.s8),
-        _CarDetailsSection(),
-        SizedBox(height: Insets.s20),
-        _sectionTitle('معلومات العميل'),
-        SizedBox(height: Insets.s8),
-        _CustomerInfoSection(),
-        SizedBox(height: Insets.s20),
-        _sectionTitle('ملخص الدفع'),
-        SizedBox(height: Insets.s8),
-        _PaymentSummarySection(),
-        SizedBox(height: Insets.s20),
-        _PhotoLogExpandable(
-          sections: [
-            _PhotoGroup(title: 'صور الاستلام', count: 4),
-            _PhotoGroup(title: 'صور التسليم', count: 4),
-          ],
+        _TripRouteTimeline(
+          pickupAddress: _driverAddress(context),
+          deliveryAddress: _destinationAddress(context),
         ),
+        SizedBox(height: Insets.s20),
+        _sectionTitle(S.of(context).carDetailsLabel),
+        SizedBox(height: Insets.s8),
+        _CarDetailsSection(plateNumber: _plateNumber),
+        SizedBox(height: Insets.s20),
+        _sectionTitle(S.of(context).customerInfoLabel),
+        SizedBox(height: Insets.s8),
+        _CustomerInfoSection(name: _customerName(context), phone: _customerPhone),
+        SizedBox(height: Insets.s20),
+        _sectionTitle(S.of(context).paymentSummaryTripLabel),
+        SizedBox(height: Insets.s8),
+        _PaymentSummarySection(
+            total: _total, paymentMethod: _paymentMethod(context)),
         SizedBox(height: Insets.s16),
       ];
 
   // ── Fuel Sections ───────────────────────────────────────
 
   List<Widget> _fuelSections() => [
-        _sectionTitle('الموقع'),
+        _sectionTitle(S.of(context).locationLabel),
         SizedBox(height: Insets.s8),
-        _LocationSection(),
+        _LocationSection(address: _driverAddress(context)),
         SizedBox(height: Insets.s20),
-        _sectionTitle('تفاصيل الوقود'),
+        _sectionTitle(S.of(context).fuelDetailsTrip),
         SizedBox(height: Insets.s8),
-        _FuelDetailsSection(),
-        SizedBox(height: Insets.s20),
-        _sectionTitle('تفاصيل السيارة'),
-        SizedBox(height: Insets.s8),
-        _CarDetailsSection(),
-        SizedBox(height: Insets.s20),
-        _sectionTitle('معلومات العميل'),
-        SizedBox(height: Insets.s8),
-        _CustomerInfoSection(),
-        SizedBox(height: Insets.s20),
-        _sectionTitle('ملخص الدفع'),
-        SizedBox(height: Insets.s8),
-        _PaymentSummarySection(),
-        SizedBox(height: Insets.s20),
-        _PhotoLogExpandable(
-          sections: [
-            _PhotoGroup(title: 'سجل الصور', count: 4),
-          ],
+        _FuelDetailsSection(
+          quantity: '$_fuelQuantity ${S.of(context).litersUnit}',
+          fuelType: _fuelType(context),
+          pricePerLiter: '$_pricePerLiter ${S.of(context).currencyDL}',
         ),
+        SizedBox(height: Insets.s20),
+        _sectionTitle(S.of(context).customerInfoLabel),
+        SizedBox(height: Insets.s8),
+        _CustomerInfoSection(name: _customerName(context), phone: _customerPhone),
+        SizedBox(height: Insets.s20),
+        _sectionTitle(S.of(context).paymentSummaryTripLabel),
+        SizedBox(height: Insets.s8),
+        _PaymentSummarySection(
+            total: _total, paymentMethod: _paymentMethod(context)),
         SizedBox(height: Insets.s16),
       ];
 
   Widget _sectionTitle(String title) => Text(
         title,
         style: getBoldStyle(
-            color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+            color: context.colors.textPrimary, fontSize: FontSize.s16),
       );
 }
 
 // ── Trip Route Timeline ──────────────────────────────────
 
 class _TripRouteTimeline extends StatelessWidget {
+  final String pickupAddress;
+  final String deliveryAddress;
+  const _TripRouteTimeline({required this.pickupAddress, required this.deliveryAddress});
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.neutral400,
+        color: context.colors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Timeline dots + line
             Column(
               children: [
                 Container(
-                  width: 12.w,
-                  height: 12.w,
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary,
-                    shape: BoxShape.circle,
-                  ),
+                  width: 12.w, height: 12.w,
+                  decoration: BoxDecoration(color: context.colors.primary, shape: BoxShape.circle),
                 ),
                 Expanded(
                   child: CustomPaint(
-                    painter: _DottedLinePainter(color: AppColors.primary),
+                    painter: _DottedLinePainter(color: context.colors.primary),
                     size: Size(2.w, 0),
                   ),
                 ),
                 Container(
-                  width: 12.w,
-                  height: 12.w,
-                  decoration: const BoxDecoration(
-                    color: AppColors.gold,
-                    shape: BoxShape.circle,
-                  ),
+                  width: 12.w, height: 12.w,
+                  decoration: BoxDecoration(color: context.colors.gold, shape: BoxShape.circle),
                 ),
               ],
             ),
             SizedBox(width: Insets.s12),
-            // Addresses
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'نقطة الانطلاق',
-                    style: getRegularStyle(
-                        color: AppColors.grey, fontSize: FontSize.s12),
-                  ),
+                  Text(S.of(context).departurePointLabel,
+                      style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s12)),
                   SizedBox(height: 2.h),
-                  Text(
-                    'المنصورة، مدينة مبارك، شارع مكة',
-                    style: getMediumStyle(
-                        color: const Color(0xFF0E0E0E),
-                        fontSize: FontSize.s14),
-                  ),
+                  Text(pickupAddress,
+                      style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
                   SizedBox(height: Insets.s20),
-                  Text(
-                    'وجهة التوصيل',
-                    style: getRegularStyle(
-                        color: AppColors.grey, fontSize: FontSize.s12),
-                  ),
+                  Text(S.of(context).deliveryDestinationTripLabel,
+                      style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s12)),
                   SizedBox(height: 2.h),
-                  Text(
-                    'الرياض، حي النزهة، شارع الأمير',
-                    style: getMediumStyle(
-                        color: const Color(0xFF0E0E0E),
-                        fontSize: FontSize.s14),
-                  ),
+                  Text(deliveryAddress,
+                      style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
                 ],
               ),
             ),
@@ -282,34 +336,31 @@ class _DottedLinePainter extends CustomPainter {
 // ── Location Section (Fuel) ──────────────────────────────
 
 class _LocationSection extends StatelessWidget {
+  final String address;
+  const _LocationSection({required this.address});
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.neutral400,
+        color: context.colors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         children: [
-          Icon(Icons.location_on_outlined, size: 20.sp, color: AppColors.primary),
+          Icon(Icons.location_on_outlined, size: 20.sp, color: context.colors.primary),
           SizedBox(width: Insets.s8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'موقع السيارة',
-                  style: getRegularStyle(
-                      color: AppColors.grey, fontSize: FontSize.s12),
-                ),
+                Text(S.of(context).carLocationLabel,
+                    style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s12)),
                 SizedBox(height: 2.h),
-                Text(
-                  'المنصورة، مدينة مبارك، شارع مكة',
-                  style: getMediumStyle(
-                      color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
-                ),
+                Text(address,
+                    style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
               ],
             ),
           ),
@@ -322,40 +373,43 @@ class _LocationSection extends StatelessWidget {
 // ── Fuel Details Section ─────────────────────────────────
 
 class _FuelDetailsSection extends StatelessWidget {
+  final String quantity;
+  final String fuelType;
+  final String pricePerLiter;
+  const _FuelDetailsSection({
+    required this.quantity,
+    required this.fuelType,
+    required this.pricePerLiter,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.neutral400,
+        color: context.colors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         children: [
-          _detailRow('الكمية المطلوبة', '20 لتر'),
+          _detailRow(context, S.of(context).orderedQuantityLabel, quantity),
           SizedBox(height: Insets.s12),
-          _detailRow('نوع الوقود', 'بنزين 95'),
+          _detailRow(context, S.of(context).fuelTypeLabel, fuelType),
           SizedBox(height: Insets.s12),
-          _detailRow('سعر لتر اليوم', '12.50 ج.م'),
+          _detailRow(context, S.of(context).pricePerLiterLabel, pricePerLiter),
         ],
       ),
     );
   }
 
-  Widget _detailRow(String label, String value) => Row(
+  Widget _detailRow(BuildContext context, String label, String value) => Row(
         children: [
-          Text(
-            label,
-            style: getRegularStyle(
-                color: AppColors.neutral900, fontSize: FontSize.s14),
-          ),
+          Text(label,
+              style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14)),
           const Spacer(),
-          Text(
-            value,
-            style: getSemiBoldStyle(
-                color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
-          ),
+          Text(value,
+              style: getSemiBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
         ],
       );
 }
@@ -363,72 +417,33 @@ class _FuelDetailsSection extends StatelessWidget {
 // ── Car Details Section ──────────────────────────────────
 
 class _CarDetailsSection extends StatelessWidget {
+  final String plateNumber;
+  const _CarDetailsSection({required this.plateNumber});
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Row(
       children: [
-        Row(
-          children: [
-            Expanded(child: _badgeCard('نوع السيارة', 'نيسان صني')),
-            SizedBox(width: Insets.s8),
-            Expanded(child: _badgeCard('رقم اللوحة', 'أ ب م - 3541')),
-          ],
-        ),
-        SizedBox(height: Insets.s12),
-        // Car images placeholder
-        Container(
-          height: 160.h,
-          decoration: BoxDecoration(
-            color: AppColors.neutral400,
-            borderRadius: BorderRadius.circular(AppRadius.s16),
-            border: Border.all(color: AppColors.neutral500),
-          ),
-          child: Row(
-            children: List.generate(
-              2,
-              (i) => Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(Insets.s8),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.neutral200,
-                      borderRadius: BorderRadius.circular(AppRadius.s12),
-                      border: Border.all(color: AppColors.neutral500),
-                    ),
-                    child: Icon(Icons.directions_car_rounded,
-                        size: 40.sp, color: AppColors.neutral600),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+        Expanded(child: _badgeCard(context, S.of(context).plateNumberLabel, plateNumber)),
       ],
     );
   }
 
-  Widget _badgeCard(String label, String value) => Container(
+  Widget _badgeCard(BuildContext context, String label, String value) => Container(
         padding: EdgeInsets.all(Insets.s12),
         decoration: BoxDecoration(
-          color: AppColors.neutral400,
+          color: context.colors.surfaceElevated,
           borderRadius: BorderRadius.circular(AppRadius.s16),
-          border: Border.all(color: AppColors.neutral500),
+          border: Border.all(color: context.colors.border),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              label,
-              style: getRegularStyle(
-                  color: AppColors.grey, fontSize: FontSize.s12),
-            ),
+            Text(label,
+                style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s12)),
             SizedBox(height: 4.h),
-            Text(
-              value,
-              style: getSemiBoldStyle(
-                  color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
-            ),
+            Text(value,
+                style: getSemiBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
           ],
         ),
       );
@@ -437,66 +452,43 @@ class _CarDetailsSection extends StatelessWidget {
 // ── Customer Info Section ────────────────────────────────
 
 class _CustomerInfoSection extends StatelessWidget {
+  final String name;
+  final String phone;
+  const _CustomerInfoSection({required this.name, required this.phone});
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.neutral400,
+        color: context.colors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         children: [
-          // Avatar
           Container(
-            width: 48.w,
-            height: 48.w,
+            width: 48.w, height: 48.w,
             decoration: BoxDecoration(
-              color: AppColors.primary50,
+              color: context.colors.primarySurface,
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.primary200, width: 1.5),
+              border: Border.all(color: context.colors.primaryLight, width: 1.5),
             ),
             alignment: Alignment.center,
-            child: Icon(Icons.person_rounded,
-                size: 24.sp, color: AppColors.primary),
+            child: Icon(Icons.person_rounded, size: 24.sp, color: context.colors.primary),
           ),
           SizedBox(width: Insets.s12),
-          // Name & phone
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'أحمد محمد',
-                  style: getSemiBoldStyle(
-                      color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
-                ),
+                Text(name,
+                    style: getSemiBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
                 SizedBox(height: 2.h),
-                Text(
-                  '+965 5534 5368',
-                  style: getRegularStyle(
-                      color: AppColors.grey, fontSize: FontSize.s12),
-                  textDirection: TextDirection.ltr,
-                ),
+                Text(phone,
+                    style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s12),
+                    textDirection: TextDirection.ltr),
               ],
-            ),
-          ),
-          // Call button
-          GestureDetector(
-            onTap: () {
-              // replace with url_launcher call
-            },
-            child: Container(
-              width: 40.w,
-              height: 40.w,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: Icon(Icons.phone_rounded,
-                  size: 20.sp, color: AppColors.white),
             ),
           ),
         ],
@@ -508,144 +500,36 @@ class _CustomerInfoSection extends StatelessWidget {
 // ── Payment Summary ──────────────────────────────────────
 
 class _PaymentSummarySection extends StatelessWidget {
+  final String total;
+  final String paymentMethod;
+  const _PaymentSummarySection({required this.total, required this.paymentMethod});
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.neutral400,
+        color: context.colors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         children: [
-          Text(
-            'الإجمالي',
-            style: getRegularStyle(
-                color: AppColors.neutral900, fontSize: FontSize.s16),
-          ),
+          Text(S.of(context).totalLabel,
+              style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s16)),
           SizedBox(width: Insets.s8),
           Container(
-            padding:
-                EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
+            padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
             decoration: BoxDecoration(
-              color: AppColors.primary50,
+              color: context.colors.primarySurface,
               borderRadius: BorderRadius.circular(AppRadius.s16),
             ),
-            child: Text('كاش',
-                style: getRegularStyle(
-                    color: AppColors.primary, fontSize: FontSize.s12)),
+            child: Text(paymentMethod,
+                style: getRegularStyle(color: context.colors.primary, fontSize: FontSize.s12)),
           ),
           const Spacer(),
-          Text(
-            '985.00 ج.م',
-            style: getBoldStyle(
-                color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Photo Log Expandable ─────────────────────────────────
-
-class _PhotoGroup {
-  final String title;
-  final int count;
-  const _PhotoGroup({required this.title, required this.count});
-}
-
-class _PhotoLogExpandable extends StatefulWidget {
-  final List<_PhotoGroup> sections;
-  const _PhotoLogExpandable({required this.sections});
-
-  @override
-  State<_PhotoLogExpandable> createState() => _PhotoLogExpandableState();
-}
-
-class _PhotoLogExpandableState extends State<_PhotoLogExpandable> {
-  bool _isExpanded = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.neutral400,
-        borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          GestureDetector(
-            onTap: () => setState(() => _isExpanded = !_isExpanded),
-            behavior: HitTestBehavior.opaque,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: Insets.s16, vertical: Insets.s12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  AnimatedRotation(
-                    turns: _isExpanded ? 0.5 : 0.0,
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(Icons.keyboard_arrow_down_rounded,
-                        size: 24.sp, color: const Color(0xFF0E0E0E)),
-                  ),
-                  Text(
-                    'سجل الصور',
-                    style: getBoldStyle(
-                        color: const Color(0xFF0E0E0E),
-                        fontSize: FontSize.s16),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          if (_isExpanded) ...[
-            const Divider(color: AppColors.neutral500, height: 1, thickness: 1),
-            Padding(
-              padding: EdgeInsets.all(Insets.s12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: widget.sections.map((group) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        group.title,
-                        style: getMediumStyle(
-                            color: AppColors.darkGrey, fontSize: FontSize.s14),
-                      ),
-                      SizedBox(height: Insets.s8),
-                      Wrap(
-                        spacing: Insets.s8,
-                        runSpacing: Insets.s8,
-                        children: List.generate(
-                          group.count,
-                          (_) => Container(
-                            width:
-                                (MediaQuery.of(context).size.width - 80.w) / 3,
-                            height: 80.h,
-                            decoration: BoxDecoration(
-                              color: AppColors.neutral200,
-                              borderRadius:
-                                  BorderRadius.circular(AppRadius.s12),
-                              border: Border.all(color: AppColors.neutral500),
-                            ),
-                            child: Icon(Icons.image_outlined,
-                                size: 28.sp, color: AppColors.neutral600),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: Insets.s12),
-                    ],
-                  );
-                }).toList(),
-              ),
-            ),
-          ],
+          Text('$total ${S.of(context).currencyDL}',
+              style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18)),
         ],
       ),
     );

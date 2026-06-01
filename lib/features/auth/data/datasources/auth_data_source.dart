@@ -31,7 +31,7 @@ class AuthMockDataSource implements AuthDataSource {
     return UserModel(
       id: 1,
       phone: phone,
-      name: 'أحمد',
+      name: 'Ahmed',
       role: 'driver',
       token: 'mock-token-123',
     );
@@ -102,9 +102,9 @@ class AuthRemoteDataSource implements AuthDataSource {
     } on DioException catch (e) {
       final msg =
           (e.response?.data as Map<String, dynamic>?)?['message'] as String?;
-      throw ServerException(msg ?? 'فشل تسجيل الدخول');
+      throw ServerException(msg ?? 'Failed to login');
     } catch (_) {
-      throw const ServerException('فشل تسجيل الدخول');
+      throw const ServerException('Failed to login');
     }
   }
 
@@ -142,9 +142,9 @@ class AuthRemoteDataSource implements AuthDataSource {
     } on DioException catch (e) {
       final msg =
           (e.response?.data as Map<String, dynamic>?)?['message'] as String?;
-      throw ServerException(msg ?? 'فشل إنشاء الحساب');
+      throw ServerException(msg ?? 'Failed to create account');
     } catch (_) {
-      throw const ServerException('فشل إنشاء الحساب');
+      throw const ServerException('Failed to create account');
     }
   }
 
@@ -181,9 +181,9 @@ class AuthRemoteDataSource implements AuthDataSource {
     } on DioException catch (e) {
       final msg =
           (e.response?.data as Map<String, dynamic>?)?['message'] as String?;
-      throw ServerException(msg ?? 'فشل تغيير كلمة المرور');
+      throw ServerException(msg ?? 'Failed to change password');
     } catch (_) {
-      throw const ServerException('فشل تغيير كلمة المرور');
+      throw const ServerException('Failed to change password');
     }
   }
 }

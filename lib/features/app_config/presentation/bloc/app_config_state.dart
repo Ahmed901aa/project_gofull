@@ -25,6 +25,7 @@ class AppConfigState extends Equatable {
       settings[key] ?? fallback;
 
   String get currency => setting('currency', 'د.ل');
+  String get supportPhone => setting('support_phone', '0915909734');
   double get serviceFee => double.tryParse(setting('service_fee', '15')) ?? 15;
   double get towingBasePrice =>
       double.tryParse(setting('towing_base_price', '50')) ?? 50;

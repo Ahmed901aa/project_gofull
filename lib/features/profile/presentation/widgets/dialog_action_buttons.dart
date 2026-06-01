@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DialogActionButtons extends StatelessWidget {
   final String cancelLabel;
@@ -28,9 +28,9 @@ class DialogActionButtons extends StatelessWidget {
             onTap: onCancel ?? () => Navigator.pop(context, false),
             child: Container(
               height: 48.h,
-              decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(AppRadius.s24)),
+              decoration: BoxDecoration(color: context.colors.primary, borderRadius: BorderRadius.circular(AppRadius.s24)),
               alignment: Alignment.center,
-              child: Text(cancelLabel, style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16)),
+              child: Text(cancelLabel, style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s16)),
             ),
           ),
         ),
@@ -41,12 +41,12 @@ class DialogActionButtons extends StatelessWidget {
             child: Container(
               height: 48.h,
               decoration: BoxDecoration(
-                color: const Color(0xFFFBE1E3),
+                color: context.colors.errorSurface,
                 borderRadius: BorderRadius.circular(AppRadius.s24),
-                border: Border.all(color: const Color(0xFFE63946), width: 1.5),
+                border: Border.all(color: context.colors.error, width: 1.5),
               ),
               alignment: Alignment.center,
-              child: Text(confirmLabel, style: getBoldStyle(color: const Color(0xFFE63946), fontSize: FontSize.s16)),
+              child: Text(confirmLabel, style: getBoldStyle(color: context.colors.error, fontSize: FontSize.s16)),
             ),
           ),
         ),

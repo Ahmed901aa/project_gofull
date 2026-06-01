@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class SearchingBottomPanel extends StatelessWidget {
   final int secondsLeft;
@@ -21,18 +22,17 @@ class SearchingBottomPanel extends StatelessWidget {
     final ss = (secondsLeft % 60).toString().padLeft(2, '0');
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
-        boxShadow: [BoxShadow(color: const Color(0xFFCCCCCC).withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2))],
+        boxShadow: [BoxShadow(color: context.colors.border.withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2))],
       ),
       padding: EdgeInsets.all(Insets.s16),
       child: Column(
         children: [
           RichText(
-            textDirection: TextDirection.rtl,
             text: TextSpan(children: [
-              TextSpan(text: 'الوقت المتوقع للعثور على سائق: ', style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
-              TextSpan(text: '$mm:$ss دقيقة', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14)),
+              TextSpan(text: S.of(context).expectedTimeFindDriver, style: getRegularStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
+              TextSpan(text: S.of(context).minutesFormatted('$mm:$ss'), style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s14)),
             ]),
           ),
           SizedBox(height: Insets.s8),
@@ -40,11 +40,11 @@ class SearchingBottomPanel extends StatelessWidget {
             animation: progressAnimation,
             builder: (_, __) => Container(
               height: 6.h,
-              decoration: BoxDecoration(color: const Color(0xFFD9DADB), borderRadius: BorderRadius.circular(AppRadius.s16)),
+              decoration: BoxDecoration(color: context.colors.border, borderRadius: BorderRadius.circular(AppRadius.s16)),
               child: FractionallySizedBox(
                 widthFactor: progressAnimation.value,
-                alignment: Alignment.centerRight,
-                child: Container(decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(AppRadius.s16))),
+                alignment: AlignmentDirectional.centerEnd,
+                child: Container(decoration: BoxDecoration(color: context.colors.primary, borderRadius: BorderRadius.circular(AppRadius.s16))),
               ),
             ),
           ),
@@ -53,10 +53,10 @@ class SearchingBottomPanel extends StatelessWidget {
             height: 48.h, width: double.infinity,
             child: OutlinedButton.icon(
               onPressed: () => Navigator.pop(context),
-              icon: Icon(Icons.close_rounded, size: 20.sp, color: AppColors.primary),
-              label: Text('إلغاء الطلب', style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s16)),
+              icon: Icon(Icons.close_rounded, size: 20.sp, color: context.colors.primary),
+              label: Text(S.of(context).cancelOrder, style: getBoldStyle(color: context.colors.primary, fontSize: FontSize.s16)),
               style: OutlinedButton.styleFrom(
-                side: BorderSide(color: AppColors.primary),
+                side: BorderSide(color: context.colors.primary),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
               ),
             ),

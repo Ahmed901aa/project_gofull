@@ -4,7 +4,7 @@ class LocationState {
   final double? lng;
 
   const LocationState({
-    this.address = 'الرياض، المملكة العربية السعودية',
+    this.address = '',
     this.lat,
     this.lng,
   });

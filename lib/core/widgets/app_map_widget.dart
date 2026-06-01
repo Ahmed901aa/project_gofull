@@ -4,12 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../config/api_keys.dart';
 import '../resources/values_manager.dart';
 import 'app_map/map_suggestion.dart';
 import 'app_map/map_search_bar.dart';
 import 'app_map/map_search_overlay.dart';
 import 'app_map/map_my_location_button.dart';
 import 'app_map/map_confirm_button.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
+
+/// Default fallback: Benghazi, Libya
+const _kDefaultLat = 32.1194;
+const _kDefaultLng = 20.0868;
 
 /// Reusable full-screen Google Map widget.
 class AppMapWidget extends StatefulWidget {
@@ -17,7 +24,7 @@ class AppMapWidget extends StatefulWidget {
   final double? initialLng;
   final void Function(LatLng location, String address)? onLocationSelected;
   final bool showConfirmButton;
-  final String confirmLabel;
+  final String? confirmLabel;
 
   const AppMapWidget({
     super.key,
@@ -25,7 +32,7 @@ class AppMapWidget extends StatefulWidget {
     this.initialLng,
     this.onLocationSelected,
     this.showConfirmButton = true,
-    this.confirmLabel = 'تأكيد الموقع',
+    this.confirmLabel,
   });
 
   @override
@@ -33,14 +40,16 @@ class AppMapWidget extends StatefulWidget {
 }
 
 class _AppMapWidgetState extends State<AppMapWidget> {
-  static const _apiKey = 'AIzaSyDZ_ZezX058d36aMTOc9E--MbyWqCdOI9I';
-  static const _defaultLat = 24.7136;
-  static const _defaultLng = 46.6753;
+  static const _apiKey = ApiKeys.googleMaps;
 
   GoogleMapController? _mapController;
   Set<Marker> _markers = {};
   LatLng? _pickedLocation;
   String _pickedAddress = '';
+
+  // GPS resolution
+  bool _resolvingGps = true;
+  late LatLng _initialPosition;
 
   bool _isSearching = false;
   final _searchController = TextEditingController();
@@ -54,6 +63,65 @@ class _AppMapWidgetState extends State<AppMapWidget> {
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
+    _resolveInitialLocation();
+  }
+
+  /// Resolve the initial map position:
+  /// 1. Use explicit initialLat/initialLng if provided
+  /// 2. Get live GPS position
+  /// 3. Fall back to Benghazi defaults
+  Future<void> _resolveInitialLocation() async {
+    // If explicit coordinates were passed, use them directly
+    if (widget.initialLat != null && widget.initialLng != null) {
+      setState(() {
+        _initialPosition = LatLng(widget.initialLat!, widget.initialLng!);
+        _resolvingGps = false;
+      });
+      return;
+    }
+
+    // Try GPS
+    try {
+      var perm = await Geolocator.checkPermission();
+      if (perm == LocationPermission.denied) {
+        perm = await Geolocator.requestPermission();
+      }
+      if (perm == LocationPermission.denied ||
+          perm == LocationPermission.deniedForever) {
+        _useDefault();
+        return;
+      }
+
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        _useDefault();
+        return;
+      }
+
+      final pos = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 10),
+        ),
+      );
+      if (mounted) {
+        setState(() {
+          _initialPosition = LatLng(pos.latitude, pos.longitude);
+          _resolvingGps = false;
+        });
+      }
+    } catch (_) {
+      _useDefault();
+    }
+  }
+
+  void _useDefault() {
+    if (mounted) {
+      setState(() {
+        _initialPosition = const LatLng(_kDefaultLat, _kDefaultLng);
+        _resolvingGps = false;
+      });
+    }
   }
 
   @override
@@ -66,11 +134,6 @@ class _AppMapWidgetState extends State<AppMapWidget> {
     super.dispose();
   }
 
-  LatLng get _initialPosition => LatLng(
-        widget.initialLat ?? _defaultLat,
-        widget.initialLng ?? _defaultLng,
-      );
-
   Future<void> _moveToGps() async {
     try {
       var permission = await Geolocator.checkPermission();
@@ -78,12 +141,20 @@ class _AppMapWidgetState extends State<AppMapWidget> {
         permission = await Geolocator.requestPermission();
       }
       if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) return;
+          permission == LocationPermission.deniedForever) {
+        return;
+      }
       final pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 10),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 10),
+        ),
       );
-      if (!mounted) return;
+      if (!mounted) {
+
+        return;
+
+      }
       _mapController?.animateCamera(
         CameraUpdate.newLatLngZoom(
             LatLng(pos.latitude, pos.longitude), 15),
@@ -112,12 +183,16 @@ class _AppMapWidgetState extends State<AppMapWidget> {
         queryParameters: {
           'input': query,
           'key': _apiKey,
-          'language': 'ar',
+          'language': Localizations.localeOf(context).languageCode,
         },
       );
       final status = res.data['status'] as String;
       final list = status == 'OK' ? res.data['predictions'] as List : [];
-      if (!mounted) return;
+      if (!mounted) {
+
+        return;
+
+      }
       setState(() {
         _suggestions = list
             .map((p) => MapSuggestion(
@@ -149,7 +224,11 @@ class _AppMapWidgetState extends State<AppMapWidget> {
           'key': _apiKey,
         },
       );
-      if (res.data['status'] != 'OK') return;
+      if (res.data['status'] != 'OK') {
+
+        return;
+
+      }
       final loc = res.data['result']['geometry']['location'];
       final latLng = LatLng(
         (loc['lat'] as num).toDouble(),
@@ -183,25 +262,37 @@ class _AppMapWidgetState extends State<AppMapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
+    // Show loading while resolving GPS
+    if (_resolvingGps) {
+      return Center(
+        child: CircularProgressIndicator(color: context.colors.primary),
+      );
+    }
+
+    // Force light theme for all map overlays (search bar, confirm card, etc.)
+    final lightTheme = buildLightTheme(
+      fontFamily: Theme.of(context).textTheme.bodyMedium?.fontFamily,
+    );
+
+    return Theme(
+      data: lightTheme,
+      child: Builder(builder: (context) => Directionality(
+      textDirection: Directionality.of(context),
       child: Stack(
         children: [
           GoogleMap(
             initialCameraPosition: CameraPosition(
               target: _initialPosition,
-              zoom: 13,
+              zoom: 15,
             ),
-            onMapCreated: (c) {
-              _mapController = c;
-              _moveToGps();
-            },
+            onMapCreated: (c) => _mapController = c,
             myLocationEnabled: true,
             myLocationButtonEnabled: false,
             zoomControlsEnabled: false,
             mapToolbarEnabled: false,
             markers: _markers,
             onTap: (latLng) => _placeMarker(latLng, ''),
+            style: '[]', // Force light mode regardless of app theme
           ),
           SafeArea(
             child: Material(
@@ -248,8 +339,8 @@ class _AppMapWidgetState extends State<AppMapWidget> {
                     ),
             ),
           ),
-          Positioned(
-            left: Insets.s16,
+          PositionedDirectional(
+            start: Insets.s16,
             bottom: widget.showConfirmButton && _pickedLocation != null
                 ? 124.h
                 : 24.h,
@@ -262,13 +353,14 @@ class _AppMapWidgetState extends State<AppMapWidget> {
               bottom: 0,
               child: MapConfirmButton(
                 address: _pickedAddress,
-                label: widget.confirmLabel,
+                label: widget.confirmLabel ?? S.of(context).confirmLocation,
                 onTap: () => widget.onLocationSelected
                     ?.call(_pickedLocation!, _pickedAddress),
               ),
             ),
         ],
       ),
+    )),
     );
   }
 }
