@@ -92,7 +92,7 @@ class _ToggleTile extends StatelessWidget {
           Switch.adaptive(
             value: value,
             onChanged: onChanged,
-            activeColor: context.colors.primary,
+            activeThumbColor: context.colors.primary,
           ),
         ],
       ),

@@ -11,6 +11,27 @@ import 'status_badge.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 
+/// Maps a raw fuel-type value (from the backend or mock data) to a localized
+/// label. The backend may send `'petrol'`, `'gasoline'`, `'diesel'`, etc.;
+/// some mocks send Arabic strings (`'بنزين 95'`, `'ديزل'`). In every case the
+/// label shown to the user follows the current locale, while the underlying
+/// value sent to the backend stays unchanged.
+String _localizedFuelType(BuildContext context, String? raw) {
+  if (raw == null || raw.trim().isEmpty) return '';
+  final l10n = S.of(context);
+  final lower = raw.toLowerCase();
+  if (lower.contains('diesel') || raw.contains('ديزل')) {
+    return l10n.dieselFuel;
+  }
+  if (lower.contains('petrol') ||
+      lower.contains('gasoline') ||
+      lower.contains('benzin') ||
+      raw.contains('بنزين')) {
+    return l10n.gasolineFuel;
+  }
+  return raw;
+}
+
 class OrderCard extends StatelessWidget {
   final OrderData order;
   final VoidCallback onTap;
