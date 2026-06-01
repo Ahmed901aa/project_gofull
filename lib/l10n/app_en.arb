@@ -78,6 +78,8 @@
   "rejectOrder": "Decline",
   "towService": "Tow Service",
   "fuelService": "Fuel Service",
+  "chipTowPull": "Tow / Pull",
+  "ourServices": "Our Services",
   "distanceAway": "away",
   "km": "km",
   "driverProfile": "Profile",

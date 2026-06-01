@@ -565,6 +565,18 @@ abstract class S {
   /// **'Fuel Service'**
   String get fuelService;
 
+  /// No description provided for @chipTowPull.
+  ///
+  /// In en, this message translates to:
+  /// **'Tow / Pull'**
+  String get chipTowPull;
+
+  /// No description provided for @ourServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Our Services'**
+  String get ourServices;
+
   /// No description provided for @distanceAway.
   ///
   /// In en, this message translates to:

@@ -246,6 +246,12 @@ class SEn extends S {
   String get fuelService => 'Fuel Service';
 
   @override
+  String get chipTowPull => 'Tow / Pull';
+
+  @override
+  String get ourServices => 'Our Services';
+
+  @override
   String get distanceAway => 'away';
 
   @override

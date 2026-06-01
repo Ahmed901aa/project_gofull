@@ -244,6 +244,12 @@ class SAr extends S {
   String get fuelService => 'خدمة وقود';
 
   @override
+  String get chipTowPull => 'ونش / سحب';
+
+  @override
+  String get ourServices => 'خدماتنا';
+
+  @override
   String get distanceAway => 'على بعد';
 
   @override
