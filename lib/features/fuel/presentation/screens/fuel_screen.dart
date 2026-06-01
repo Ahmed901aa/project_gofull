@@ -40,6 +40,10 @@ class _FuelScreenState extends State<FuelScreen> {
   /// Guards against double-submission between tap and bloc emitting RequestLoading.
   bool _isSubmitting = false;
 
+  /// Flips to `true` the first time the user taps submit so dropdowns show
+  /// inline validation messages.
+  bool _showValidation = false;
+
   /// Guards against the BlocListener pushing a route twice.
   bool _hasNavigated = false;
 
@@ -242,6 +246,7 @@ class _FuelScreenState extends State<FuelScreen> {
                               )
                             else
                             FuelDetailsForm(
+                              showValidation: _showValidation,
                               selectedFuelType: _selectedFuel != null ? _fuelDisplayName(_selectedFuel!, l10n) : null,
                               selectedQuantity: _selectedQuantity,
                               fuelTypes: fuelNames,
@@ -299,6 +304,9 @@ class _FuelScreenState extends State<FuelScreen> {
                           isEnabled: isValid,
                           onPressed: () => _onSubmit(blocContext),
                           onDisabledTap: () {
+                            if (!_showValidation) {
+                              setState(() => _showValidation = true);
+                            }
                             final err = _getValidationError(context);
                             if (err != null) {
                               AppSnackbar.warning(context, err);

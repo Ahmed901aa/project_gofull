@@ -2280,6 +2280,48 @@ class SAr extends S {
   String get enterPlateNumber => 'أدخل رقم اللوحة';
 
   @override
+  String get vehicleTypeFieldLabel => 'نوع السيارة';
+
+  @override
+  String get vehicleTypeFieldHelper => 'الماركة والموديل';
+
+  @override
+  String get vehicleTypeFieldHint => 'مثال: تويوتا هايلكس';
+
+  @override
+  String get plateNumberFieldLabel => 'رقم اللوحة';
+
+  @override
+  String get plateNumberFieldHelper => 'كما هي مكتوبة على لوحة السيارة';
+
+  @override
+  String get plateNumberFieldHint => 'مثال: أ ب م 1234';
+
+  @override
+  String get vehiclePhotosLabel => 'صور السيارة';
+
+  @override
+  String get vehiclePhotosHelper => 'أضف صوراً توضح حالة السيارة الحالية';
+
+  @override
+  String get fuelTypeFieldLabel => 'نوع الوقود';
+
+  @override
+  String get fuelTypeFieldHelper => 'اختر نوع الوقود المناسب لسيارتك';
+
+  @override
+  String get fuelTypeFieldHint => 'اختر نوع الوقود';
+
+  @override
+  String get quantityFieldLabel => 'الكمية';
+
+  @override
+  String get quantityFieldHelper => 'كمية الوقود المطلوبة (باللتر)';
+
+  @override
+  String get quantityFieldHint => 'اختر الكمية';
+
+  @override
   String get safetySecureCar =>
       'تأمين السيارة: يرجى ركن السيارة في مكان آمن ومنبسط.';
 

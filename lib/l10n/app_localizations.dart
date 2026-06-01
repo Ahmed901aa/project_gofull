@@ -4483,6 +4483,90 @@ abstract class S {
   /// **'Enter plate number'**
   String get enterPlateNumber;
 
+  /// No description provided for @vehicleTypeFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle type'**
+  String get vehicleTypeFieldLabel;
+
+  /// No description provided for @vehicleTypeFieldHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Make and model of your car'**
+  String get vehicleTypeFieldHelper;
+
+  /// No description provided for @vehicleTypeFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Toyota Hilux'**
+  String get vehicleTypeFieldHint;
+
+  /// No description provided for @plateNumberFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plate number'**
+  String get plateNumberFieldLabel;
+
+  /// No description provided for @plateNumberFieldHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'As printed on your license plate'**
+  String get plateNumberFieldHelper;
+
+  /// No description provided for @plateNumberFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. ABM 1234'**
+  String get plateNumberFieldHint;
+
+  /// No description provided for @vehiclePhotosLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle photos'**
+  String get vehiclePhotosLabel;
+
+  /// No description provided for @vehiclePhotosHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photos showing the car\'s current condition'**
+  String get vehiclePhotosHelper;
+
+  /// No description provided for @fuelTypeFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel type'**
+  String get fuelTypeFieldLabel;
+
+  /// No description provided for @fuelTypeFieldHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the fuel your vehicle uses'**
+  String get fuelTypeFieldHelper;
+
+  /// No description provided for @fuelTypeFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select fuel type'**
+  String get fuelTypeFieldHint;
+
+  /// No description provided for @quantityFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get quantityFieldLabel;
+
+  /// No description provided for @quantityFieldHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'How much fuel to deliver (in liters)'**
+  String get quantityFieldHelper;
+
+  /// No description provided for @quantityFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select quantity'**
+  String get quantityFieldHint;
+
   /// No description provided for @safetySecureCar.
   ///
   /// In en, this message translates to:

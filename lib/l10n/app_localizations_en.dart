@@ -2295,6 +2295,49 @@ class SEn extends S {
   String get enterPlateNumber => 'Enter plate number';
 
   @override
+  String get vehicleTypeFieldLabel => 'Vehicle type';
+
+  @override
+  String get vehicleTypeFieldHelper => 'Make and model of your car';
+
+  @override
+  String get vehicleTypeFieldHint => 'e.g. Toyota Hilux';
+
+  @override
+  String get plateNumberFieldLabel => 'Plate number';
+
+  @override
+  String get plateNumberFieldHelper => 'As printed on your license plate';
+
+  @override
+  String get plateNumberFieldHint => 'e.g. ABM 1234';
+
+  @override
+  String get vehiclePhotosLabel => 'Vehicle photos';
+
+  @override
+  String get vehiclePhotosHelper =>
+      'Add photos showing the car\'s current condition';
+
+  @override
+  String get fuelTypeFieldLabel => 'Fuel type';
+
+  @override
+  String get fuelTypeFieldHelper => 'Choose the fuel your vehicle uses';
+
+  @override
+  String get fuelTypeFieldHint => 'Select fuel type';
+
+  @override
+  String get quantityFieldLabel => 'Quantity';
+
+  @override
+  String get quantityFieldHelper => 'How much fuel to deliver (in liters)';
+
+  @override
+  String get quantityFieldHint => 'Select quantity';
+
+  @override
   String get safetySecureCar =>
       'Secure the car: Please park in a safe, flat area.';
 

@@ -41,6 +41,10 @@ class _TowingScreenState extends State<TowingScreen> {
   /// Guards against the BlocListener pushing a route twice.
   bool _hasNavigated = false;
 
+  /// Flips to `true` the first time the user taps the submit button so
+  /// the input fields can show inline validation messages.
+  bool _showValidation = false;
+
   bool _hasLocation(BuildContext context) {
     final loc = context.read<LocationCubit>().state;
     return loc.lat != null && loc.lng != null;
@@ -200,7 +204,8 @@ class _TowingScreenState extends State<TowingScreen> {
                                 title: l10n.carDetailsSectionTitle, gap: 16),
                             TowingCarDetailsForm(
                                 carTypeCtrl: _carTypeCtrl,
-                                plateCtrl: _plateCtrl),
+                                plateCtrl: _plateCtrl,
+                                showValidation: _showValidation),
                             ServiceSectionHeader(
                                 title: l10n.additionalNotesSection, gap: 8),
                             Padding(
@@ -231,6 +236,9 @@ class _TowingScreenState extends State<TowingScreen> {
                           isEnabled: isValid,
                           onPressed: () => _onSubmit(blocContext),
                           onDisabledTap: () {
+                            if (!_showValidation) {
+                              setState(() => _showValidation = true);
+                            }
                             final err = _getValidationError(context);
                             if (err != null) {
                               AppSnackbar.warning(context, err);
