@@ -14,6 +14,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_event
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class RecentOrdersSection extends StatelessWidget {
   const RecentOrdersSection({super.key});
@@ -109,7 +110,7 @@ class _RecentOrderCard extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
+                  DirectionalServiceIcon(
                     isTow
                         ? Icons.fire_truck_rounded
                         : Icons.local_gas_station_rounded,

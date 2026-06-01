@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 
@@ -130,7 +131,7 @@ class AboutScreen extends StatelessWidget {
               color: context.colors.primarySurface,
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: Icon(icon, color: context.colors.primary, size: 24.sp),
+            child: DirectionalServiceIcon(icon, color: context.colors.primary, size: 24.sp),
           ),
           SizedBox(width: 12.w),
           Expanded(

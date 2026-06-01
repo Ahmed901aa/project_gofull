@@ -206,7 +206,7 @@ class _ServiceBadge extends StatelessWidget {
               : context.colors.gold.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppRadius.s8)),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(
+        DirectionalServiceIcon(
             isTow ? Icons.fire_truck_rounded : Icons.local_gas_station_rounded,
             size: 14.sp,
             color: isTow ? context.colors.primary : context.colors.gold),

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 
@@ -28,7 +29,9 @@ class OrderBadgesRow extends StatelessWidget {
               children: [
                 Text(S.of(context).towServiceLabel, style: getMediumStyle(color: context.colors.primary, fontSize: FontSize.s12)),
                 SizedBox(width: 4.w),
-                Icon(Icons.local_shipping_outlined, size: 14.sp, color: context.colors.primary),
+                RtlMirror(
+                  child: Icon(Icons.local_shipping_outlined, size: 14.sp, color: context.colors.primary),
+                ),
               ],
             ),
           ),

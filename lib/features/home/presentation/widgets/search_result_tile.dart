@@ -45,7 +45,7 @@ class SearchResultTile extends StatelessWidget {
                 color: context.colors.primary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(AppRadius.s12),
               ),
-              child: Icon(icon, size: 22.sp, color: context.colors.primary),
+              child: DirectionalServiceIcon(icon, size: 22.sp, color: context.colors.primary),
             ),
             SizedBox(width: Insets.s12),
             Expanded(

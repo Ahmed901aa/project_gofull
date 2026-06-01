@@ -22,6 +22,7 @@ import '../widgets/driver_drawer.dart';
 import '../widgets/driver_status_toggle.dart';
 import '../widgets/order_popup_card.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});
@@ -764,7 +765,7 @@ class _ProviderBottomPanelState extends State<_ProviderBottomPanel>
                         color: context.colors.surface.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(14.r),
                       ),
-                      child: Icon(
+                      child: DirectionalServiceIcon(
                         isFuel
                             ? Icons.local_gas_station_rounded
                             : Icons.fire_truck_rounded,
@@ -884,7 +885,7 @@ class _RadarSearchAnimation extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Icon(icon, size: 26.sp, color: Colors.white),
+                child: DirectionalServiceIcon(icon, size: 26.sp, color: Colors.white),
               ),
             ],
           );
@@ -1027,7 +1028,7 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                         ),
                       ],
                     ),
-                    child: Icon(
+                    child: DirectionalServiceIcon(
                       widget.request.isFuelDelivery
                           ? Icons.local_gas_station_rounded
                           : Icons.fire_truck_rounded,

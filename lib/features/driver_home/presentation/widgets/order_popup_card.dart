@@ -9,6 +9,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class OrderPopupCard extends StatefulWidget {
   final VoidCallback onAccept;
@@ -145,7 +146,7 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        DirectionalServiceIcon(
                           isFuel ? Icons.local_gas_station : Icons.local_shipping_outlined,
                           size: 14.sp,
                           color: isFuel ? const Color(0xFF2E7D32) : const Color(0xFFE65100),
