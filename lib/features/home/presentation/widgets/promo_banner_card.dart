@@ -6,7 +6,6 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/directional_icon.dart';
 import 'package:project_gofull/features/home/presentation/widgets/banner_data.dart';
-import 'package:project_gofull/core/resources/app_theme.dart';
 
 class PromoBannerCard extends StatelessWidget {
   final int index;

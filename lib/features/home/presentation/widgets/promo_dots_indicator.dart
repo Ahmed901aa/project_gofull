@@ -21,15 +21,34 @@ class PromoDotsIndicator extends StatelessWidget {
       children: List.generate(totalPages, (i) {
         final isActive = i == currentPage;
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 2.w),
+          padding: EdgeInsetsDirectional.symmetric(horizontal: 3.w),
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            width: isActive ? 16.w : 6.w,
-            height: 5.h,
+            duration: const Duration(milliseconds: 350),
+            curve: Curves.easeOutCubic,
+            width: isActive ? 22.w : 7.w,
+            height: 7.h,
             decoration: BoxDecoration(
-              color: isActive ? activeColor : activeColor.withValues(alpha: 0.4),
+              gradient: isActive
+                  ? LinearGradient(
+                      begin: AlignmentDirectional.centerStart,
+                      end: AlignmentDirectional.centerEnd,
+                      colors: [
+                        activeColor,
+                        activeColor.withValues(alpha: 0.75),
+                      ],
+                    )
+                  : null,
+              color: isActive ? null : activeColor.withValues(alpha: 0.25),
               borderRadius: BorderRadius.circular(16.r),
+              boxShadow: isActive
+                  ? [
+                      BoxShadow(
+                        color: activeColor.withValues(alpha: 0.35),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]
+                  : null,
             ),
           ),
         );
