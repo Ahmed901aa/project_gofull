@@ -39,10 +39,7 @@ class ServiceFilterChips extends StatelessWidget {
         padding: EdgeInsetsDirectional.symmetric(horizontal: Insets.s16),
         itemCount: chips.length,
         separatorBuilder: (_, __) => SizedBox(width: Insets.s8),
-        itemBuilder: (context, index) {
-          final chip = chips[index];
-          return _Chip(chip: chip);
-        },
+        itemBuilder: (context, index) => _Chip(chip: chips[index]),
       ),
     );
   }
