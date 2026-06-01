@@ -1,88 +1,98 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/widgets/app_header.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
-import 'package:project_gofull/core/widgets/directional_icon.dart';
-
-List<Map<String, String>> _getTermsSections(S l10n) => [
-  {'title': l10n.termsGeneralTitle, 'body': l10n.termsGeneralBody},
-  {'title': l10n.termsOrdersTitle, 'body': l10n.termsOrdersBody},
-  {'title': l10n.termsDeliveryTitle, 'body': l10n.termsDeliveryBody},
-  {'title': l10n.termsWalletTitle, 'body': l10n.termsWalletBody},
-];
+import '../widgets/legal_hero_card.dart';
+import '../widgets/legal_section_card.dart';
 
 class TermsScreen extends StatelessWidget {
   const TermsScreen({super.key});
 
+  static List<_TermSection> _getSections(S l10n) => [
+        _TermSection(
+            title: l10n.termsGeneralTitle,
+            body: l10n.termsGeneralBody,
+            icon: Icons.menu_book_rounded),
+        _TermSection(
+            title: l10n.termsOrdersTitle,
+            body: l10n.termsOrdersBody,
+            icon: Icons.receipt_long_rounded),
+        _TermSection(
+            title: l10n.termsDeliveryTitle,
+            body: l10n.termsDeliveryBody,
+            icon: Icons.local_shipping_outlined),
+        _TermSection(
+            title: l10n.termsWalletTitle,
+            body: l10n.termsWalletBody,
+            icon: Icons.account_balance_wallet_outlined),
+      ];
+
   @override
   Widget build(BuildContext context) {
     final l10n = S.of(context);
-    final sections = _getTermsSections(l10n);
-    return Scaffold(
-        backgroundColor: context.colors.background,
-        body: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.all(Insets.s16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: sections.map((s) => Padding(
-                    padding: EdgeInsets.only(bottom: Insets.s16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          s['title']!,
-                          style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s16),
-                        ),
-                        SizedBox(height: Insets.s8),
-                        Text(
-                          s['body']!,
-                          style: getRegularStyle(color: context.colors.textPrimary, fontSize: FontSize.s14).copyWith(height: 1.6),
-                        ),
-                      ],
-                    ),
-                  )).toList(),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-  }
+    final sections = _getSections(l10n);
 
-  Widget _buildHeader(BuildContext context) => Container(
-        color: context.colors.surface,
-        child: Column(
-          children: [
-            SizedBox(height: MediaQuery.of(context).padding.top),
-            Padding(
-              padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
-              child: Row(
+    return Scaffold(
+      backgroundColor: context.colors.background,
+      body: Column(
+        children: [
+          AppHeader(title: l10n.terms),
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsetsDirectional.fromSTEB(
+                Insets.s16,
+                Insets.s16,
+                Insets.s16,
+                Insets.s24,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(backArrowIcon(context), size: 24.sp, color: context.colors.textPrimary),
+                  LegalHeroCard(
+                    icon: Icons.description_outlined,
+                    title: l10n.terms,
+                    lastUpdated: l10n.privacyPolicyLastUpdate,
                   ),
-                  Expanded(
-                    child: Text(
-                      S.of(context).terms,
-                      style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s20),
-                      textAlign: TextAlign.center,
+                  SizedBox(height: Sizes.s20),
+                  for (var i = 0; i < sections.length; i++) ...[
+                    LegalSectionCard(
+                      number: i + 1,
+                      icon: sections[i].icon,
+                      title: sections[i].title,
+                      body: sections[i].body,
+                    ),
+                    if (i < sections.length - 1) SizedBox(height: Sizes.s12),
+                  ],
+                  SizedBox(height: Sizes.s20),
+                  Text(
+                    l10n.privacyPolicyFooter,
+                    textAlign: TextAlign.center,
+                    style: getRegularStyle(
+                      color: context.colors.textSecondary,
+                      fontSize: FontSize.s12,
                     ),
                   ),
-                  SizedBox(width: 24.sp),
                 ],
               ),
             ),
-            Divider(height: 1, color: context.colors.borderSubtle),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TermSection {
+  final String title;
+  final String body;
+  final IconData icon;
+  const _TermSection({
+    required this.title,
+    required this.body,
+    required this.icon,
+  });
 }
