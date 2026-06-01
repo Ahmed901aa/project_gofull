@@ -61,7 +61,8 @@
       "Bash(flutter gen-l10n *)",
       "Bash(mkdir -p lib/features/driver_service/presentation/screens/driver_navigate)",
       "Bash(mkdir -p lib/features/driver_service/presentation/widgets/driver_navigate)",
-      "Bash(xcrun simctl *)"
+      "Bash(xcrun simctl *)",
+      "mcp__ide__getDiagnostics"
     ]
   }
 }
