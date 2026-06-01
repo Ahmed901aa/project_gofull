@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'search_data.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class QuickShortcutsRow extends StatelessWidget {
   final void Function(String route) onNavigate;
@@ -37,7 +38,7 @@ class QuickShortcutsRow extends StatelessWidget {
                         color: context.colors.primary.withValues(alpha: 0.08),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(s['icon'] as IconData, size: 20.sp, color: context.colors.primary),
+                      child: DirectionalServiceIcon(s['icon'] as IconData, size: 20.sp, color: context.colors.primary),
                     ),
                     SizedBox(height: Insets.s8),
                     Text(
