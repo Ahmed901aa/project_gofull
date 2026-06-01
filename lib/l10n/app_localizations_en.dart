@@ -1589,6 +1589,9 @@ class SEn extends S {
   String get petrol => 'Gasoline';
 
   @override
+  String get minutes => 'min';
+
+  @override
   String get connectionFailed => 'Connection failed';
 
   @override

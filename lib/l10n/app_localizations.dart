@@ -3187,6 +3187,12 @@ abstract class S {
   /// **'Gasoline'**
   String get petrol;
 
+  /// No description provided for @minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get minutes;
+
   /// No description provided for @connectionFailed.
   ///
   /// In en, this message translates to:

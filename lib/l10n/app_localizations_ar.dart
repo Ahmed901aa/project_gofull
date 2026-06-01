@@ -1582,6 +1582,9 @@ class SAr extends S {
   String get petrol => 'بنزين';
 
   @override
+  String get minutes => 'دقائق';
+
+  @override
   String get connectionFailed => 'فشل الاتصال';
 
   @override

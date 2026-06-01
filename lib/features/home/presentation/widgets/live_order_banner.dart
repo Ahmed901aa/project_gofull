@@ -30,147 +30,96 @@ class LiveOrderBanner extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(Insets.s16),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              context.colors.primary,
-              context.colors.primaryLight,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.s16),
+          border: Border.all(color: context.colors.borderSubtle),
           boxShadow: [
             BoxShadow(
-              color: context.colors.primary.withValues(alpha: 0.3),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+              color: context.colors.shadow,
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            // Top row: icon + title + live badge
-            Row(
-              children: [
-                // Service icon
-                Container(
-                  width: 44.w,
-                  height: 44.w,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(AppRadius.s12),
-                  ),
-                  child: Icon(
-                    isFuel
-                        ? Icons.local_gas_station_rounded
-                        : Icons.fire_truck_rounded,
-                    color: Colors.white,
-                    size: 24.sp,
-                  ),
-                ),
-                SizedBox(width: Insets.s12),
-                // Title + subtitle
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        isFuel
-                            ? l10n.fuelOnItsWay
-                            : l10n.towOnItsWay,
-                        style: getBoldStyle(
-                          color: Colors.white,
-                          fontSize: FontSize.s16,
-                        ),
-                      ),
-                      SizedBox(height: 2.h),
-                      Text(
-                        statusInfo.subtitle,
-                        style: getRegularStyle(
-                          color: Colors.white.withValues(alpha: 0.8),
-                          fontSize: FontSize.s12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // Live badge
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: Insets.s8,
-                    vertical: 4.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(AppRadius.s16),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 6.w,
-                        height: 6.w,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xFF4CAF50),
-                        ),
-                      ),
-                      SizedBox(width: 4.w),
-                      Text(
-                        l10n.live,
-                        style: getMediumStyle(
-                          color: Colors.white,
-                          fontSize: FontSize.s10,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: Insets.s16),
-
-            // Progress bar
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4.r),
-              child: LinearProgressIndicator(
-                value: statusInfo.progress,
-                backgroundColor: Colors.white.withValues(alpha: 0.2),
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
-                minHeight: 6.h,
+            // Service icon (green circle)
+            Container(
+              width: 48.w,
+              height: 48.w,
+              decoration: BoxDecoration(
+                color: context.colors.primary,
+                borderRadius: BorderRadius.circular(AppRadius.s12),
+              ),
+              child: Icon(
+                isFuel
+                    ? Icons.local_gas_station_rounded
+                    : Icons.fire_truck_rounded,
+                color: Colors.white,
+                size: 26.sp,
               ),
             ),
-            SizedBox(height: Insets.s8),
+            SizedBox(width: Insets.s12),
 
-            // Bottom row: status label + tap to view
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // Middle: title + live dot + progress bar
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          isFuel ? l10n.fuelOnItsWay : l10n.towOnItsWay,
+                          style: getBoldStyle(
+                            color: context.colors.textPrimary,
+                            fontSize: FontSize.s14,
+                          ),
+                        ),
+                      ),
+                      // Live dot
+                      Container(
+                        width: 8.w,
+                        height: 8.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: context.colors.success,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: Insets.s8),
+                  // Progress bar
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4.r),
+                    child: LinearProgressIndicator(
+                      value: statusInfo.progress,
+                      backgroundColor: context.colors.primary.withValues(alpha: 0.15),
+                      valueColor: AlwaysStoppedAnimation<Color>(context.colors.primary),
+                      minHeight: 6.h,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: Insets.s12),
+
+            // ETA on the right
+            Column(
               children: [
                 Text(
-                  statusInfo.label,
-                  style: getMediumStyle(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    fontSize: FontSize.s12,
+                  '8',
+                  style: getBoldStyle(
+                    color: context.colors.textPrimary,
+                    fontSize: FontSize.s20,
                   ),
                 ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      l10n.tapToView,
-                      style: getMediumStyle(
-                        color: Colors.white.withValues(alpha: 0.7),
-                        fontSize: FontSize.s12,
-                      ),
-                    ),
-                    SizedBox(width: 4.w),
-                    Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      color: Colors.white.withValues(alpha: 0.7),
-                      size: 12.sp,
-                    ),
-                  ],
+                Text(
+                  l10n.minutes,
+                  style: getRegularStyle(
+                    color: context.colors.textSecondary,
+                    fontSize: FontSize.s10,
+                  ),
                 ),
               ],
             ),
