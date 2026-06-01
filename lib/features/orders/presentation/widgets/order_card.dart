@@ -123,7 +123,7 @@ class OrderCard extends StatelessWidget {
               Icon(Icons.local_gas_station_rounded, size: 20.sp, color: context.colors.primary),
               SizedBox(width: 8.w),
               Text(S.of(context).fuelTypeLabel, style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s12)),
-              Text(order.fuelType!, style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s12)),
+              Text(_localizedFuelType(context, order.fuelType), style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s12)),
               if (order.quantity != null && order.quantity!.isNotEmpty) ...[
                 SizedBox(width: 12.w),
                 Text(S.of(context).quantityLabel, style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s12)),
@@ -137,7 +137,7 @@ class OrderCard extends StatelessWidget {
   Widget _buildDetailRows(BuildContext context) {
     final rows = order.serviceType == ServiceType.tow
         ? [OrderDetailRow(label: S.of(context).carTypeLabel, value: order.carType), OrderDetailRow(label: S.of(context).plateNumberLabel, value: order.plateNumber), OrderDetailRow(label: S.of(context).towTruckType, value: order.winchType ?? '')]
-        : [OrderDetailRow(label: S.of(context).fuelType, value: order.fuelType ?? ''), OrderDetailRow(label: S.of(context).fuelQuantity, value: order.quantity ?? ''), OrderDetailRow(label: S.of(context).vehicleTypeLabel, value: order.carType), OrderDetailRow(label: S.of(context).plateNumberLabel, value: order.plateNumber)];
+        : [OrderDetailRow(label: S.of(context).fuelType, value: _localizedFuelType(context, order.fuelType)), OrderDetailRow(label: S.of(context).fuelQuantity, value: order.quantity ?? ''), OrderDetailRow(label: S.of(context).vehicleTypeLabel, value: order.carType), OrderDetailRow(label: S.of(context).plateNumberLabel, value: order.plateNumber)];
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: rows);
   }
 }
