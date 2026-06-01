@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:project_gofull/core/resources/assets_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 
-/// Hero card shown at the top of legal screens (Privacy Policy, Terms).
-/// Soft brand-tinted gradient background, large icon medallion, title,
-/// and a "Last updated" pill.
+/// Compact hero card shown at the top of legal screens (Privacy Policy,
+/// Terms). Single horizontal row: white logo card + title + last-updated.
 class LegalHeroCard extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -25,8 +26,8 @@ class LegalHeroCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: EdgeInsetsDirectional.symmetric(
-        horizontal: Insets.s20,
-        vertical: Insets.s20,
+        horizontal: Insets.s14,
+        vertical: Insets.s12,
       ),
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -37,121 +38,94 @@ class LegalHeroCard extends StatelessWidget {
             context.colors.primaryLight,
           ],
         ),
-        borderRadius: BorderRadius.circular(AppRadius.s24),
+        borderRadius: BorderRadius.circular(AppRadius.s16),
         boxShadow: [
           BoxShadow(
-            color: context.colors.primary.withValues(alpha: 0.22),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
+            color: context.colors.primary.withValues(alpha: 0.20),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
-      child: Stack(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Decorative halos
-          PositionedDirectional(
-            end: -30.w,
-            top: -20.h,
-            child: _Halo(
-              size: 130.w,
-              color: Colors.white.withValues(alpha: 0.10),
+          // Logo badge
+          Container(
+            padding: EdgeInsetsDirectional.symmetric(
+              horizontal: Insets.s10,
+              vertical: 6.h,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(AppRadius.s12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: SvgPicture.asset(
+              SvgAssets.logo,
+              height: 18.h,
+              colorFilter: ColorFilter.mode(
+                context.colors.primary,
+                BlendMode.srcIn,
+              ),
             ),
           ),
-          PositionedDirectional(
-            start: -20.w,
-            bottom: -30.h,
-            child: _Halo(
-              size: 90.w,
-              color: Colors.white.withValues(alpha: 0.06),
-            ),
-          ),
+          SizedBox(width: Insets.s12),
 
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Icon medallion
-              Container(
-                width: 56.w,
-                height: 56.w,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: AlignmentDirectional.topStart,
-                    end: AlignmentDirectional.bottomEnd,
-                    colors: [
-                      Colors.white.withValues(alpha: 0.30),
-                      Colors.white.withValues(alpha: 0.15),
-                    ],
-                  ),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.40),
-                    width: 1.2,
-                  ),
-                ),
-                child: Icon(icon, color: Colors.white, size: 28.sp),
-              ),
-              SizedBox(height: Sizes.s12),
-
-              // Title
-              Text(
-                title,
-                style: getBoldStyle(
-                  color: Colors.white,
-                  fontSize: FontSize.s20,
-                ).copyWith(letterSpacing: 0.2),
-              ),
-              SizedBox(height: Sizes.s8),
-
-              // Last updated pill
-              Container(
-                padding: EdgeInsetsDirectional.symmetric(
-                  horizontal: Insets.s12,
-                  vertical: 6.h,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.22),
-                  borderRadius: BorderRadius.circular(AppRadius.s32),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.30),
-                    width: 0.8,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+          // Title + last updated
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
                   children: [
-                    Icon(Icons.schedule_rounded,
-                        size: 12.sp, color: Colors.white),
+                    Icon(icon, size: 14.sp, color: Colors.white),
                     SizedBox(width: 4.w),
-                    Text(
-                      lastUpdated,
-                      style: getMediumStyle(
-                        color: Colors.white,
-                        fontSize: FontSize.s11,
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: getBoldStyle(
+                          color: Colors.white,
+                          fontSize: FontSize.s14,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                SizedBox(height: 2.h),
+                Row(
+                  children: [
+                    Icon(Icons.schedule_rounded,
+                        size: 11.sp,
+                        color: Colors.white.withValues(alpha: 0.85)),
+                    SizedBox(width: 4.w),
+                    Flexible(
+                      child: Text(
+                        lastUpdated,
+                        style: getRegularStyle(
+                          color: Colors.white.withValues(alpha: 0.85),
+                          fontSize: FontSize.s11,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _Halo extends StatelessWidget {
-  final double size;
-  final Color color;
-  const _Halo({required this.size, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
     );
   }
 }
