@@ -22,7 +22,15 @@ class HomeHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top;
 
-    return Container(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        // Android: paint status bar icons white
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        // iOS: light content (= white time/battery/wifi/charging icons)
+        statusBarBrightness: Brightness.dark,
+      ),
+      child: Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -153,6 +161,7 @@ class HomeHeader extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }
