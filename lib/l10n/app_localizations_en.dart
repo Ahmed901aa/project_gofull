@@ -1562,6 +1562,33 @@ class SEn extends S {
   String get syncingWithServer => 'Syncing with server…';
 
   @override
+  String get fuelOnItsWay => 'Fuel is on its way';
+
+  @override
+  String get towOnItsWay => 'Tow truck is on its way';
+
+  @override
+  String get tapToView => 'Tap to view';
+
+  @override
+  String get live => 'Live';
+
+  @override
+  String get driverPreparingToArrive => 'Driver is preparing to arrive';
+
+  @override
+  String get driverArrivedAtLocation => 'Driver arrived at your location';
+
+  @override
+  String get fuelingInProgress => 'Fueling in progress';
+
+  @override
+  String get towingInProgress => 'Towing in progress';
+
+  @override
+  String get petrol => 'Gasoline';
+
+  @override
   String get connectionFailed => 'Connection failed';
 
   @override

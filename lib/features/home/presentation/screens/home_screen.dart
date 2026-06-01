@@ -13,13 +13,18 @@ import 'package:project_gofull/features/app_config/presentation/bloc/app_config_
 import 'package:project_gofull/features/home/domain/entities/offer_entity.dart';
 import 'package:project_gofull/features/home/presentation/widgets/active_order_card.dart';
 import 'package:project_gofull/features/home/presentation/widgets/home_header.dart';
+import 'package:project_gofull/features/home/presentation/widgets/live_order_banner.dart';
 import 'package:project_gofull/features/home/presentation/widgets/offers_section.dart';
 import 'package:project_gofull/features/home/presentation/widgets/offers_shimmer.dart';
 import 'package:project_gofull/features/home/presentation/widgets/promo_banner.dart';
 import 'package:project_gofull/features/home/presentation/widgets/service_cards_section.dart';
+import 'package:project_gofull/features/home/presentation/widgets/service_filter_chips.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
+import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/core/utils/route_args.dart';
+import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'app_search_screen.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
@@ -199,6 +204,54 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  /// Navigate to the correct screen for the current active order.
+  void _resumeActiveOrder(BuildContext context, ServiceRequestEntity order) {
+    final l10n = S.of(context);
+    final isFuel = order.isFuelDelivery;
+    final status = order.status.trim().toLowerCase();
+
+    switch (status) {
+      case 'pending':
+        Navigator.pushNamed(context, Routes.searchingDriver,
+          arguments: SearchingArgs(
+            searchingText: isFuel ? l10n.searchingForFuelProvider : l10n.searchingForTowDriver,
+            subtitleText: isFuel ? l10n.searchingFuelSubtitle : l10n.searchingTowSubtitle,
+            nextRoute: Routes.driverFound,
+            requestId: order.id,
+            serviceType: isFuel ? 'fuel_delivery' : 'towing',
+          ));
+        break;
+      case 'accepted':
+      case 'en_route':
+        Navigator.pushNamed(context, Routes.driverFound,
+          arguments: DriverFoundArgs(
+            title: isFuel ? l10n.fuelProviderFound : l10n.towTruckFound,
+            vehicleLabel: l10n.vehicleLabel,
+            vehicleValue: isFuel ? l10n.fuelSupplyVehicle : l10n.hydraulicTowTruck,
+            showClose: true,
+            imagePath: isFuel ? 'assets/images/tank_truck.gif' : 'assets/images/magnifying_glass.gif',
+            nextRoute: isFuel ? Routes.serviceArrived : Routes.towingStarted,
+            requestId: order.id,
+            serviceType: isFuel ? 'fuel_delivery' : 'towing',
+          ));
+        break;
+      case 'arrived':
+      case 'in_progress':
+        if (isFuel) {
+          Navigator.pushNamed(context, Routes.serviceArrived,
+            arguments: ServiceArrivedArgs(requestId: order.id));
+        } else {
+          Navigator.pushNamed(context, Routes.tripInProgress,
+            arguments: TripInProgressArgs(
+              originAddress: order.driverAddress ?? '',
+              destinationAddress: order.destinationAddress ?? '',
+              requestId: order.id,
+            ));
+        }
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = sl<TokenStorage>().getUser();
@@ -230,6 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     physics: const AlwaysScrollableScrollPhysics(
                         parent: BouncingScrollPhysics()),
                     slivers: [
+                      // 1. Green header (greeting + search)
                       SliverToBoxAdapter(
                         child: HomeHeader(
                           userName: userName,
@@ -240,33 +294,43 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
-                      SliverPadding(
-                        padding: EdgeInsets.symmetric(horizontal: Insets.s16),
-                        sliver:
-                            const SliverToBoxAdapter(child: PromoBanner()),
+                      SliverToBoxAdapter(child: SizedBox(height: Sizes.s12)),
+
+                      // 2. Filter chips: بنزين / ديزل / ونش-سحب
+                      const SliverToBoxAdapter(
+                        child: ServiceFilterChips(),
                       ),
                       SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
+
+                      // 3. Live order banner (replaces promo) OR promo banner
                       if (hasActiveOrder) ...[
-                        SliverToBoxAdapter(
-                          child: ActiveOrderCard(
-                            activeOrder: config.activeOrder,
-                            onCancelled: () {
-                              context
-                                  .read<AppConfigBloc>()
-                                  .add(const LoadHomeDataEvent());
-                            },
+                        SliverPadding(
+                          padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+                          sliver: SliverToBoxAdapter(
+                            child: LiveOrderBanner(
+                              order: config.activeOrder!,
+                              onTap: () => _resumeActiveOrder(context, config.activeOrder!),
+                            ),
                           ),
                         ),
-                        SliverToBoxAdapter(
-                            child: SizedBox(height: Sizes.s16)),
+                      ] else ...[
+                        SliverPadding(
+                          padding: EdgeInsets.symmetric(horizontal: Insets.s16),
+                          sliver:
+                              const SliverToBoxAdapter(child: PromoBanner()),
+                        ),
                       ],
+                      SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
+
+                      // 4. Service cards (خدماتنا)
                       SliverPadding(
                         padding: EdgeInsets.symmetric(horizontal: Insets.s16),
                         sliver: const SliverToBoxAdapter(
                             child: ServiceCardsSection()),
                       ),
                       SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
+
+                      // 5. Offers section (عروض تهمّك)
                       SliverToBoxAdapter(
                         child: banners.isNotEmpty
                             ? OffersSection(

@@ -3133,6 +3133,60 @@ abstract class S {
   /// **'Syncing with server…'**
   String get syncingWithServer;
 
+  /// No description provided for @fuelOnItsWay.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel is on its way'**
+  String get fuelOnItsWay;
+
+  /// No description provided for @towOnItsWay.
+  ///
+  /// In en, this message translates to:
+  /// **'Tow truck is on its way'**
+  String get towOnItsWay;
+
+  /// No description provided for @tapToView.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to view'**
+  String get tapToView;
+
+  /// No description provided for @live.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get live;
+
+  /// No description provided for @driverPreparingToArrive.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver is preparing to arrive'**
+  String get driverPreparingToArrive;
+
+  /// No description provided for @driverArrivedAtLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver arrived at your location'**
+  String get driverArrivedAtLocation;
+
+  /// No description provided for @fuelingInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Fueling in progress'**
+  String get fuelingInProgress;
+
+  /// No description provided for @towingInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Towing in progress'**
+  String get towingInProgress;
+
+  /// No description provided for @petrol.
+  ///
+  /// In en, this message translates to:
+  /// **'Gasoline'**
+  String get petrol;
+
   /// No description provided for @connectionFailed.
   ///
   /// In en, this message translates to:

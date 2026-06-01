@@ -1555,6 +1555,33 @@ class SAr extends S {
   String get syncingWithServer => 'جارٍ المزامنة مع الخادم…';
 
   @override
+  String get fuelOnItsWay => 'الوقود في طريقه إليك';
+
+  @override
+  String get towOnItsWay => 'الساحبة في طريقها إليك';
+
+  @override
+  String get tapToView => 'اضغط للمتابعة';
+
+  @override
+  String get live => 'مباشر';
+
+  @override
+  String get driverPreparingToArrive => 'السائق يستعد للوصول';
+
+  @override
+  String get driverArrivedAtLocation => 'السائق وصل لموقعك';
+
+  @override
+  String get fuelingInProgress => 'جاري تعبئة الوقود';
+
+  @override
+  String get towingInProgress => 'جاري سحب السيارة';
+
+  @override
+  String get petrol => 'بنزين';
+
+  @override
   String get connectionFailed => 'فشل الاتصال';
 
   @override
