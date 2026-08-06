@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_navigate/navigate_map_objects.dart';
@@ -15,6 +16,7 @@ mixin NavigateMapStateMixin<T extends StatefulWidget> on State<T> {
 
   GoogleMapController? mapController;
   Timer? locationTimer;
+  StreamSubscription<Position>? locationSub;
   String remainingDistance = '';
   LatLng? providerPosition;
   Set<Marker> markers = {};
@@ -39,6 +41,7 @@ mixin NavigateMapStateMixin<T extends StatefulWidget> on State<T> {
 
   void disposeLocation() {
     locationTimer?.cancel();
+    locationSub?.cancel();
     mapController?.dispose();
   }
 }

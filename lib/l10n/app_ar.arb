@@ -835,5 +835,12 @@
   "matchSystemTheme": "مطابقة ثيم النظام",
   "matchSystemThemeDesc": "التطبيق يتبع ثيم هاتفك تلقائياً",
   "darkThemeToggle": "الوضع الليلي",
-  "languageChanged": "تم تغيير اللغة"
+  "languageChanged": "تم تغيير اللغة",
+  "partnerStationsTitle": "عروض ومحطات الوقود",
+  "rahilaStation": "محطة الراحلة",
+  "shararaStation": "محطة الشرارة",
+  "fuelNowTitle": "اطلب وقود الآن",
+  "fuelNowSubtitle": "توصيل إلى موقعك الحالي",
+  "towNowSubtitle": "مساعدة على الطريق",
+  "emergencyService": "الطوارئ"
 }

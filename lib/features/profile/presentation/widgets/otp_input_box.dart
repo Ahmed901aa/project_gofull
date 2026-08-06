@@ -10,17 +10,22 @@ class OtpInputBox extends StatelessWidget {
   final FocusNode focusNode;
   final ValueChanged<String> onChanged;
 
+  /// Box width in design units (scaled with .w). Default fits 5 boxes;
+  /// pass a smaller value (e.g. 44) when showing 6 boxes.
+  final double width;
+
   const OtpInputBox({
     super.key,
     required this.controller,
     required this.focusNode,
     required this.onChanged,
+    this.width = 56,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 56.w,
+      width: width.w,
       height: 48.h,
       margin: EdgeInsets.symmetric(horizontal: 6.w),
       decoration: BoxDecoration(

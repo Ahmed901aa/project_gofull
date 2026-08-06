@@ -7,12 +7,14 @@ import 'package:project_gofull/features/auth/data/models/user_model.dart';
 
 abstract class AuthDataSource {
   Future<UserModel> login(String phone, String password);
+  Future<String> sendOtp(String phone);
   Future<UserModel> register(
     String name,
     String phone,
     String password,
     String passwordConfirmation,
     String role,
+    String otpCode,
   );
   Future<void> logout();
   Future<String> changePassword(
@@ -38,12 +40,19 @@ class AuthMockDataSource implements AuthDataSource {
   }
 
   @override
+  Future<String> sendOtp(String phone) async {
+    await Future.delayed(const Duration(milliseconds: 800));
+    return 'Mock OTP sent';
+  }
+
+  @override
   Future<UserModel> register(
     String name,
     String phone,
     String password,
     String passwordConfirmation,
     String role,
+    String otpCode,
   ) async {
     await Future.delayed(const Duration(milliseconds: 800));
     return UserModel(
@@ -109,12 +118,31 @@ class AuthRemoteDataSource implements AuthDataSource {
   }
 
   @override
+  Future<String> sendOtp(String phone) async {
+    try {
+      final response = await apiClient.dio.post(
+        ApiConstants.otpSend,
+        data: {'phone': phone, 'purpose': 'registration'},
+      );
+      final data = response.data as Map<String, dynamic>;
+      return (data['message'] as String?) ?? 'OTP sent';
+    } on DioException catch (e) {
+      final msg =
+          (e.response?.data as Map<String, dynamic>?)?['message'] as String?;
+      throw ServerException(msg ?? 'Failed to send verification code');
+    } catch (_) {
+      throw const ServerException('Failed to send verification code');
+    }
+  }
+
+  @override
   Future<UserModel> register(
     String name,
     String phone,
     String password,
     String passwordConfirmation,
     String role,
+    String otpCode,
   ) async {
     try {
       final response = await apiClient.dio.post(
@@ -125,6 +153,7 @@ class AuthRemoteDataSource implements AuthDataSource {
           'password': password,
           'password_confirmation': passwordConfirmation,
           'role': role,
+          'otp_code': otpCode,
         },
       );
       final user = UserModel.fromLoginResponse(

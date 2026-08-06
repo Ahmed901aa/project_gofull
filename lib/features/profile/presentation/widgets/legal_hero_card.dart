@@ -129,3 +129,4 @@ class LegalHeroCard extends StatelessWidget {
     );
   }
 }
+ 

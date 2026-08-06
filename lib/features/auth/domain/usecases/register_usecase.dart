@@ -17,6 +17,7 @@ class RegisterUseCase extends UseCase<UserEntity, RegisterParams> {
         params.password,
         params.passwordConfirmation,
         params.role,
+        params.otpCode,
       );
 }
 
@@ -26,6 +27,7 @@ class RegisterParams extends Equatable {
   final String password;
   final String passwordConfirmation;
   final String role;
+  final String otpCode;
 
   const RegisterParams({
     required this.name,
@@ -33,8 +35,10 @@ class RegisterParams extends Equatable {
     required this.password,
     required this.passwordConfirmation,
     required this.role,
+    required this.otpCode,
   });
 
   @override
-  List<Object?> get props => [name, phone, password, passwordConfirmation, role];
+  List<Object?> get props =>
+      [name, phone, password, passwordConfirmation, role, otpCode];
 }

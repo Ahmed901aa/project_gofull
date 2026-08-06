@@ -10,14 +10,13 @@ import 'package:project_gofull/core/widgets/rating_bottom_sheet.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_state.dart';
-import 'package:project_gofull/features/home/domain/entities/offer_entity.dart';
+import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/features/home/presentation/widgets/continue_order_card.dart';
+import 'package:project_gofull/features/home/presentation/widgets/home_action_cards.dart';
 import 'package:project_gofull/features/home/presentation/widgets/home_header.dart';
-import 'package:project_gofull/features/home/presentation/widgets/offers_section.dart';
-import 'package:project_gofull/features/home/presentation/widgets/offers_shimmer.dart';
-import 'package:project_gofull/features/home/presentation/widgets/promo_banner.dart';
-import 'package:project_gofull/features/home/presentation/widgets/service_cards_section.dart';
-import 'package:project_gofull/features/home/presentation/widgets/service_filter_chips.dart';
+import 'package:project_gofull/features/home/presentation/widgets/photo_banners_section.dart';
+import 'package:project_gofull/features/home/presentation/widgets/services_grid.dart';
+import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
@@ -140,6 +139,20 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  /// Grid navigation — '_orders' switches the bottom-nav tab, everything
+  /// else is a named route.
+  void _onGridNavigate(String route) {
+    if (route == '_orders') {
+      BottomNavShell.shellKey.currentState?.switchTo(1);
+      return;
+    }
+    if (route == '_support') {
+      Navigator.pushNamed(context, Routes.support);
+      return;
+    }
+    Navigator.pushNamed(context, route);
+  }
+
   /// When the active order disappears from the home endpoint, ask the backend
   /// if there's a completed-unrated order and show the rating sheet.
   void _checkForCompletedUnrated() {
@@ -215,6 +228,11 @@ class _HomeScreenState extends State<HomeScreen> {
             listener: _onConfigChanged,
             builder: (context, config) {
               final banners = config.banners;
+              // Service tiles vs photo/promo banners (both admin-managed)
+              final serviceTiles =
+                  banners.where((b) => b.isService).toList();
+              final promoBanners =
+                  banners.where((b) => !b.isService).toList();
 
               return RefreshIndicator(
                 color: context.colors.primary,
@@ -243,30 +261,28 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
 
-                      // 2. Filter chips: Petrol / Diesel / Tow-Pull
-                      const SliverToBoxAdapter(
-                        child: ServiceFilterChips(),
-                      ),
-                      SliverToBoxAdapter(child: SizedBox(height: Sizes.s20)),
-
-                      // 3. Rotating promo banner.
+                      // 2. Services grid (CAFU-style tiles, 2 rows)
                       SliverPadding(
                         padding: EdgeInsetsDirectional.symmetric(horizontal: Insets.s16),
-                        sliver: const SliverToBoxAdapter(child: PromoBanner()),
+                        sliver: SliverToBoxAdapter(
+                          child: ServicesGrid(
+                            services: serviceTiles,
+                            onNavigate: _onGridNavigate,
+                          ),
+                        ),
                       ),
-                      SliverToBoxAdapter(child: SizedBox(height: Sizes.s20)),
+                      SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
 
-                      // 4. Our Services section (fuel + tow cards)
+                      // 3. Wide action cards: fuel now + tow truck
                       SliverPadding(
                         padding: EdgeInsetsDirectional.symmetric(horizontal: Insets.s16),
                         sliver: const SliverToBoxAdapter(
-                            child: ServiceCardsSection()),
+                            child: HomeActionCards()),
                       ),
                       SliverToBoxAdapter(child: SizedBox(height: Sizes.s20)),
 
-                      // 5. Continue Order card — shown right under the
-                      //    "Our Services" section whenever there's an active
-                      //    order. Hidden otherwise.
+                      // 4. Continue Order card — shown whenever there's an
+                      //    active order. Hidden otherwise.
                       if (config.activeOrder != null) ...[
                         SliverToBoxAdapter(
                           child: ContinueOrderCard(
@@ -281,22 +297,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         SliverToBoxAdapter(child: SizedBox(height: Sizes.s20)),
                       ],
 
-                      // 6. Offers section
-                      SliverToBoxAdapter(
-                        child: banners.isNotEmpty
-                            ? OffersSection(
-                                offers: banners
-                                    .map((b) => OfferEntity(
-                                          id: b.id.toString(),
-                                          title: b.title,
-                                          code: b.discountCode ?? '',
-                                          colorValue: b.colorValue,
-                                        ))
-                                    .toList(),
-                              )
-                            : config.isLoading
-                                ? const OffersShimmer()
-                                : const SizedBox.shrink(),
+
+                      // 5. Photo banners from the backend (stations/promos).
+                      //    Falls back to bundled station photos when empty.
+                      SliverPadding(
+                        padding: EdgeInsetsDirectional.symmetric(horizontal: Insets.s16),
+                        sliver: SliverToBoxAdapter(
+                            child: PhotoBannersSection(banners: promoBanners)),
                       ),
                       SliverToBoxAdapter(child: SizedBox(height: Sizes.s24)),
                     ],

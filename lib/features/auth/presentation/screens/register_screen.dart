@@ -16,6 +16,7 @@ import 'package:project_gofull/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_event.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_state.dart';
 import 'package:project_gofull/features/auth/presentation/widgets/phone_input_field.dart';
+import 'package:project_gofull/features/auth/presentation/widgets/register_otp_sheet.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -33,6 +34,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final String _selectedRole = 'driver';
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
+  bool _otpSheetOpen = false;
 
   @override
   void dispose() {
@@ -72,13 +74,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     }
 
-    context.read<AuthBloc>().add(RegisterRequested(
-          name: name,
-          phone: phone,
-          password: password,
-          passwordConfirmation: confirm,
-          role: _selectedRole,
-        ));
+    // Step 1: request an SMS verification code. Registration continues in
+    // _onOtpSent once the code arrives and the user enters it.
+    context.read<AuthBloc>().add(SendOtpRequested(phone: phone));
+  }
+
+  Future<void> _onOtpSent(BuildContext context, String phone) async {
+    if (_otpSheetOpen) {
+      return; // resend fired while the sheet is already showing
+    }
+    _otpSheetOpen = true;
+    final bloc = context.read<AuthBloc>();
+
+    final code = await RegisterOtpSheet.show(
+      context,
+      phone,
+      onResend: () => bloc.add(SendOtpRequested(phone: phone)),
+    );
+    _otpSheetOpen = false;
+
+    if (code == null) {
+      return; // user dismissed the sheet
+    }
+
+    // Step 2: register with the entered code.
+    bloc.add(RegisterRequested(
+      name: _nameController.text.trim(),
+      phone: phone,
+      password: _passwordController.text,
+      passwordConfirmation: _confirmPasswordController.text,
+      role: _selectedRole,
+      otpCode: code,
+    ));
   }
 
   void _navigateAfterAuth(UserEntity user) {
@@ -94,6 +121,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         listener: (context, state) {
           if (state is AuthAuthenticated) {
             _navigateAfterAuth(state.user);
+          }
+          if (state is OtpSent) {
+            _onOtpSent(context, state.phone);
           }
         },
         child: Builder(
@@ -138,7 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget _buildForm(BuildContext context, AuthState state) {
-    final isLoading = state is AuthLoading;
+    final isLoading = state is AuthLoading || state is OtpSending;
     final errorMsg = state is AuthFailure ? state.message : null;
 
     return SingleChildScrollView(

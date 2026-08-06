@@ -2483,4 +2483,25 @@ class SAr extends S {
 
   @override
   String get darkThemeToggle => 'الوضع الليلي';
+
+  @override
+  String get partnerStationsTitle => 'عروض ومحطات الوقود';
+
+  @override
+  String get rahilaStation => 'محطة الراحلة';
+
+  @override
+  String get shararaStation => 'محطة الشرارة';
+
+  @override
+  String get fuelNowTitle => 'اطلب وقود الآن';
+
+  @override
+  String get fuelNowSubtitle => 'توصيل إلى موقعك الحالي';
+
+  @override
+  String get towNowSubtitle => 'مساعدة على الطريق';
+
+  @override
+  String get emergencyService => 'الطوارئ';
 }

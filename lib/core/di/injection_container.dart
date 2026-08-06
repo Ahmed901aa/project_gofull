@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project_gofull/core/network/api_client.dart';
+import 'package:project_gofull/core/services/reverb_service.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
 
 // Auth
@@ -9,6 +10,7 @@ import 'package:project_gofull/features/auth/data/repositories/auth_repository_i
 import 'package:project_gofull/features/auth/domain/repositories/auth_repository.dart';
 import 'package:project_gofull/features/auth/domain/usecases/login_usecase.dart';
 import 'package:project_gofull/features/auth/domain/usecases/register_usecase.dart';
+import 'package:project_gofull/features/auth/domain/usecases/send_otp_usecase.dart';
 import 'package:project_gofull/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_bloc.dart';
 
@@ -72,6 +74,7 @@ Future<void> initDependencies() async {
   // ── Core Services ────────────────────────────────────────
   sl.registerLazySingleton<TokenStorage>(() => TokenStorage(sl()));
   sl.registerLazySingleton<ApiClient>(() => ApiClient(sl()));
+  sl.registerLazySingleton<ReverbService>(() => ReverbService(sl()));
   sl.registerLazySingleton<LocaleCubit>(() => LocaleCubit(sl()));
   sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit(sl()));
 
@@ -86,11 +89,13 @@ Future<void> initDependencies() async {
   );
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
+  sl.registerLazySingleton(() => SendOtpUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
   sl.registerFactory(
     () => AuthBloc(
       loginUseCase: sl(),
       registerUseCase: sl(),
+      sendOtpUseCase: sl(),
       logoutUseCase: sl(),
       tokenStorage: sl(),
     ),

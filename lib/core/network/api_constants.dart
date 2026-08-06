@@ -13,6 +13,11 @@ class ApiConstants {
   static const String login = '/auth/login';
   static const String logout = '/auth/logout';
   static const String changePassword = '/auth/change-password';
+  static const String otpSend = '/auth/otp/send';
+  static const String otpVerify = '/auth/otp/verify';
+
+  // ── Broadcasting (Reverb) ─────────────────────────────────
+  static const String broadcastingAuth = '/broadcasting/auth';
 
   // ── Driver (Customer) Requests ────────────────────────────
   static const String driverRequests = '/driver/requests';

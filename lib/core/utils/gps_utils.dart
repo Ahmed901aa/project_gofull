@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -24,7 +25,9 @@ Future<void> animateToCurrentLocation(GoogleMapController? controller) async {
     controller?.animateCamera(
       CameraUpdate.newLatLngZoom(LatLng(pos.latitude, pos.longitude), 15),
     );
-  } catch (_) {}
+  } catch (e) {
+    debugPrint('animateToCurrentLocation failed: $e');
+  }
 }
 
 /// Gets the current GPS position and reverse-geocodes it using the provided

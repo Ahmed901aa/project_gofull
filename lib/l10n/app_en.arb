@@ -835,5 +835,12 @@
   "matchSystemTheme": "Match System Theme",
   "matchSystemThemeDesc": "The app follows your phone's theme automatically",
   "darkThemeToggle": "Dark Theme",
-  "languageChanged": "Language changed"
+  "languageChanged": "Language changed",
+  "partnerStationsTitle": "Offers & Fuel Stations",
+  "rahilaStation": "Al-Rahila Station",
+  "shararaStation": "Al-Sharara Station",
+  "fuelNowTitle": "Fuel now",
+  "fuelNowSubtitle": "Order to my location",
+  "towNowSubtitle": "Roadside assistance",
+  "emergencyService": "Emergency"
 }

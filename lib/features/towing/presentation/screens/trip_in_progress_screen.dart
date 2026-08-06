@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/services/noti_service.dart';
+import 'package:project_gofull/core/services/reverb_service.dart';
+import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -56,14 +59,23 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
   String? _serviceFee;
   String? _total;
 
+  // Live provider position (via Reverb WebSocket)
+  StreamSubscription<ReverbEvent>? _reverbSub;
+  String? _reverbChannel;
+  double? _providerLat;
+  double? _providerLng;
+
   @override
   void initState() {
     super.initState();
     _requestBloc = sl<RequestBloc>();
     final reqId = widget.args?.requestId;
     if (reqId != null) {
+      // Realtime over Reverb; polling kept as a slow fallback for
+      // poor connectivity (was 3 s before WebSocket support).
+      _listenRealtime(reqId);
       _polling.start(
-        interval: const Duration(seconds: 3),
+        interval: const Duration(seconds: 15),
         callback: () async {
           if (!_navigated) _requestBloc.add(LoadRequestDetailsEvent(reqId));
         },
@@ -71,9 +83,39 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
     }
   }
 
+  void _listenRealtime(int reqId) {
+    final userId = sl<TokenStorage>().getUser()?['id'];
+    if (userId == null) {
+      return;
+    }
+    _reverbChannel = 'private-driver.$userId';
+    _reverbSub =
+        sl<ReverbService>().channelStream(_reverbChannel!).listen((e) {
+      if (!mounted || _navigated) {
+        return;
+      }
+      switch (e.event) {
+        case 'order.status.updated':
+        case 'order.cancelled':
+          _requestBloc.add(LoadRequestDetailsEvent(reqId));
+        case 'provider.location.updated':
+          if (e.data['request_id'] == reqId) {
+            setState(() {
+              _providerLat = (e.data['latitude'] as num?)?.toDouble();
+              _providerLng = (e.data['longitude'] as num?)?.toDouble();
+            });
+          }
+      }
+    });
+  }
+
   @override
   void dispose() {
     _polling.dispose();
+    _reverbSub?.cancel();
+    if (_reverbChannel != null) {
+      sl<ReverbService>().leaveChannel(_reverbChannel!);
+    }
     super.dispose();
   }
 
@@ -213,7 +255,14 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
     final origin = widget.args?.originAddress ?? '';
     final destination = widget.args?.destinationAddress ?? '';
     String distance = '—';
-    if (widget.args?.originLat != null &&
+    if (_providerLat != null &&
+        _providerLng != null &&
+        widget.args?.destinationLat != null &&
+        widget.args?.destinationLng != null) {
+      // Live remaining distance: provider's current position → destination
+      distance = _calcDistance(_providerLat!, _providerLng!,
+          widget.args!.destinationLat!, widget.args!.destinationLng!);
+    } else if (widget.args?.originLat != null &&
         widget.args?.originLng != null &&
         widget.args?.destinationLat != null &&
         widget.args?.destinationLng != null) {

@@ -4,6 +4,7 @@ import 'package:project_gofull/features/auth/data/models/user_model.dart';
 import 'package:project_gofull/features/auth/domain/usecases/login_usecase.dart';
 import 'package:project_gofull/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:project_gofull/features/auth/domain/usecases/register_usecase.dart';
+import 'package:project_gofull/features/auth/domain/usecases/send_otp_usecase.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_event.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,17 +12,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUseCase loginUseCase;
   final RegisterUseCase registerUseCase;
+  final SendOtpUseCase sendOtpUseCase;
   final LogoutUseCase logoutUseCase;
   final TokenStorage tokenStorage;
 
   AuthBloc({
     required this.loginUseCase,
     required this.registerUseCase,
+    required this.sendOtpUseCase,
     required this.logoutUseCase,
     required this.tokenStorage,
   }) : super(const AuthInitial()) {
     on<CheckAuthRequested>(_onCheckAuth);
     on<LoginRequested>(_onLogin);
+    on<SendOtpRequested>(_onSendOtp);
     on<RegisterRequested>(_onRegister);
     on<LogoutRequested>(_onLogout);
   }
@@ -59,6 +63,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
+  // ── Send OTP ──────────────────────────────────────────────
+
+  Future<void> _onSendOtp(
+    SendOtpRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const OtpSending());
+    final result = await sendOtpUseCase(SendOtpParams(phone: event.phone));
+    result.fold(
+      (failure) => emit(AuthFailure(failure.message)),
+      (message) => emit(OtpSent(phone: event.phone, message: message)),
+    );
+  }
+
   // ── Register ──────────────────────────────────────────────
 
   Future<void> _onRegister(
@@ -73,6 +91,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         password: event.password,
         passwordConfirmation: event.passwordConfirmation,
         role: event.role,
+        otpCode: event.otpCode,
       ),
     );
     result.fold(

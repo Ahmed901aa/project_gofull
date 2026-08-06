@@ -2500,4 +2500,25 @@ class SEn extends S {
 
   @override
   String get darkThemeToggle => 'Dark Theme';
+
+  @override
+  String get partnerStationsTitle => 'Offers & Fuel Stations';
+
+  @override
+  String get rahilaStation => 'Al-Rahila Station';
+
+  @override
+  String get shararaStation => 'Al-Sharara Station';
+
+  @override
+  String get fuelNowTitle => 'Fuel now';
+
+  @override
+  String get fuelNowSubtitle => 'Order to my location';
+
+  @override
+  String get towNowSubtitle => 'Roadside assistance';
+
+  @override
+  String get emergencyService => 'Emergency';
 }

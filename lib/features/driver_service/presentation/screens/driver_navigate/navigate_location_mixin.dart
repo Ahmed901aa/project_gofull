@@ -44,24 +44,50 @@ mixin NavigateLocationMixin<T extends StatefulWidget>
 
   void _startLocationUpdates() {
     _sendCurrentLocation();
-    locationTimer = Timer.periodic(const Duration(seconds: 10), (_) => _sendCurrentLocation());
+
+    // Movement-based updates: fires only after moving ≥ 20 m — far
+    // kinder to battery and the API than the old fixed 10 s timer.
+    locationSub = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 20, // metres
+      ),
+    ).listen(_onPosition, onError: (Object e) {
+      debugPrint('Location stream error: $e');
+    });
+
+    // Keepalive: refresh the backend position even when stationary so
+    // dispatch radius filtering keeps working.
+    locationTimer = Timer.periodic(
+        const Duration(seconds: 45), (_) => _sendCurrentLocation());
   }
 
   Future<void> _sendCurrentLocation() async {
     try {
       final pos = await _position(5);
-      sl<ApiClient>().dio.patch('/provider/profile/location',
-          data: {'latitude': pos.latitude, 'longitude': pos.longitude});
-      if (!mounted) return;
+      await _onPosition(pos);
+    } catch (e) {
+      debugPrint('Failed to read GPS position: $e');
+    }
+  }
 
-      providerPosition = LatLng(pos.latitude, pos.longitude);
-      final km = haversineKm(
-          pos.latitude, pos.longitude, destination.latitude, destination.longitude);
-      remainingDistance = '${km.toStringAsFixed(1)} ${S.of(context).kmUnit}';
-      rebuildMapObjects();
-      setState(() {});
-      mapController?.animateCamera(CameraUpdate.newLatLng(providerPosition!));
-    } catch (_) {}
+  Future<void> _onPosition(Position pos) async {
+    try {
+      await sl<ApiClient>().dio.patch('/provider/profile/location',
+          data: {'latitude': pos.latitude, 'longitude': pos.longitude});
+    } catch (e) {
+      // Keep the UI updating even if the network call fails
+      debugPrint('Failed to send location: $e');
+    }
+    if (!mounted) return;
+
+    providerPosition = LatLng(pos.latitude, pos.longitude);
+    final km = haversineKm(
+        pos.latitude, pos.longitude, destination.latitude, destination.longitude);
+    remainingDistance = '${km.toStringAsFixed(1)} ${S.of(context).kmUnit}';
+    rebuildMapObjects();
+    setState(() {});
+    mapController?.animateCamera(CameraUpdate.newLatLng(providerPosition!));
   }
 
   Future<void> moveToCurrentLocation() async {

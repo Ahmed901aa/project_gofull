@@ -4848,6 +4848,48 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Dark Theme'**
   String get darkThemeToggle;
+
+  /// No description provided for @partnerStationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Offers & Fuel Stations'**
+  String get partnerStationsTitle;
+
+  /// No description provided for @rahilaStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Al-Rahila Station'**
+  String get rahilaStation;
+
+  /// No description provided for @shararaStation.
+  ///
+  /// In en, this message translates to:
+  /// **'Al-Sharara Station'**
+  String get shararaStation;
+
+  /// No description provided for @fuelNowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel now'**
+  String get fuelNowTitle;
+
+  /// No description provided for @fuelNowSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Order to my location'**
+  String get fuelNowSubtitle;
+
+  /// No description provided for @towNowSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Roadside assistance'**
+  String get towNowSubtitle;
+
+  /// No description provided for @emergencyService.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency'**
+  String get emergencyService;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {
