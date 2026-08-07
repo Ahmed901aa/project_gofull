@@ -103,7 +103,9 @@
       "Bash(curl -s -o /tmp/tow_raw2.png \"https://cdn.gamma.app/8pk4f81mt7gjyd3/design-anything/MCxMOFVjArOq1bbXu77Jz/HGz5I5pa9AYpiJXf2YhyM.png\")",
       "Bash(/tmp/rmbg /tmp/tow_raw2.png /tmp/tow_cut2.png 1024 1536)",
       "Bash(curl -s -o /tmp/fuel_raw.png \"https://cdn.gamma.app/8pk4f81mt7gjyd3/design-anything/H85lY5hHVimoWYdpknIBp/3lLTKYyoRBRAJUMNMNpYC.png\")",
-      "Bash(/tmp/rmbg /tmp/fuel_raw.png /tmp/fuel_cut.png 1024 1536)"
+      "Bash(/tmp/rmbg /tmp/fuel_raw.png /tmp/fuel_cut.png 1024 1536)",
+      "Bash(curl -s -o /tmp/emrg_raw.png \"https://cdn.gamma.app/8pk4f81mt7gjyd3/design-anything/tLzUlHYFGsMx2WNWWuRYd/YpmBOLsTQKrTFm_vV3Z4N.png\")",
+      "Bash(/tmp/rmbg /tmp/emrg_raw.png /tmp/emrg_cut.png 1024 1536)"
     ]
   }
 }

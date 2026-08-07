@@ -60,6 +60,7 @@ class ServicesGrid extends StatelessWidget {
                 imageAsset: _assetForAction(s.action),
                 fallbackIcon: _iconForAction(s.action),
                 iconColor: _iconColorForAction(s.action),
+                largeArt: _largeArtForAction(s.action),
                 route: routeForAction(s.action) ?? Routes.fuelType,
               ),
           ]
@@ -71,6 +72,7 @@ class ServicesGrid extends StatelessWidget {
               imageAsset: _assetForAction('fuel'),
               fallbackIcon: Icons.local_gas_station_rounded,
               iconColor: _iconColorForAction('fuel'),
+              largeArt: _largeArtForAction('fuel'),
               route: Routes.fuelType,
             ),
             _ServiceTileData(
@@ -78,6 +80,7 @@ class ServicesGrid extends StatelessWidget {
               imageAsset: _assetForAction('towing'),
               fallbackIcon: Icons.fire_truck_outlined,
               iconColor: _iconColorForAction('towing'),
+              largeArt: _largeArtForAction('towing'),
               route: Routes.towingRequest,
             ),
             _ServiceTileData(
@@ -91,7 +94,7 @@ class ServicesGrid extends StatelessWidget {
 
     // Three tiles across the row, each Expanded to a phone-friendly width.
     return SizedBox(
-      height: 140.h,
+      height: 156.h,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -145,6 +148,10 @@ class ServicesGrid extends StatelessWidget {
     }
   }
 
+  /// Fuel & towing artwork renders larger than the rest (design request).
+  static bool _largeArtForAction(String? action) =>
+      action == 'fuel' || action == 'towing';
+
   static String? _titleForAction(String? action, S l10n) {
     switch (action) {
       case 'fuel':
@@ -165,6 +172,7 @@ class _ServiceTileData {
   final String? imageAsset; // bundled artwork
   final IconData fallbackIcon;
   final Color? iconColor; // splash + fallback-icon tint
+  final bool largeArt; // bigger artwork area (fuel & towing)
   final String route;
 
   const _ServiceTileData({
@@ -173,6 +181,7 @@ class _ServiceTileData {
     this.imageAsset,
     required this.fallbackIcon,
     this.iconColor,
+    this.largeArt = false,
     required this.route,
   });
 }
@@ -281,11 +290,11 @@ class _ServiceTile extends StatelessWidget {
               children: [
                 // Portrait artwork area — taller than wide per design.
                 SizedBox(
-                  width: 56.w,
-                  height: 72.h,
+                  width: data.largeArt ? 78.w : 56.w,
+                  height: data.largeArt ? 92.h : 72.h,
                   child: _image(context),
                 ),
-                SizedBox(height: Insets.s10),
+                SizedBox(height: data.largeArt ? Insets.s8 : Insets.s10),
                 Text(
                   data.title,
                   maxLines: 1,
