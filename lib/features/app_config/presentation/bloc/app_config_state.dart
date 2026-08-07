@@ -30,6 +30,11 @@ class AppConfigState extends Equatable {
   double get towingBasePrice =>
       double.tryParse(setting('towing_base_price', '50')) ?? 50;
 
+  /// Number of stations currently open — admin-controlled, updated live
+  /// over the `home-data` Reverb channel.
+  int get openStationsCount =>
+      int.tryParse(setting('open_stations_count', '0')) ?? 0;
+
   AppConfigState copyWith({
     List<FuelPriceEntity>? fuelPrices,
     Map<String, String>? settings,

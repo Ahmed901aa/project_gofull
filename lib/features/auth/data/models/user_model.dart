@@ -8,7 +8,24 @@ class UserModel extends UserEntity {
     required super.role,
     super.status,
     super.token,
+    super.avatarUrl,
   });
+
+  /// Field names the backend has historically used for a user's avatar URL.
+  /// Kept public so ProfileScreen / other consumers can read the same list.
+  static const avatarFieldNames = ['avatar_url', 'avatarUrl', 'image', 'photo'];
+
+  /// Reads an avatar URL from a map using any of [avatarFieldNames]. Guarded
+  /// against non-string values (some backends return a nested media object
+  /// under `image`), and against empty strings that would otherwise short-
+  /// circuit a `??` fallback chain in callers.
+  static String? readAvatar(Map<String, dynamic> j) {
+    for (final key in avatarFieldNames) {
+      final v = j[key];
+      if (v is String && v.isNotEmpty) return v;
+    }
+    return null;
+  }
 
   /// Parses the full backend login/register response:
   /// ```json
@@ -32,6 +49,7 @@ class UserModel extends UserEntity {
       role: user['role'] as String,
       status: (user['status'] as String?) ?? 'active',
       token: token,
+      avatarUrl: readAvatar(user),
     );
   }
 
@@ -43,6 +61,7 @@ class UserModel extends UserEntity {
         role: json['role'] as String,
         status: (json['status'] as String?) ?? 'active',
         token: json['token'] as String?,
+        avatarUrl: readAvatar(json),
       );
 
   Map<String, dynamic> toJson() => {
@@ -52,5 +71,6 @@ class UserModel extends UserEntity {
         'role': role,
         'status': status,
         'token': token,
+        'avatar_url': avatarUrl,
       };
 }

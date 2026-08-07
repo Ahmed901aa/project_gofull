@@ -432,8 +432,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen>
                 ),
 
                 // ── Top bar overlay ──
-                Positioned(
-                  top: 0, left: 0, right: 0,
+                PositionedDirectional(
+                  top: 0, start: 0, end: 0,
                   child: SafeArea(
                     bottom: false,
                     child: Padding(
@@ -475,8 +475,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen>
 
                 // ── Active order resume card ──
                 if (_activeRequest != null && _pendingRequest == null)
-                  Positioned(
-                    left: Insets.s16, right: Insets.s16, bottom: 140.h,
+                  PositionedDirectional(
+                    start: Insets.s16, end: Insets.s16, bottom: 140.h,
                     child: _ActiveOrderCard(
                       request: _activeRequest!,
                       onResume: () => _resumeActiveOrder(_activeRequest!),
@@ -486,8 +486,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen>
 
                 // ── Bottom panel ──
                 if (_pendingRequest != null)
-                  Positioned(
-                    left: 0, right: 0, bottom: 0,
+                  PositionedDirectional(
+                    start: 0, end: 0, bottom: 0,
                     child: OrderPopupCard(
                       key: ValueKey(_pendingRequest!.id),
                       request: _pendingRequest,
@@ -496,8 +496,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen>
                     ),
                   )
                 else
-                  Positioned(
-                    left: 0, right: 0, bottom: 0,
+                  PositionedDirectional(
+                    start: 0, end: 0, bottom: 0,
                     child: _ProviderBottomPanel(
                       // Show "searching" ONLY when:
                       // 1. Initial load is complete (profile + active-request check)
@@ -513,8 +513,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen>
 
                 // ── Loading overlay during initial sync ──
                 if (!_initialLoadDone && _activeRequest == null)
-                  Positioned(
-                    left: 0, right: 0, bottom: 0,
+                  PositionedDirectional(
+                    start: 0, end: 0, bottom: 0,
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 24.h),
                       decoration: BoxDecoration(

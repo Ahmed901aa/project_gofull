@@ -347,9 +347,9 @@ class _AppMapWidgetState extends State<AppMapWidget> {
             child: MapMyLocationButton(onTap: _moveToGps),
           ),
           if (widget.showConfirmButton && _pickedLocation != null)
-            Positioned(
-              left: 0,
-              right: 0,
+            PositionedDirectional(
+              start: 0,
+              end: 0,
               bottom: 0,
               child: MapConfirmButton(
                 address: _pickedAddress,

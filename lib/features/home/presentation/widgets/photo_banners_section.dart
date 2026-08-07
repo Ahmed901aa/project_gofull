@@ -55,9 +55,14 @@ class PhotoBannersSection extends StatelessWidget {
           for (var i = 0; i < photoBanners.length; i++) ...[
             if (i > 0) SizedBox(height: Insets.s12),
             _PhotoBannerCard(
-              title: photoBanners[i].title,
-              subtitle: photoBanners[i].subtitle,
+              title: _localize(photoBanners[i].title, l10n),
+              subtitle: photoBanners[i].subtitle == null
+                  ? null
+                  : _localize(photoBanners[i].subtitle!, l10n),
               imageUrl: photoBanners[i].imageUrl!,
+              // Design request: the first photo's composition should face
+              // the other way in Arabic.
+              mirrorInRtl: i == 0,
             ),
           ]
         else ...[
@@ -65,6 +70,7 @@ class PhotoBannersSection extends StatelessWidget {
           _PhotoBannerCard(
             title: l10n.rahilaStation,
             assetPath: 'assets/images/rahila_station.jpg',
+            mirrorInRtl: true,
           ),
           SizedBox(height: Insets.s12),
           _PhotoBannerCard(
@@ -77,17 +83,43 @@ class PhotoBannersSection extends StatelessWidget {
   }
 }
 
+/// Backend banner text is stored in Arabic only. Map the known seeded
+/// strings to localized equivalents so language switching works; unknown
+/// (admin-added) text falls through unchanged.
+String _localize(String text, S l10n) {
+  switch (text.trim()) {
+    case 'محطة الراحلة':
+      return l10n.rahilaStation;
+    case 'محطة الشرارة':
+      return l10n.shararaStation;
+    case 'شريك التزوّد بالوقود في ليبيا':
+      return l10n.rahilaStationSubtitle;
+    case 'شركة الشرارة الذهبية للخدمات النفطية':
+      return l10n.shararaStationSubtitle;
+    case 'عروض وخصومات GoFull':
+      return l10n.gofullOffersTitle;
+    case 'خصم على خدمة الساحبة — اطلب الآن':
+      return l10n.gofullOffersSubtitle;
+    default:
+      return text;
+  }
+}
+
 class _PhotoBannerCard extends StatelessWidget {
   final String title;
   final String? subtitle;
   final String? imageUrl;
   final String? assetPath;
 
+  /// Flip the photo horizontally when the app runs in Arabic (RTL).
+  final bool mirrorInRtl;
+
   const _PhotoBannerCard({
     required this.title,
     this.subtitle,
     this.imageUrl,
     this.assetPath,
+    this.mirrorInRtl = false,
   });
 
   Widget _image(BuildContext context) {
@@ -151,7 +183,11 @@ class _PhotoBannerCard extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              _image(context),
+              if (mirrorInRtl &&
+                  Directionality.of(context) == TextDirection.rtl)
+                Transform.flip(flipX: true, child: _image(context))
+              else
+                _image(context),
               // Bottom gradient so the text stays readable over the photo
               Positioned.fill(
                 child: DecoratedBox(
@@ -200,8 +236,9 @@ class _PhotoBannerCard extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: getBoldStyle(
-                                color: AppColors.white,
-                                fontSize: FontSize.s16),
+                              color: AppColors.white,
+                              fontSize: FontSize.s16,
+                            ),
                           ),
                           if (subtitle != null && subtitle!.isNotEmpty)
                             Text(
@@ -209,9 +246,9 @@ class _PhotoBannerCard extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: getRegularStyle(
-                                  color: AppColors.white
-                                      .withValues(alpha: 0.8),
-                                  fontSize: FontSize.s12),
+                                color: AppColors.white.withValues(alpha: 0.8),
+                                fontSize: FontSize.s12,
+                              ),
                             ),
                         ],
                       ),

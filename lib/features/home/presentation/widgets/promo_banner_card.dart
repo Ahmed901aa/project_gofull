@@ -28,8 +28,9 @@ class PromoBannerCard extends StatelessWidget {
         child: Ink(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: const Alignment(-0.95, 0.45),
-              end: const Alignment(0.95, -0.45),
+              // Directional so the diagonal sheen follows reading direction
+              begin: const AlignmentDirectional(-0.95, 0.45),
+              end: const AlignmentDirectional(0.95, -0.45),
               colors: slide.gradientColors,
             ),
             borderRadius: BorderRadius.circular(AppRadius.s32),
@@ -64,9 +65,9 @@ class PromoBannerCard extends StatelessWidget {
                   ),
                 ),
                 // Subtle bottom shine
-                Positioned(
-                  left: 0,
-                  right: 0,
+                PositionedDirectional(
+                  start: 0,
+                  end: 0,
                   bottom: 0,
                   child: Container(
                     height: 1.5,
@@ -241,20 +242,14 @@ class PromoBannerCard extends StatelessWidget {
 
                       SizedBox(width: Insets.s8),
 
-                      // Image
+                      // Image — illustrations are non-directional, never
+                      // mirrored in RTL (a flipped vehicle looks wrong).
                       SizedBox(
                         width: 120.w,
-                        child: Builder(builder: (ctx) {
-                          final img = Image.asset(
-                            slide.image,
-                            fit: BoxFit.contain,
-                          );
-                          final isRtl =
-                              Directionality.of(ctx) == TextDirection.rtl;
-                          return (slide.flipImageInRtl && isRtl)
-                              ? Transform.scale(scaleX: -1, child: img)
-                              : img;
-                        }),
+                        child: Image.asset(
+                          slide.image,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ],
                   ),

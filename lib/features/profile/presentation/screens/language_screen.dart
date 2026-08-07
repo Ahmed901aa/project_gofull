@@ -44,7 +44,7 @@ class LanguageScreen extends StatelessWidget {
 
           SizedBox(height: Sizes.s20),
           _LanguageRow(
-            title: 'العربية',
+            title: l10n.arabic,
             isSelected: isArabic,
             onTap: () {
               if (!isArabic) cubit.toggleLocale();
@@ -52,7 +52,7 @@ class LanguageScreen extends StatelessWidget {
           ),
           Divider(height: 1, color: context.colors.borderSubtle),
           _LanguageRow(
-            title: 'English',
+            title: l10n.english,
             isSelected: !isArabic,
             onTap: () {
               if (isArabic) cubit.toggleLocale();

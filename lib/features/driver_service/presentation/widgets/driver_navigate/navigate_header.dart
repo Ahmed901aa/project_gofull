@@ -18,10 +18,10 @@ class NavigateHeader extends StatelessWidget {
       : S.of(context).navigateToDestination;
 
   @override
-  Widget build(BuildContext context) => Positioned(
+  Widget build(BuildContext context) => PositionedDirectional(
         top: 0,
-        left: 0,
-        right: 0,
+        start: 0,
+        end: 0,
         child: Container(
           color: context.colors.surface,
           child: Column(

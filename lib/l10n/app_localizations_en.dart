@@ -859,7 +859,7 @@ class SEn extends S {
   String get language => 'Language';
 
   @override
-  String get arabic => 'العربية';
+  String get arabic => 'Arabic';
 
   @override
   String get english => 'English';
@@ -2508,10 +2508,22 @@ class SEn extends S {
   String get rahilaStation => 'Al-Rahila Station';
 
   @override
+  String get rahilaStationSubtitle => 'Fuel supply partner in Libya';
+
+  @override
+  String get shararaStationSubtitle => 'Al-Sharara Golden Oil Services';
+
+  @override
+  String get gofullOffersTitle => 'GoFull Offers & Discounts';
+
+  @override
+  String get gofullOffersSubtitle => 'Discount on towing service — order now';
+
+  @override
   String get shararaStation => 'Al-Sharara Station';
 
   @override
-  String get fuelNowTitle => 'Fuel now';
+  String get fuelNowTitle => 'Order Fuel';
 
   @override
   String get fuelNowSubtitle => 'Order to my location';
@@ -2521,4 +2533,25 @@ class SEn extends S {
 
   @override
   String get emergencyService => 'Emergency';
+
+  @override
+  String get homeServicesTitle => 'What do you need now?';
+
+  @override
+  String get todaysFuelPrices => 'Today\'s Fuel Prices';
+
+  @override
+  String get liveNow => 'Live';
+
+  @override
+  String openStationsNow(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count stations open now',
+      one: '1 station open now',
+      zero: 'No stations open now',
+    );
+    return '$_temp0';
+  }
 }

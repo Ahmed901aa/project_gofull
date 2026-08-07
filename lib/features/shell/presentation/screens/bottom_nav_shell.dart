@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/widgets/rating_bottom_sheet.dart';
+import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
+import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
 import 'package:project_gofull/features/home/presentation/screens/home_screen.dart';
 import 'package:project_gofull/features/orders/presentation/screens/orders_screen.dart';
 import 'package:project_gofull/features/profile/presentation/screens/profile_screen.dart';
@@ -68,6 +70,12 @@ class _BottomNavShellState extends State<BottomNavShell>
     // ONLY check when returning from background — not on every state change
     if (state == AppLifecycleState.resumed) {
       _checkIfCompletedWhileAway();
+      // Fallback fetch: the Reverb socket may have been dropped while the
+      // app was backgrounded — refetch fuel prices + settings + home data
+      // so any admin change made while away is applied.
+      sl<AppConfigBloc>()
+        ..add(const LoadAppConfigEvent())
+        ..add(const LoadHomeDataEvent());
     }
   }
 

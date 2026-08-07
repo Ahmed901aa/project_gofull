@@ -859,7 +859,7 @@ class SAr extends S {
   String get arabic => 'العربية';
 
   @override
-  String get english => 'English';
+  String get english => 'الإنجليزية';
 
   @override
   String get photoCapture => 'صورة السيارة';
@@ -2491,10 +2491,22 @@ class SAr extends S {
   String get rahilaStation => 'محطة الراحلة';
 
   @override
+  String get rahilaStationSubtitle => 'شريك التزوّد بالوقود في ليبيا';
+
+  @override
+  String get shararaStationSubtitle => 'شركة الشرارة الذهبية للخدمات النفطية';
+
+  @override
+  String get gofullOffersTitle => 'عروض وخصومات GoFull';
+
+  @override
+  String get gofullOffersSubtitle => 'خصم على خدمة الساحبة — اطلب الآن';
+
+  @override
   String get shararaStation => 'محطة الشرارة';
 
   @override
-  String get fuelNowTitle => 'اطلب وقود الآن';
+  String get fuelNowTitle => 'اطلب وقود';
 
   @override
   String get fuelNowSubtitle => 'توصيل إلى موقعك الحالي';
@@ -2504,4 +2516,28 @@ class SAr extends S {
 
   @override
   String get emergencyService => 'الطوارئ';
+
+  @override
+  String get homeServicesTitle => 'وش تحتاج الحين؟';
+
+  @override
+  String get todaysFuelPrices => 'أسعار الوقود اليوم';
+
+  @override
+  String get liveNow => 'مباشر';
+
+  @override
+  String openStationsNow(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count محطة مفتوحة الآن',
+      many: '$count محطة مفتوحة الآن',
+      few: '$count محطات مفتوحة الآن',
+      two: 'محطتان مفتوحتان الآن',
+      one: 'محطة واحدة مفتوحة الآن',
+      zero: 'لا توجد محطات مفتوحة الآن',
+    );
+    return '$_temp0';
+  }
 }

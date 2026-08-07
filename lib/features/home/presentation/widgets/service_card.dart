@@ -11,7 +11,6 @@ class ServiceCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback onTap;
-  final bool flipIcon;
 
   const ServiceCard({
     super.key,
@@ -19,7 +18,6 @@ class ServiceCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.onTap,
-    this.flipIcon = false,
   });
 
   @override
@@ -78,18 +76,13 @@ class ServiceCard extends StatelessWidget {
                   color: context.colors.primary.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(AppRadius.s16),
                 ),
-                child: Builder(builder: (ctx) {
-                  final isRtl = Directionality.of(ctx) == TextDirection.rtl;
-                  final icon = SvgPicture.asset(
-                    svgAsset,
-                    fit: BoxFit.contain,
-                    colorFilter: ColorFilter.mode(
-                        context.colors.primary, BlendMode.srcIn),
-                  );
-                  return (flipIcon && isRtl)
-                      ? Transform.scale(scaleX: -1, child: icon)
-                      : icon;
-                }),
+                // Vehicle artwork is non-directional — never mirror it in RTL.
+                child: SvgPicture.asset(
+                  svgAsset,
+                  fit: BoxFit.contain,
+                  colorFilter: ColorFilter.mode(
+                      context.colors.primary, BlendMode.srcIn),
+                ),
               ),
               SizedBox(height: Insets.s10),
               Text(

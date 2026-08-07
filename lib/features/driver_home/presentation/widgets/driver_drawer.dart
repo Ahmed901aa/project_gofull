@@ -202,8 +202,8 @@ class _DriverDrawerState extends State<DriverDrawer> {
               icon: Icons.language_rounded,
               title: S.of(context).language,
               trailing: context.watch<LocaleCubit>().isArabic
-                  ? 'العربية'
-                  : 'English',
+                  ? S.of(context).arabic
+                  : S.of(context).english,
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(context, Routes.languageSettings);

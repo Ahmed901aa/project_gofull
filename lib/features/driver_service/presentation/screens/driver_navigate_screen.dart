@@ -77,9 +77,9 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen>
             bottom: 280.h,
             child: NavigateSideButtons(onFit: fitBounds, onMyLocation: moveToCurrentLocation),
           ),
-          Positioned(
-            left: 0,
-            right: 0,
+          PositionedDirectional(
+            start: 0,
+            end: 0,
             bottom: 0,
             child: NavigateBottomPanel(
               isToCustomer: isToCustomer,

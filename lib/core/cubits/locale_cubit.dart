@@ -4,17 +4,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LocaleCubit extends Cubit<Locale> {
   static const _key = 'app_locale';
+  static const _supported = ['ar', 'en'];
   final SharedPreferences _prefs;
 
-  LocaleCubit(this._prefs) : super(const Locale('ar')) {
-    _loadSaved();
-  }
+  LocaleCubit(this._prefs) : super(_initialLocale(_prefs));
 
-  void _loadSaved() {
-    final code = _prefs.getString(_key);
-    if (code != null) {
-      emit(Locale(code));
+  /// Explicit user choice wins; otherwise follow the device language
+  /// (constrained to supported locales, Arabic as final fallback).
+  static Locale _initialLocale(SharedPreferences prefs) {
+    final saved = prefs.getString(_key);
+    if (saved != null && _supported.contains(saved)) {
+      return Locale(saved);
     }
+    final device = PlatformDispatcher.instance.locale.languageCode;
+    return Locale(_supported.contains(device) ? device : 'ar');
   }
 
   Future<void> setLocale(Locale locale) async {

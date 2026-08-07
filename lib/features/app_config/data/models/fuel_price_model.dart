@@ -6,6 +6,7 @@ class FuelPriceModel extends FuelPriceEntity {
     required super.fuelType,
     required super.nameAr,
     required super.pricePerLiter,
+    super.priceWithTax,
   });
 
   factory FuelPriceModel.fromJson(Map<String, dynamic> json) => FuelPriceModel(
@@ -13,5 +14,8 @@ class FuelPriceModel extends FuelPriceEntity {
         fuelType: json['fuel_type'] as String,
         nameAr: json['name_ar'] as String,
         pricePerLiter: double.parse(json['price_per_liter'].toString()),
+        priceWithTax: json['price_with_tax'] != null
+            ? double.tryParse(json['price_with_tax'].toString())
+            : null,
       );
 }

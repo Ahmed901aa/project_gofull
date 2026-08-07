@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
@@ -11,6 +12,10 @@ class ProfileUserCard extends StatelessWidget {
   final String phone;
   final String initials;
 
+  /// Optional remote avatar URL (from backend). If null/empty, initials
+  /// are rendered inside the avatar circle as a fallback.
+  final String? avatarUrl;
+
   /// Tap handler for the "View" pill on the right side of the card.
   /// Renamed from `onEdit` to reflect the read-only profile screen.
   final VoidCallback? onView;
@@ -20,6 +25,7 @@ class ProfileUserCard extends StatelessWidget {
     required this.name,
     required this.phone,
     required this.initials,
+    this.avatarUrl,
     this.onView,
   });
 
@@ -70,33 +76,10 @@ class ProfileUserCard extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  // Avatar
-                  Container(
-                    width: 52.w,
-                    height: 52.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        begin: AlignmentDirectional.topStart,
-                        end: AlignmentDirectional.bottomEnd,
-                        colors: [
-                          Colors.white.withValues(alpha: 0.30),
-                          Colors.white.withValues(alpha: 0.15),
-                        ],
-                      ),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.40),
-                        width: 1.5,
-                      ),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      initials.toUpperCase(),
-                      style: getBoldStyle(
-                        color: Colors.white,
-                        fontSize: FontSize.s20,
-                      ),
-                    ),
+                  // Avatar (network image if provided, initials otherwise)
+                  _Avatar(
+                    initials: initials,
+                    avatarUrl: avatarUrl,
                   ),
                   SizedBox(width: Insets.s12),
                   // Name + phone
@@ -194,6 +177,56 @@ class _Halo extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+    );
+  }
+}
+
+class _Avatar extends StatelessWidget {
+  final String initials;
+  final String? avatarUrl;
+
+  const _Avatar({required this.initials, this.avatarUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    final url = avatarUrl;
+    final hasUrl = url != null && url.isNotEmpty;
+    final initialsBubble = Center(
+      child: Text(
+        initials.toUpperCase(),
+        style: getBoldStyle(color: Colors.white, fontSize: FontSize.s20),
+      ),
+    );
+
+    return Container(
+      width: 52.w,
+      height: 52.w,
+      clipBehavior: hasUrl ? Clip.antiAlias : Clip.none,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: AlignmentDirectional.topStart,
+          end: AlignmentDirectional.bottomEnd,
+          colors: [
+            Colors.white.withValues(alpha: 0.30),
+            Colors.white.withValues(alpha: 0.15),
+          ],
+        ),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.40),
+          width: 1.5,
+        ),
+      ),
+      child: hasUrl
+          ? CachedNetworkImage(
+              imageUrl: url,
+              fit: BoxFit.cover,
+              // Decode at avatar size — the source can be a multi-MP photo.
+              memCacheWidth: (52 * MediaQuery.devicePixelRatioOf(context)).round(),
+              placeholder: (_, __) => initialsBubble,
+              errorWidget: (_, __, ___) => initialsBubble,
+            )
+          : initialsBubble,
     );
   }
 }

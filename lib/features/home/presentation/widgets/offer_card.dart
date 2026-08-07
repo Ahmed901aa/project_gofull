@@ -32,12 +32,8 @@ class OfferCard extends StatelessWidget {
                 height: 120.h,
                 width: double.infinity,
                 color: context.colors.surface,
-                child: Builder(builder: (ctx) {
-                  final img = Image.asset(ImageAssets.offerBanner, fit: BoxFit.cover);
-                  return Directionality.of(ctx) == TextDirection.rtl
-                      ? Transform.scale(scaleX: -1, child: img)
-                      : img;
-                }),
+                // Photo content is non-directional — never mirror it in RTL.
+                child: Image.asset(ImageAssets.offerBanner, fit: BoxFit.cover),
               ),
             ),
             Padding(

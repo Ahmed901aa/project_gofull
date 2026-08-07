@@ -213,7 +213,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
               Future.microtask(() => _searchFocus.requestFocus());
             }))),
       if (_searching)
-        Positioned(top: 0, left: 0, right: 0,
+        PositionedDirectional(top: 0, start: 0, end: 0,
           child: Material(color: context.colors.surface, child: Column(mainAxisSize: MainAxisSize.min, children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
             PickerSearchOverlay(controller: _searchCtrl, focusNode: _searchFocus,
@@ -224,7 +224,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
           ]))),
       PositionedDirectional(start: Insets.s16, bottom: 140.h,
         child: PickerMyLocationBtn(onTap: () => animateToCurrentLocation(_ctrl))),
-      Positioned(left: 0, right: 0, bottom: 0,
+      PositionedDirectional(start: 0, end: 0, bottom: 0,
         child: PickerConfirmCard(address: _address, isLoading: _loadingAddr, onConfirm: _confirm)),
     ]));
       }),

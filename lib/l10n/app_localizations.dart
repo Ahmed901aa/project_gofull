@@ -1762,7 +1762,7 @@ abstract class S {
   /// No description provided for @arabic.
   ///
   /// In en, this message translates to:
-  /// **'العربية'**
+  /// **'Arabic'**
   String get arabic;
 
   /// No description provided for @english.
@@ -4861,6 +4861,30 @@ abstract class S {
   /// **'Al-Rahila Station'**
   String get rahilaStation;
 
+  /// No description provided for @rahilaStationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel supply partner in Libya'**
+  String get rahilaStationSubtitle;
+
+  /// No description provided for @shararaStationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Al-Sharara Golden Oil Services'**
+  String get shararaStationSubtitle;
+
+  /// No description provided for @gofullOffersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'GoFull Offers & Discounts'**
+  String get gofullOffersTitle;
+
+  /// No description provided for @gofullOffersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount on towing service — order now'**
+  String get gofullOffersSubtitle;
+
   /// No description provided for @shararaStation.
   ///
   /// In en, this message translates to:
@@ -4870,7 +4894,7 @@ abstract class S {
   /// No description provided for @fuelNowTitle.
   ///
   /// In en, this message translates to:
-  /// **'Fuel now'**
+  /// **'Order Fuel'**
   String get fuelNowTitle;
 
   /// No description provided for @fuelNowSubtitle.
@@ -4890,6 +4914,30 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Emergency'**
   String get emergencyService;
+
+  /// No description provided for @homeServicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What do you need now?'**
+  String get homeServicesTitle;
+
+  /// No description provided for @todaysFuelPrices.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Fuel Prices'**
+  String get todaysFuelPrices;
+
+  /// No description provided for @liveNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get liveNow;
+
+  /// No description provided for @openStationsNow.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No stations open now} =1{1 station open now} other{{count} stations open now}}'**
+  String openStationsNow(int count);
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

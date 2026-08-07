@@ -34,7 +34,9 @@ class NameField extends StatelessWidget {
           alignment: AlignmentDirectional.centerEnd,
           child: TextField(
             controller: controller,
-            textDirection: TextDirection.ltr,
+            // No forced direction — names follow the UI locale (RTL for
+            // Arabic input, LTR for English). Only phone/number fields
+            // are pinned to LTR.
             textAlign: TextAlign.start,
             decoration: const InputDecoration(
               border: InputBorder.none,

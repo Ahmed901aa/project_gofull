@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
+import 'package:project_gofull/core/resources/font_manager.dart';
+import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/services/noti_service.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
@@ -14,6 +17,7 @@ import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/features/home/presentation/widgets/continue_order_card.dart';
 import 'package:project_gofull/features/home/presentation/widgets/home_action_cards.dart';
 import 'package:project_gofull/features/home/presentation/widgets/home_header.dart';
+import 'package:project_gofull/features/home/presentation/widgets/live_prices_section.dart';
 import 'package:project_gofull/features/home/presentation/widgets/photo_banners_section.dart';
 import 'package:project_gofull/features/home/presentation/widgets/services_grid.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
@@ -261,7 +265,33 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
 
-                      // 2. Services grid (CAFU-style tiles, 2 rows)
+                      // 2. Services section: green accent bar + title + grid
+                      SliverPadding(
+                        padding: EdgeInsetsDirectional.symmetric(horizontal: Insets.s16),
+                        sliver: SliverToBoxAdapter(
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 4.w,
+                                height: 18.h,
+                                decoration: BoxDecoration(
+                                  color: context.colors.primary,
+                                  borderRadius: BorderRadius.circular(2.r),
+                                ),
+                              ),
+                              SizedBox(width: Insets.s8),
+                              Text(
+                                S.of(context).homeServicesTitle,
+                                style: getBoldStyle(
+                                  color: context.colors.textPrimary,
+                                  fontSize: FontSize.s16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SliverToBoxAdapter(child: SizedBox(height: Sizes.s8)),
                       SliverPadding(
                         padding: EdgeInsetsDirectional.symmetric(horizontal: Insets.s16),
                         sliver: SliverToBoxAdapter(
@@ -273,7 +303,31 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
 
-                      // 3. Wide action cards: fuel now + tow truck
+                      // 3. Live admin-controlled data: today's fuel prices
+                      //    + open stations counter (Reverb `home-data` channel)
+                      if (config.fuelPrices.isNotEmpty) ...[
+                        SliverPadding(
+                          padding: EdgeInsetsDirectional.symmetric(
+                              horizontal: Insets.s16),
+                          sliver: SliverToBoxAdapter(
+                            child: FuelPricesSection(
+                                prices: config.fuelPrices),
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                            child: SizedBox(height: Sizes.s12)),
+                      ],
+                      SliverPadding(
+                        padding: EdgeInsetsDirectional.symmetric(
+                            horizontal: Insets.s16),
+                        sliver: SliverToBoxAdapter(
+                          child: OpenStationsCard(
+                              count: config.openStationsCount),
+                        ),
+                      ),
+                      SliverToBoxAdapter(child: SizedBox(height: Sizes.s16)),
+
+                      // 4. Wide action cards: fuel now + tow truck
                       SliverPadding(
                         padding: EdgeInsetsDirectional.symmetric(horizontal: Insets.s16),
                         sliver: const SliverToBoxAdapter(

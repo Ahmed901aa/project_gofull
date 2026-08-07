@@ -109,7 +109,7 @@ Future<void> initDependencies() async {
     () => AppConfigRepositoryImpl(sl()),
   );
   sl.registerLazySingleton(
-    () => AppConfigBloc(repository: sl()),
+    () => AppConfigBloc(repository: sl(), reverb: sl()),
   );
 
   // ── Feature: Home ────────────────────────────────────────

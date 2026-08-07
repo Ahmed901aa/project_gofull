@@ -12,7 +12,6 @@ class BannerData {
   final IconData icon;
   final String ctaLabel;
   final String image;
-  final bool flipImageInRtl;
   const BannerData({
     required this.gradientColors,
     required this.headline,
@@ -22,7 +21,6 @@ class BannerData {
     required this.icon,
     required this.ctaLabel,
     required this.image,
-    this.flipImageInRtl = false,
   });
 }
 
@@ -48,7 +46,6 @@ List<BannerData> getBannerSlides(BuildContext context) {
       icon: Icons.fire_truck_rounded,
       ctaLabel: l10n.orderNow,
       image: ImageAssets.promoTruck,
-      flipImageInRtl: true,
     ),
     BannerData(
       gradientColors: [Color(0xFF2979FF), Color(0xFF1565C0), Color(0xFF0D47A1)],

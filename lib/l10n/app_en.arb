@@ -277,7 +277,7 @@
   "terms": "Terms & Conditions",
   "discountCodes": "Discount Codes",
   "language": "Language",
-  "arabic": "العربية",
+  "arabic": "Arabic",
   "english": "English",
   "photoCapture": "Vehicle Photo",
   "photoSaved": "Photo saved",
@@ -411,7 +411,7 @@
   "available": "Available",
   "unavailable": "Unavailable",
   "switchLanguageTitle": "Change Language",
-  "languageChanged": "Language changed successfully",
+  "languageChanged": "Language changed",
   "searchKeywordFuel": "fuel,gas,petrol,diesel,fill,delivery",
   "searchKeywordTow": "tow,towing,pull,transport,vehicle,car",
   "searchKeywordOrders": "orders,order,history,recent",
@@ -717,13 +717,14 @@
   "fuelProviderOnWayToYou": "Fuel provider is on the way to you",
   "towDriverOnWayToYou": "Tow driver is on the way to you",
   "driverMovedWaitSafe": "The driver is heading to your location. Please wait in a safe place.",
-  "serviceProviderDefault": "Service Provider",
   "fuelRequestAccepted": "Fuel request accepted",
   "towRequestAccepted": "Tow request accepted",
   "providerOnWayToYouName": "Provider {name} is on the way to you",
   "@providerOnWayToYouName": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "fuelProviderFoundTitle": "Fuel provider found!",
@@ -750,7 +751,9 @@
   "etaLabel": "Estimated arrival time: {eta} minutes",
   "@etaLabel": {
     "placeholders": {
-      "eta": {"type": "String"}
+      "eta": {
+        "type": "String"
+      }
     }
   },
   "callDriver": "Call Driver",
@@ -759,7 +762,9 @@
   "minutesFormatted": "{time} minutes",
   "@minutesFormatted": {
     "placeholders": {
-      "time": {"type": "String"}
+      "time": {
+        "type": "String"
+      }
     }
   },
   "retakePhoto": "Retake",
@@ -795,13 +800,17 @@
   "carTypePrefixLabel": "Car Type: {type}",
   "@carTypePrefixLabel": {
     "placeholders": {
-      "type": {"type": "String"}
+      "type": {
+        "type": "String"
+      }
     }
   },
   "plateNumberPrefixLabel": "Plate Number: {plate}",
   "@plateNumberPrefixLabel": {
     "placeholders": {
-      "plate": {"type": "String"}
+      "plate": {
+        "type": "String"
+      }
     }
   },
   "kmUnit": "km",
@@ -835,12 +844,26 @@
   "matchSystemTheme": "Match System Theme",
   "matchSystemThemeDesc": "The app follows your phone's theme automatically",
   "darkThemeToggle": "Dark Theme",
-  "languageChanged": "Language changed",
   "partnerStationsTitle": "Offers & Fuel Stations",
   "rahilaStation": "Al-Rahila Station",
+  "rahilaStationSubtitle": "Fuel supply partner in Libya",
+  "shararaStationSubtitle": "Al-Sharara Golden Oil Services",
+  "gofullOffersTitle": "GoFull Offers & Discounts",
+  "gofullOffersSubtitle": "Discount on towing service — order now",
   "shararaStation": "Al-Sharara Station",
-  "fuelNowTitle": "Fuel now",
+  "fuelNowTitle": "Order Fuel",
   "fuelNowSubtitle": "Order to my location",
   "towNowSubtitle": "Roadside assistance",
-  "emergencyService": "Emergency"
+  "emergencyService": "Emergency",
+  "homeServicesTitle": "What do you need now?",
+  "todaysFuelPrices": "Today's Fuel Prices",
+  "liveNow": "Live",
+  "openStationsNow": "{count, plural, =0{No stations open now} =1{1 station open now} other{{count} stations open now}}",
+  "@openStationsNow": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

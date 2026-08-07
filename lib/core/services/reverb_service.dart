@@ -19,9 +19,9 @@ class ReverbEvent {
 /// WebSocket — no extra pub dependency needed.
 ///
 /// Usage:
-///   final reverb = ReverbService(sl<ApiClient>());
+///   final reverb = ReverbService(apiClient);
 ///   final sub = reverb
-///       .channelStream('private-driver.$userId')
+///       .channelStream('private-driver.userId')
 ///       .listen((e) {
 ///     if (e.event == 'provider.location.updated') { ... }
 ///     if (e.event == 'order.status.updated') { ... }

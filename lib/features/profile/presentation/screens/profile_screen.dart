@@ -12,6 +12,7 @@ import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
 import 'package:project_gofull/core/cubits/locale_cubit.dart';
 import 'package:project_gofull/core/widgets/app_notification.dart';
+import 'package:project_gofull/features/auth/data/models/user_model.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/profile_menu_item.dart';
 import '../widgets/profile_user_card.dart';
@@ -73,6 +74,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final userRole = (_profileData?['role'] as String?) ??
         (sl<TokenStorage>().getUser()?['role'] as String?) ??
         'driver';
+    final cachedUser = sl<TokenStorage>().getUser();
+    // Backend may return the avatar under any of several field names — reuse
+    // the same reader UserModel uses so both paths stay in sync.
+    final avatarUrl = (_profileData != null ? UserModel.readAvatar(_profileData!) : null) ??
+        (cachedUser != null ? UserModel.readAvatar(cachedUser) : null);
     final initials = userName.isNotEmpty ? userName[0] : '?';
     final isProvider = userRole == 'provider';
 
@@ -92,6 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     name: userName,
                     phone: userPhone,
                     initials: initials,
+                    avatarUrl: avatarUrl,
                     onView: () =>
                         Navigator.pushNamed(context, Routes.editProfile),
                   ),
@@ -132,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ProfileMenuItem(
                     icon: Icons.language_rounded,
                     label: l10n.language,
-                    trailing: localeCubit.isArabic ? 'العربية' : 'English',
+                    trailing: localeCubit.isArabic ? l10n.arabic : l10n.english,
                     onTap: () =>
                         Navigator.pushNamed(context, Routes.languageSettings),
                   ),

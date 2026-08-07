@@ -106,6 +106,7 @@ class AuthRemoteDataSource implements AuthDataSource {
         name: user.name,
         role: user.role,
         status: user.status,
+        avatarUrl: user.avatarUrl,
       ).toJson());
       return user;
     } on DioException catch (e) {
@@ -166,6 +167,7 @@ class AuthRemoteDataSource implements AuthDataSource {
         name: user.name,
         role: user.role,
         status: user.status,
+        avatarUrl: user.avatarUrl,
       ).toJson());
       return user;
     } on DioException catch (e) {

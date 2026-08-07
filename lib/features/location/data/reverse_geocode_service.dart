@@ -49,7 +49,7 @@ class ReverseGeocodeService {
         ].whereType<String>().where((s) => s.isNotEmpty).toList();
         if (parts.isNotEmpty) {
 
-          return parts.join('، ');
+          return parts.join(', ');
 
         }
       }

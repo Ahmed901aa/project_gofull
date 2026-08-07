@@ -278,7 +278,7 @@
   "discountCodes": "أكواد الخصم",
   "language": "اللغة",
   "arabic": "العربية",
-  "english": "English",
+  "english": "الإنجليزية",
   "photoCapture": "صورة السيارة",
   "photoSaved": "تم حفظ الصورة في المعرض",
   "supportAvailable": "فريق الدعم موجود لمساعدتك",
@@ -411,7 +411,7 @@
   "available": "متاح",
   "unavailable": "غير متاح",
   "switchLanguageTitle": "تغيير اللغة",
-  "languageChanged": "تم تغيير اللغة بنجاح",
+  "languageChanged": "تم تغيير اللغة",
   "searchKeywordFuel": "وقود,بنزين,ديزل,تعبئة,طلب وقود",
   "searchKeywordTow": "ساحبة,سحب,نقل,طلب ساحبة,سيارة",
   "searchKeywordOrders": "طلبات,طلب,سجل,تاريخ",
@@ -717,13 +717,14 @@
   "fuelProviderOnWayToYou": "مزود الوقود في الطريق إليك",
   "towDriverOnWayToYou": "سائق الساحبة في الطريق إليك",
   "driverMovedWaitSafe": "السائق تحرك إلى موقعك، يرجى الانتظار في مكان آمن.",
-  "serviceProviderDefault": "مزود الخدمة",
   "fuelRequestAccepted": "تم قبول طلب الوقود",
   "towRequestAccepted": "تم قبول طلب السحب",
   "providerOnWayToYouName": "مزود الخدمة {name} في طريقه إليك",
   "@providerOnWayToYouName": {
     "placeholders": {
-      "name": {"type": "String"}
+      "name": {
+        "type": "String"
+      }
     }
   },
   "fuelProviderFoundTitle": "تم العثور على مزود وقود!",
@@ -750,7 +751,9 @@
   "etaLabel": "الوقت المتوقع للوصول: {eta} دقيقة",
   "@etaLabel": {
     "placeholders": {
-      "eta": {"type": "String"}
+      "eta": {
+        "type": "String"
+      }
     }
   },
   "callDriver": "اتصال بالسائق",
@@ -759,7 +762,9 @@
   "minutesFormatted": "{time} دقيقة",
   "@minutesFormatted": {
     "placeholders": {
-      "time": {"type": "String"}
+      "time": {
+        "type": "String"
+      }
     }
   },
   "retakePhoto": "إعادة التصوير",
@@ -795,13 +800,17 @@
   "carTypePrefixLabel": "نوع السيارة: {type}",
   "@carTypePrefixLabel": {
     "placeholders": {
-      "type": {"type": "String"}
+      "type": {
+        "type": "String"
+      }
     }
   },
   "plateNumberPrefixLabel": "رقم اللوحة: {plate}",
   "@plateNumberPrefixLabel": {
     "placeholders": {
-      "plate": {"type": "String"}
+      "plate": {
+        "type": "String"
+      }
     }
   },
   "kmUnit": "كم",
@@ -835,12 +844,19 @@
   "matchSystemTheme": "مطابقة ثيم النظام",
   "matchSystemThemeDesc": "التطبيق يتبع ثيم هاتفك تلقائياً",
   "darkThemeToggle": "الوضع الليلي",
-  "languageChanged": "تم تغيير اللغة",
   "partnerStationsTitle": "عروض ومحطات الوقود",
   "rahilaStation": "محطة الراحلة",
+  "rahilaStationSubtitle": "شريك التزوّد بالوقود في ليبيا",
+  "shararaStationSubtitle": "شركة الشرارة الذهبية للخدمات النفطية",
+  "gofullOffersTitle": "عروض وخصومات GoFull",
+  "gofullOffersSubtitle": "خصم على خدمة الساحبة — اطلب الآن",
   "shararaStation": "محطة الشرارة",
-  "fuelNowTitle": "اطلب وقود الآن",
+  "fuelNowTitle": "اطلب وقود",
   "fuelNowSubtitle": "توصيل إلى موقعك الحالي",
   "towNowSubtitle": "مساعدة على الطريق",
-  "emergencyService": "الطوارئ"
+  "emergencyService": "الطوارئ",
+  "homeServicesTitle": "وش تحتاج الحين؟",
+  "todaysFuelPrices": "أسعار الوقود اليوم",
+  "liveNow": "مباشر",
+  "openStationsNow": "{count, plural, =0{لا توجد محطات مفتوحة الآن} =1{محطة واحدة مفتوحة الآن} =2{محطتان مفتوحتان الآن} few{{count} محطات مفتوحة الآن} many{{count} محطة مفتوحة الآن} other{{count} محطة مفتوحة الآن}}"
 }

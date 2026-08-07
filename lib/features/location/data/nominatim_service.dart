@@ -46,7 +46,7 @@ class NominatimService {
       addr['neighbourhood'],
       addr['suburb'],
       addr['city'] ?? addr['town'] ?? addr['village'],
-    ].where((s) => s != null && (s as String).isNotEmpty).join('، ');
+    ].where((s) => s != null && (s as String).isNotEmpty).join(', ');
   }
 
   void dispose() => _dio.close();

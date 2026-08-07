@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
@@ -49,45 +50,56 @@ class ServicesGrid extends StatelessWidget {
         ? [
             for (final s in services)
               _ServiceTileData(
-                title: s.title,
-                imageUrl: s.imageUrl,
+                // Backend titles are Arabic-only; use the app's localized
+                // label for known actions so language switching works.
+                title: _titleForAction(s.action, l10n) ?? s.title,
+                // Known services use the bundled artwork (design refresh);
+                // unknown actions still load the backend image.
+                imageUrl:
+                    _assetForAction(s.action) == null ? s.imageUrl : null,
+                imageAsset: _assetForAction(s.action),
                 fallbackIcon: _iconForAction(s.action),
+                iconColor: _iconColorForAction(s.action),
                 route: routeForAction(s.action) ?? Routes.fuelType,
               ),
           ]
         : [
-            // Fallback when the backend hasn't seeded service tiles yet
+            // Fallback when the backend hasn't seeded service tiles yet.
+            // Reuse the *ForAction helpers so styling policy lives in one place.
             _ServiceTileData(
               title: l10n.petrol,
-              imageAsset: 'assets/icons/Frame 1984080696.svg',
+              imageAsset: _assetForAction('fuel'),
               fallbackIcon: Icons.local_gas_station_rounded,
+              iconColor: _iconColorForAction('fuel'),
               route: Routes.fuelType,
             ),
             _ServiceTileData(
               title: l10n.searchTowing,
-              imageAsset: 'assets/svg/towing.svg',
+              imageAsset: _assetForAction('towing'),
               fallbackIcon: Icons.fire_truck_outlined,
+              iconColor: _iconColorForAction('towing'),
               route: Routes.towingRequest,
             ),
             _ServiceTileData(
               title: l10n.emergencyService,
-              imageAsset: 'assets/images/fuel_jerrycan.png',
+              imageAsset: _assetForAction('emergency'),
               fallbackIcon: Icons.sos_rounded,
+              iconColor: _iconColorForAction('emergency'),
               route: Routes.fuelType,
             ),
           ];
 
-    // IntrinsicHeight bounds the Row's height so `stretch` can equalize
-    // tile heights (stretch inside an unbounded sliver context would
-    // otherwise force infinite height and crash layout/semantics).
-    return IntrinsicHeight(
+    // Three tiles across the row, each Expanded to a phone-friendly width.
+    return SizedBox(
+      height: 140.h,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           for (var i = 0; i < tiles.length; i++) ...[
             if (i > 0) SizedBox(width: Insets.s10),
             Expanded(
-                child: _ServiceTile(data: tiles[i], onNavigate: onNavigate)),
+              child: _ServiceTile(data: tiles[i], onNavigate: onNavigate),
+            ),
           ],
         ],
       ),
@@ -97,11 +109,52 @@ class ServicesGrid extends StatelessWidget {
   static IconData _iconForAction(String? action) {
     switch (action) {
       case 'towing':
-        return Icons.fire_truck_outlined;
+        // fire_truck was a fire engine — semantically wrong for towing.
+        return Icons.local_shipping_rounded;
       case 'emergency':
-        return Icons.sos_rounded;
+        return Icons.emergency_rounded;
       default:
         return Icons.local_gas_station_rounded;
+    }
+  }
+
+  static Color? _iconColorForAction(String? action) {
+    switch (action) {
+      case 'fuel':
+      case 'towing':
+        return AppColors.primary;
+      case 'emergency':
+        // Warm coral so emergency reads as urgent, distinct from fuel/tow.
+        return const Color(0xFFEF6B6B);
+      default:
+        return null;
+    }
+  }
+
+  /// Bundled full-color artwork per service (design refresh, 2025-08).
+  static String? _assetForAction(String? action) {
+    switch (action) {
+      case 'fuel':
+        return 'assets/images/fuel_tanker.png';
+      case 'towing':
+        return 'assets/images/tow_truck.png';
+      case 'emergency':
+        return 'assets/images/emergency_fuel.png';
+      default:
+        return null;
+    }
+  }
+
+  static String? _titleForAction(String? action, S l10n) {
+    switch (action) {
+      case 'fuel':
+        return l10n.petrol;
+      case 'towing':
+        return l10n.searchTowing;
+      case 'emergency':
+        return l10n.emergencyService;
+      default:
+        return null;
     }
   }
 }
@@ -109,8 +162,9 @@ class ServicesGrid extends StatelessWidget {
 class _ServiceTileData {
   final String title;
   final String? imageUrl; // network (from backend)
-  final String? imageAsset; // bundled fallback
+  final String? imageAsset; // bundled artwork
   final IconData fallbackIcon;
+  final Color? iconColor; // splash + fallback-icon tint
   final String route;
 
   const _ServiceTileData({
@@ -118,6 +172,7 @@ class _ServiceTileData {
     this.imageUrl,
     this.imageAsset,
     required this.fallbackIcon,
+    this.iconColor,
     required this.route,
   });
 }
@@ -128,21 +183,28 @@ class _ServiceTile extends StatelessWidget {
   const _ServiceTile({required this.data, required this.onNavigate});
 
   Widget _image(BuildContext context) {
+    final tint = data.iconColor;
     final fallback = Icon(
       data.fallbackIcon,
       size: 34.sp,
-      color: context.colors.primary,
+      color: tint ?? context.colors.primary,
     );
+    // Tint applies to flat SVG icons only — raster artwork (photos /
+    // illustrations) always renders in its natural colors.
+    final svgFilter =
+        tint != null ? ColorFilter.mode(tint, BlendMode.srcIn) : null;
 
     final url = data.imageUrl;
     if (url != null && url.startsWith('http')) {
-      // SVGs (e.g. the towing icon) need flutter_svg — CachedNetworkImage
-      // can't decode them.
       if (url.toLowerCase().endsWith('.svg')) {
         return SvgPicture.network(
           url,
           fit: BoxFit.contain,
+          colorFilter: svgFilter,
           placeholderBuilder: (_) => fallback,
+          // Without this, a failed fetch (server down / no network) throws an
+          // unhandled async exception instead of degrading to the icon.
+          errorBuilder: (_, __, ___) => fallback,
         );
       }
       return CachedNetworkImage(
@@ -154,7 +216,7 @@ class _ServiceTile extends StatelessWidget {
             height: 20.w,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              color: context.colors.primary.withValues(alpha: 0.5),
+              color: (tint ?? context.colors.primary).withValues(alpha: 0.5),
             ),
           ),
         ),
@@ -164,11 +226,17 @@ class _ServiceTile extends StatelessWidget {
     final asset = data.imageAsset;
     if (asset != null) {
       if (asset.toLowerCase().endsWith('.svg')) {
-        return SvgPicture.asset(asset, fit: BoxFit.contain);
+        return SvgPicture.asset(
+          asset,
+          fit: BoxFit.contain,
+          colorFilter: svgFilter,
+        );
       }
       return Image.asset(
         asset,
         fit: BoxFit.contain,
+        // The bundled artwork is multi-MP; decode at display size.
+        cacheWidth: 220,
         errorBuilder: (_, __, ___) => fallback,
       );
     }
@@ -177,74 +245,58 @@ class _ServiceTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.isDarkMode;
+    final splashTint = data.iconColor ?? context.colors.primary;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () => onNavigate(data.route),
         borderRadius: BorderRadius.circular(AppRadius.s20),
-        splashColor: context.colors.primary.withValues(alpha: 0.10),
-        highlightColor: context.colors.primary.withValues(alpha: 0.05),
+        splashColor: splashTint.withValues(alpha: 0.12),
+        highlightColor: splashTint.withValues(alpha: 0.06),
         child: Ink(
-          padding: EdgeInsets.symmetric(
-              vertical: Insets.s14, horizontal: Insets.s8),
+          padding: EdgeInsets.all(14.w),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: AlignmentDirectional.topStart,
-              end: AlignmentDirectional.bottomEnd,
-              colors: isDark
-                  ? [
-                      context.colors.surface,
-                      context.colors.surface.withValues(alpha: 0.85),
-                    ]
-                  : [
-                      context.colors.surfaceElevated,
-                      context.colors.surface,
-                    ],
+            // Single container — soft top-to-bottom gradient over the design
+            // grays, with a slightly darker border so the edge reads clearly.
+            gradient: const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFFF7F8FA), Color(0xFFE6E8EB)],
             ),
+            border: Border.all(color: const Color(0xFFDDE0E4)),
             borderRadius: BorderRadius.circular(AppRadius.s20),
-            border: Border.all(
-              color: isDark
-                  ? context.colors.border.withValues(alpha: 0.6)
-                  : context.colors.primary.withValues(alpha: 0.10),
-            ),
             boxShadow: [
               BoxShadow(
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.3)
-                    : context.colors.primary.withValues(alpha: 0.08),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 12,
                 offset: const Offset(0, 5),
               ),
             ],
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Image inside a soft tinted square for visual lift
-              Container(
-                width: 64.w,
-                height: 64.w,
-                padding: EdgeInsets.all(8.w),
-                decoration: BoxDecoration(
-                  color: context.colors.primary.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(AppRadius.s16),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Portrait artwork area — taller than wide per design.
+                SizedBox(
+                  width: 56.w,
+                  height: 72.h,
+                  child: _image(context),
                 ),
-                child: _image(context),
-              ),
-              SizedBox(height: Insets.s10),
-              Text(
-                data.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: getSemiBoldStyle(
-                    color: context.colors.textPrimary,
-                    fontSize: FontSize.s14),
-              ),
-            ],
+                SizedBox(height: Insets.s10),
+                Text(
+                  data.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: getSemiBoldStyle(
+                      color: context.colors.textPrimary,
+                      fontSize: FontSize.s14),
+                ),
+              ],
+            ),
           ),
         ),
       ),
