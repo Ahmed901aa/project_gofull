@@ -139,11 +139,13 @@ class _PriceCard extends StatelessWidget {
                 child: Icon(icon, size: 17.sp, color: colors.primary),
               ),
               SizedBox(width: Insets.s8),
+              // Name pushed to the far edge — maximum distance from the icon.
               Expanded(
                 child: Text(
                   name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.end,
                   style: getMediumStyle(
                     color: colors.textSecondary,
                     fontSize: FontSize.s12,
