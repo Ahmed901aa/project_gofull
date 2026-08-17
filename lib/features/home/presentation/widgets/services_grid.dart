@@ -36,7 +36,8 @@ class ServicesGrid extends StatelessWidget {
         return Routes.towingRequest;
       case 'emergency':
         // Emergency = ran out of fuel on the road → fuel order flow
-        return Routes.fuelType;
+        // (without the full-tank option).
+        return Routes.fuelTypeEmergency;
       default:
         return null;
     }
@@ -88,7 +89,7 @@ class ServicesGrid extends StatelessWidget {
               imageAsset: _assetForAction('emergency'),
               fallbackIcon: Icons.sos_rounded,
               iconColor: _iconColorForAction('emergency'),
-              route: Routes.fuelType,
+              route: Routes.fuelTypeEmergency,
             ),
           ];
 

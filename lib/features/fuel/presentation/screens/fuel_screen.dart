@@ -26,7 +26,9 @@ import '../widgets/fuel_details_form.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 
 class FuelScreen extends StatefulWidget {
-  const FuelScreen({super.key});
+  /// Emergency flow (out of fuel on the road) — full tank is not offered.
+  final bool isEmergency;
+  const FuelScreen({super.key, this.isEmergency = false});
   @override
   State<FuelScreen> createState() => _FuelScreenState();
 }
@@ -49,7 +51,13 @@ class _FuelScreenState extends State<FuelScreen> {
 
   List<String> _getQuantities(BuildContext context) {
     final l10n = S.of(context);
-    return [l10n.liters20Qty, l10n.liters30Qty, l10n.liters40Qty, l10n.liters50Qty, l10n.fullTankQty];
+    return [
+      l10n.liters20Qty,
+      l10n.liters30Qty,
+      l10n.liters40Qty,
+      l10n.liters50Qty,
+      if (!widget.isEmergency) l10n.fullTankQty,
+    ];
   }
 
   /// Returns locale-aware display name for a fuel type.
@@ -109,7 +117,7 @@ class _FuelScreenState extends State<FuelScreen> {
     }
   }
 
-  bool get _isFullTank => _selectedQuantityIndex == 4;
+  bool get _isFullTank => !widget.isEmergency && _selectedQuantityIndex == 4;
 
   double get _quantityNum {
     if (_isFullTank) {

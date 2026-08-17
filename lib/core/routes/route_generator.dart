@@ -61,6 +61,8 @@ class RouteGenerator {
         return _buildRoute(BottomNavShell(), settings);
       case Routes.fuelType:
         return _buildRoute(const FuelScreen(), settings);
+      case Routes.fuelTypeEmergency:
+        return _buildRoute(const FuelScreen(isEmergency: true), settings);
       case Routes.towingRequest:
         return _buildRoute(const TowingScreen(), settings);
       case Routes.searchingDriver:
