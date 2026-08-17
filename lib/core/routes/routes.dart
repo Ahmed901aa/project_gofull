@@ -8,6 +8,7 @@ class Routes {
   static const String locationPicker = '/location-picker';
   static const String mapSelection = '/map-selection';
   static const String fuelType = '/fuel-type';
+  static const String fuelTypeEmergency = '/fuel-type-emergency';
   static const String fuelOrder = '/fuel-order';
   static const String towingRequest = '/towing-request';
   static const String camera = '/camera';
