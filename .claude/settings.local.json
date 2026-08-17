@@ -115,7 +115,8 @@
       "Bash(pkill -9 -f \"flutter_tools.snapshot run\")",
       "Bash(pkill -9 -f \"flutter run\")",
       "Bash(awk '{print $2}')",
-      "Bash(xargs kill -9)"
+      "Bash(xargs kill -9)",
+      "Bash(grep -rnE \"Text\\\\\\('[^']*[a-zA-Z]{3,}\" lib --include='*.dart')"
     ]
   }
 }

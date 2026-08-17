@@ -295,7 +295,12 @@ class _ServiceTile extends StatelessWidget {
                 SizedBox(
                   width: data.largeArt ? 78.w : 56.w,
                   height: data.largeArt ? 92.h : 72.h,
-                  child: _image(context),
+                  // Mirror the artwork in Arabic (RTL) only; English keeps
+                  // the original orientation.
+                  child: Transform.flip(
+                    flipX: Directionality.of(context) == TextDirection.rtl,
+                    child: _image(context),
+                  ),
                 ),
                 SizedBox(height: data.largeArt ? Insets.s8 : Insets.s10),
                 Text(

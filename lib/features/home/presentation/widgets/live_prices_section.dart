@@ -39,6 +39,7 @@ class FuelPricesSection extends StatelessWidget {
     if (prices.isEmpty) return const SizedBox.shrink();
     final l10n = S.of(context);
 
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -69,19 +70,24 @@ class FuelPricesSection extends StatelessWidget {
           ],
         ),
         SizedBox(height: Insets.s12),
-        Row(
-          children: [
-            for (var i = 0; i < prices.length; i++) ...[
-              if (i > 0) SizedBox(width: Insets.s12),
-              Expanded(
-                child: _PriceCard(
-                  name: _fuelName(context, prices[i]),
-                  icon: _fuelIcon(prices[i].fuelType),
-                  price: prices[i].priceWithTax,
+        // Cards keep the English (LTR) arrangement in both languages —
+        // same card positions and icon side regardless of locale.
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Row(
+            children: [
+              for (var i = 0; i < prices.length; i++) ...[
+                if (i > 0) SizedBox(width: Insets.s12),
+                Expanded(
+                  child: _PriceCard(
+                    name: _fuelName(context, prices[i]),
+                    icon: _fuelIcon(prices[i].fuelType),
+                    price: prices[i].priceWithTax,
+                  ),
                 ),
-              ),
+              ],
             ],
-          ],
+          ),
         ),
       ],
     );
