@@ -28,4 +28,22 @@ import flutter_local_notifications
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
+
+  // The app doesn't use iOS state restoration. Flutter's default
+  // implementation asserts (SIGABRT) on simulators when the app bundle's
+  // modification date can't be read after a reinstall — seen in the
+  // Runner-2026-08-17 crash report. Opting out prevents that crash.
+  override func application(
+    _ application: UIApplication,
+    shouldSaveSecureApplicationState coder: NSCoder
+  ) -> Bool {
+    return false
+  }
+
+  override func application(
+    _ application: UIApplication,
+    shouldRestoreSecureApplicationState coder: NSCoder
+  ) -> Bool {
+    return false
+  }
 }

@@ -47,19 +47,38 @@ class ApiClient {
 
   void _onResponse(Response response, ResponseInterceptorHandler handler) {
     final data = response.data;
-    String preview = '';
+    // Compact preview: only show fields that actually exist in the payload,
+    // so non-order endpoints (e.g. /home) don't log misleading "null"s.
+    final parts = <String>[];
     if (data is Map) {
       final inner = data['data'];
       if (inner is Map) {
-        preview = 'id=${inner['id']} status=${inner['status']} '
-            'driver=${(inner['driver'] as Map?)?['name']} '
-            'provider=${((inner['provider'] as Map?)?['user'] as Map?)?['name']}';
-      } else if (inner is Map? && data['message'] != null) {
-        preview = data['message'].toString();
+        if (inner['id'] != null) parts.add('id=${inner['id']}');
+        if (inner['status'] != null) parts.add('status=${inner['status']}');
+        final driverName = (inner['driver'] as Map?)?['name'];
+        if (driverName != null) parts.add('driver=$driverName');
+        final providerName =
+            ((inner['provider'] as Map?)?['user'] as Map?)?['name'];
+        if (providerName != null) parts.add('provider=$providerName');
+        if (inner['active_order'] is Map) {
+          final order = inner['active_order'] as Map;
+          parts.add('activeOrder=#${order['id']}(${order['status']})');
+        } else if (inner.containsKey('active_order')) {
+          parts.add('activeOrder=none');
+        }
+        if (inner['banners'] is List) {
+          parts.add('banners=${(inner['banners'] as List).length}');
+        }
+      } else if (inner is List) {
+        parts.add('items=${inner.length}');
+      } else if (data['message'] != null) {
+        parts.add(data['message'].toString());
       }
     }
     developer.log(
-      '← ${response.statusCode} ${response.requestOptions.method} ${response.requestOptions.path} $preview',
+      '← ${response.statusCode} ${response.requestOptions.method} '
+      '${response.requestOptions.path}'
+      '${parts.isEmpty ? '' : ' ${parts.join(' ')}'}',
       name: 'HTTP',
     );
     handler.next(response);

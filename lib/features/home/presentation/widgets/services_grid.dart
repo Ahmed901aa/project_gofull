@@ -266,18 +266,20 @@ class _ServiceTile extends StatelessWidget {
         child: Ink(
           padding: EdgeInsets.all(14.w),
           decoration: BoxDecoration(
-            // Single container — soft top-to-bottom gradient over the design
-            // grays, with a slightly darker border so the edge reads clearly.
-            gradient: const LinearGradient(
+            // Theme-aware gradient so tiles read correctly in dark mode too.
+            gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color(0xFFF7F8FA), Color(0xFFE6E8EB)],
+              colors: [
+                context.colors.surface,
+                context.colors.surfaceVariant,
+              ],
             ),
-            border: Border.all(color: const Color(0xFFDDE0E4)),
+            border: Border.all(color: context.colors.border),
             borderRadius: BorderRadius.circular(AppRadius.s20),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: context.colors.shadow.withValues(alpha: 0.05),
                 blurRadius: 12,
                 offset: const Offset(0, 5),
               ),
