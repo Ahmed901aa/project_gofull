@@ -256,6 +256,7 @@ class _ServiceTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final splashTint = data.iconColor ?? context.colors.primary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Material(
       color: Colors.transparent,
@@ -267,24 +268,31 @@ class _ServiceTile extends StatelessWidget {
         child: Ink(
           padding: EdgeInsets.all(14.w),
           decoration: BoxDecoration(
-            // Theme-aware gradient so tiles read correctly in dark mode too.
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                context.colors.surface,
-                context.colors.surfaceVariant,
-              ],
-            ),
-            border: Border.all(color: context.colors.border),
+            // Dark mode keeps the subtle neutral gradient; light mode is a
+            // clean elevated white card — no border, just a soft layered
+            // shadow so the tile clearly lifts off the page background.
+            color: isDark ? null : const Color(0xFFF7F7F9),
+            gradient: isDark
+                ? LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      context.colors.surface,
+                      context.colors.surfaceVariant,
+                    ],
+                  )
+                : null,
+            border: isDark ? Border.all(color: context.colors.border) : null,
             borderRadius: BorderRadius.circular(AppRadius.s20),
-            boxShadow: [
-              BoxShadow(
-                color: context.colors.shadow.withValues(alpha: 0.05),
-                blurRadius: 12,
-                offset: const Offset(0, 5),
-              ),
-            ],
+            boxShadow: isDark
+                ? [
+                    BoxShadow(
+                      color: context.colors.shadow.withValues(alpha: 0.05),
+                      blurRadius: 12,
+                      offset: const Offset(0, 5),
+                    ),
+                  ]
+                : null,
           ),
           child: Center(
             child: Column(

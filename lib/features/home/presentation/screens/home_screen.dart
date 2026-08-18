@@ -227,7 +227,10 @@ class _HomeScreenState extends State<HomeScreen> {
       child: BlocListener<RequestBloc, RequestState>(
         listener: _onRatingCheckState,
         child: Scaffold(
-          backgroundColor: context.colors.background,
+          backgroundColor:
+              Theme.of(context).brightness == Brightness.dark
+                  ? context.colors.background
+                  : Colors.white,
           body: BlocConsumer<AppConfigBloc, AppConfigState>(
             listener: _onConfigChanged,
             builder: (context, config) {
