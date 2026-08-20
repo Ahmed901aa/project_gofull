@@ -13,6 +13,9 @@ import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/cubits/locale_cubit.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/core/widgets/directional_icon.dart';
+import 'package:project_gofull/core/services/reverb_service.dart';
+import 'package:project_gofull/core/usecases/usecase.dart';
+import 'package:project_gofull/features/auth/domain/usecases/logout_usecase.dart';
 
 class DriverDrawer extends StatefulWidget {
   const DriverDrawer({super.key});
@@ -228,7 +231,9 @@ class _DriverDrawerState extends State<DriverDrawer> {
               color: context.colors.error,
               onTap: () async {
                 Navigator.pop(context); // close drawer
-                await sl<TokenStorage>().clearAll();
+                sl<ReverbService>().disconnect();
+                // Revokes the token server-side; clears local regardless.
+                await sl<LogoutUseCase>()(const NoParams());
                 if (context.mounted) {
                   Navigator.pushNamedAndRemoveUntil(
                     context,

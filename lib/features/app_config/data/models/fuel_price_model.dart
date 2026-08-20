@@ -9,13 +9,15 @@ class FuelPriceModel extends FuelPriceEntity {
     super.priceWithTax,
   });
 
+  // Tolerant of wire-type drift (Laravel sends decimals as strings, ints
+  // as ints) — a single malformed row must not kill the whole price list.
   factory FuelPriceModel.fromJson(Map<String, dynamic> json) => FuelPriceModel(
-        id: json['id'] as int,
-        fuelType: json['fuel_type'] as String,
-        nameAr: json['name_ar'] as String,
-        pricePerLiter: double.parse(json['price_per_liter'].toString()),
+        id: int.tryParse('${json['id']}') ?? 0,
+        fuelType: '${json['fuel_type'] ?? ''}',
+        nameAr: '${json['name_ar'] ?? ''}',
+        pricePerLiter: double.tryParse('${json['price_per_liter']}') ?? 0,
         priceWithTax: json['price_with_tax'] != null
-            ? double.tryParse(json['price_with_tax'].toString())
+            ? double.tryParse('${json['price_with_tax']}')
             : null,
       );
 }

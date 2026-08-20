@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
@@ -454,12 +455,19 @@ class _ContinueOrderCardState extends State<ContinueOrderCard>
 
   void _cancel(BuildContext context, int orderId) {
     final bloc = sl<RequestBloc>()..add(CancelRequestEvent(orderId));
-    bloc.stream.listen((state) {
+    // One-shot: cancel the subscription and close the throwaway bloc as
+    // soon as we get a terminal state, so nothing leaks.
+    late final StreamSubscription<RequestState> sub;
+    sub = bloc.stream.listen((state) {
       if (state is RequestCancelled) {
         widget.onCancelled?.call();
         if (context.mounted) {
           AppSnackbar.success(context, S.of(context).orderCancelledSuccess);
         }
+      }
+      if (state is RequestCancelled || state is RequestError) {
+        sub.cancel();
+        bloc.close();
       }
     });
   }

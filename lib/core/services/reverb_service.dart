@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:project_gofull/core/network/api_client.dart';
 import 'package:project_gofull/core/network/api_constants.dart';
 import 'package:project_gofull/core/network/app_config.dart';
+import 'package:project_gofull/core/network/server_locator.dart';
 
 /// An event received on a Reverb channel.
 class ReverbEvent {
@@ -38,19 +39,44 @@ class ReverbService {
   WebSocket? _socket;
   String? _socketId;
   bool _disposed = false;
+  bool _connecting = false;
   int _retrySeconds = 2;
   Timer? _reconnectTimer;
+  Timer? _heartbeatTimer;
+
+  /// Fail fast instead of hanging ~60s on a dead network path
+  /// (the classic "Operation timed out, errno = 60").
+  static const _connectTimeout = Duration(seconds: 8);
+
+  /// Reverb pings every ~30s (activity_timeout). If we hear nothing for this
+  /// long the pipe is dead (IP change, sleep, server restart) — force a
+  /// reconnect instead of waiting for the OS to notice.
+  static const _heartbeatTimeout = Duration(seconds: 90);
 
   /// Channels we want subscribed (survive reconnects).
   final Set<String> _channels = {};
   final StreamController<ReverbEvent> _events =
       StreamController<ReverbEvent>.broadcast();
 
-  ReverbService(this.apiClient);
+  ReverbService(this.apiClient) {
+    // Server moved (Wi‑Fi change) → reconnect the socket to the new host.
+    ServerLocator.instance.host.addListener(_onHostChanged);
+  }
+
+  void _onHostChanged() {
+    if (_disposed || _channels.isEmpty) return;
+    debugPrint('Reverb: server host changed → reconnecting');
+    _socket?.close();
+    _socket = null;
+    _socketId = null;
+    reconnectNow();
+  }
 
   String get _url {
     final scheme = AppConfig.reverbUseTls ? 'wss' : 'ws';
-    return '$scheme://${AppConfig.reverbHost}:${AppConfig.reverbPort}'
+    // Reverb runs on the same machine as the API — follow the live host.
+    final host = ServerLocator.instance.host.value;
+    return '$scheme://$host:${AppConfig.reverbPort}'
         '/app/${AppConfig.reverbAppKey}?protocol=7&client=dart&version=1.0';
   }
 
@@ -63,15 +89,31 @@ class ReverbService {
   }
 
   Future<void> _ensureConnected() async {
-    if (_disposed || _socket != null) {
+    if (_disposed || _socket != null || _connecting) {
       return;
     }
+    _connecting = true;
     try {
-      final socket = await WebSocket.connect(_url);
+      final pending = WebSocket.connect(_url);
+      WebSocket socket;
+      try {
+        socket = await pending.timeout(_connectTimeout);
+      } on TimeoutException {
+        // `pending` is abandoned but still running; without a handler its
+        // eventual completion becomes an unhandled async exception or a
+        // leaked socket. Close on late success, swallow late errors.
+        pending.then((s) => s.close(), onError: (_) {});
+        rethrow;
+      }
+      if (_disposed) {
+        socket.close();
+        return;
+      }
       _socket = socket;
+      _armHeartbeat();
       socket.listen(
         _onMessage,
-        onDone: _scheduleReconnect,
+        onDone: _scheduleReconnect, 
         onError: (Object e) {
           debugPrint('Reverb error: $e');
           _scheduleReconnect();
@@ -81,10 +123,24 @@ class ReverbService {
     } catch (e) {
       debugPrint('Reverb connect failed: $e');
       _scheduleReconnect();
+    } finally {
+      _connecting = false;
     }
   }
 
+  /// (Re)start the dead-connection watchdog. Called on connect and on
+  /// every inbound frame.
+  void _armHeartbeat() {
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = Timer(_heartbeatTimeout, () {
+      debugPrint('Reverb heartbeat timeout — forcing reconnect');
+      _socket?.close();
+      _scheduleReconnect();
+    });
+  }
+
   void _onMessage(dynamic raw) {
+    _armHeartbeat();
     try {
       final msg = jsonDecode(raw as String) as Map<String, dynamic>;
       final event = msg['event'] as String? ?? '';
@@ -153,12 +209,16 @@ class ReverbService {
   }
 
   void _scheduleReconnect() {
+    _heartbeatTimer?.cancel();
     _socket = null;
     _socketId = null;
     if (_disposed || _channels.isEmpty) {
       return;
     }
-    _reconnectTimer?.cancel();
+    // Already scheduled — don't reset the backoff timer.
+    if (_reconnectTimer?.isActive ?? false) {
+      return;
+    }
     _reconnectTimer = Timer(Duration(seconds: _retrySeconds), () {
       _retrySeconds = (_retrySeconds * 2).clamp(2, 30);
       _ensureConnected();
@@ -180,14 +240,29 @@ class ReverbService {
   /// Close the socket. The service can reconnect later via [channelStream].
   void disconnect() {
     _reconnectTimer?.cancel();
+    _heartbeatTimer?.cancel();
     _socket?.close();
     _socket = null;
     _socketId = null;
   }
 
+  /// Call when the app returns to the foreground so a socket that died while
+  /// backgrounded is replaced immediately instead of after the next backoff.
+  void reconnectNow() {
+    if (_disposed || _channels.isEmpty) {
+      return;
+    }
+    _reconnectTimer?.cancel();
+    _retrySeconds = 2;
+    if (_socket == null && !_connecting) {
+      _ensureConnected();
+    }
+  }
+
   /// Permanently dispose (app shutdown).
   void dispose() {
     _disposed = true;
+    ServerLocator.instance.host.removeListener(_onHostChanged);
     disconnect();
     _events.close();
   }

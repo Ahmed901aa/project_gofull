@@ -10,6 +10,58 @@ import 'package:project_gofull/features/driver_service/presentation/screens/driv
 
 /// Live-location tracking and camera fitting. Relies on [NavigateMapStateMixin]
 /// for the shared map state it reads and updates.
+///
+/// Geolocator's platform position stream is SINGLE-subscription. A plain
+/// `.asBroadcastStream()` is not enough: when the last listener cancels
+/// (navigate screen disposes) it cancels the underlying platform stream for
+/// good, and the *next* screen that subscribes hits
+/// "Bad state: Stream has already been listened to".
+///
+/// [SharedPositionStream] owns one long-lived Geolocator subscription and
+/// fans it out through a broadcast controller. It (re)starts the platform
+/// stream lazily on first listener and tears it down when nobody is
+/// listening, so screens can subscribe/unsubscribe in any order — including
+/// the pushReplacement case where the new route inits before the old
+/// one disposes.
+class SharedPositionStream {
+  SharedPositionStream._();
+  static final SharedPositionStream instance = SharedPositionStream._();
+
+  static const _settings = LocationSettings(
+    accuracy: LocationAccuracy.high,
+    distanceFilter: 20, // metres
+  );
+
+  StreamSubscription<Position>? _source;
+  late final StreamController<Position> _controller =
+      StreamController<Position>.broadcast(
+    onListen: _startSource,
+    onCancel: _stopSourceIfIdle,
+  );
+
+  Stream<Position> get stream => _controller.stream;
+
+  void _startSource() {
+    if (_source != null) return; // already running
+    _source = Geolocator.getPositionStream(locationSettings: _settings).listen(
+      _controller.add,
+      onError: (Object e, StackTrace st) {
+        _controller.addError(e, st);
+        // Platform stream died — drop it so the next listener restarts it.
+        _source?.cancel();
+        _source = null;
+      },
+      cancelOnError: false,
+    );
+  }
+
+  void _stopSourceIfIdle() {
+    if (_controller.hasListener) return;
+    _source?.cancel();
+    _source = null;
+  }
+}
+
 mixin NavigateLocationMixin<T extends StatefulWidget>
     on State<T>, NavigateMapStateMixin<T> {
   Future<bool> _ensurePermission() async {
@@ -47,12 +99,8 @@ mixin NavigateLocationMixin<T extends StatefulWidget>
 
     // Movement-based updates: fires only after moving ≥ 20 m — far
     // kinder to battery and the API than the old fixed 10 s timer.
-    locationSub = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 20, // metres
-      ),
-    ).listen(_onPosition, onError: (Object e) {
+    locationSub = SharedPositionStream.instance.stream
+        .listen(_onPosition, onError: (Object e) {
       debugPrint('Location stream error: $e');
     });
 

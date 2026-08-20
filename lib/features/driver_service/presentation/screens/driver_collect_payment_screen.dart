@@ -13,6 +13,8 @@ import 'package:project_gofull/features/provider/presentation/bloc/provider_even
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/core/widgets/directional_icon.dart';
+import 'package:project_gofull/core/utils/tracked_dispatch.dart';
+import 'package:project_gofull/features/provider/presentation/bloc/provider_state.dart';
 
 class DriverCollectPaymentScreen extends StatelessWidget {
   final DriverCollectPaymentArgs args;
@@ -229,18 +231,30 @@ class DriverCollectPaymentScreen extends StatelessWidget {
         child: AppButton(
           text: S.of(context).confirmReceived,
           onPressed: () {
-            // Update status to 'completed'
             final orderId = int.tryParse(args.orderId);
-            if (orderId != null) {
-              sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'completed'));
-            }
-            Navigator.pushReplacementNamed(
-              context,
-              Routes.driverTaskComplete,
-              arguments: DriverTaskCompleteArgs(
-                orderId: args.orderId,
-                earnings: args.amount,
-              ),
+            if (orderId == null) return;
+            // Completion is the money step — only advance once the backend
+            // confirms. On failure the driver stays here and can retry
+            // (the backend treats a repeated 'completed' as an idempotent
+            // no-op, so a double tap is safe).
+            dispatchTracked<ProviderBloc, ProviderState>(
+              sl<ProviderBloc>(),
+              send: (b) =>
+                  b.add(UpdateStatusEvent(id: orderId, status: 'completed')),
+              isSuccess: (s) => s is StatusUpdated,
+              isFailure: (s) => s is ProviderError,
+              failureMessage: S.of(context).failedUpdateStatus,
+              onSuccess: () {
+                if (!context.mounted) return;
+                Navigator.pushReplacementNamed(
+                  context,
+                  Routes.driverTaskComplete,
+                  arguments: DriverTaskCompleteArgs(
+                    orderId: args.orderId,
+                    earnings: args.amount,
+                  ),
+                );
+              },
             );
           },
         ),

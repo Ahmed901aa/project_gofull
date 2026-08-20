@@ -14,6 +14,8 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_event
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/core/widgets/directional_icon.dart';
+import 'package:project_gofull/core/utils/tracked_dispatch.dart';
+import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 
 class RatingScreen extends StatefulWidget {
   final RatingArgs? args;
@@ -95,11 +97,17 @@ class _RatingScreenState extends State<RatingScreen> {
             onPressed: _rating == 0 ? null : () {
               final orderId = int.tryParse(widget.args?.orderId ?? '');
               if (orderId != null) {
-                sl<RequestBloc>().add(RateProviderEvent(
-                  requestId: orderId,
-                  rating: _rating,
-                  comment: _notesController.text.isNotEmpty ? _notesController.text : null,
-                ));
+                dispatchTracked<RequestBloc, RequestState>(
+                  sl<RequestBloc>(),
+                  send: (b) => b.add(RateProviderEvent(
+                    requestId: orderId,
+                    rating: _rating,
+                    comment: _notesController.text.isNotEmpty ? _notesController.text : null,
+                  )),
+                  isSuccess: (s) => s is ProviderRated,
+                  isFailure: (s) => s is RequestError,
+                  failureMessage: S.of(context).ratingFailed,
+                );
               }
               Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false);
             },

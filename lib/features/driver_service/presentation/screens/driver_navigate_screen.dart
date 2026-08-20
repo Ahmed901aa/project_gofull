@@ -13,6 +13,9 @@ import 'package:project_gofull/features/driver_service/presentation/widgets/driv
 import 'package:project_gofull/features/driver_service/presentation/widgets/driver_navigate/navigate_header.dart';
 import 'package:project_gofull/features/driver_service/presentation/widgets/driver_navigate/navigate_side_buttons.dart';
 import 'package:project_gofull/features/driver_service/presentation/widgets/driver_navigate/navigate_bottom_panel.dart';
+import 'package:project_gofull/core/utils/tracked_dispatch.dart';
+import 'package:project_gofull/features/provider/presentation/bloc/provider_state.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
 class DriverNavigateScreen extends StatefulWidget {
   final DriverNavigateArgs args;
@@ -35,7 +38,18 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen>
     super.initState();
     final orderId = int.tryParse(widget.args.orderId);
     if (orderId != null && isToCustomer) {
-      sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'en_route'));
+      // Post-frame: S.of(context) is not available in initState.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        dispatchTracked<ProviderBloc, ProviderState>(
+          sl<ProviderBloc>(),
+          send: (b) =>
+              b.add(UpdateStatusEvent(id: orderId, status: 'en_route')),
+          isSuccess: (s) => s is StatusUpdated,
+          isFailure: (s) => s is ProviderError,
+          failureMessage: S.of(context).failedUpdateStatus,
+        );
+      });
     }
     initLocation();
   }

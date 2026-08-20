@@ -52,11 +52,15 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
   }
 
   // ── Helpers to extract data safely ──
-  String _driverAddress(BuildContext context) => (_order?['driver_address'] as String?) ?? S.of(context).notSpecified;
-  String _destinationAddress(BuildContext context) => (_order?['destination_address'] as String?) ?? S.of(context).notSpecified;
-  String get _fuelQuantity => (_order?['fuel_quantity'] as String?) ?? '-';
+  // Wire types drift (Laravel decimals arrive as strings OR numbers) —
+  // never hard-cast a display field.
+  static String? _str(dynamic v) => v?.toString();
+
+  String _driverAddress(BuildContext context) => _str(_order?['driver_address']) ?? S.of(context).notSpecified;
+  String _destinationAddress(BuildContext context) => _str(_order?['destination_address']) ?? S.of(context).notSpecified;
+  String get _fuelQuantity => _str(_order?['fuel_quantity']) ?? '-';
   String _fuelType(BuildContext context) {
-    final t = _order?['fuel_type'] as String?;
+    final t = _str(_order?['fuel_type']);
     if (t == 'petrol' || t == 'gasoline') {
 
       return S.of(context).gasolineLabel;
@@ -69,12 +73,12 @@ class _DriverTripDetailsScreenState extends State<DriverTripDetailsScreen> {
     }
     return t ?? '-';
   }
-  String get _pricePerLiter => (_order?['price_per_liter'] as String?) ?? '-';
-  String get _plateNumber => (_order?['plate_number'] as String?) ?? '-';
+  String get _pricePerLiter => _str(_order?['price_per_liter']) ?? '-';
+  String get _plateNumber => _str(_order?['plate_number']) ?? '-';
 
-  String get _total => (_order?['total'] as String?) ?? '0.00';
+  String get _total => _str(_order?['total']) ?? '0.00';
   String _paymentMethod(BuildContext context) {
-    final m = _order?['payment_method'] as String?;
+    final m = _str(_order?['payment_method']);
     final cash = S.of(context).cashLabel;
     return m == 'cash' ? cash : (m ?? cash);
   }

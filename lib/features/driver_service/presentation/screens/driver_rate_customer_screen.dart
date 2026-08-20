@@ -12,6 +12,8 @@ import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/core/widgets/directional_icon.dart';
+import 'package:project_gofull/core/utils/tracked_dispatch.dart';
+import 'package:project_gofull/features/provider/presentation/bloc/provider_state.dart';
 
 class DriverRateCustomerScreen extends StatefulWidget {
   final DriverRateArgs args;
@@ -39,11 +41,18 @@ class _DriverRateCustomerScreenState extends State<DriverRateCustomerScreen> {
     // Send rating to backend
     final orderId = int.tryParse(widget.args.orderId);
     if (orderId != null) {
-      sl<ProviderBloc>().add(RateDriverEvent(
-        requestId: orderId,
-        rating: _selectedStars,
-        comment: _notesController.text.isNotEmpty ? _notesController.text : null,
-      ));
+      dispatchTracked<ProviderBloc, ProviderState>(
+        sl<ProviderBloc>(),
+        send: (b) => b.add(RateDriverEvent(
+          requestId: orderId,
+          rating: _selectedStars,
+          comment:
+              _notesController.text.isNotEmpty ? _notesController.text : null,
+        )),
+        isSuccess: (s) => s is DriverRated,
+        isFailure: (s) => s is ProviderError,
+        failureMessage: S.of(context).ratingFailed,
+      );
     }
     // Navigate back to driver home
     Navigator.pushNamedAndRemoveUntil(

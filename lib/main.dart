@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +15,7 @@ import 'package:project_gofull/core/routes/route_generator.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/noti_service.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
+import 'package:project_gofull/core/utils/tracked_dispatch.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
 
@@ -21,8 +23,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await initDependencies();
-  await NotiService().initNotification();
   runApp(const GoFullApp());
+
+  unawaited(
+    NotiService().initNotification().catchError(
+      (Object e, StackTrace st) =>
+          debugPrint('NotiService init failed (non-fatal): $e'),
+    ),
+  );
 }
 
 class GoFullApp extends StatelessWidget {
@@ -55,6 +63,9 @@ class GoFullApp extends StatelessWidget {
                 builder: (context, child) => MaterialApp(
                   debugShowCheckedModeBanner: false,
                   title: 'GoFull',
+                  // Root messenger: outcome snackbars (e.g. a failed status
+                  // update fired just before navigation) stay visible.
+                  scaffoldMessengerKey: rootScaffoldMessengerKey,
                   locale: locale,
                   supportedLocales: S.supportedLocales,
                   localizationsDelegates: const [

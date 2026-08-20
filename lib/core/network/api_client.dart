@@ -1,7 +1,9 @@
 import 'dart:developer' as developer;
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:project_gofull/core/network/api_constants.dart';
+import 'package:project_gofull/core/network/server_locator.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
 
 class ApiClient {
@@ -34,6 +36,9 @@ class ApiClient {
   // ── Interceptors ──────────────────────────────────────────
 
   void _onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    // Always use the server the locator currently considers reachable, so a
+    // Wi‑Fi change is picked up without rebuilding the app.
+    options.baseUrl = ServerLocator.instance.baseUrl;
     final token = _tokenStorage.getToken();
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
@@ -84,7 +89,30 @@ class ApiClient {
     handler.next(response);
   }
 
-  void _onError(DioException error, ErrorInterceptorHandler handler) {
+  void _onError(DioException error, ErrorInterceptorHandler handler) async {
+    // Connection-level failure (not an HTTP status) → the server probably
+    // moved (new Wi‑Fi). Re-locate it and retry this request ONCE.
+    final isConnError = error.type == DioExceptionType.connectionError ||
+        error.type == DioExceptionType.connectionTimeout ||
+        error.error is SocketException;
+    final alreadyRetried = error.requestOptions.extra['_relocated'] == true;
+    if (isConnError && !alreadyRetried) {
+      // Compare the full base URL: the server may have moved host (Wi‑Fi
+      // change) OR port (artisan serve auto-increments past busy ports).
+      final before = ServerLocator.instance.baseUrl;
+      await ServerLocator.instance.resolve();
+      if (ServerLocator.instance.baseUrl != before) {
+        try {
+          final opts = error.requestOptions
+            ..baseUrl = ServerLocator.instance.baseUrl
+            ..extra['_relocated'] = true;
+          final response = await dio.fetch(opts);
+          return handler.resolve(response);
+        } catch (_) {
+          // fall through to normal error handling
+        }
+      }
+    }
     developer.log(
       '❌ ${error.response?.statusCode ?? 'NO_RESP'} ${error.requestOptions.method} ${error.requestOptions.path}: ${error.message}',
       name: 'HTTP',

@@ -17,6 +17,9 @@ import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/profile_menu_item.dart';
 import '../widgets/profile_user_card.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/services/reverb_service.dart';
+import 'package:project_gofull/core/usecases/usecase.dart';
+import 'package:project_gofull/features/auth/domain/usecases/logout_usecase.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -220,7 +223,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       destructive: true,
     );
     if (confirmed && context.mounted) {
-      await sl<TokenStorage>().clearAll();
+      sl<ReverbService>().disconnect();
+      // Revokes the token server-side; clears local storage regardless.
+      await sl<LogoutUseCase>()(const NoParams());
       if (context.mounted) {
         Navigator.of(context, rootNavigator: true)
             .pushNamedAndRemoveUntil(Routes.login, (r) => false);

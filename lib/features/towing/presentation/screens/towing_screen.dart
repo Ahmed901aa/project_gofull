@@ -164,7 +164,15 @@ class _TowingScreenState extends State<TowingScreen> {
                 requestId: state.request.id,
                 serviceType: 'towing',
               ),
-            );
+            ).then((_) {
+              // User cancelled the search and came back — allow re-ordering.
+              if (mounted) {
+                setState(() {
+                  _isSubmitting = false;
+                  _hasNavigated = false;
+                });
+              }
+            });
           } else if (state is RequestError) {
             // Reset submission guard so the user can retry
             setState(() => _isSubmitting = false);

@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
+import 'package:project_gofull/core/network/server_locator.dart';
+import 'package:project_gofull/core/services/reverb_service.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/widgets/rating_bottom_sheet.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
@@ -70,9 +72,12 @@ class _BottomNavShellState extends State<BottomNavShell>
     // ONLY check when returning from background — not on every state change
     if (state == AppLifecycleState.resumed) {
       _checkIfCompletedWhileAway();
-      // Fallback fetch: the Reverb socket may have been dropped while the
-      // app was backgrounded — refetch fuel prices + settings + home data
-      // so any admin change made while away is applied.
+      // Network may have changed while backgrounded → re-find the server,
+      // then reconnect the (probably dead) Reverb socket.
+      ServerLocator.instance.resolve().then((_) {
+        sl<ReverbService>().reconnectNow();
+      });
+      // Fallback fetch covers anything missed while the socket was down.
       sl<AppConfigBloc>()
         ..add(const LoadAppConfigEvent())
         ..add(const LoadHomeDataEvent());

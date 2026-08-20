@@ -19,6 +19,7 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_event
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/utils/tracked_dispatch.dart';
 
 List<String> _getSafetyItems(BuildContext context) {
   final l10n = S.of(context);
@@ -99,11 +100,17 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
   void _submitRating() {
     final orderId = widget.requestId;
     if (orderId != null && _rating > 0) {
-      sl<RequestBloc>().add(RateProviderEvent(
-        requestId: orderId,
-        rating: _rating,
-        comment: _notesController.text.isNotEmpty ? _notesController.text : null,
-      ));
+      dispatchTracked<RequestBloc, RequestState>(
+        sl<RequestBloc>(),
+        send: (b) => b.add(RateProviderEvent(
+          requestId: orderId,
+          rating: _rating,
+          comment: _notesController.text.isNotEmpty ? _notesController.text : null,
+        )),
+        isSuccess: (s) => s is ProviderRated,
+        isFailure: (s) => s is RequestError,
+        failureMessage: S.of(context).ratingFailed,
+      );
     }
     setState(() => _ratingSubmitted = true);
   }

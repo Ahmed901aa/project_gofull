@@ -157,6 +157,20 @@ class _DriverHomeScreenState extends State<DriverHomeScreen>
       if (!wasLoaded) _maybeStartPendingPolling();
       return;
     }
+    if (state is AvailabilityUpdated) {
+      // Server-confirmed value — corrects the optimistic toggle.
+      setState(() => _isActive = state.isAvailable);
+      return;
+    }
+    if (state is ProviderError) {
+      // The optimistic toggle (or accept/cancel) failed — resync with the
+      // server instead of showing a state the backend never saved.
+      _providerBloc.add(const LoadProfileEvent());
+      if (mounted) {
+        AppSnackbar.error(context, state.message);
+      }
+      return;
+    }
     if (state is OrderCancelledByProvider) {
       setState(() {
         _activeRequest = null;

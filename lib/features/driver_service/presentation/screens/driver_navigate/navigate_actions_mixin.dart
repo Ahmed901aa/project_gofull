@@ -10,6 +10,8 @@ import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_refueling_screen.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
+import 'package:project_gofull/core/utils/tracked_dispatch.dart';
+import 'package:project_gofull/features/provider/presentation/bloc/provider_state.dart';
 
 /// User actions triggered from the navigation screen: external maps, order
 /// cancellation and the "arrived" transition.
@@ -40,8 +42,14 @@ mixin NavigateActionsMixin<T extends StatefulWidget> on State<T> {
     );
     if (confirmed) {
       final orderId = int.tryParse(navArgs.orderId);
-      if (orderId != null) {
-        sl<ProviderBloc>().add(CancelOrderEvent(id: orderId));
+      if (orderId != null && mounted) {
+        dispatchTracked<ProviderBloc, ProviderState>(
+          sl<ProviderBloc>(),
+          send: (b) => b.add(CancelOrderEvent(id: orderId)),
+          isSuccess: (s) => s is OrderCancelledByProvider,
+          isFailure: (s) => s is ProviderError,
+          failureMessage: S.of(context).failedUpdateStatus,
+        );
       }
       if (mounted) Navigator.pop(context);
     }
@@ -49,8 +57,18 @@ mixin NavigateActionsMixin<T extends StatefulWidget> on State<T> {
 
   void onArrivedTapped() {
     final orderId = int.tryParse(navArgs.orderId);
-    if (orderId != null) {
-      sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'arrived'));
+    // 'arrived' only applies while heading to the customer. On the towing
+    // leg to the destination the order is already in_progress — re-sending
+    // 'arrived' would move the status backwards (backend now rejects it).
+    if (orderId != null && isToCustomer) {
+      dispatchTracked<ProviderBloc, ProviderState>(
+        sl<ProviderBloc>(),
+        send: (b) =>
+            b.add(UpdateStatusEvent(id: orderId, status: 'arrived')),
+        isSuccess: (s) => s is StatusUpdated,
+        isFailure: (s) => s is ProviderError,
+        failureMessage: S.of(context).failedUpdateStatus,
+      );
     }
     if (navArgs.isFuel) {
       Navigator.pushReplacementNamed(

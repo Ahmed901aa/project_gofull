@@ -1,3 +1,4 @@
+import 'package:project_gofull/core/error/failure.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/usecases/usecase.dart';
 import 'package:project_gofull/features/auth/data/models/user_model.dart';
@@ -36,13 +37,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     CheckAuthRequested event,
     Emitter<AuthState> emit,
   ) async {
-    if (tokenStorage.isLoggedIn) {
-      final userJson = tokenStorage.getUser();
-      if (userJson != null) {
-        final user = UserModel.fromJson(userJson);
-        emit(AuthAuthenticated(user));
-        return;
+    try {
+      if (tokenStorage.isLoggedIn) {
+        final userJson = tokenStorage.getUser();
+        if (userJson != null) {
+          final user = UserModel.fromJson(userJson);
+          emit(AuthAuthenticated(user));
+          return;
+        }
       }
+    } catch (_) {
+      // Stored user JSON from an older app version may not match the
+      // current model — treat as logged out rather than crashing startup.
+      await tokenStorage.clearAll();
     }
     emit(const AuthUnauthenticated());
   }
@@ -58,7 +65,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       LoginParams(phone: event.phone, password: event.password),
     );
     result.fold(
-      (failure) => emit(AuthFailure(failure.message)),
+      (failure) => emit(AuthFailure(failure.message,
+          isNetwork: failure is NetworkFailure)),
       (user) => emit(AuthAuthenticated(user)),
     );
   }
@@ -72,7 +80,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(const OtpSending());
     final result = await sendOtpUseCase(SendOtpParams(phone: event.phone));
     result.fold(
-      (failure) => emit(AuthFailure(failure.message)),
+      (failure) => emit(AuthFailure(failure.message,
+          isNetwork: failure is NetworkFailure)),
       (message) => emit(OtpSent(phone: event.phone, message: message)),
     );
   }
@@ -95,7 +104,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ),
     );
     result.fold(
-      (failure) => emit(AuthFailure(failure.message)),
+      (failure) => emit(AuthFailure(failure.message,
+          isNetwork: failure is NetworkFailure)),
       (user) => emit(AuthAuthenticated(user)),
     );
   }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:project_gofull/core/network/api_client.dart';
 import 'package:project_gofull/core/network/api_constants.dart';
@@ -88,6 +90,16 @@ class AuthRemoteDataSource implements AuthDataSource {
 
   AuthRemoteDataSource({required this.apiClient, required this.tokenStorage});
 
+  /// The request never reached the server (dead Wi‑Fi, wrong IP, server
+  /// down, iOS local-network permission denied). Must NOT be reported as
+  /// "wrong credentials" — the UI shows a localized connection message.
+  bool _isConnectionError(DioException e) =>
+      e.type == DioExceptionType.connectionError ||
+      e.type == DioExceptionType.connectionTimeout ||
+      e.type == DioExceptionType.sendTimeout ||
+      e.type == DioExceptionType.receiveTimeout ||
+      e.error is SocketException;
+
   @override
   Future<UserModel> login(String phone, String password) async {
     try {
@@ -110,6 +122,9 @@ class AuthRemoteDataSource implements AuthDataSource {
       ).toJson());
       return user;
     } on DioException catch (e) {
+      if (_isConnectionError(e)) {
+        throw const NetworkException('Cannot reach the server');
+      }
       final msg =
           (e.response?.data as Map<String, dynamic>?)?['message'] as String?;
       throw ServerException(msg ?? 'Failed to login');
@@ -128,6 +143,9 @@ class AuthRemoteDataSource implements AuthDataSource {
       final data = response.data as Map<String, dynamic>;
       return (data['message'] as String?) ?? 'OTP sent';
     } on DioException catch (e) {
+      if (_isConnectionError(e)) {
+        throw const NetworkException('Cannot reach the server');
+      }
       final msg =
           (e.response?.data as Map<String, dynamic>?)?['message'] as String?;
       throw ServerException(msg ?? 'Failed to send verification code');
@@ -171,6 +189,9 @@ class AuthRemoteDataSource implements AuthDataSource {
       ).toJson());
       return user;
     } on DioException catch (e) {
+      if (_isConnectionError(e)) {
+        throw const NetworkException('Cannot reach the server');
+      }
       final msg =
           (e.response?.data as Map<String, dynamic>?)?['message'] as String?;
       throw ServerException(msg ?? 'Failed to create account');
@@ -210,6 +231,9 @@ class AuthRemoteDataSource implements AuthDataSource {
       await tokenStorage.saveToken(newToken);
       return newToken;
     } on DioException catch (e) {
+      if (_isConnectionError(e)) {
+        throw const NetworkException('Cannot reach the server');
+      }
       final msg =
           (e.response?.data as Map<String, dynamic>?)?['message'] as String?;
       throw ServerException(msg ?? 'Failed to change password');

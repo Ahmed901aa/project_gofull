@@ -17,6 +17,7 @@ import 'package:project_gofull/features/towing/presentation/widgets/searching_an
 import '../widgets/searching_header.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/app_notification.dart';
 
 class SearchingScreen extends StatefulWidget {
   final SearchingArgs args;
@@ -171,6 +172,9 @@ class _SearchingScreenState extends State<SearchingScreen> {
   }
 
   void _onCancel() {
+    // Block the accept-navigation path FIRST: a details poll already in
+    // flight could otherwise navigate to DriverFound while we cancel.
+    _navigated = true;
     _polling.stop();
     if (widget.args.requestId != null) {
       _requestBloc.add(CancelRequestEvent(widget.args.requestId!));
@@ -179,6 +183,20 @@ class _SearchingScreenState extends State<SearchingScreen> {
     Future.delayed(const Duration(milliseconds: 500), () {
       if (mounted) Navigator.pop(context);
     });
+  }
+
+  Future<void> _confirmCancel() async {
+    final confirmed = await AppConfirmDialog.show(
+      context,
+      icon: Icons.cancel_rounded,
+      iconColor: context.colors.error,
+      title: S.of(context).cancelOrderDialogTitle,
+      subtitle: S.of(context).cancelOrderDialogSubtitle,
+      confirmLabel: S.of(context).cancelOrderDialogBtn,
+      cancelLabel: S.of(context).cancelOrderDialogGoBack,
+      destructive: true,
+    );
+    if (confirmed && mounted) _onCancel();
   }
 
   @override
@@ -190,7 +208,8 @@ class _SearchingScreenState extends State<SearchingScreen> {
         child: PopScope(
           canPop: false,
           onPopInvokedWithResult: (didPop, _) {
-            if (!didPop) _onCancel();
+            // Back gesture must not silently cancel a roadside request.
+            if (!didPop) _confirmCancel();
           },
           child: Scaffold(
             backgroundColor: context.colors.surface,

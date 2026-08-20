@@ -19,6 +19,7 @@ import '../widgets/arrived_safety_card.dart';
 import '../widgets/gif_circle.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/utils/tracked_dispatch.dart';
 
 class DriverArrivedScreen extends StatefulWidget {
   final TripInProgressArgs? args;
@@ -77,11 +78,17 @@ class _DriverArrivedScreenState extends State<DriverArrivedScreen> {
   void _submitRating() {
     final orderId = widget.args?.requestId;
     if (orderId != null && _rating > 0) {
-      sl<RequestBloc>().add(RateProviderEvent(
-        requestId: orderId,
-        rating: _rating,
-        comment: _notesController.text.isNotEmpty ? _notesController.text : null,
-      ));
+      dispatchTracked<RequestBloc, RequestState>(
+        sl<RequestBloc>(),
+        send: (b) => b.add(RateProviderEvent(
+          requestId: orderId,
+          rating: _rating,
+          comment: _notesController.text.isNotEmpty ? _notesController.text : null,
+        )),
+        isSuccess: (s) => s is ProviderRated,
+        isFailure: (s) => s is RequestError,
+        failureMessage: S.of(context).ratingFailed,
+      );
     }
     setState(() => _ratingSubmitted = true);
   }

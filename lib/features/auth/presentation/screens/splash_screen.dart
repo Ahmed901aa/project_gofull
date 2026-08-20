@@ -35,22 +35,25 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _navigate() {
-    Future.delayed(const Duration(seconds: 3), () {
-      if (!mounted) {
+    // Short branded pause, then route. Wrapped so any unexpected error in
+    // session lookup falls back to the login screen instead of leaving the
+    // user stuck on the splash forever.
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (!mounted) return;
 
-        return;
-
+      String route = Routes.login;
+      try {
+        final tokenStorage = sl<TokenStorage>();
+        if (tokenStorage.isLoggedIn) {
+          route = tokenStorage.userRole == 'provider'
+              ? Routes.driverHome
+              : Routes.home;
+        }
+      } catch (e) {
+        debugPrint('Splash: session check failed, falling back to login: $e');
       }
-
-      final tokenStorage = sl<TokenStorage>();
-      if (tokenStorage.isLoggedIn) {
-        final role = tokenStorage.userRole;
-        final route =
-            (role == 'provider') ? Routes.driverHome : Routes.home;
-        Navigator.of(context).pushReplacementNamed(route);
-      } else {
-        Navigator.of(context).pushReplacementNamed(Routes.login);
-      }
+      if (!mounted) return;
+      Navigator.of(context).pushReplacementNamed(route);
     });
   }
 

@@ -4,6 +4,7 @@ import 'dart:async';
 class OrderPollingService {
   Timer? _timer;
   bool _isPolling = false;
+  bool _inFlight = false;
 
   bool get isPolling => _isPolling;
 
@@ -13,11 +14,24 @@ class OrderPollingService {
   }) {
     stop();
     _isPolling = true;
+    // One tick at a time: on a slow network, overlapping callbacks would
+    // pile up requests and let stale responses interleave. Errors must not
+    // kill the timer.
+    Future<void> tick() async {
+      if (_inFlight || !_isPolling) return;
+      _inFlight = true;
+      try {
+        await callback();
+      } catch (_) {
+        // Swallow — the next tick retries.
+      } finally {
+        _inFlight = false;
+      }
+    }
+
     // Call immediately first, then periodically
-    callback();
-    _timer = Timer.periodic(interval, (_) {
-      if (_isPolling) callback();
-    });
+    tick();
+    _timer = Timer.periodic(interval, (_) => tick());
   }
 
   void stop() {

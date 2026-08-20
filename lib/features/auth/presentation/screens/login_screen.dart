@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/assets_manager.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/features/auth/domain/entities/user_entity.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_event.dart';
@@ -97,8 +98,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       builder: (context, state) => LoginFormCard(
                         phoneController: _phoneController,
                         passwordController: _passwordController,
-                        errorMessage:
-                            state is AuthFailure ? state.message : null,
+                        errorMessage: state is AuthFailure
+                            ? (state.isNetwork
+                                ? S.of(context).networkError
+                                : state.message)
+                            : null,
                         isLoading: state is AuthLoading,
                         onLogin: () => _onLogin(context),
                         onCreateAccount: () {

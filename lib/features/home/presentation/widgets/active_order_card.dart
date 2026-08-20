@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -292,12 +293,19 @@ class ActiveOrderCard extends StatelessWidget {
 
   void _cancelOrder(BuildContext context, int orderId) {
     final bloc = sl<RequestBloc>()..add(CancelRequestEvent(orderId));
-    bloc.stream.listen((state) {
+    // One-shot: cancel the subscription and close the throwaway bloc as
+    // soon as we get a terminal state, so nothing leaks.
+    late final StreamSubscription<RequestState> sub;
+    sub = bloc.stream.listen((state) {
       if (state is RequestCancelled) {
         onCancelled?.call();
         if (context.mounted) {
           AppSnackbar.success(context, S.of(context).orderCancelledSuccess);
         }
+      }
+      if (state is RequestCancelled || state is RequestError) {
+        sub.cancel();
+        bloc.close();
       }
     });
   }

@@ -28,14 +28,23 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Future<void> _openCamera() async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.camera, imageQuality: 90);
+    XFile? picked;
+    try {
+      picked = await ImagePicker()
+          .pickImage(source: ImageSource.camera, imageQuality: 90);
+    } catch (_) {
+      // Camera permission denied / unavailable — leave instead of showing
+      // an infinite spinner.
+      picked = null;
+    }
     if (!mounted) {
 
       return;
 
     }
     if (picked == null) { Navigator.pop(context); return; }
-    setState(() => _photo = File(picked.path));
+    final file = File(picked.path);
+    setState(() => _photo = file);
   }
 
   Future<void> _saveAndContinue() async {
@@ -45,7 +54,12 @@ class _CameraScreenState extends State<CameraScreen> {
 
     }
     setState(() => _saving = true);
-    await Gal.putImage(_photo!.path);
+    try {
+      await Gal.putImage(_photo!.path);
+    } catch (_) {
+      // Photo-library permission denied — saving to the gallery is a
+      // convenience, not a requirement. Continue with the photo.
+    }
     if (!mounted) {
 
       return;

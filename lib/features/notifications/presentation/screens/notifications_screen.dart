@@ -30,8 +30,13 @@ class NotificationsScreen extends StatelessWidget {
                       return Center(child: CircularProgressIndicator(color: context.colors.primary));
                     }
                     if (state is NotificationError) {
+                      // 'failed' is the sentinel for non-server errors —
+                      // show the localized message, never Dart internals.
+                      final text = state.message == 'failed'
+                          ? S.of(context).failedLoadNotifications
+                          : state.message;
                       return Center(
-                        child: Text(state.message,
+                        child: Text(text,
                             style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s14)),
                       );
                     }
@@ -114,7 +119,8 @@ class _NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final date = notification.createdAt?.substring(0, 16).replaceAll('T', ' ') ?? '';
+    final raw = notification.createdAt ?? '';
+    final date = raw.length >= 16 ? raw.substring(0, 16).replaceAll('T', ' ') : raw;
 
     return Container(
       padding: EdgeInsets.all(Insets.s16),

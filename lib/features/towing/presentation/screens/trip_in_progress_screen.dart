@@ -148,7 +148,9 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
         title: S.of(context).orderCancelledTitle,
         body: S.of(context).orderCancelledByProviderBody,
       );
-      Navigator.pushReplacementNamed(context, Routes.home);
+      // Unwind to the EXISTING shell — pushing Routes.home would stack a
+      // second BottomNavShell (and leave this flow's screens alive below).
+      Navigator.popUntil(context, (route) => route.isFirst);
     }
   }
 

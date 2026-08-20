@@ -15,6 +15,8 @@ import 'package:project_gofull/features/provider/presentation/bloc/provider_even
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/core/widgets/directional_icon.dart';
+import 'package:project_gofull/core/utils/tracked_dispatch.dart';
+import 'package:project_gofull/features/provider/presentation/bloc/provider_state.dart';
 
 class DriverDocumentationScreen extends StatefulWidget {
   final DriverDocumentationArgs args;
@@ -54,7 +56,14 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
     if (_isPickup) {
       // Update status to 'in_progress' after pickup documentation
       if (orderId != null) {
-        sl<ProviderBloc>().add(UpdateStatusEvent(id: orderId, status: 'in_progress'));
+        dispatchTracked<ProviderBloc, ProviderState>(
+          sl<ProviderBloc>(),
+          send: (b) =>
+              b.add(UpdateStatusEvent(id: orderId, status: 'in_progress')),
+          isSuccess: (s) => s is StatusUpdated,
+          isFailure: (s) => s is ProviderError,
+          failureMessage: S.of(context).failedUpdateStatus,
+        );
       }
       Navigator.pushReplacementNamed(
         context,

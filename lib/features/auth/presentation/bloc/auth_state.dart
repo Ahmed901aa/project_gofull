@@ -45,8 +45,13 @@ class OtpSent extends AuthState {
 
 class AuthFailure extends AuthState {
   final String message;
-  const AuthFailure(this.message);
+
+  /// True when the request never reached the server (connectivity), so the
+  /// UI can show a localized connection message instead of [message].
+  final bool isNetwork;
+
+  const AuthFailure(this.message, {this.isNetwork = false});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, isNetwork];
 }
