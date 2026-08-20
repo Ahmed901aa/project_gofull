@@ -8,6 +8,7 @@ abstract class RequestRepository {
   Future<Either<Failure, ServiceRequestEntity>> createFuelRequest({
     required double latitude, required double longitude, String? address,
     required String fuelType, required double fuelQuantity, String? notes,
+    bool isEmergency = false,
   });
   Future<Either<Failure, ServiceRequestEntity>> createTowingRequest({
     required double latitude, required double longitude, String? address,

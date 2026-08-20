@@ -1639,6 +1639,12 @@ abstract class S {
   /// **'You already have an active order. Complete or cancel it before placing a new one.'**
   String get activeOrderWarning;
 
+  /// No description provided for @emergencyBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Urgent'**
+  String get emergencyBadge;
+
   /// No description provided for @networkError.
   ///
   /// In en, this message translates to:

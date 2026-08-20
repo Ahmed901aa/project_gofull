@@ -160,6 +160,7 @@ class _FuelScreenState extends State<FuelScreen> {
           address: loc.address,
           fuelType: apiFuelType,
           fuelQuantity: _isFullTank ? 60 : _quantityNum,
+                    isEmergency: widget.isEmergency,
           notes: combinedNotes.isNotEmpty ? combinedNotes : null,
         ));
   }
@@ -301,7 +302,10 @@ class _FuelScreenState extends State<FuelScreen> {
                             _section(l10n.paymentSummarySection, gap: 16),
                             PaymentSummary(
                               subtotal: _isFormValid && !_isFullTank ? _subtotal : null,
-                              serviceFee: config.serviceFee,
+                              // Quote must match what the backend charges:
+                              // emergency orders carry the admin surcharge.
+                              serviceFee: config.serviceFee +
+                                  (widget.isEmergency ? config.emergencyFee : 0),
                               note: _isFormValid && _isFullTank ? l10n.priceAfterFill : null,
                             ),
                             const SizedBox(height: 16),

@@ -18,13 +18,19 @@ class CreateFuelRequestEvent extends RequestEvent {
   final double fuelQuantity;
   final String? notes;
 
+  /// Out-of-fuel-on-the-road flow: backend prioritizes dispatch and may
+  /// apply an admin-configured surcharge.
+  final bool isEmergency;
+
   const CreateFuelRequestEvent({
     required this.latitude, required this.longitude, this.address,
     required this.fuelType, required this.fuelQuantity, this.notes,
+    this.isEmergency = false,
   });
 
   @override
-  List<Object?> get props => [latitude, longitude, fuelType, fuelQuantity];
+  List<Object?> get props =>
+      [latitude, longitude, fuelType, fuelQuantity, isEmergency];
 }
 
 class CreateTowingRequestEvent extends RequestEvent {

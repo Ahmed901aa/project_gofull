@@ -6,6 +6,10 @@ class ServiceRequestEntity extends Equatable {
   final int? providerId;
   final String serviceType;
   final String status;
+
+  /// Emergency fuel (out of fuel on the road) — same lifecycle, higher
+  /// dispatch priority and urgent UI treatment.
+  final bool isEmergency;
   final String driverLatitude;
   final String driverLongitude;
   final String? driverAddress;
@@ -42,6 +46,7 @@ class ServiceRequestEntity extends Equatable {
     this.providerId,
     required this.serviceType,
     required this.status,
+    this.isEmergency = false,
     required this.driverLatitude,
     required this.driverLongitude,
     this.driverAddress,
@@ -84,6 +89,7 @@ class ServiceRequestEntity extends Equatable {
         id,
         status,
         providerId,
+        isEmergency,
         acceptedAt,
         arrivedAt,
         completedAt,

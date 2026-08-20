@@ -10,6 +10,7 @@ abstract class RequestDataSource {
   Future<ServiceRequestModel> createFuelRequest({
     required double latitude, required double longitude, String? address,
     required String fuelType, required double fuelQuantity, String? notes,
+    bool isEmergency = false,
   });
   Future<ServiceRequestModel> createTowingRequest({
     required double latitude, required double longitude, String? address,
@@ -51,10 +52,12 @@ class RequestMockDataSource implements RequestDataSource {
   Future<ServiceRequestModel> createFuelRequest({
     required double latitude, required double longitude, String? address,
     required String fuelType, required double fuelQuantity, String? notes,
+    bool isEmergency = false,
   }) async {
     await Future.delayed(const Duration(milliseconds: 800));
     return ServiceRequestModel(
       id: 10, driverId: 1, serviceType: 'fuel_delivery', status: 'pending',
+      isEmergency: isEmergency,
       driverLatitude: latitude.toString(), driverLongitude: longitude.toString(),
       driverAddress: address, fuelType: fuelType,
       fuelQuantity: fuelQuantity.toString(), notes: notes,
@@ -139,6 +142,7 @@ class RequestRemoteDataSource implements RequestDataSource {
   Future<ServiceRequestModel> createFuelRequest({
     required double latitude, required double longitude, String? address,
     required String fuelType, required double fuelQuantity, String? notes,
+    bool isEmergency = false,
   }) async {
     try {
       final response = await apiClient.dio.post(
@@ -149,6 +153,7 @@ class RequestRemoteDataSource implements RequestDataSource {
           'driver_address': address,
           'fuel_type': fuelType,
           'fuel_quantity': fuelQuantity,
+          'is_emergency': isEmergency,
           if (notes != null) 'notes': notes,
         },
       );

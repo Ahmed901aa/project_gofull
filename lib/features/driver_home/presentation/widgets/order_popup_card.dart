@@ -134,6 +134,41 @@ class _OrderPopupCardState extends State<OrderPopupCard> {
                       ],
                     ),
                   ),
+                  // Emergency badge — urgent orders jump the queue and the
+                  // provider must see it before anything else. Flexible +
+                  // FittedBox: OS "Larger Text" scaling must shrink the
+                  // badge, not overflow the row.
+                  if (req?.isEmergency ?? false) ...[
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: Insets.s12, vertical: 6.h),
+                          decoration: BoxDecoration(
+                            color: context.colors.errorSurface,
+                            borderRadius: BorderRadius.circular(AppRadius.s16),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.sos_rounded,
+                                  size: 14.sp, color: context.colors.error),
+                              SizedBox(width: 4.w),
+                              Text(
+                                S.of(context).emergencyBadge,
+                                style: getSemiBoldStyle(
+                                  fontSize: FontSize.s12,
+                                  color: context.colors.error,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 6.w),
+                  ],
                   // Service type badge — positioned in top-right (= end of RTL row)
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: Insets.s12, vertical: 6.h),

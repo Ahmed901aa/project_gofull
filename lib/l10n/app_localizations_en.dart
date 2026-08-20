@@ -796,6 +796,9 @@ class SEn extends S {
       'You already have an active order. Complete or cancel it before placing a new one.';
 
   @override
+  String get emergencyBadge => 'Urgent';
+
+  @override
   String get networkError =>
       'Connection failed. Check your internet and try again.';
 

@@ -793,6 +793,9 @@ class SAr extends S {
       'لديك طلب نشط بالفعل. أكمله أو ألغه قبل إنشاء طلب جديد.';
 
   @override
+  String get emergencyBadge => 'طارئ';
+
+  @override
   String get networkError =>
       'تعذّر الاتصال. تحقق من اتصالك بالإنترنت وحاول مرة أخرى.';
 

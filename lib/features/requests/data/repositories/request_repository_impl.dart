@@ -29,11 +29,13 @@ class RequestRepositoryImpl implements RequestRepository {
   Future<Either<Failure, ServiceRequestEntity>> createFuelRequest({
     required double latitude, required double longitude, String? address,
     required String fuelType, required double fuelQuantity, String? notes,
+    bool isEmergency = false,
   }) async {
     try {
       final result = await dataSource.createFuelRequest(
         latitude: latitude, longitude: longitude, address: address,
         fuelType: fuelType, fuelQuantity: fuelQuantity, notes: notes,
+        isEmergency: isEmergency,
       );
       return Right(result);
     } on ServerException catch (e) {

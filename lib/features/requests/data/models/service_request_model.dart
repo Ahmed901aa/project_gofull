@@ -4,6 +4,7 @@ class ServiceRequestModel extends ServiceRequestEntity {
   const ServiceRequestModel({
     required super.id, required super.driverId, super.providerId,
     required super.serviceType, required super.status,
+    super.isEmergency,
     required super.driverLatitude, required super.driverLongitude,
     super.driverAddress,
     super.destinationLatitude, super.destinationLongitude, super.destinationAddress,
@@ -22,6 +23,8 @@ class ServiceRequestModel extends ServiceRequestEntity {
       providerId: json['provider_id'] as int?,
       serviceType: json['service_type'] as String,
       status: json['status'] as String,
+      // Tolerant: model cast sends true/false, raw rows/broadcasts may send 1/0
+      isEmergency: json['is_emergency'] == true || json['is_emergency'] == 1,
       driverLatitude: (json['driver_latitude'] ?? '0').toString(),
       driverLongitude: (json['driver_longitude'] ?? '0').toString(),
       driverAddress: json['driver_address'] as String?,

@@ -115,7 +115,11 @@ class _DriverHomeScreenState extends State<DriverHomeScreen>
     _polling.start(
       interval: const Duration(seconds: 5),
       callback: () async {
-        if (_isActive && _pendingRequest == null) {
+        // Keep polling while a NON-emergency popup is showing so an
+        // incoming emergency can preempt it; emergencies themselves are
+        // never replaced mid-countdown.
+        final showing = _pendingRequest;
+        if (_isActive && (showing == null || !showing.isEmergency)) {
           _providerBloc.add(const LoadPendingRequestsEvent());
         }
       },
@@ -226,8 +230,20 @@ class _DriverHomeScreenState extends State<DriverHomeScreen>
         if (!_profileLoaded) _initialLoadFailed = true;
       });
     } else if (state is PendingRequestsLoaded) {
+      final head = state.requests.isNotEmpty ? state.requests.first : null;
+      final showing = _pendingRequest;
       setState(() {
-        _pendingRequest = state.requests.isNotEmpty ? state.requests.first : null;
+        if (showing == null) {
+          _pendingRequest = head;
+        } else if (head != null &&
+            head.isEmergency &&
+            !showing.isEmergency &&
+            head.id != showing.id) {
+          // Emergency jumps the queue — replace the normal popup.
+          _pendingRequest = head;
+        } else if (head == null) {
+          _pendingRequest = null;
+        }
       });
     } else if (state is RequestAccepted) {
       _polling.stop();

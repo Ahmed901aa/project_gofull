@@ -257,6 +257,7 @@
   "arrived": "Arrived",
   "processing": "Processing",
   "activeOrderWarning": "You already have an active order. Complete or cancel it before placing a new one.",
+  "emergencyBadge": "Urgent",
   "networkError": "Connection failed. Check your internet and try again.",
   "serverError": "Server error. Please try again later.",
   "sessionExpired": "Session expired. Please log in again.",
