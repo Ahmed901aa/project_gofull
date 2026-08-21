@@ -18,12 +18,17 @@ import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/utils/tracked_dispatch.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
+import 'package:project_gofull/core/utils/startup_log.dart';
 
 void main() async {
+  logStartup('main() entered');
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  logStartup('binding initialized — registering dependencies');
   await initDependencies();
+  logStartup('dependencies ready — calling runApp');
   runApp(const GoFullApp());
+  logStartup('runApp returned (first frame scheduling)');
 
   unawaited(
     NotiService().initNotification().catchError(

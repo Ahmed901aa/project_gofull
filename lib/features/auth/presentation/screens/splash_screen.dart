@@ -4,6 +4,7 @@ import 'package:project_gofull/core/resources/assets_manager.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
+import 'package:project_gofull/core/utils/startup_log.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 
@@ -35,6 +36,7 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _navigate() {
+    logStartup('SplashScreen shown — branded pause started');
     // Short branded pause, then route. Wrapped so any unexpected error in
     // session lookup falls back to the login screen instead of leaving the
     // user stuck on the splash forever.
@@ -53,6 +55,7 @@ class _SplashScreenState extends State<SplashScreen>
         debugPrint('Splash: session check failed, falling back to login: $e');
       }
       if (!mounted) return;
+      logStartup('Splash navigating to "$route" — startup complete');
       Navigator.of(context).pushReplacementNamed(route);
     });
   }
