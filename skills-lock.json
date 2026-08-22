@@ -31,6 +31,18 @@
       "skillPath": "skills/azure-enterprise-infra-planner/SKILL.md",
       "computedHash": "fccfd7c0174e00cad342a3da25a0308c9f596754bff7178232d7ad80c7c7265a"
     },
+    "azure-quotas": {
+      "source": "microsoft/azure-skills",
+      "sourceType": "github",
+      "skillPath": "skills/azure-quotas/SKILL.md",
+      "computedHash": "b650926f5c8253960bfaf343ec581ba877919d1d24a68cedc53f788e6de82914"
+    },
+    "azure-upgrade": {
+      "source": "microsoft/azure-skills",
+      "sourceType": "github",
+      "skillPath": "skills/azure-upgrade/SKILL.md",
+      "computedHash": "1f8fbc961261d2bf065e23ad761cf3a313c808e84655015c6838c23bea224d55"
+    },
     "better-auth-best-practices": {
       "source": "better-auth/skills",
       "sourceType": "github",
@@ -43,17 +55,35 @@
       "skillPath": "skills/caveman-review/SKILL.md",
       "computedHash": "fb7214a1c5793bae6ba8b1be4329e2e6f40dbec6dd911dfb335ad29f09c316a1"
     },
+    "code-review": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/engineering/code-review/SKILL.md",
+      "computedHash": "caa9a086baaf9e0f7cd71f64edfa83da6821c05e826b083221f3d02e3d6a1905"
+    },
     "codex-pet": {
       "source": "prime-skills/runcomfy-agent-skills",
       "sourceType": "github",
       "skillPath": "codex-pet/SKILL.md",
       "computedHash": "52a44313ae31be2701301aa9881864ab603f5357ebe9c02130dd358c90c22b21"
     },
+    "design-taste-frontend": {
+      "source": "leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/taste-skill/SKILL.md",
+      "computedHash": "6d838b246d0e35d0b53f4f23f98ba7a1dd561937e64f7d0c7553b0928e376c3e"
+    },
     "emil-design-eng": {
       "source": "emilkowalski/skills",
       "sourceType": "github",
       "skillPath": "skills/emil-design-eng/SKILL.md",
       "computedHash": "41b0a4dc1a27164fe297845a6c6850a39e9242c42c9be999967fcee9df2c5974"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "computedHash": "b146008599c31057cef1c145774cea5d5afb30e8f43fa802e47a4b461419aaaf"
     },
     "firebase-ai-logic-basics": {
       "source": "firebase/agent-skills",
@@ -109,6 +139,18 @@
       "skillPath": "skills/google-agents-cli-workflow/SKILL.md",
       "computedHash": "217ca9b83c023e7be25431049431e425f521e2dea20b48bd85d7fa5a66869027"
     },
+    "gpt-image-edit": {
+      "source": "prime-skills/runcomfy-agent-skills",
+      "sourceType": "github",
+      "skillPath": "gpt-image-edit/SKILL.md",
+      "computedHash": "0e584131d3bb37bdc4a94d073df8d797a0720b6b0d0d34c0131c59cfac901c6b"
+    },
+    "grill-me": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "skillPath": "skills/productivity/grill-me/SKILL.md",
+      "computedHash": "9cdbb4b8f7a3aeaef82e6230c9e823500d4a8a1214c726cf342cf9829d34fc7d"
+    },
     "high-end-visual-design": {
       "source": "leonxlnx/taste-skill",
       "sourceType": "github",
@@ -126,6 +168,12 @@
       "sourceType": "github",
       "skillPath": "skills/image-to-code-skill/SKILL.md",
       "computedHash": "58517b03b2a01f4c9ba65861559d03df931400871bbc200978c975b24bb92c73"
+    },
+    "image-to-video": {
+      "source": "prime-skills/runcomfy-agent-skills",
+      "sourceType": "github",
+      "skillPath": "image-to-video/SKILL.md",
+      "computedHash": "0b513e14dfeb425a5288a79b551a7cf101a44b25763f7bd6b588d529f40d48c2"
     },
     "imagegen-frontend-mobile": {
       "source": "leonxlnx/taste-skill",
@@ -234,6 +282,12 @@
       "sourceType": "github",
       "skillPath": ".claude/skills/ui-ux-pro-max/SKILL.md",
       "computedHash": "523b8063c07eedd2b8a1ca94d7a0be9ad340026bd9f21a1eda0b6be2a855298f"
+    },
+    "video-edit": {
+      "source": "prime-skills/runcomfy-agent-skills",
+      "sourceType": "github",
+      "skillPath": "video-edit/SKILL.md",
+      "computedHash": "8db3460bb7f1d42e6f6e4ebf90054b9da161ce71de0a27c1020ba53c937c57cc"
     },
     "web-artifacts-builder": {
       "source": "anthropics/skills",
