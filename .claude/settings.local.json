@@ -168,7 +168,8 @@
       "Bash(awk '{print $2, $9, $10, $11, $12, $13, $14, $15}')",
       "Bash(grep -vE '^\\\\s*#|^\\\\s*$' .env)",
       "Bash(/usr/libexec/ApplicationFirewall/socketfilterfw --getblockall)",
-      "Bash(grep -v '^\\\\s*$')"
+      "Bash(grep -v '^\\\\s*$')",
+      "Bash(npx skills *)"
     ]
   }
 }
