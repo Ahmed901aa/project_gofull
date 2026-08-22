@@ -16,7 +16,6 @@ class NavigateBottomPanel extends StatelessWidget {
   final String? customerPhone;
   final VoidCallback onOpenMaps;
   final VoidCallback onArrived;
-  final VoidCallback onCancel;
 
   const NavigateBottomPanel({
     super.key,
@@ -27,7 +26,6 @@ class NavigateBottomPanel extends StatelessWidget {
     required this.customerPhone,
     required this.onOpenMaps,
     required this.onArrived,
-    required this.onCancel,
   });
 
   @override
@@ -68,7 +66,6 @@ class NavigateBottomPanel extends StatelessWidget {
               customerPhone: customerPhone,
               onOpenMaps: onOpenMaps,
               onArrived: onArrived,
-              onCancel: onCancel,
             ),
           ],
         ),

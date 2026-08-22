@@ -20,6 +20,7 @@ import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/core/services/reverb_service.dart';
 import 'package:project_gofull/core/usecases/usecase.dart';
 import 'package:project_gofull/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -317,13 +318,10 @@ class _ProviderInfoSection extends StatelessWidget {
           // Header row: service type + status badges
           Row(
             children: [
-              Icon(
-                serviceType == l10n.towingService
-                    ? Icons.car_crash_rounded
-                    : Icons.local_gas_station_rounded,
-                color: context.colors.primary,
-                size: 20.sp,
-              ),
+              serviceType == l10n.towingService
+                  ? TowTruckIcon(color: context.colors.primary, size: 20.sp)
+                  : Icon(Icons.local_gas_station_rounded,
+                      color: context.colors.primary, size: 20.sp),
               SizedBox(width: 6.w),
               Flexible(
                 child: Text(

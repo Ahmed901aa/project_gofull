@@ -3,10 +3,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
-import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
-import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_refueling_screen.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_event.dart';
@@ -26,32 +24,6 @@ mixin NavigateActionsMixin<T extends StatefulWidget> on State<T> {
     );
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
-  }
-
-  Future<void> onCancelOrder() async {
-    final confirmed = await AppConfirmDialog.show(
-      context,
-      icon: Icons.cancel_rounded,
-      iconColor: context.colors.error,
-      title: S.of(context).cancelOrderDialogTitle,
-      subtitle: S.of(context).cancelOrderDialogSubtitle,
-      confirmLabel: S.of(context).cancelOrderDialogBtn,
-      cancelLabel: S.of(context).cancelOrderDialogGoBack,
-      destructive: true,
-    );
-    if (confirmed) {
-      final orderId = int.tryParse(navArgs.orderId);
-      if (orderId != null && mounted) {
-        dispatchTracked<ProviderBloc, ProviderState>(
-          sl<ProviderBloc>(),
-          send: (b) => b.add(CancelOrderEvent(id: orderId)),
-          isSuccess: (s) => s is OrderCancelledByProvider,
-          isFailure: (s) => s is ProviderError,
-          failureMessage: S.of(context).failedUpdateStatus,
-        );
-      }
-      if (mounted) Navigator.pop(context);
     }
   }
 

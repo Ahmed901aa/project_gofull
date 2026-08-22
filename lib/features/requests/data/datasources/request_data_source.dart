@@ -160,9 +160,14 @@ class RequestRemoteDataSource implements RequestDataSource {
       return ServiceRequestModel.fromJson(
           response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
+      final body = e.response?.data as Map?;
+      // Structured conflict: one active order per customer (both types).
+      if (body?['code'] == 'ACTIVE_ORDER_EXISTS') {
+        throw ActiveOrderException(
+            body?['message'] as String? ?? 'Active order exists');
+      }
       throw ServerException(
-          (e.response?.data as Map?)?['message'] as String? ??
-              'Operation failed');
+          body?['message'] as String? ?? 'Operation failed');
     }
   }
 
@@ -190,9 +195,14 @@ class RequestRemoteDataSource implements RequestDataSource {
       return ServiceRequestModel.fromJson(
           response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
+      final body = e.response?.data as Map?;
+      // Structured conflict: one active order per customer (both types).
+      if (body?['code'] == 'ACTIVE_ORDER_EXISTS') {
+        throw ActiveOrderException(
+            body?['message'] as String? ?? 'Active order exists');
+      }
       throw ServerException(
-          (e.response?.data as Map?)?['message'] as String? ??
-              'Operation failed');
+          body?['message'] as String? ?? 'Operation failed');
     }
   }
 

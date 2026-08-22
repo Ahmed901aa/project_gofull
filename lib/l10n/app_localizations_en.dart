@@ -792,8 +792,17 @@ class SEn extends S {
   String get processing => 'Processing';
 
   @override
+  String get activeOrderTitle => 'Active order in progress';
+
+  @override
+  String get viewCurrentOrder => 'View Current Order';
+
+  @override
+  String get notNowBtn => 'Not now';
+
+  @override
   String get activeOrderWarning =>
-      'You already have an active order. Complete or cancel it before placing a new one.';
+      'You already have an active order. Please wait until your current order is completed before creating a new order.';
 
   @override
   String get emergencyBadge => 'Urgent';

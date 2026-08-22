@@ -380,22 +380,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen>
     setState(() => _pendingRequest = null);
   }
 
-  void _onCancelActiveOrder(ServiceRequestEntity request) async {
-    final confirmed = await AppConfirmDialog.show(
-      context,
-      icon: Icons.cancel_rounded,
-      iconColor: context.colors.error,
-      title: S.of(context).cancelOrderDialogTitle,
-      subtitle: S.of(context).cancelOrderDialogSubtitle,
-      confirmLabel: S.of(context).cancelOrderDialogBtn,
-      cancelLabel: S.of(context).cancelOrderDialogGoBack,
-      destructive: true,
-    );
-    if (confirmed) {
-      _providerBloc.add(CancelOrderEvent(id: request.id));
-    }
-  }
-
   // ── Map controls ──
 
   Future<void> _moveToMyLocation() async {
@@ -510,7 +494,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen>
                     child: _ActiveOrderCard(
                       request: _activeRequest!,
                       onResume: () => _resumeActiveOrder(_activeRequest!),
-                      onCancel: () => _onCancelActiveOrder(_activeRequest!),
                     ),
                   ),
 
@@ -946,8 +929,9 @@ class _RadarSearchAnimation extends StatelessWidget {
 class _ActiveOrderCard extends StatefulWidget {
   final ServiceRequestEntity request;
   final VoidCallback onResume;
-  final VoidCallback onCancel;
-  const _ActiveOrderCard({required this.request, required this.onResume, required this.onCancel});
+  // By business rule a provider cannot cancel after accepting — the card
+  // intentionally offers NO cancel action (backend enforces it too).
+  const _ActiveOrderCard({required this.request, required this.onResume});
 
   @override
   State<_ActiveOrderCard> createState() => _ActiveOrderCardState();
@@ -986,7 +970,7 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
   Color get _statusColor {
     switch (widget.request.status) {
       case 'accepted':    return const Color(0xFF2979FF);
-      case 'en_route':    return const Color(0xFFFF9800);
+      case 'en_route':    return context.colors.info;
       case 'arrived':     return context.colors.primaryLight;
       case 'in_progress': return const Color(0xFF7C3AED);
       default: return context.colors.primary;
@@ -1017,7 +1001,8 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
             borderRadius: BorderRadius.circular(20.r),
             boxShadow: [
               BoxShadow(
-                color: accentColor.withValues(alpha: 0.08 + pulseValue * 0.06),
+                color: context.colors.primary
+                    .withValues(alpha: 0.06 + pulseValue * 0.05),
                 blurRadius: 20 + pulseValue * 8,
                 offset: const Offset(0, 4),
               ),
@@ -1027,9 +1012,7 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                 offset: const Offset(0, 2),
               ),
             ],
-            border: Border.all(
-              color: accentColor.withValues(alpha: 0.15 + pulseValue * 0.1),
-            ),
+            border: Border.all(color: context.colors.border),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -1040,19 +1023,15 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                   Container(
                     width: 48.w,
                     height: 48.w,
+                    // One constant brand color across ALL statuses — the
+                    // vehicle icon must not change color as the order
+                    // progresses (design request).
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: AlignmentDirectional.topStart,
-                        end: AlignmentDirectional.bottomEnd,
-                        colors: [
-                          accentColor,
-                          accentColor.withValues(alpha: 0.75),
-                        ],
-                      ),
+                      color: context.colors.primary,
                       borderRadius: BorderRadius.circular(14.r),
                       boxShadow: [
                         BoxShadow(
-                          color: accentColor.withValues(alpha: 0.3),
+                          color: context.colors.primary.withValues(alpha: 0.3),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
@@ -1117,38 +1096,25 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                 ],
               ),
               SizedBox(height: 12.h),
-              // Resume + Cancel buttons
+              // Resume button only — accepted orders cannot be
+              // cancelled by the provider (business rule; also enforced
+              // by the API).
               Row(
                 children: [
-                  // Cancel button
-                  GestureDetector(
-                    onTap: widget.onCancel,
-                    child: Container(
-                      width: 48.w,
-                      height: 48.w,
-                      decoration: BoxDecoration(
-                        color: context.colors.errorSurface,
-                        borderRadius: BorderRadius.circular(14.r),
-                        border: Border.all(color: const Color(0xFFFCA5A5)),
-                      ),
-                      child: Icon(Icons.close_rounded, size: 22.sp, color: context.colors.error),
-                    ),
-                  ),
-                  SizedBox(width: 10.w),
-                  // Resume button — always gold/yellow
                   Expanded(child: GestureDetector(
                 onTap: widget.onResume,
                 child: Container(
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(vertical: 12.h),
+                  // Single solid accent (theme `info` blue) — replaces the
+                  // former gold gradient; complements the green brand
+                  // without competing with it.
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [context.colors.gold, context.colors.gold.withValues(alpha: 0.85)],
-                    ),
+                    color: context.colors.info,
                     borderRadius: BorderRadius.circular(14.r),
                     boxShadow: [
                       BoxShadow(
-                        color: context.colors.gold.withValues(alpha: 0.35),
+                        color: context.colors.info.withValues(alpha: 0.35),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),

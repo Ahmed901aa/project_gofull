@@ -6,6 +6,7 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 /// Live status card shown in place of the promo banner when there's an active order.
 /// Styled like a compact tracking card with icon, status text, progress bar, and ETA.
@@ -51,13 +52,10 @@ class LiveOrderBanner extends StatelessWidget {
                 color: context.colors.primary,
                 borderRadius: BorderRadius.circular(AppRadius.s12),
               ),
-              child: Icon(
-                isFuel
-                    ? Icons.local_gas_station_rounded
-                    : Icons.fire_truck_rounded,
-                color: Colors.white,
-                size: 26.sp,
-              ),
+              child: isFuel
+                  ? Icon(Icons.local_gas_station_rounded,
+                      color: Colors.white, size: 26.sp)
+                  : TowTruckIcon(color: Colors.white, size: 26.sp),
             ),
             SizedBox(width: Insets.s12),
 

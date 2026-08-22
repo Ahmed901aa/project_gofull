@@ -16,6 +16,8 @@ class RequestRepositoryImpl implements RequestRepository {
     try {
       final result = await dataSource.getRequests(page: page);
       return Right(result);
+    } on ActiveOrderException catch (e) {
+      return Left(ActiveOrderFailure(e.message));
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } on NetworkException catch (e) {
@@ -38,6 +40,8 @@ class RequestRepositoryImpl implements RequestRepository {
         isEmergency: isEmergency,
       );
       return Right(result);
+    } on ActiveOrderException catch (e) {
+      return Left(ActiveOrderFailure(e.message));
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } on NetworkException catch (e) {
@@ -62,6 +66,8 @@ class RequestRepositoryImpl implements RequestRepository {
         plateNumber: plateNumber, carType: carType, notes: notes,
       );
       return Right(result);
+    } on ActiveOrderException catch (e) {
+      return Left(ActiveOrderFailure(e.message));
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } on NetworkException catch (e) {
@@ -77,6 +83,8 @@ class RequestRepositoryImpl implements RequestRepository {
     try {
       final result = await dataSource.getRequestDetails(id);
       return Right(result);
+    } on ActiveOrderException catch (e) {
+      return Left(ActiveOrderFailure(e.message));
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } on NetworkException catch (e) {
@@ -121,6 +129,8 @@ class RequestRepositoryImpl implements RequestRepository {
         requestId: requestId, rating: rating, comment: comment,
       );
       return Right(result);
+    } on ActiveOrderException catch (e) {
+      return Left(ActiveOrderFailure(e.message));
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } on NetworkException catch (e) {

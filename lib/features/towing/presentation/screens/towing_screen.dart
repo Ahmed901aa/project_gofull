@@ -20,6 +20,8 @@ import '../widgets/service_section_header.dart';
 import '../widgets/towing_car_details_form.dart';
 import '../widgets/towing_route_section.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/features/requests/presentation/widgets/active_order_dialog.dart';
+import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 
 class TowingScreen extends StatefulWidget {
   const TowingScreen({super.key});
@@ -102,6 +104,13 @@ class _TowingScreenState extends State<TowingScreen> {
       return;
     }
 
+    // One active order per customer (both service types). Client-side
+    // pre-check for instant feedback; the backend re-validates atomically.
+    if (context.read<AppConfigBloc>().state.activeOrder != null) {
+      showActiveOrderDialog(context);
+      return;
+    }
+
     final loc = context.read<LocationCubit>().state;
     if (loc.lat == null || loc.lng == null) {
       return;
@@ -176,9 +185,9 @@ class _TowingScreenState extends State<TowingScreen> {
           } else if (state is RequestError) {
             // Reset submission guard so the user can retry
             setState(() => _isSubmitting = false);
-            final l10n = S.of(context);
-            if (state.message.contains('active')) {
-              AppSnackbar.warning(context, l10n.activeOrderWarning);
+            if (state.isActiveOrderConflict) {
+              // Server-confirmed: an order is already active.
+              showActiveOrderDialog(context);
             } else {
               AppSnackbar.error(context, state.message);
             }

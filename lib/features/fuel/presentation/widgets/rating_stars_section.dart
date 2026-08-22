@@ -25,25 +25,25 @@ class RatingStarsSection extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         SizedBox(height: Insets.s16),
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(5, (i) {
-              final star = i + 1;
-              return GestureDetector(
-                onTap: () => onRatingChanged(star),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 4.w),
-                  child: Icon(
-                    rating >= star ? Icons.star_rounded : Icons.star_outline_rounded,
-                    size: 40.sp,
-                    color: context.colors.gold,
-                  ),
+        // Follows ambient text direction: star 1 starts at the reading
+        // edge (right in Arabic, left in English) and the fill grows in
+        // the reading direction. Tap star N → rating N in both locales.
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(5, (i) {
+            final star = i + 1;
+            return GestureDetector(
+              onTap: () => onRatingChanged(star),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                child: Icon(
+                  rating >= star ? Icons.star_rounded : Icons.star_outline_rounded,
+                  size: 40.sp,
+                  color: context.colors.gold,
                 ),
-              );
-            }),
-          ),
+              ),
+            );
+          }),
         ),
       ],
     );

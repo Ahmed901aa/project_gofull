@@ -19,3 +19,9 @@ class CacheFailure extends Failure {
 class NetworkFailure extends Failure {
   const NetworkFailure(super.message);
 }
+
+/// The customer already has an active order — UI should offer
+/// "view current order" instead of a generic error.
+class ActiveOrderFailure extends Failure {
+  const ActiveOrderFailure(super.message);
+}

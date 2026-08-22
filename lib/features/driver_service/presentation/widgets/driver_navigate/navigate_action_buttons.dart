@@ -3,8 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
-import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
 
@@ -14,7 +12,6 @@ class NavigateActionButtons extends StatelessWidget {
   final String? customerPhone;
   final VoidCallback onOpenMaps;
   final VoidCallback onArrived;
-  final VoidCallback onCancel;
 
   const NavigateActionButtons({
     super.key,
@@ -23,7 +20,6 @@ class NavigateActionButtons extends StatelessWidget {
     required this.customerPhone,
     required this.onOpenMaps,
     required this.onArrived,
-    required this.onCancel,
   });
 
   void _call() {
@@ -64,19 +60,8 @@ class NavigateActionButtons extends StatelessWidget {
                 : S.of(context).arrivedStartDoc,
             onPressed: onArrived,
           ),
-          SizedBox(height: Insets.s8),
-          GestureDetector(
-            onTap: onCancel,
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 10.h),
-              alignment: Alignment.center,
-              child: Text(
-                S.of(context).cancelOrderLabel,
-                style: getMediumStyle(color: context.colors.error, fontSize: FontSize.s14),
-              ),
-            ),
-          ),
+          // NOTE: no cancel action — by business rule, a provider cannot
+          // cancel an order after accepting it (enforced server-side too).
         ],
       );
 }

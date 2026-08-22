@@ -1633,10 +1633,28 @@ abstract class S {
   /// **'Processing'**
   String get processing;
 
+  /// No description provided for @activeOrderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Active order in progress'**
+  String get activeOrderTitle;
+
+  /// No description provided for @viewCurrentOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'View Current Order'**
+  String get viewCurrentOrder;
+
+  /// No description provided for @notNowBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get notNowBtn;
+
   /// No description provided for @activeOrderWarning.
   ///
   /// In en, this message translates to:
-  /// **'You already have an active order. Complete or cancel it before placing a new one.'**
+  /// **'You already have an active order. Please wait until your current order is completed before creating a new order.'**
   String get activeOrderWarning;
 
   /// No description provided for @emergencyBadge.

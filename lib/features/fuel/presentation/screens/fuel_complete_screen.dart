@@ -198,11 +198,12 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
           textAlign: TextAlign.center,
         ),
         SizedBox(height: Insets.s16),
-        // Stars (RTL — right to left)
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(5, (i) {
-            final star = 5 - i;
+            // Ascending + ambient direction: star 1 sits at the reading
+            // edge (right in Arabic, left in English); tap star N → N.
+            final star = i + 1;
             return GestureDetector(
               onTap: () => setState(() => _rating = star),
               child: Padding(
@@ -279,19 +280,17 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
         ),
         SizedBox(height: Insets.s8),
         // Show the stars they selected
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(5, (i) => Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2.w),
-              child: Icon(
-                _rating >= (i + 1) ? Icons.star_rounded : Icons.star_outline_rounded,
-                size: 28.sp,
-                color: context.colors.gold,
-              ),
-            )),
-          ),
+        // Same direction convention as the picker the user just used.
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(5, (i) => Padding(
+            padding: EdgeInsets.symmetric(horizontal: 2.w),
+            child: Icon(
+              _rating >= (i + 1) ? Icons.star_rounded : Icons.star_outline_rounded,
+              size: 28.sp,
+              color: context.colors.gold,
+            ),
+          )),
         ),
       ],
     );

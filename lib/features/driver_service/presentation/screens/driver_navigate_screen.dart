@@ -103,7 +103,6 @@ class _DriverNavigateScreenState extends State<DriverNavigateScreen>
               customerPhone: widget.args.customerPhone,
               onOpenMaps: openInGoogleMaps,
               onArrived: onArrivedTapped,
-              onCancel: onCancelOrder,
             ),
           ),
         ],

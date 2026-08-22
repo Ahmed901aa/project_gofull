@@ -789,8 +789,17 @@ class SAr extends S {
   String get processing => 'قيد المعالجة';
 
   @override
+  String get activeOrderTitle => 'لديك طلب قيد التنفيذ';
+
+  @override
+  String get viewCurrentOrder => 'عرض الطلب الحالي';
+
+  @override
+  String get notNowBtn => 'ليس الآن';
+
+  @override
   String get activeOrderWarning =>
-      'لديك طلب نشط بالفعل. أكمله أو ألغه قبل إنشاء طلب جديد.';
+      'لديك طلب نشط بالفعل. يرجى الانتظار حتى يكتمل طلبك الحالي قبل إنشاء طلب جديد.';
 
   @override
   String get emergencyBadge => 'طارئ';

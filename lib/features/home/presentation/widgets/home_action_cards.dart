@@ -265,13 +265,11 @@ class _ActionCard extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Truck faces the road direction in Arabic (RTL).
-                          Transform.flip(
-                            flipX: Directionality.of(context) ==
-                                TextDirection.rtl,
-                            child: Icon(icon,
-                                color: AppColors.white, size: 26.sp),
-                          ),
+                          // Truck art self-mirrors in RTL inside
+                          // DirectionalServiceIcon; other service icons are
+                          // non-directional and render as-is.
+                          DirectionalServiceIcon(icon,
+                              color: AppColors.white, size: 26.sp),
                           Container(
                             width: 26.w,
                             height: 26.w,

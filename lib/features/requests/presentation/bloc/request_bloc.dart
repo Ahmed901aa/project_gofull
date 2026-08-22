@@ -10,6 +10,7 @@ import 'package:project_gofull/features/requests/domain/repositories/request_rep
 import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_gofull/core/error/failure.dart';
 
 class RequestBloc extends Bloc<RequestEvent, RequestState> {
   final CreateFuelRequestUseCase createFuel;
@@ -60,7 +61,8 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
       isEmergency: event.isEmergency,
     ));
     result.fold(
-      (f) => emit(RequestError(f.message)),
+      (f) => emit(RequestError(f.message,
+          isActiveOrderConflict: f is ActiveOrderFailure)),
       (r) => emit(RequestCreated(r)),
     );
   }
@@ -78,7 +80,8 @@ class RequestBloc extends Bloc<RequestEvent, RequestState> {
       notes: event.notes,
     ));
     result.fold(
-      (f) => emit(RequestError(f.message)),
+      (f) => emit(RequestError(f.message,
+          isActiveOrderConflict: f is ActiveOrderFailure)),
       (r) => emit(RequestCreated(r)),
     );
   }
