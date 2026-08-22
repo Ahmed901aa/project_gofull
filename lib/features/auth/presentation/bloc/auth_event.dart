@@ -22,13 +22,23 @@ class LoginRequested extends AuthEvent {
   List<Object?> get props => [phone, password];
 }
 
-/// Register a new account.
+/// Send an SMS verification code before registering.
+class SendOtpRequested extends AuthEvent {
+  final String phone;
+  const SendOtpRequested({required this.phone});
+
+  @override
+  List<Object?> get props => [phone];
+}
+
+/// Register a new account (requires the SMS code from [SendOtpRequested]).
 class RegisterRequested extends AuthEvent {
   final String name;
   final String phone;
   final String password;
   final String passwordConfirmation;
   final String role; // driver | provider
+  final String otpCode;
 
   const RegisterRequested({
     required this.name,
@@ -36,11 +46,12 @@ class RegisterRequested extends AuthEvent {
     required this.password,
     required this.passwordConfirmation,
     required this.role,
+    required this.otpCode,
   });
 
   @override
   List<Object?> get props =>
-      [name, phone, password, passwordConfirmation, role];
+      [name, phone, password, passwordConfirmation, role, otpCode];
 }
 
 /// Logout and clear session.

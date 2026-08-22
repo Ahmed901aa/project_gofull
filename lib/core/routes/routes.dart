@@ -8,6 +8,7 @@ class Routes {
   static const String locationPicker = '/location-picker';
   static const String mapSelection = '/map-selection';
   static const String fuelType = '/fuel-type';
+  static const String fuelTypeEmergency = '/fuel-type-emergency';
   static const String fuelOrder = '/fuel-order';
   static const String towingRequest = '/towing-request';
   static const String camera = '/camera';
@@ -32,6 +33,8 @@ class Routes {
   static const String privacyPolicy = '/privacy-policy';
   static const String aboutApp = '/about-app';
   static const String notifications = '/notifications';
+  static const String languageSettings = '/language-settings';
+  static const String appearanceSettings = '/appearance-settings';
 
   // ── Driver App Routes ──────────────────────────────────
   static const String driverHome = '/driver-home';
@@ -42,6 +45,7 @@ class Routes {
   static const String driverOrderDetails = '/driver-order-details';
   static const String driverNavigate = '/driver-navigate';
   static const String driverDocumentation = '/driver-documentation';
+  static const String driverRefueling = '/driver-refueling';
   static const String driverCollectPayment = '/driver-collect-payment';
   static const String driverTaskComplete = '/driver-task-complete';
   static const String driverRateCustomer = '/driver-rate-customer';

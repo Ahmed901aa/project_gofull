@@ -4,24 +4,30 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class EditProfileBottomButtons extends StatelessWidget {
   final VoidCallback onSave;
   final VoidCallback onDelete;
+  final bool saveEnabled;
+  final bool saving;
 
   const EditProfileBottomButtons({
     super.key,
     required this.onSave,
     required this.onDelete,
+    this.saveEnabled = true,
+    this.saving = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.s16)),
-        border: Border.all(color: const Color(0xFFF8F8F9)),
+        border: Border.all(color: context.colors.inputFill),
         boxShadow: const [
           BoxShadow(color: Color(0x05CCCCCC), blurRadius: 1, offset: Offset(0, -1)),
           BoxShadow(color: Color(0x05CCCCCC), blurRadius: 2, offset: Offset(0, -2)),
@@ -29,24 +35,35 @@ class EditProfileBottomButtons extends StatelessWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
+          padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s12),
           child: Row(
             children: [
               Expanded(
                 child: SizedBox(
                   height: 48.h,
                   child: ElevatedButton(
-                    onPressed: onSave,
+                    onPressed: saveEnabled ? onSave : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF004B3B),
+                      backgroundColor: context.colors.primary,
                       foregroundColor: AppColors.white,
+                      disabledBackgroundColor: context.colors.primary.withValues(alpha: 0.4),
+                      disabledForegroundColor: AppColors.white.withValues(alpha: 0.6),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
                       elevation: 0,
                     ),
-                    child: Text(
-                      'حفظ التغييرات',
-                      style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16).copyWith(height: 1.6),
-                    ),
+                    child: saving
+                        ? SizedBox(
+                            width: 22.w,
+                            height: 22.w,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: AppColors.white,
+                            ),
+                          )
+                        : Text(
+                            S.of(context).saveChanges,
+                            style: getBoldStyle(color: AppColors.white, fontSize: FontSize.s16).copyWith(height: 1.6),
+                          ),
                   ),
                 ),
               ),
@@ -54,16 +71,16 @@ class EditProfileBottomButtons extends StatelessWidget {
               SizedBox(
                 height: 48.h,
                 child: OutlinedButton(
-                  onPressed: onDelete,
+                  onPressed: saving ? null : onDelete,
                   style: OutlinedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFBE1E3),
-                    foregroundColor: const Color(0xFFE63946),
-                    side: const BorderSide(color: Color(0xFFE63946)),
+                    backgroundColor: context.colors.errorSurface,
+                    foregroundColor: context.colors.error,
+                    side: BorderSide(color: context.colors.error),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),
                   ),
                   child: Text(
-                    'حذف الحساب',
-                    style: getBoldStyle(color: const Color(0xFFE63946), fontSize: FontSize.s16).copyWith(height: 1.6),
+                    S.of(context).deleteAccountBtn,
+                    style: getBoldStyle(color: context.colors.error, fontSize: FontSize.s16).copyWith(height: 1.6),
                   ),
                 ),
               ),

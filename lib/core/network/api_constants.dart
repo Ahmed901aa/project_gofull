@@ -13,9 +13,15 @@ class ApiConstants {
   static const String login = '/auth/login';
   static const String logout = '/auth/logout';
   static const String changePassword = '/auth/change-password';
+  static const String otpSend = '/auth/otp/send';
+  static const String otpVerify = '/auth/otp/verify';
+
+  // ── Broadcasting (Reverb) ─────────────────────────────────
+  static const String broadcastingAuth = '/broadcasting/auth';
 
   // ── Driver (Customer) Requests ────────────────────────────
   static const String driverRequests = '/driver/requests';
+  static const String driverUnratedRequest = '/driver/requests/unrated';
   static const String driverFuelRequest = '/driver/requests/fuel';
   static const String driverTowingRequest = '/driver/requests/towing';
   static String driverRequestDetails(int id) => '/driver/requests/$id';
@@ -31,16 +37,24 @@ class ApiConstants {
       '/provider/requests/$id/accept';
   static String providerRejectRequest(int id) =>
       '/provider/requests/$id/reject';
+  static String providerCancelRequest(int id) =>
+      '/provider/requests/$id/cancel';
   static String providerUpdateStatus(int id) =>
       '/provider/requests/$id/status';
   static String providerRateDriver(int id) => '/provider/requests/$id/rate';
+  static String providerRequestDetails(int id) => '/provider/requests/$id';
   static const String providerActiveRequest = '/provider/requests/active';
+  static const String providerAnalytics = '/provider/analytics';
 
   // ── Home & Content ─────────────────────────────────────────
   static const String home = '/home';
   static const String fuelPrices = '/fuel/prices';
   static const String appSettings = '/app/settings';
   static const String offers = '/home'; // banners come from /home
+
+  // ── Driver Vehicle & Income ─────────────────────────────────
+  static const String driverVehicle = '/driver/vehicle';
+  static const String driverIncome = '/driver/income';
 
   // ── Profile ───────────────────────────────────────────────
   static const String profile = '/profile';

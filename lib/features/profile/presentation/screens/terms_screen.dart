@@ -1,100 +1,98 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
-
-// replace with API data later
-const _sections = [
-  {
-    'title': '1. عام (General)',
-    'body': 'باستخدامك لتطبيق "دايم". أنت توافق على الالتزام بكافة الشروط المذكورة هنا لضمان أفضل تجربة تسوق.\nيحق لنا تحديث هذه الشروط من وقت لآخر، وسيتم إخطارك بأي تغييرات جوهرية تطرأ عليها.',
-  },
-  {
-    'title': '2. الطلبات والأسعار (Orders & Pricing)',
-    'body': 'أسعار المنتجات هي نفس أسعار فتح الله جملة ماركت وقت الطلب، مع مراعاة وجود عروض حصرية داخل التطبيق.\nبالنسبة للمنتجات التي تعتمد على الوزن (كاللحوم والخضروات)، قد يختلف السعر النهائي بشكل طفيف بناءً على الوزن الفعلي وقت التجهيز، ويتم تسوية أي فرق في محفظتك تلقائياً.\nيحق للتطبيق إلغاء الطلب في حال عدم توفر المنتج أو وجود خطأ تقني في التسعير، مع التزامنا برد أي مبالغ مدفوعة لمحفظتك.',
-  },
-  {
-    'title': '3. التوصيل (Delivery)',
-    'body': 'نسعى لتوصيل طلبك في الوقت المحدد (من 45 لـ 90 دقيقة)، ولكن قد يتأثر الوقت بظروف خارجة عن إرادتنا كازدحام الطرق أو الظروف الجوية.\nيجب تواجد العميل أو من ينوب عنه في العنوان المحدد لاستلام الطلب، وفي حال تعذر الوصول إليك، قد يتم إلغاء الطلب مع فرض رسوم توصيل.',
-  },
-  {
-    'title': '4. المحفظة والاسترداد (Wallet & Refunds)',
-    'body': 'المبالغ الموجودة في المحفظة ناتجة عن (شحن رصيد، استرداد فرق وزن، أو تعويض عن منتج)، ويمكنك استخدامها في طلباتك القادمة.',
-  },
-];
+import 'package:project_gofull/core/widgets/app_header.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
+import '../widgets/legal_hero_card.dart';
+import '../widgets/legal_section_card.dart';
 
 class TermsScreen extends StatelessWidget {
   const TermsScreen({super.key});
 
+  static List<_TermSection> _getSections(S l10n) => [
+        _TermSection(
+            title: l10n.termsGeneralTitle,
+            body: l10n.termsGeneralBody,
+            icon: Icons.menu_book_rounded),
+        _TermSection(
+            title: l10n.termsOrdersTitle,
+            body: l10n.termsOrdersBody,
+            icon: Icons.receipt_long_rounded),
+        _TermSection(
+            title: l10n.termsDeliveryTitle,
+            body: l10n.termsDeliveryBody,
+            icon: Icons.local_shipping_outlined),
+        _TermSection(
+            title: l10n.termsWalletTitle,
+            body: l10n.termsWalletBody,
+            icon: Icons.account_balance_wallet_outlined),
+      ];
+
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
-        body: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.all(Insets.s16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _sections.map((s) => Padding(
-                    padding: EdgeInsets.only(bottom: Insets.s16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          s['title']!,
-                          style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
-                        ),
-                        SizedBox(height: Insets.s8),
-                        Text(
-                          s['body']!,
-                          style: getRegularStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14).copyWith(height: 1.6),
-                        ),
-                      ],
-                    ),
-                  )).toList(),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    final l10n = S.of(context);
+    final sections = _getSections(l10n);
 
-  Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
-        child: Column(
-          children: [
-            SizedBox(height: MediaQuery.of(context).padding.top),
-            Padding(
-              padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s12),
-              child: Row(
+    return Scaffold(
+      backgroundColor: context.colors.background,
+      body: Column(
+        children: [
+          AppHeader(title: l10n.terms),
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsetsDirectional.fromSTEB(
+                Insets.s16,
+                Insets.s16,
+                Insets.s16,
+                Insets.s24,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
+                  LegalHeroCard(
+                    icon: Icons.description_outlined,
+                    title: l10n.terms,
+                    lastUpdated: l10n.privacyPolicyLastUpdate,
                   ),
-                  Expanded(
-                    child: Text(
-                      'الشروط والأحكام',
-                      style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20),
-                      textAlign: TextAlign.center,
+                  SizedBox(height: Sizes.s20),
+                  for (var i = 0; i < sections.length; i++) ...[
+                    LegalSectionCard(
+                      number: i + 1,
+                      icon: sections[i].icon,
+                      title: sections[i].title,
+                      body: sections[i].body,
+                    ),
+                    if (i < sections.length - 1) SizedBox(height: Sizes.s12),
+                  ],
+                  SizedBox(height: Sizes.s20),
+                  Text(
+                    l10n.privacyPolicyFooter,
+                    textAlign: TextAlign.center,
+                    style: getRegularStyle(
+                      color: context.colors.textSecondary,
+                      fontSize: FontSize.s12,
                     ),
                   ),
-                  SizedBox(width: 24.sp),
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF5F5F5)),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TermSection {
+  final String title;
+  final String body;
+  final IconData icon;
+  const _TermSection({
+    required this.title,
+    required this.body,
+    required this.icon,
+  });
 }

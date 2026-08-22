@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverFoundHeader extends StatelessWidget {
   final bool showClose;
@@ -13,7 +14,7 @@ class DriverFoundHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.white,
+      color: context.colors.surface,
       child: Column(
         children: [
           SizedBox(height: MediaQuery.of(context).padding.top),
@@ -25,16 +26,16 @@ class DriverFoundHeader extends StatelessWidget {
                 if (showClose)
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.close_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
+                    child: Icon(Icons.close_rounded, size: 24.sp, color: context.colors.textPrimary),
                   )
                 else
                   const SizedBox(width: 24),
-                Text('في الطريق لك', style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s20)),
-                Icon(Icons.info_outline_rounded, size: 24.sp, color: const Color(0xFF0E0E0E)),
+                Text(S.of(context).onTheWayToYou, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s20)),
+                Icon(Icons.info_outline_rounded, size: 24.sp, color: context.colors.textPrimary),
               ],
             ),
           ),
-          const Divider(height: 1, color: Color(0xFFF5F5F5)),
+          Divider(height: 1, color: context.colors.borderSubtle),
         ],
       ),
     );

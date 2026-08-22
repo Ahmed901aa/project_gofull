@@ -31,7 +31,11 @@ class TokenStorage {
 
   Map<String, dynamic>? getUser() {
     final raw = _prefs.getString(_keyUser);
-    if (raw == null) return null;
+    if (raw == null) {
+
+      return null;
+
+    }
     return jsonDecode(raw) as Map<String, dynamic>;
   }
 

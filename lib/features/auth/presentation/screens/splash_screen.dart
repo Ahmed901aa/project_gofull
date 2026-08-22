@@ -4,7 +4,9 @@ import 'package:project_gofull/core/resources/assets_manager.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
+import 'package:project_gofull/core/utils/startup_log.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -34,18 +36,27 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _navigate() {
-    Future.delayed(const Duration(seconds: 3), () {
+    logStartup('SplashScreen shown — branded pause started');
+    // Short branded pause, then route. Wrapped so any unexpected error in
+    // session lookup falls back to the login screen instead of leaving the
+    // user stuck on the splash forever.
+    Future.delayed(const Duration(milliseconds: 1500), () {
       if (!mounted) return;
 
-      final tokenStorage = sl<TokenStorage>();
-      if (tokenStorage.isLoggedIn) {
-        final role = tokenStorage.userRole;
-        final route =
-            (role == 'provider') ? Routes.driverHome : Routes.home;
-        Navigator.of(context).pushReplacementNamed(route);
-      } else {
-        Navigator.of(context).pushReplacementNamed(Routes.login);
+      String route = Routes.login;
+      try {
+        final tokenStorage = sl<TokenStorage>();
+        if (tokenStorage.isLoggedIn) {
+          route = tokenStorage.userRole == 'provider'
+              ? Routes.driverHome
+              : Routes.home;
+        }
+      } catch (e) {
+        debugPrint('Splash: session check failed, falling back to login: $e');
       }
+      if (!mounted) return;
+      logStartup('Splash navigating to "$route" — startup complete');
+      Navigator.of(context).pushReplacementNamed(route);
     });
   }
 
@@ -58,7 +69,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: context.colors.primary,
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnimation,

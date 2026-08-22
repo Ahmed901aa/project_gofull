@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class TripPaymentSection extends StatelessWidget {
   final String subtotal;
@@ -23,24 +24,24 @@ class TripPaymentSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'ملخص الدفع',
-          style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
-          textAlign: TextAlign.right,
+          S.of(context).paymentSummary,
+          style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18),
+          textAlign: TextAlign.start,
         ),
         SizedBox(height: Insets.s8),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.neutral400,
+            color: context.colors.surfaceElevated,
             borderRadius: BorderRadius.circular(AppRadius.s16),
-            border: Border.all(color: AppColors.neutral500),
+            border: Border.all(color: context.colors.border),
           ),
           child: Column(children: [
             SizedBox(height: Insets.s8),
-            _payRow('المجموع', subtotal),
-            _serviceFeeRow(),
-            const Divider(height: 1, color: AppColors.neutral500),
+            _payRow(context, S.of(context).subtotal, subtotal),
+            _serviceFeeRow(context),
+            Divider(height: 1, color: context.colors.border),
             SizedBox(height: Insets.s8),
-            _totalRow(),
+            _totalRow(context),
             SizedBox(height: Insets.s8),
           ]),
         ),
@@ -48,45 +49,45 @@ class TripPaymentSection extends StatelessWidget {
     );
   }
 
-  Widget _payRow(String label, String amount) => Padding(
+  Widget _payRow(BuildContext context, String label, String amount) => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
         child: Row(children: [
-          Text(label, style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
+          Text(label, style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s16)),
           const Spacer(),
-          Text(amount, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
+          Text(amount, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s16)),
         ]),
       );
 
-  Widget _serviceFeeRow() => Padding(
+  Widget _serviceFeeRow(BuildContext context) => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16, vertical: Insets.s8),
         child: Row(children: [
           Row(children: [
-            Text('رسوم الخدمة', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s16)),
+            Text(S.of(context).serviceFee, style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s16)),
             const SizedBox(width: 4),
-            Icon(Icons.info_outline_rounded, size: 16, color: AppColors.primary),
+            Icon(Icons.info_outline_rounded, size: 16, color: context.colors.primary),
           ]),
           const Spacer(),
-          Text(serviceFee, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16)),
+          Text(serviceFee, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s16)),
         ]),
       );
 
-  Widget _totalRow() => Padding(
+  Widget _totalRow(BuildContext context) => Padding(
         padding: EdgeInsets.symmetric(horizontal: Insets.s16),
         child: Row(children: [
           Row(children: [
-            Text('الإجمالي', style: getRegularStyle(color: AppColors.neutral900, fontSize: FontSize.s18)),
+            Text(S.of(context).totalAmount, style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s18)),
             SizedBox(width: Insets.s8),
             Container(
               padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
               decoration: BoxDecoration(
-                color: AppColors.primary50,
+                color: context.colors.primarySurface,
                 borderRadius: BorderRadius.circular(AppRadius.s16),
               ),
-              child: Text('كاش', style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12)),
+              child: Text(S.of(context).cashPayment, style: getRegularStyle(color: context.colors.primary, fontSize: FontSize.s12)),
             ),
           ]),
           const Spacer(),
-          Text(total, style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s18)),
+          Text(total, style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s18)),
         ]),
       );
 }

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class OrderDetailRow extends StatelessWidget {
   final String label;
@@ -19,12 +20,12 @@ class OrderDetailRow extends StatelessWidget {
         children: [
           Text(
             label,
-            style: getRegularStyle(color: const Color(0xFF646565), fontSize: FontSize.s14),
+            style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14),
           ),
           SizedBox(width: Insets.s8),
           Text(
             value,
-            style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14),
+            style: getBoldStyle(color: context.colors.textPrimary, fontSize: FontSize.s14),
           ),
         ],
       ),

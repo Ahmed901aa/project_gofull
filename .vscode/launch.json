@@ -1,12 +1,23 @@
 {
   "version": "0.2.0",
-  "configurations": [ 
+  "configurations": [
     {
-      "name": "Flutter",
-      "type": "dart",
+      "name": "GoFull (device)",
       "request": "launch",
+      "type": "dart",
       "program": "lib/main.dart",
-      "args": []
+      // Route output to the integrated terminal so the debugger doesn't
+      // freeze the app on caught async exceptions (e.g. transient
+      // SocketException from ServerLocator probing) — matches `./run.sh`.
+      "console": "terminal",
+      // NOTE: dart-defines must be passed to the flutter tool, not the app.
+      // Putting them under "args" silently drops them (they get forwarded to
+      // the Dart entrypoint instead). Use "toolArgs" so they behave the same
+      // as `flutter run --dart-define=…` in run.sh.
+      "toolArgs": [
+        "--dart-define=SERVER_HOST=UserMacs-MacBook-Air.local",
+        "--dart-define=API_PORT=8000"
+      ]
     }
   ]
 }

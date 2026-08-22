@@ -37,12 +37,16 @@ class NominatimService {
 
   String _extractName(Map<String, dynamic> data) {
     final addr = data['address'] as Map<String, dynamic>?;
-    if (addr == null) return data['display_name'] as String? ?? '';
+    if (addr == null) {
+
+      return data['display_name'] as String? ?? '';
+
+    }
     return [
       addr['neighbourhood'],
       addr['suburb'],
       addr['city'] ?? addr['town'] ?? addr['village'],
-    ].where((s) => s != null && (s as String).isNotEmpty).join('، ');
+    ].where((s) => s != null && (s as String).isNotEmpty).join(', ');
   }
 
   void dispose() => _dio.close();

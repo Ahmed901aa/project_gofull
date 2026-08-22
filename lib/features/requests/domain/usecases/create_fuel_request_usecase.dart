@@ -20,6 +20,7 @@ class CreateFuelRequestUseCase
         fuelType: params.fuelType,
         fuelQuantity: params.fuelQuantity,
         notes: params.notes,
+        isEmergency: params.isEmergency,
       );
 }
 
@@ -30,6 +31,7 @@ class CreateFuelRequestParams extends Equatable {
   final String fuelType;
   final double fuelQuantity;
   final String? notes;
+  final bool isEmergency;
 
   const CreateFuelRequestParams({
     required this.latitude,
@@ -38,8 +40,10 @@ class CreateFuelRequestParams extends Equatable {
     required this.fuelType,
     required this.fuelQuantity,
     this.notes,
+    this.isEmergency = false,
   });
 
   @override
-  List<Object?> get props => [latitude, longitude, fuelType, fuelQuantity];
+  List<Object?> get props =>
+      [latitude, longitude, fuelType, fuelQuantity, isEmergency];
 }

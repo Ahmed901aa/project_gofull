@@ -30,7 +30,7 @@ class AppConfigRemoteDataSource implements AppConfigDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل تحميل أسعار الوقود');
+              'Failed to load fuel prices');
     }
   }
 
@@ -43,7 +43,7 @@ class AppConfigRemoteDataSource implements AppConfigDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل تحميل إعدادات التطبيق');
+              'Failed to load app config');
     }
   }
 
@@ -68,7 +68,7 @@ class AppConfigRemoteDataSource implements AppConfigDataSource {
     } on DioException catch (e) {
       throw ServerException(
           (e.response?.data as Map?)?['message'] as String? ??
-              'فشل تحميل الصفحة الرئيسية');
+              'Failed to load home page');
     }
   }
 }

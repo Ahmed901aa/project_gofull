@@ -20,7 +20,21 @@ class AuthRepositoryImpl implements AuthRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> sendOtp(String phone) async {
+    try {
+      final message = await dataSource.sendOtp(phone);
+      return Right(message);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on NetworkException catch (e) {
+      return Left(NetworkFailure(e.message));
+    } catch (_) {
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 
@@ -31,17 +45,18 @@ class AuthRepositoryImpl implements AuthRepository {
     String password,
     String passwordConfirmation,
     String role,
+    String otpCode,
   ) async {
     try {
       final user = await dataSource.register(
-          name, phone, password, passwordConfirmation, role);
+          name, phone, password, passwordConfirmation, role, otpCode);
       return Right(user);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 
@@ -72,7 +87,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } on NetworkException catch (e) {
       return Left(NetworkFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 }

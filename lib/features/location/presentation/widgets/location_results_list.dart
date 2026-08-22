@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class LocationItem {
   final String title;
@@ -24,16 +25,16 @@ class LocationResultsList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (items.isEmpty) {
       return Center(
-        child: Text('لا توجد نتائج',
+        child: Text(S.of(context).noResults,
             style: getRegularStyle(
-                color: AppColors.neutral800, fontSize: FontSize.s14)),
+                color: context.colors.textSecondary, fontSize: FontSize.s14)),
       );
     }
     return ListView.separated(
       padding: EdgeInsets.only(top: 4.h),
       itemCount: items.length,
       separatorBuilder: (_, __) =>
-          const Divider(color: AppColors.neutral500, height: 1),
+          Divider(color: context.colors.border, height: 1),
       itemBuilder: (_, i) => _ResultTile(item: items[i], onTap: onItemTap),
     );
   }
@@ -57,7 +58,7 @@ class _ResultTile extends StatelessWidget {
           children: [
             // RTL first child → rightmost = location pin icon
             Icon(Icons.location_on_outlined,
-                color: AppColors.primary, size: 20.sp),
+                color: context.colors.primary, size: 20.sp),
             SizedBox(width: Insets.s12),
             // Expanded text column
             Expanded(
@@ -66,12 +67,12 @@ class _ResultTile extends StatelessWidget {
                 children: [
                   Text(item.title,
                       style: getMediumStyle(
-                          color: AppColors.black, fontSize: FontSize.s14)),
+                          color: context.colors.textPrimary, fontSize: FontSize.s14)),
                   if (item.subtitle.isNotEmpty) ...[
                     SizedBox(height: 2.h),
                     Text(item.subtitle,
                         style: getRegularStyle(
-                            color: AppColors.grey, fontSize: FontSize.s12),
+                            color: context.colors.iconSecondary, fontSize: FontSize.s12),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
                   ],

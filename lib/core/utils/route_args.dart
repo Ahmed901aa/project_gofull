@@ -77,19 +77,19 @@ class DriverFoundArgs {
 }
 
 class TowingStartedArgs {
-  final String title;
-  final String subtitle;
+  final String? title;
+  final String? subtitle;
   final String imagePath;
-  final String vehicleLabel;
-  final String vehicleValue;
+  final String? vehicleLabel;
+  final String? vehicleValue;
   final Object? nextRouteArgs;
   final int? requestId;
   const TowingStartedArgs({
-    this.title = 'السائق وصل لموقعك.',
-    this.subtitle = 'يتم الآن تحميل وتأمين السيارة على الونش لبدء الرحلة إلى وجهتك.',
+    this.title,
+    this.subtitle,
     this.imagePath = 'assets/images/service_tools.gif',
-    this.vehicleLabel = 'نوع الونش',
-    this.vehicleValue = 'ونش هيدروليك',
+    this.vehicleLabel,
+    this.vehicleValue,
     this.nextRouteArgs,
     this.requestId,
   });
@@ -115,18 +115,18 @@ class TripInProgressArgs {
 }
 
 class ServiceArrivedArgs {
-  final String title;
-  final String subtitle;
+  final String? title;
+  final String? subtitle;
   final String imagePath;
-  final String vehicleLabel;
-  final String vehicleValue;
+  final String? vehicleLabel;
+  final String? vehicleValue;
   final int? requestId;
   const ServiceArrivedArgs({
-    this.title = 'بدء عملية تعبئة الوقود',
-    this.subtitle = 'مزود الخدمة متواجد الآن في موقعك وبانتظارك.',
+    this.title,
+    this.subtitle,
     this.imagePath = 'assets/images/refuel.gif',
-    this.vehicleLabel = 'نوع المركبة',
-    this.vehicleValue = 'سيارة إمداد وقود',
+    this.vehicleLabel,
+    this.vehicleValue,
     this.requestId,
   });
 }
@@ -144,7 +144,7 @@ class DriverOrderDetailsArgs {
   final String plateNumber;
   final double distance;
   final double amount;
-  final String paymentMethod;
+  final String? paymentMethod;
   final String? customerNotes;
   final List<String> carPhotos;
   // Fuel-specific
@@ -163,7 +163,7 @@ class DriverOrderDetailsArgs {
     required this.plateNumber,
     required this.distance,
     required this.amount,
-    this.paymentMethod = 'كاش',
+    this.paymentMethod,
     this.customerNotes,
     this.carPhotos = const [],
     this.fuelType,
@@ -180,6 +180,12 @@ class DriverNavigateArgs {
   final String navigationType; // 'to_customer' or 'to_destination'
   final String serviceType; // 'fuel' or 'towing'
   final double amount;
+  final String? customerPhone;
+  // Towing destination — carried through the chain so the provider
+  // can navigate to the customer's chosen drop-off point.
+  final double? destinationLat;
+  final double? destinationLng;
+  final String? destinationAddress;
 
   const DriverNavigateArgs({
     required this.orderId,
@@ -189,6 +195,10 @@ class DriverNavigateArgs {
     required this.navigationType,
     this.serviceType = 'towing',
     this.amount = 0,
+    this.customerPhone,
+    this.destinationLat,
+    this.destinationLng,
+    this.destinationAddress,
   });
 
   bool get isFuel => serviceType == 'fuel';
@@ -198,23 +208,35 @@ class DriverDocumentationArgs {
   final String orderId;
   final String documentationType; // 'pickup' or 'delivery'
   final double amount;
+  final String? customerPhone;
+  // Towing destination — threaded from the navigate screen so
+  // _onContinue can pass them to the to_destination navigation.
+  final double? destinationLat;
+  final double? destinationLng;
+  final String? destinationAddress;
 
   const DriverDocumentationArgs({
     required this.orderId,
     required this.documentationType,
     this.amount = 0,
+    this.customerPhone,
+    this.destinationLat,
+    this.destinationLng,
+    this.destinationAddress,
   });
 }
 
 class DriverCollectPaymentArgs {
   final String orderId;
   final double amount;
-  final String paymentMethod;
+  final String? paymentMethod;
+  final String? customerPhone;
 
   const DriverCollectPaymentArgs({
     required this.orderId,
     required this.amount,
-    this.paymentMethod = 'كاش',
+    this.paymentMethod,
+    this.customerPhone,
   });
 }
 

@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project_gofull/core/network/api_client.dart';
+import 'package:project_gofull/core/services/reverb_service.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
 
 // Auth
@@ -9,6 +10,7 @@ import 'package:project_gofull/features/auth/data/repositories/auth_repository_i
 import 'package:project_gofull/features/auth/domain/repositories/auth_repository.dart';
 import 'package:project_gofull/features/auth/domain/usecases/login_usecase.dart';
 import 'package:project_gofull/features/auth/domain/usecases/register_usecase.dart';
+import 'package:project_gofull/features/auth/domain/usecases/send_otp_usecase.dart';
 import 'package:project_gofull/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_bloc.dart';
 
@@ -50,9 +52,12 @@ import 'package:project_gofull/features/provider/domain/usecases/accept_request_
 import 'package:project_gofull/features/provider/domain/usecases/reject_request_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/update_status_usecase.dart';
 import 'package:project_gofull/features/provider/domain/usecases/rate_driver_usecase.dart';
+import 'package:project_gofull/features/provider/domain/usecases/cancel_order_usecase.dart';
 import 'package:project_gofull/features/provider/presentation/bloc/provider_bloc.dart';
 
 // Notifications
+import 'package:project_gofull/core/cubits/locale_cubit.dart';
+import 'package:project_gofull/core/cubits/theme_cubit.dart';
 import 'package:project_gofull/features/notifications/data/datasources/notification_data_source.dart';
 import 'package:project_gofull/features/notifications/presentation/bloc/notification_bloc.dart';
 
@@ -69,6 +74,9 @@ Future<void> initDependencies() async {
   // ── Core Services ────────────────────────────────────────
   sl.registerLazySingleton<TokenStorage>(() => TokenStorage(sl()));
   sl.registerLazySingleton<ApiClient>(() => ApiClient(sl()));
+  sl.registerLazySingleton<ReverbService>(() => ReverbService(sl()));
+  sl.registerLazySingleton<LocaleCubit>(() => LocaleCubit(sl()));
+  sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit(sl()));
 
   // ── Feature: Auth ────────────────────────────────────────
   sl.registerLazySingleton<AuthDataSource>(
@@ -81,11 +89,13 @@ Future<void> initDependencies() async {
   );
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
+  sl.registerLazySingleton(() => SendOtpUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
   sl.registerFactory(
     () => AuthBloc(
       loginUseCase: sl(),
       registerUseCase: sl(),
+      sendOtpUseCase: sl(),
       logoutUseCase: sl(),
       tokenStorage: sl(),
     ),
@@ -99,7 +109,7 @@ Future<void> initDependencies() async {
     () => AppConfigRepositoryImpl(sl()),
   );
   sl.registerLazySingleton(
-    () => AppConfigBloc(repository: sl()),
+    () => AppConfigBloc(repository: sl(), reverb: sl()),
   );
 
   // ── Feature: Home ────────────────────────────────────────
@@ -137,6 +147,7 @@ Future<void> initDependencies() async {
       getDetails: sl(),
       cancelRequest: sl(),
       rateProvider: sl(),
+      repository: sl(),
     ),
   );
 
@@ -158,6 +169,7 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton(() => RejectRequestUseCase(sl()));
   sl.registerLazySingleton(() => UpdateStatusUseCase(sl()));
   sl.registerLazySingleton(() => RateDriverUseCase(sl()));
+  sl.registerLazySingleton(() => CancelOrderUseCase(sl()));
   // ── Feature: Notifications ──────────────────────────────
   sl.registerLazySingleton<NotificationDataSource>(
     () => NotificationRemoteDataSource(sl()),
@@ -177,6 +189,7 @@ Future<void> initDependencies() async {
       rejectRequest: sl(),
       updateStatus: sl(),
       rateDriver: sl(),
+      cancelOrder: sl(),
     ),
   );
 }

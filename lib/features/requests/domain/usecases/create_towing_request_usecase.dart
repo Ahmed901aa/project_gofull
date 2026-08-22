@@ -17,7 +17,11 @@ class CreateTowingRequestUseCase
         latitude: params.latitude,
         longitude: params.longitude,
         address: params.address,
+        destinationLatitude: params.destinationLatitude,
+        destinationLongitude: params.destinationLongitude,
+        destinationAddress: params.destinationAddress,
         plateNumber: params.plateNumber,
+        carType: params.carType,
         notes: params.notes,
       );
 }
@@ -26,17 +30,25 @@ class CreateTowingRequestParams extends Equatable {
   final double latitude;
   final double longitude;
   final String? address;
+  final double destinationLatitude;
+  final double destinationLongitude;
+  final String? destinationAddress;
   final String plateNumber;
+  final String carType;
   final String? notes;
 
   const CreateTowingRequestParams({
     required this.latitude,
     required this.longitude,
     this.address,
+    required this.destinationLatitude,
+    required this.destinationLongitude,
+    this.destinationAddress,
     required this.plateNumber,
+    required this.carType,
     this.notes,
   });
 
   @override
-  List<Object?> get props => [latitude, longitude, plateNumber];
+  List<Object?> get props => [latitude, longitude, plateNumber, carType];
 }

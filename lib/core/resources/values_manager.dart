@@ -4,7 +4,9 @@ class Insets {
   const Insets._();
   static double s4 = 4.0.w;
   static double s8 = 8.0.w;
+  static double s10 = 10.0.w;
   static double s12 = 12.0.w;
+  static double s14 = 14.0.w;
   static double s16 = 16.0.w;
   static double s20 = 20.0.w;
   static double s24 = 24.0.w;
@@ -13,6 +15,7 @@ class Insets {
 
 class Sizes {
   const Sizes._();
+  static double s4 = 4.0.h;
   static double s8 = 8.0.h;
   static double s12 = 12.0.h;
   static double s16 = 16.0.h;
@@ -29,6 +32,7 @@ class AppRadius {
   static double s8 = 8.0.r;
   static double s12 = 12.0.r;
   static double s16 = 16.0.r;
+  static double s20 = 20.0.r;
   static double s24 = 24.0.r;
   static double s32 = 32.0.r;
 }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class PhotoLogSection extends StatefulWidget {
   const PhotoLogSection({super.key});
@@ -19,9 +20,9 @@ class _PhotoLogSectionState extends State<PhotoLogSection> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.neutral400,
+        color: context.colors.surfaceElevated,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,13 +44,13 @@ class _PhotoLogSectionState extends State<PhotoLogSection> {
                     child: Icon(
                       Icons.keyboard_arrow_down_rounded,
                       size: 24.sp,
-                      color: const Color(0xFF0E0E0E),
+                      color: context.colors.textPrimary,
                     ),
                   ),
                   Text(
-                    'سجل الصور',
+                    S.of(context).photoLog,
                     style: getBoldStyle(
-                      color: const Color(0xFF0E0E0E),
+                      color: context.colors.textPrimary,
                       fontSize: FontSize.s16,
                     ),
                   ),
@@ -58,7 +59,7 @@ class _PhotoLogSectionState extends State<PhotoLogSection> {
             ),
           ),
           if (_isExpanded) ...[
-            Divider(color: AppColors.neutral500, height: 1, thickness: 1),
+            Divider(color: context.colors.border, height: 1, thickness: 1),
             Padding(
               padding: EdgeInsets.all(Insets.s12),
               child: Row(
@@ -66,7 +67,7 @@ class _PhotoLogSectionState extends State<PhotoLogSection> {
                   3,
                   (i) => Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(right: i > 0 ? Insets.s8 : 0),
+                      padding: EdgeInsetsDirectional.only(end: i > 0 ? Insets.s8 : 0),
                       child: const _PhotoPlaceholder(),
                     ),
                   ),
@@ -88,11 +89,11 @@ class _PhotoPlaceholder extends StatelessWidget {
     return Container(
       height: 88.h,
       decoration: BoxDecoration(
-        color: AppColors.neutral200,
+        color: context.colors.inputFill,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
-      child: Icon(Icons.image_outlined, size: 28.sp, color: AppColors.neutral600),
+      child: Icon(Icons.image_outlined, size: 28.sp, color: context.colors.border),
     );
   }
 }

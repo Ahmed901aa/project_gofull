@@ -1,11 +1,17 @@
 import 'dart:math' as math;
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
+import 'package:project_gofull/core/di/injection_container.dart';
+import 'package:project_gofull/core/network/api_client.dart';
+import 'package:project_gofull/core/network/api_constants.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class DriverReportsScreen extends StatefulWidget {
   const DriverReportsScreen({super.key});
@@ -15,115 +21,227 @@ class DriverReportsScreen extends StatefulWidget {
 }
 
 class _DriverReportsScreenState extends State<DriverReportsScreen> {
-  String _productivityFilter = 'يومي';
-  String _responseFilter = 'يومي';
+  bool _isLoading = true;
+  String? _error;
 
-  final _filterOptions = const [
-    'اليوم',
-    'يومي',
-    'هذا الإسبوع',
-    'هذا الشهر',
-    'ستة أشهر',
-    'سنوياً',
-  ];
+  // Stats
+  int _totalOrders = 0;
+  double _totalIncome = 0;
+  double _averageRating = 0;
+  int _totalRatings = 0;
+  int _todayOrders = 0;
+  double _todayIncome = 0;
+  int _ordersChange = 0;
+  int _incomeChange = 0;
+
+  // Chart data
+  Map<String, double> _barData = {};
+  List<_ChartPoint> _areaData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAnalytics();
+  }
+
+  Future<void> _loadAnalytics() async {
+    try {
+      final response =
+          await sl<ApiClient>().dio.get(ApiConstants.providerAnalytics);
+      final data = response.data['data'] as Map<String, dynamic>;
+
+      if (mounted) {
+        setState(() {
+          _totalOrders = int.tryParse('${data['total_orders'] ?? ''}') ?? 0;
+          _totalIncome = double.tryParse('${data['total_income'] ?? ''}') ?? 0;
+          _todayOrders = int.tryParse('${data['today_orders'] ?? ''}') ?? 0;
+          _todayIncome = double.tryParse('${data['today_income'] ?? ''}') ?? 0;
+          _ordersChange = int.tryParse('${data['orders_change'] ?? ''}') ?? 0;
+          _incomeChange = int.tryParse('${data['income_change'] ?? ''}') ?? 0;
+          _averageRating = double.tryParse('${data['average_rating'] ?? ''}') ?? 0;
+          _totalRatings = int.tryParse('${data['total_ratings'] ?? ''}') ?? 0;
+
+          // Parse weekly orders for bar chart
+          final weeklyOrders =
+              data['weekly_orders'] as List<dynamic>? ?? [];
+          _barData = {
+            for (final item in weeklyOrders)
+              (item['day'] as String):
+                  double.tryParse('${item['count'] ?? 0}') ?? 0,
+          };
+
+          // Parse weekly acceptance for area chart
+          final weeklyAcceptance =
+              data['weekly_acceptance'] as List<dynamic>? ?? [];
+          _areaData = weeklyAcceptance
+              .map((item) => _ChartPoint(
+                    label: ('${item['day'] ?? ''}').isNotEmpty ? '${item['day']}'.substring(0, 1) : '',
+                    value: double.tryParse('${item['rate'] ?? 0}') ?? 0,
+                  ))
+              .toList();
+
+          _isLoading = false;
+        });
+      }
+    } on DioException catch (e) {
+      if (mounted) {
+        final statusCode = e.response?.statusCode;
+        final message = (e.response?.data as Map?)?['message'] as String?;
+        setState(() {
+          if (statusCode == 403) {
+            _error = message ?? S.of(context).accountUnderReview;
+          } else if (statusCode == 404) {
+            _error = S.of(context).analyticsNotFound;
+          } else {
+            _error = S.of(context).failedToLoadReports;
+          }
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = S.of(context).failedToLoadReports;
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+    return Scaffold(
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             _buildHeader(context),
             Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.all(Insets.s16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _StatCard(
-                      icon: Icons.access_time_rounded,
-                      iconBg: AppColors.primary50,
-                      iconColor: AppColors.primary,
-                      title: 'ساعات العمل',
-                      value: '255',
-                      changePercent: '10%',
-                      changeLabel: 'من أمس',
-                      isPositive: true,
-                    ),
-                    SizedBox(height: Insets.s12),
-                    _StatCard(
-                      icon: Icons.route_rounded,
-                      iconBg: AppColors.gold.withValues(alpha: 0.1),
-                      iconColor: AppColors.gold,
-                      title: 'إجمالي الرحلات',
-                      value: '2500.5 ج.م',
-                      changePercent: '10%',
-                      changeLabel: 'من أمس',
-                      isPositive: false,
-                    ),
-                    SizedBox(height: Insets.s12),
-                    _StatCard(
-                      icon: Icons.star_rounded,
-                      iconBg: AppColors.gold.withValues(alpha: 0.1),
-                      iconColor: AppColors.gold,
-                      title: 'متوسط التقييم',
-                      value: '4.25 / 5',
-                      changePercent: '10%',
-                      changeLabel: 'من أمس',
-                      isPositive: true,
-                    ),
-                    SizedBox(height: Insets.s12),
-                    _StatCard(
-                      icon: Icons.straighten_rounded,
-                      iconBg: AppColors.info.withValues(alpha: 0.1),
-                      iconColor: AppColors.info,
-                      title: 'المسافة المقطوعة',
-                      value: '250 كم',
-                      changePercent: '10%',
-                      changeLabel: 'من أمس',
-                      isPositive: true,
-                    ),
+              child: _isLoading
+                  ? Center(child: CircularProgressIndicator(color: context.colors.primary))
+                  : _error != null
+                      ? Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.error_outline_rounded,
+                                  size: 48.sp, color: context.colors.iconSecondary),
+                              SizedBox(height: Insets.s8),
+                              Text(_error!,
+                                  style: getRegularStyle(
+                                      color: context.colors.iconSecondary,
+                                      fontSize: FontSize.s16)),
+                              SizedBox(height: Insets.s16),
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isLoading = true;
+                                    _error = null;
+                                  });
+                                  _loadAnalytics();
+                                },
+                                child: Text(S.of(context).retryButton),
+                              ),
+                            ],
+                          ),
+                        )
+                      : RefreshIndicator(
+                          onRefresh: () async {
+                            setState(() {
+                              _isLoading = true;
+                              _error = null;
+                            });
+                            await _loadAnalytics();
+                          },
+                          child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(
+                              parent: BouncingScrollPhysics()),
+                          padding: EdgeInsets.all(Insets.s16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              _StatCard(
+                                icon: Icons.route_rounded,
+                                iconBg: context.colors.primarySurface,
+                                iconColor: context.colors.primary,
+                                title: S.of(context).totalOrdersLabel,
+                                value: '$_totalOrders',
+                                changePercent: '${_ordersChange.abs()}%',
+                                changeLabel: S.of(context).fromYesterdayLabel,
+                                isPositive: _ordersChange >= 0,
+                              ),
+                              SizedBox(height: Insets.s12),
+                              _StatCard(
+                                icon: Icons.account_balance_wallet_rounded,
+                                iconBg:
+                                    context.colors.gold.withValues(alpha: 0.1),
+                                iconColor: context.colors.gold,
+                                title: S.of(context).totalIncomeLabel,
+                                value:
+                                    '${_totalIncome.toStringAsFixed(2)} ${S.of(context).currencyDL}',
+                                changePercent: '${_incomeChange.abs()}%',
+                                changeLabel: S.of(context).fromYesterdayLabel,
+                                isPositive: _incomeChange >= 0,
+                              ),
+                              SizedBox(height: Insets.s12),
+                              _StatCard(
+                                icon: Icons.star_rounded,
+                                iconBg:
+                                    context.colors.gold.withValues(alpha: 0.1),
+                                iconColor: context.colors.gold,
+                                title: S.of(context).averageRatingLabel,
+                                value: _averageRating > 0
+                                    ? '${_averageRating.toStringAsFixed(1)} / 5'
+                                    : '—',
+                                changePercent: '$_totalRatings',
+                                changeLabel: S.of(context).ratingLabel,
+                                isPositive: true,
+                              ),
+                              SizedBox(height: Insets.s12),
+                              _StatCard(
+                                icon: Icons.today_rounded,
+                                iconBg:
+                                    context.colors.info.withValues(alpha: 0.1),
+                                iconColor: context.colors.info,
+                                title: S.of(context).todayIncomeLabel,
+                                value:
+                                    '${_todayIncome.toStringAsFixed(2)} ${S.of(context).currencyDL}',
+                                changePercent: '$_todayOrders',
+                                changeLabel: S.of(context).orderTodayLabel,
+                                isPositive: true,
+                              ),
 
-                    SizedBox(height: Insets.s24),
+                              SizedBox(height: Insets.s24),
 
-                    // ── Task Productivity Chart ──
-                    _ChartSection(
-                      title: 'إنتاجية المهام',
-                      selectedFilter: _productivityFilter,
-                      filters: _filterOptions,
-                      onFilterChanged: (v) =>
-                          setState(() => _productivityFilter = v),
-                      child: _BarChart(),
-                    ),
+                              // ── Task Productivity Chart ──
+                              if (_barData.isNotEmpty)
+                                _ChartSection(
+                                  title: S.of(context).weeklyOrdersLabel,
+                                  child: _BarChart(data: _barData),
+                                ),
 
-                    SizedBox(height: Insets.s24),
+                              if (_barData.isNotEmpty)
+                                SizedBox(height: Insets.s24),
 
-                    // ── Response Rate Chart ──
-                    _ChartSection(
-                      title: 'معدل الاستجابة',
-                      selectedFilter: _responseFilter,
-                      filters: _filterOptions,
-                      onFilterChanged: (v) =>
-                          setState(() => _responseFilter = v),
-                      child: _AreaChart(),
-                    ),
+                              // ── Response Rate Chart ──
+                              if (_areaData.isNotEmpty)
+                                _ChartSection(
+                                  title: S.of(context).acceptRateLabel,
+                                  child: _AreaChart(data: _areaData),
+                                ),
 
-                    SizedBox(height: Insets.s24),
-                  ],
-                ),
-              ),
+                              SizedBox(height: Insets.s24),
+                            ],
+                          ),
+                        ),
+                        ),
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(
           children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
@@ -134,14 +252,14 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back_rounded,
-                        size: 24.sp, color: const Color(0xFF0E0E0E)),
+                    child: Icon(backArrowIcon(context),
+                        size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(
                     child: Text(
-                      'التقارير',
+                      S.of(context).reportsTitle,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20),
                       textAlign: TextAlign.center,
                     ),
@@ -150,10 +268,18 @@ class _DriverReportsScreenState extends State<DriverReportsScreen> {
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF5F5F5)),
+            Divider(height: 1, color: context.colors.borderSubtle),
           ],
         ),
       );
+}
+
+// ── Chart Point ─────────────────────────────────────────
+
+class _ChartPoint {
+  final String label;
+  final double value;
+  const _ChartPoint({required this.label, required this.value});
 }
 
 // ── Stat Card ────────────────────────────────────────────
@@ -184,13 +310,12 @@ class _StatCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         children: [
-          // Icon
           Container(
             width: 48.w,
             height: 48.w,
@@ -202,7 +327,6 @@ class _StatCard extends StatelessWidget {
             child: Icon(icon, size: 24.sp, color: iconColor),
           ),
           SizedBox(width: Insets.s12),
-          // Title + change
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,7 +334,7 @@ class _StatCard extends StatelessWidget {
                 Text(
                   title,
                   style: getRegularStyle(
-                      color: AppColors.grey, fontSize: FontSize.s14),
+                      color: context.colors.iconSecondary, fontSize: FontSize.s14),
                 ),
                 SizedBox(height: 4.h),
                 Row(
@@ -220,13 +344,13 @@ class _StatCard extends StatelessWidget {
                           ? Icons.arrow_upward_rounded
                           : Icons.arrow_downward_rounded,
                       size: 14.sp,
-                      color: isPositive ? AppColors.success : AppColors.error,
+                      color: isPositive ? context.colors.success : context.colors.error,
                     ),
                     SizedBox(width: 2.w),
                     Text(
                       '$changePercent $changeLabel',
                       style: getRegularStyle(
-                        color: isPositive ? AppColors.success : AppColors.error,
+                        color: isPositive ? context.colors.success : context.colors.error,
                         fontSize: FontSize.s12,
                       ),
                     ),
@@ -235,11 +359,10 @@ class _StatCard extends StatelessWidget {
               ],
             ),
           ),
-          // Value
           Text(
             value,
             style: getBoldStyle(
-                color: const Color(0xFF0E0E0E), fontSize: FontSize.s18),
+                color: context.colors.textPrimary, fontSize: FontSize.s18),
           ),
         ],
       ),
@@ -251,16 +374,10 @@ class _StatCard extends StatelessWidget {
 
 class _ChartSection extends StatelessWidget {
   final String title;
-  final String selectedFilter;
-  final List<String> filters;
-  final ValueChanged<String> onFilterChanged;
   final Widget child;
 
   const _ChartSection({
     required this.title,
-    required this.selectedFilter,
-    required this.filters,
-    required this.onFilterChanged,
     required this.child,
   });
 
@@ -269,27 +386,17 @@ class _ChartSection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Insets.s16),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: AppColors.neutral500),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Text(
-                title,
-                style: getBoldStyle(
-                    color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
-              ),
-              const Spacer(),
-              _FilterDropdown(
-                value: selectedFilter,
-                items: filters,
-                onChanged: onFilterChanged,
-              ),
-            ],
+          Text(
+            title,
+            style: getBoldStyle(
+                color: context.colors.textPrimary, fontSize: FontSize.s16),
           ),
           SizedBox(height: Insets.s16),
           child,
@@ -299,76 +406,30 @@ class _ChartSection extends StatelessWidget {
   }
 }
 
-// ── Filter Dropdown ──────────────────────────────────────
-
-class _FilterDropdown extends StatelessWidget {
-  final String value;
-  final List<String> items;
-  final ValueChanged<String> onChanged;
-
-  const _FilterDropdown({
-    required this.value,
-    required this.items,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
-      decoration: BoxDecoration(
-        color: AppColors.neutral400,
-        borderRadius: BorderRadius.circular(AppRadius.s8),
-        border: Border.all(color: AppColors.neutral500),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          isDense: true,
-          icon: Icon(Icons.keyboard_arrow_down_rounded,
-              size: 18.sp, color: AppColors.darkGrey),
-          style: getMediumStyle(
-              color: AppColors.darkGrey, fontSize: FontSize.s12),
-          items: items
-              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-              .toList(),
-          onChanged: (v) {
-            if (v != null) onChanged(v);
-          },
-        ),
-      ),
-    );
-  }
-}
-
-// ── Bar Chart (Task Productivity) ────────────────────────
-
-// replace with API data later
-const _barData = <String, double>{
-  'السبت': 28,
-  'الأحد': 42,
-  'الاثنين': 35,
-  'الثلاثاء': 55,
-  'الأربعاء': 48,
-  'الخميس': 30,
-  'الجمعة': 20,
-};
+// ── Bar Chart (Weekly Orders) ───────────────────────────
 
 class _BarChart extends StatelessWidget {
+  final Map<String, double> data;
+  const _BarChart({required this.data});
+
   @override
   Widget build(BuildContext context) {
-    final maxVal =
-        _barData.values.reduce((a, b) => a > b ? a : b);
-    final peakEntry =
-        _barData.entries.reduce((a, b) => a.value > b.value ? a : b);
+    if (data.isEmpty) {
+
+      return const SizedBox.shrink();
+
+    }
+
+    final maxVal = data.values.reduce((a, b) => a > b ? a : b);
+    final peakEntry = data.entries.reduce((a, b) => a.value > b.value ? a : b);
 
     return SizedBox(
       height: 200.h,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
-        children: _barData.entries.map((entry) {
+        children: data.entries.map((entry) {
           final isPeak = entry.key == peakEntry.key;
-          final ratio = entry.value / maxVal;
+          final ratio = maxVal > 0 ? entry.value / maxVal : 0.0;
 
           return Expanded(
             child: Padding(
@@ -376,26 +437,26 @@ class _BarChart extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  if (isPeak) ...[
+                  if (isPeak && entry.value > 0) ...[
                     Container(
                       padding: EdgeInsets.symmetric(
                           horizontal: Insets.s4, vertical: 2.h),
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
+                        color: context.colors.primary,
                         borderRadius: BorderRadius.circular(AppRadius.s8),
                       ),
                       child: Text(
                         '${entry.value.toInt()}',
                         style: getMediumStyle(
-                            color: AppColors.white, fontSize: FontSize.s12),
+                            color: context.colors.surface, fontSize: FontSize.s12),
                       ),
                     ),
                     SizedBox(height: 4.h),
                   ],
                   Container(
-                    height: (160.h * ratio).clamp(8.0, 160.h),
+                    height: (160.h * ratio).clamp(4.0, 160.h),
                     decoration: BoxDecoration(
-                      color: isPeak ? AppColors.primary : AppColors.primary200,
+                      color: isPeak ? context.colors.primary : context.colors.primaryLight,
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(AppRadius.s8),
                       ),
@@ -404,8 +465,8 @@ class _BarChart extends StatelessWidget {
                   SizedBox(height: 6.h),
                   Text(
                     entry.key,
-                    style: getRegularStyle(
-                        color: AppColors.grey, fontSize: 9.sp),
+                    style:
+                        getRegularStyle(color: context.colors.iconSecondary, fontSize: 9.sp),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -419,38 +480,39 @@ class _BarChart extends StatelessWidget {
   }
 }
 
-// ── Area Chart (Response Rate) ───────────────────────────
-
-// replace with API data later
-const _areaValues = [30.0, 45.0, 38.0, 60.0, 52.0, 70.0, 55.0];
-const _areaLabels = ['س', 'أ', 'إ', 'ث', 'أ', 'خ', 'ج'];
+// ── Area Chart (Acceptance Rate) ────────────────────────
 
 class _AreaChart extends StatelessWidget {
+  final List<_ChartPoint> data;
+  const _AreaChart({required this.data});
+
   @override
   Widget build(BuildContext context) {
+    final values = data.map((e) => e.value).toList();
+    final labels = data.map((e) => e.label).toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Badge
         Align(
-          alignment: Alignment.centerRight,
+          alignment: AlignmentDirectional.centerEnd,
           child: Container(
             padding:
                 EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 4.h),
             decoration: BoxDecoration(
-              color: AppColors.success.withValues(alpha: 0.1),
+              color: context.colors.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.s8),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.trending_up_rounded,
-                    size: 14.sp, color: AppColors.success),
+                    size: 14.sp, color: context.colors.success),
                 SizedBox(width: 4.w),
                 Text(
-                  'أعلى معدل قبول',
+                  S.of(context).weeklyAcceptanceRateLabel,
                   style: getMediumStyle(
-                      color: AppColors.success, fontSize: FontSize.s12),
+                      color: context.colors.success, fontSize: FontSize.s12),
                 ),
               ],
             ),
@@ -461,9 +523,9 @@ class _AreaChart extends StatelessWidget {
           height: 160.h,
           child: CustomPaint(
             painter: _AreaChartPainter(
-              values: _areaValues,
-              lineColor: AppColors.primary,
-              fillColor: AppColors.primary.withValues(alpha: 0.1),
+              values: values,
+              lineColor: context.colors.primary,
+              fillColor: context.colors.primary.withValues(alpha: 0.1),
             ),
             size: Size(double.infinity, 160.h),
           ),
@@ -471,11 +533,11 @@ class _AreaChart extends StatelessWidget {
         SizedBox(height: Insets.s8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: _areaLabels
+          children: labels
               .map((l) => Text(
                     l,
                     style: getRegularStyle(
-                        color: AppColors.grey, fontSize: FontSize.s12),
+                        color: context.colors.iconSecondary, fontSize: FontSize.s12),
                   ))
               .toList(),
         ),
@@ -497,7 +559,11 @@ class _AreaChartPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (values.isEmpty) return;
+    if (values.isEmpty) {
+
+      return;
+
+    }
 
     final maxVal = values.reduce(math.max);
     final minVal = values.reduce(math.min);
@@ -508,11 +574,11 @@ class _AreaChartPainter extends CustomPainter {
 
     for (var i = 0; i < values.length; i++) {
       final x = i * stepX;
-      final y = size.height - ((values[i] - minVal) / range) * size.height * 0.85;
+      final y =
+          size.height - ((values[i] - minVal) / range) * size.height * 0.85;
       points.add(Offset(x, y));
     }
 
-    // Fill path
     final fillPath = Path()..moveTo(0, size.height);
     for (final p in points) {
       fillPath.lineTo(p.dx, p.dy);
@@ -520,12 +586,8 @@ class _AreaChartPainter extends CustomPainter {
     fillPath.lineTo(size.width, size.height);
     fillPath.close();
 
-    canvas.drawPath(
-      fillPath,
-      Paint()..color = fillColor,
-    );
+    canvas.drawPath(fillPath, Paint()..color = fillColor);
 
-    // Line
     final linePath = Path()..moveTo(points.first.dx, points.first.dy);
     for (var i = 1; i < points.length; i++) {
       linePath.lineTo(points[i].dx, points[i].dy);
@@ -540,18 +602,9 @@ class _AreaChartPainter extends CustomPainter {
         ..strokeJoin = StrokeJoin.round,
     );
 
-    // Dots
     for (final p in points) {
-      canvas.drawCircle(
-        p,
-        4,
-        Paint()..color = lineColor,
-      );
-      canvas.drawCircle(
-        p,
-        2,
-        Paint()..color = Colors.white,
-      );
+      canvas.drawCircle(p, 4, Paint()..color = lineColor);
+      canvas.drawCircle(p, 2, Paint()..color = Colors.white);
     }
   }
 

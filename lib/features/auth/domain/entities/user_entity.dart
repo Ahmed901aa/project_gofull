@@ -7,6 +7,7 @@ class UserEntity extends Equatable {
   final String role; // driver | provider
   final String status; // active | suspended
   final String? token;
+  final String? avatarUrl;
 
   const UserEntity({
     required this.id,
@@ -15,11 +16,12 @@ class UserEntity extends Equatable {
     required this.role,
     this.status = 'active',
     this.token,
+    this.avatarUrl,
   });
 
   bool get isDriver => role == 'driver';
   bool get isProvider => role == 'provider';
 
   @override
-  List<Object?> get props => [id, phone, name, role, status, token];
+  List<Object?> get props => [id, phone, name, role, status, token, avatarUrl];
 }

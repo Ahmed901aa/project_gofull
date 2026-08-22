@@ -3,29 +3,35 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class OtpInputBox extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final ValueChanged<String> onChanged;
 
+  /// Box width in design units (scaled with .w). Default fits 5 boxes;
+  /// pass a smaller value (e.g. 44) when showing 6 boxes.
+  final double width;
+
   const OtpInputBox({
     super.key,
     required this.controller,
     required this.focusNode,
     required this.onChanged,
+    this.width = 56,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 56.w,
+      width: width.w,
       height: 48.h,
       margin: EdgeInsets.symmetric(horizontal: 6.w),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F8F9),
+        color: context.colors.inputFill,
         borderRadius: BorderRadius.circular(AppRadius.s16),
-        border: Border.all(color: const Color(0xFFEFF0F1)),
+        border: Border.all(color: context.colors.border),
       ),
       child: TextField(
         controller: controller,
@@ -33,7 +39,7 @@ class OtpInputBox extends StatelessWidget {
         textAlign: TextAlign.center,
         keyboardType: TextInputType.number,
         maxLength: 1,
-        style: getBoldStyle(color: const Color(0xFF0E0E0E), fontSize: 20.sp),
+        style: getBoldStyle(color: context.colors.textPrimary, fontSize: 20.sp),
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         decoration: const InputDecoration(
           counterText: '',

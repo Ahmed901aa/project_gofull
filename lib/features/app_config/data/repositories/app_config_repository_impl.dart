@@ -19,7 +19,7 @@ class AppConfigRepositoryImpl implements AppConfigRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 
@@ -31,7 +31,7 @@ class AppConfigRepositoryImpl implements AppConfigRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 
@@ -43,7 +43,7 @@ class AppConfigRepositoryImpl implements AppConfigRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message));
     } catch (_) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
 }

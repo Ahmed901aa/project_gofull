@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class SearchResultTile extends StatelessWidget {
   final String title;
@@ -31,9 +32,9 @@ class SearchResultTile extends StatelessWidget {
         padding: EdgeInsets.all(Insets.s12),
         margin: EdgeInsets.only(bottom: Insets.s8),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.s16),
-          border: Border.all(color: const Color(0xFFEFF0F1)),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(
           children: [
@@ -41,10 +42,10 @@ class SearchResultTile extends StatelessWidget {
               width: 44.w,
               height: 44.w,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.08),
+                color: context.colors.primary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(AppRadius.s12),
               ),
-              child: Icon(icon, size: 22.sp, color: AppColors.primary),
+              child: DirectionalServiceIcon(icon, size: 22.sp, color: context.colors.primary),
             ),
             SizedBox(width: Insets.s12),
             Expanded(
@@ -53,16 +54,16 @@ class SearchResultTile extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Expanded(child: _buildTitle()),
+                      Expanded(child: _buildTitle(context)),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: Insets.s8, vertical: 2.h),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.08),
+                          color: context.colors.primary.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(AppRadius.s24),
                         ),
                         child: Text(
                           category,
-                          style: getRegularStyle(color: AppColors.primary, fontSize: FontSize.s12),
+                          style: getRegularStyle(color: context.colors.primary, fontSize: FontSize.s12),
                         ),
                       ),
                     ],
@@ -70,22 +71,22 @@ class SearchResultTile extends StatelessWidget {
                   SizedBox(height: 4.h),
                   Text(
                     subtitle,
-                    style: getRegularStyle(color: const Color(0xFF838485), fontSize: FontSize.s14),
+                    style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s14),
                   ),
                 ],
               ),
             ),
             SizedBox(width: Insets.s8),
-            Icon(Icons.arrow_back_ios_new_rounded, size: 12.sp, color: const Color(0xFFD9DADB)),
+            Icon(backArrowIcon(context), size: 12.sp, color: context.colors.border),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTitle() {
+  Widget _buildTitle(BuildContext context) {
     if (highlightQuery == null || highlightQuery!.isEmpty || !title.contains(highlightQuery!)) {
-      return Text(title, style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16));
+      return Text(title, style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s16));
     }
     final idx = title.indexOf(highlightQuery!);
     final before = title.substring(0, idx);
@@ -93,10 +94,10 @@ class SearchResultTile extends StatelessWidget {
     final after = title.substring(idx + highlightQuery!.length);
     return RichText(
       text: TextSpan(
-        style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16),
+        style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s16),
         children: [
           if (before.isNotEmpty) TextSpan(text: before),
-          TextSpan(text: match, style: getBoldStyle(color: AppColors.primary, fontSize: FontSize.s16)),
+          TextSpan(text: match, style: getBoldStyle(color: context.colors.primary, fontSize: FontSize.s16)),
           if (after.isNotEmpty) TextSpan(text: after),
         ],
       ),
