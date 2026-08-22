@@ -5,7 +5,6 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
-import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/rating_notes_section.dart';
 import 'package:project_gofull/features/fuel/presentation/widgets/rating_stars_section.dart';
@@ -16,6 +15,7 @@ import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/core/widgets/directional_icon.dart';
 import 'package:project_gofull/core/utils/tracked_dispatch.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
+import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 
 class RatingScreen extends StatefulWidget {
   final RatingArgs? args;
@@ -109,7 +109,7 @@ class _RatingScreenState extends State<RatingScreen> {
                   failureMessage: S.of(context).ratingFailed,
                 );
               }
-              Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false);
+              BottomNavShell.popToHome(context);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: context.colors.primary, disabledBackgroundColor: context.colors.primary.withValues(alpha: 0.4),

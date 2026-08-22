@@ -27,6 +27,7 @@ import '../widgets/trip_safety_section.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 
 String _calcDistance(double lat1, double lng1, double lat2, double lng2) {
   const r = 6371.0;
@@ -148,9 +149,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
         title: S.of(context).orderCancelledTitle,
         body: S.of(context).orderCancelledByProviderBody,
       );
-      // Unwind to the EXISTING shell — pushing Routes.home would stack a
-      // second BottomNavShell (and leave this flow's screens alive below).
-      Navigator.popUntil(context, (route) => route.isFirst);
+      BottomNavShell.popToHome(context);
     }
   }
 

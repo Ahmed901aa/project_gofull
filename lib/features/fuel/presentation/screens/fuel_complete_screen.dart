@@ -6,7 +6,6 @@ import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
-import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
@@ -322,7 +321,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
           boxShadow: [BoxShadow(color: context.colors.border.withValues(alpha: 0.15), blurRadius: 8, offset: const Offset(0, -2))]),
         padding: EdgeInsets.fromLTRB(Insets.s16, Insets.s12, Insets.s16, Insets.s16),
         child: SizedBox(height: 48.h, width: double.infinity, child: ElevatedButton(
-          onPressed: () => Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
+          onPressed: () => BottomNavShell.popToHome(context),
           style: ElevatedButton.styleFrom(backgroundColor: context.colors.primary, foregroundColor: AppColors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)), elevation: 0),
           child: Text(l10n.backToHome, style: getBoldStyle(color: context.colors.surface, fontSize: FontSize.s16)),
@@ -349,7 +348,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
             )),
             SizedBox(height: 8.h),
             SizedBox(height: 40.h, width: double.infinity, child: TextButton(
-              onPressed: () => Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
+              onPressed: () => BottomNavShell.popToHome(context),
               style: TextButton.styleFrom(foregroundColor: context.colors.iconSecondary,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16))),
               child: Text(l10n.skip, style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s14)),
@@ -375,7 +374,7 @@ class _FuelCompleteScreenState extends State<FuelCompleteScreen> {
           )),
           SizedBox(height: 8.h),
           SizedBox(height: 40.h, width: double.infinity, child: TextButton(
-            onPressed: () => Navigator.pushNamedAndRemoveUntil(context, Routes.home, (route) => false),
+            onPressed: () => BottomNavShell.popToHome(context),
             style: TextButton.styleFrom(foregroundColor: context.colors.iconSecondary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16))),
             child: Text(l10n.skip, style: getRegularStyle(color: context.colors.iconSecondary, fontSize: FontSize.s14)),

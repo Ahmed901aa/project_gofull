@@ -8,6 +8,7 @@ import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 
 class ArrivedBottomAction extends StatelessWidget {
   final int? requestId;
@@ -32,8 +33,10 @@ class ArrivedBottomAction extends StatelessWidget {
               width: double.infinity,
               height: 48.h,
               child: ElevatedButton(
+                // Keep the shell alive as the root so the rating screen's
+                // "go home" can unwind to it instead of creating a new one.
                 onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                    context, Routes.rating, (route) => false,
+                    context, Routes.rating, (route) => route.isFirst,
                     arguments: RatingArgs(orderId: (requestId ?? 0).toString())),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.colors.primary,
@@ -51,8 +54,7 @@ class ArrivedBottomAction extends StatelessWidget {
               width: double.infinity,
               height: 48.h,
               child: TextButton(
-                onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                    context, Routes.home, (route) => false),
+                onPressed: () => BottomNavShell.popToHome(context),
                 style: TextButton.styleFrom(
                   foregroundColor: context.colors.iconSecondary,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.s16)),

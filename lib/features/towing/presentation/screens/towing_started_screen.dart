@@ -19,6 +19,7 @@ import 'package:project_gofull/features/towing/presentation/widgets/safety_secti
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
 
 class TowingStartedScreen extends StatefulWidget {
   final TowingStartedArgs? args;
@@ -98,9 +99,7 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
         title: S.of(context).orderCancelledTitle,
         body: S.of(context).orderCancelledByProviderBody,
       );
-      // Unwind to the EXISTING shell — pushing Routes.home would stack a
-      // second BottomNavShell (and leave this flow's screens alive below).
-      Navigator.popUntil(context, (route) => route.isFirst);
+      BottomNavShell.popToHome(context);
     }
   }
 

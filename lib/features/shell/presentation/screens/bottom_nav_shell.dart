@@ -18,11 +18,28 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_event
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import '../widgets/nav_item.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/routes/routes.dart';
 
 class BottomNavShell extends StatefulWidget {
   BottomNavShell({Key? key}) : super(key: key ?? shellKey);
 
   static final shellKey = GlobalKey<_BottomNavShellState>();
+
+  /// The ONLY correct way to navigate back to the home shell.
+  ///
+  /// Every shell instance shares [shellKey], so pushing Routes.home while a
+  /// shell is still anywhere in the stack puts the same GlobalKey in the
+  /// tree twice for one frame → "Duplicate GlobalKey detected" crash.
+  /// If a shell is mounted we unwind to it (it is always the root route for
+  /// customers); only when none exists do we create a fresh one.
+  static void popToHome(BuildContext context) {
+    final navigator = Navigator.of(context);
+    if (shellKey.currentState != null) {
+      navigator.popUntil((route) => route.isFirst);
+    } else {
+      navigator.pushNamedAndRemoveUntil(Routes.home, (route) => false);
+    }
+  }
 
   /// Call this when a new order is created — saves the order ID so we know
   /// the customer had an active order when they left.
