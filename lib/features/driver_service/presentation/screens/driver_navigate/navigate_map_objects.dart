@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
-import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/resources/tracking_colors.dart';
 
 /// Builds the markers and route polyline shown on the navigation map.
 ({Set<Marker> markers, Set<Polyline> polylines}) buildNavigateMapObjects(
@@ -32,7 +32,10 @@ import 'package:project_gofull/core/resources/app_theme.dart';
         markerId: const MarkerId('provider'),
         position: providerPosition,
         infoWindow: InfoWindow(title: S.of(context).myLocationMarker),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        // Single-hue green tracking scheme (no blue) — provider gets a
+        // slightly darker green than the destination so the two markers
+        // are still distinguishable on the map.
+        icon: BitmapDescriptor.defaultMarkerWithHue(140),
       ),
     );
     // Solid line — dash patterns cause memory leaks on iOS
@@ -40,8 +43,8 @@ import 'package:project_gofull/core/resources/app_theme.dart';
       Polyline(
         polylineId: const PolylineId('route'),
         points: [providerPosition, destination],
-        color: context.colors.primary.withValues(alpha: 0.5),
-        width: 3,
+        color: TrackingColors.accent.withValues(alpha: 0.7),
+        width: 4,
       ),
     };
   }

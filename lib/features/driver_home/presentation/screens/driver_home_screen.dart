@@ -23,6 +23,7 @@ import '../widgets/driver_status_toggle.dart';
 import '../widgets/order_popup_card.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/core/widgets/directional_icon.dart';
+import 'package:project_gofull/core/resources/tracking_colors.dart';
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});
@@ -254,10 +255,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen>
       });
       // Skip order details — go directly to navigate
       final customerPhone = (req.driverInfo?['phone'] as String?) ?? '';
-      Navigator.pushNamed(
-        context,
+      _openFlowScreen(
         Routes.driverNavigate,
-        arguments: DriverNavigateArgs(
+        DriverNavigateArgs(
           orderId: req.id.toString(),
           address: req.driverAddress ?? '',
           lat: double.tryParse(req.driverLatitude),
@@ -287,13 +287,23 @@ class _DriverHomeScreenState extends State<DriverHomeScreen>
     }
   }
 
+  /// Opens an order-flow screen and re-syncs with the backend the moment
+  /// it pops. Without this, returning from the flow (e.g. after Confirm
+  /// Receipt completes the order) left the active-order card on screen
+  /// until the next 5s poll, which looked like the app had not updated.
+  void _openFlowScreen(String route, Object args) {
+    Navigator.pushNamed(context, route, arguments: args).then((_) {
+      if (mounted) _fetchBackendState();
+    });
+  }
+
   void _resumeActiveOrder(ServiceRequestEntity req) {
     final orderId = req.id.toString();
     final customerPhone = (req.driverInfo?['phone'] as String?) ?? '';
     switch (req.status) {
       case 'accepted':
-        Navigator.pushNamed(context, Routes.driverNavigate,
-            arguments: DriverNavigateArgs(
+        _openFlowScreen(Routes.driverNavigate,
+            DriverNavigateArgs(
               orderId: orderId,
               address: req.driverAddress ?? '',
               lat: double.tryParse(req.driverLatitude),
@@ -308,8 +318,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen>
             ));
         break;
       case 'en_route':
-        Navigator.pushNamed(context, Routes.driverNavigate,
-            arguments: DriverNavigateArgs(
+        _openFlowScreen(Routes.driverNavigate,
+            DriverNavigateArgs(
               orderId: orderId,
               address: req.driverAddress ?? '',
               lat: double.tryParse(req.driverLatitude),
@@ -325,15 +335,15 @@ class _DriverHomeScreenState extends State<DriverHomeScreen>
         break;
       case 'arrived':
         if (req.isFuelDelivery) {
-          Navigator.pushNamed(context, Routes.driverRefueling,
-              arguments: DriverRefuelingArgs(
+          _openFlowScreen(Routes.driverRefueling,
+              DriverRefuelingArgs(
                 orderId: orderId,
                 amount: double.tryParse(req.total ?? '0') ?? 0,
                 customerPhone: customerPhone,
               ));
         } else {
-          Navigator.pushNamed(context, Routes.driverDocumentation,
-              arguments: DriverDocumentationArgs(
+          _openFlowScreen(Routes.driverDocumentation,
+              DriverDocumentationArgs(
                 orderId: orderId,
                 documentationType: 'pickup',
                 amount: double.tryParse(req.total ?? '0') ?? 0,
@@ -345,8 +355,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen>
         }
         break;
       case 'in_progress':
-        Navigator.pushNamed(context, Routes.driverCollectPayment,
-            arguments: DriverCollectPaymentArgs(
+        _openFlowScreen(Routes.driverCollectPayment,
+            DriverCollectPaymentArgs(
               orderId: orderId,
               amount: double.tryParse(req.total ?? '0') ?? 0,
               customerPhone: customerPhone,
@@ -967,15 +977,11 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
     }
   }
 
-  Color get _statusColor {
-    switch (widget.request.status) {
-      case 'accepted':    return const Color(0xFF2979FF);
-      case 'en_route':    return context.colors.info;
-      case 'arrived':     return context.colors.primaryLight;
-      case 'in_progress': return const Color(0xFF7C3AED);
-      default: return context.colors.primary;
-    }
-  }
+  /// ONE solid accent for the whole tracking card, every status.
+  /// Status is still communicated by [_statusIcon] and [_statusLabel] —
+  /// colour is not used to encode it (which also avoids relying on colour
+  /// alone to convey information, WCAG 1.4.1).
+  Color get _accent => TrackingColors.accent;
 
   IconData get _statusIcon {
     switch (widget.request.status) {
@@ -987,9 +993,22 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
     }
   }
 
+  /// The status glyph, mirrored ONLY when it actually encodes reading
+  /// direction. `play_circle_outline` holds a right-pointing triangle and
+  /// has matchTextDirection == false, so it needs an explicit flip in
+  /// Arabic. The others must NOT be flipped: a mirrored checkmark reads as
+  /// broken (Material's RTL guidance exempts checkmarks), and the map pin
+  /// and navigation cursor are vertically symmetric anyway.
+  Widget _statusGlyph(Color color) {
+    final isDirectional = widget.request.status == 'in_progress';
+    return isDirectional
+        ? MirroredIcon(_statusIcon, size: 14.sp, color: color)
+        : Icon(_statusIcon, size: 14.sp, color: color);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final accentColor = _statusColor;
+    final accentColor = _accent;
     return AnimatedBuilder(
       animation: _pulseController,
       builder: (context, _) {
@@ -1001,7 +1020,7 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
             borderRadius: BorderRadius.circular(20.r),
             boxShadow: [
               BoxShadow(
-                color: context.colors.primary
+                color: accentColor
                     .withValues(alpha: 0.06 + pulseValue * 0.05),
                 blurRadius: 20 + pulseValue * 8,
                 offset: const Offset(0, 4),
@@ -1027,11 +1046,11 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                     // vehicle icon must not change color as the order
                     // progresses (design request).
                     decoration: BoxDecoration(
-                      color: context.colors.primary,
+                      color: accentColor,
                       borderRadius: BorderRadius.circular(14.r),
                       boxShadow: [
                         BoxShadow(
-                          color: context.colors.primary.withValues(alpha: 0.3),
+                          color: accentColor.withValues(alpha: 0.3),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
@@ -1074,11 +1093,7 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
-                                _statusIcon,
-                                size: 14.sp,
-                                color: accentColor,
-                              ),
+                              _statusGlyph(accentColor),
                               SizedBox(width: 4.w),
                               Text(
                                 _statusLabel(context),
@@ -1110,11 +1125,11 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                   // former gold gradient; complements the green brand
                   // without competing with it.
                   decoration: BoxDecoration(
-                    color: context.colors.info,
+                    color: accentColor,
                     borderRadius: BorderRadius.circular(14.r),
                     boxShadow: [
                       BoxShadow(
-                        color: context.colors.info.withValues(alpha: 0.35),
+                        color: accentColor.withValues(alpha: 0.35),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       ),
@@ -1123,7 +1138,12 @@ class _ActiveOrderCardState extends State<_ActiveOrderCard>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.play_arrow_rounded,
+                      // Forward-progress affordance: arrow_forward_rounded
+                      // has matchTextDirection == true, so it points → in
+                      // English and ← in Arabic automatically. The old
+                      // play_arrow_rounded does not mirror and pointed
+                      // backwards against RTL text.
+                      Icon(forwardArrowIcon(context),
                           size: 20.sp, color: Colors.white),
                       SizedBox(width: 6.w),
                       Text(

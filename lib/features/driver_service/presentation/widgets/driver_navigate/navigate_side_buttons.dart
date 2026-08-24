@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/tracking_colors.dart';
 
 class NavigateSideButtons extends StatelessWidget {
   final VoidCallback onFit;
@@ -22,7 +23,7 @@ class NavigateSideButtons extends StatelessWidget {
               BoxShadow(color: context.colors.shadow, blurRadius: 8.r, offset: const Offset(0, 2)),
             ],
           ),
-          child: Icon(icon, size: 22.sp, color: context.colors.primary),
+          child: Icon(icon, size: 22.sp, color: TrackingColors.accent),
         ),
       );
 

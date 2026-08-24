@@ -9,7 +9,6 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/services/noti_service.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
-import 'package:project_gofull/core/widgets/rating_bottom_sheet.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_state.dart';
@@ -192,29 +191,10 @@ class _HomeScreenState extends State<HomeScreen> {
       body: order.isFuelDelivery ? l10n.notifFuelCompletedBody : l10n.notifTowCompletedBody,
     );
 
-    // Fuel orders use inline rating on fuel_complete_screen — skip bottom sheet
-    if (order.isFuelDelivery) {
-      _ratingShown = false;
-      return;
-    }
-
-    // Delay slightly so the user sees the home screen first
-    Future.delayed(const Duration(milliseconds: 800), () {
-      if (!context.mounted) {
-
-        return;
-
-      }
-      showRatingBottomSheet(context, order).then((rated) {
-        _ratingShown = false;
-        if (rated) {
-          prefs.remove('active_order_id');
-          prefs.remove('completed_in_app');
-        } else {
-          prefs.setBool('rating_dismissed_${order.id}', true);
-        }
-      });
-    });
+    // Rating is no longer auto-opened from home. The customer taps
+    // "Rate Provider" on the trip details screen to open the bottom
+    // sheet manually — see [TowingTripDetailsScreen].
+    _ratingShown = false;
   }
 
   @override

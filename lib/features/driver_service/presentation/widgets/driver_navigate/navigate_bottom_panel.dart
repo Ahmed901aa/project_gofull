@@ -7,6 +7,7 @@ import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/driver_service/presentation/widgets/driver_navigate/navigate_location_row.dart';
 import 'package:project_gofull/features/driver_service/presentation/widgets/driver_navigate/navigate_action_buttons.dart';
+import 'package:project_gofull/core/resources/tracking_colors.dart';
 
 class NavigateBottomPanel extends StatelessWidget {
   final bool isToCustomer;
@@ -74,16 +75,16 @@ class NavigateBottomPanel extends StatelessWidget {
   Widget _distanceChip(BuildContext context) => Container(
         padding: EdgeInsets.symmetric(horizontal: Insets.s12, vertical: Insets.s8),
         decoration: BoxDecoration(
-          color: context.colors.primarySurface,
+          color: TrackingColors.accentSurface,
           borderRadius: BorderRadius.circular(AppRadius.s8),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.straighten_rounded, size: 18.sp, color: context.colors.primary),
+            Icon(Icons.straighten_rounded, size: 18.sp, color: TrackingColors.accent),
             SizedBox(width: 6.w),
             Text('${S.of(context).remainingDistance} $remainingDistance',
-                style: getMediumStyle(color: context.colors.primary, fontSize: FontSize.s14)),
+                style: getMediumStyle(color: TrackingColors.accent, fontSize: FontSize.s14)),
           ],
         ),
       );

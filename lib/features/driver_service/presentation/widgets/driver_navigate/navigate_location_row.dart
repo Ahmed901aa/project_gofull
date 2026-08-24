@@ -5,6 +5,7 @@ import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/core/resources/tracking_colors.dart';
 
 class NavigateLocationRow extends StatelessWidget {
   final bool isToCustomer;
@@ -22,8 +23,8 @@ class NavigateLocationRow extends StatelessWidget {
           Container(
             width: 40.w,
             height: 40.w,
-            decoration: BoxDecoration(color: context.colors.primarySurface, shape: BoxShape.circle),
-            child: Icon(Icons.location_on_rounded, size: 20.sp, color: context.colors.primary),
+            decoration: const BoxDecoration(color: TrackingColors.accentSurface, shape: BoxShape.circle),
+            child: Icon(Icons.location_on_rounded, size: 20.sp, color: TrackingColors.accent),
           ),
           SizedBox(width: Insets.s12),
           Expanded(

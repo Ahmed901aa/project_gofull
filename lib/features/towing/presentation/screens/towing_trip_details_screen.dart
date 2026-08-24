@@ -15,6 +15,8 @@ import 'package:project_gofull/features/requests/presentation/bloc/request_event
 import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/detail_chip.dart';
 import 'package:project_gofull/features/towing/presentation/widgets/trip_payment_section.dart';
+import 'package:project_gofull/features/towing/presentation/widgets/trip_rating_bottom_bar.dart';
+import 'package:project_gofull/core/widgets/rating_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
@@ -52,9 +54,25 @@ class TowingTripDetailsScreen extends StatelessWidget {
               body = const SizedBox.shrink();
             }
 
+            // Rating bottom bar only for completed, unrated tow orders —
+            // opens the shared bottom sheet (the sole rating entry point).
+            Widget? bottomBar;
+            if (state is RequestDetailsLoaded) {
+              final req = state.request;
+              if (req.isCompleted && !req.isRated) {
+                bottomBar = TripRatingBottomBar(
+                  label: S.of(context).rateService,
+                  onPressed: () => showRatingBottomSheet(context, req),
+                );
+              } else if (req.isCompleted && req.isRated) {
+                bottomBar = const AlreadyRatedBar();
+              }
+            }
+
             return Column(children: [
               _buildHeader(context),
               Expanded(child: body),
+              if (bottomBar != null) bottomBar,
             ]);
           },
         ),

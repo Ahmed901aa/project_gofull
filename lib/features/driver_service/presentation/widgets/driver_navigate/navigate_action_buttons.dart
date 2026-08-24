@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
-import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
+import 'package:project_gofull/core/resources/tracking_colors.dart';
 
 class NavigateActionButtons extends StatelessWidget {
   final bool isToCustomer;
@@ -45,10 +45,10 @@ class NavigateActionButtons extends StatelessWidget {
                   width: Sizes.s48,
                   height: Sizes.s48,
                   decoration: BoxDecoration(
-                    color: context.colors.primarySurface,
+                    color: TrackingColors.accentSurface,
                     borderRadius: BorderRadius.circular(AppRadius.s12),
                   ),
-                  child: Icon(Icons.phone_rounded, size: 22.sp, color: context.colors.primary),
+                  child: Icon(Icons.phone_rounded, size: 22.sp, color: TrackingColors.accent),
                 ),
               ),
             ],

@@ -6,7 +6,6 @@ import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/network/server_locator.dart';
 import 'package:project_gofull/core/services/reverb_service.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
-import 'package:project_gofull/core/widgets/rating_bottom_sheet.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
 import 'package:project_gofull/features/home/presentation/screens/home_screen.dart';
@@ -67,7 +66,7 @@ class _BottomNavShellState extends State<BottomNavShell>
   Key _ordersKey = UniqueKey();
 
   late final RequestBloc _ratingBloc;
-  bool _ratingSheetShown = false;
+  final bool _ratingSheetShown = false;
 
   @override
   void initState() {
@@ -128,49 +127,11 @@ class _BottomNavShellState extends State<BottomNavShell>
     _ratingBloc.add(const CheckUnratedOrderEvent());
   }
 
-  void _onRatingState(BuildContext context, RequestState state) async {
-    if (state is! UnratedOrderFound || _ratingSheetShown) {
-
-      return;
-
-    }
-
-    final order = state.request;
-    final prefs = await SharedPreferences.getInstance();
-    final activeOrderId = prefs.getInt('active_order_id');
-
-    // Extra safety: only show for the order that was active when user left
-    if (activeOrderId != null && activeOrderId != order.id) {
-
-      return;
-
-    }
-
-    // Fuel orders use inline rating on fuel_complete_screen — skip bottom sheet
-    if (order.isFuelDelivery) {
-
-      return;
-
-    }
-
-    _ratingSheetShown = true;
-    // Delay so the home screen is visible first
-    Future.delayed(const Duration(milliseconds: 800), () {
-      if (!context.mounted) {
-        return;
-      }
-      showRatingBottomSheet(context, order).then((rated) {
-        _ratingSheetShown = false;
-        if (rated) {
-          // Rated successfully — clear everything
-          prefs.remove('active_order_id');
-          prefs.remove('completed_in_app');
-        } else {
-          // Dismissed — don't show again
-          prefs.setBool('rating_dismissed_${order.id}', true);
-        }
-      });
-    });
+  void _onRatingState(BuildContext context, RequestState state) {
+    // Rating is no longer auto-opened from the shell. The customer taps
+    // "Rate Provider" on the trip details screen to open the sheet
+    // manually. The shell still fires CheckUnratedOrderEvent so that any
+    // future non-UI reactions (analytics, notifications) can hook in.
   }
 
   void switchTo(int index) {

@@ -68,8 +68,7 @@ class GoFullApp extends StatelessWidget {
                 builder: (context, child) => MaterialApp(
                   debugShowCheckedModeBanner: false,
                   title: 'GoFull',
-                  // Root messenger: outcome snackbars (e.g. a failed status
-                  // update fired just before navigation) stay visible.
+              
                   scaffoldMessengerKey: rootScaffoldMessengerKey,
                   locale: locale,
                   supportedLocales: S.supportedLocales,
