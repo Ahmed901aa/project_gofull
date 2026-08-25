@@ -13,7 +13,6 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/order_polling_service.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
-import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
 import 'package:project_gofull/core/widgets/provider_info_card.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
@@ -28,6 +27,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
+import 'package:project_gofull/core/widgets/animated_tow_truck.dart';
 
 String _calcDistance(double lat1, double lng1, double lat2, double lng2) {
   const r = 6371.0;
@@ -183,9 +183,14 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SizedBox(height: Insets.s16),
-                    const Center(
-                        child: DottedCircleContainer(
-                            imagePath: 'assets/images/crane (1).gif')),
+                    // Service started: the truck travels the route toward
+                    // the destination. Stops if the order leaves
+                    // in_progress (completed / cancelled) before this
+                    // screen navigates away.
+                    AnimatedTowTruck(
+                      moving: (_request?.status ?? 'in_progress') ==
+                          'in_progress',
+                    ),
                     SizedBox(height: Insets.s16),
                     Text(S.of(context).carOnWayToDestination,
                         style: getBoldStyle(

@@ -20,7 +20,7 @@ import '../widgets/service_section_header.dart';
 import '../widgets/towing_car_details_form.dart';
 import '../widgets/towing_route_section.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
-import 'package:project_gofull/features/requests/presentation/widgets/active_order_dialog.dart';
+import 'package:project_gofull/features/requests/presentation/widgets/active_order_sheet.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 
 class TowingScreen extends StatefulWidget {
@@ -107,7 +107,7 @@ class _TowingScreenState extends State<TowingScreen> {
     // One active order per customer (both service types). Client-side
     // pre-check for instant feedback; the backend re-validates atomically.
     if (context.read<AppConfigBloc>().state.activeOrder != null) {
-      showActiveOrderDialog(context);
+      showActiveOrderSheet(context);
       return;
     }
 
@@ -187,7 +187,7 @@ class _TowingScreenState extends State<TowingScreen> {
             setState(() => _isSubmitting = false);
             if (state.isActiveOrderConflict) {
               // Server-confirmed: an order is already active.
-              showActiveOrderDialog(context);
+              showActiveOrderSheet(context);
             } else {
               AppSnackbar.error(context, state.message);
             }

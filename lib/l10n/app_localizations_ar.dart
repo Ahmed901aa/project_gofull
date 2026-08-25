@@ -789,7 +789,17 @@ class SAr extends S {
   String get processing => 'قيد المعالجة';
 
   @override
-  String get activeOrderTitle => 'لديك طلب قيد التنفيذ';
+  String get activeOrderTitle => 'لديك طلب نشط بالفعل';
+
+  @override
+  String get activeOrderSheetBody =>
+      'يمكنك إنشاء طلب جديد بعد اكتمال طلبك الحالي.';
+
+  @override
+  String get closeBtn => 'إغلاق';
+
+  @override
+  String get orderNumberLabel => 'رقم الطلب';
 
   @override
   String get viewCurrentOrder => 'عرض الطلب الحالي';
@@ -812,7 +822,7 @@ class SAr extends S {
   String get serverError => 'خطأ في السيرفر. يرجى المحاولة لاحقاً.';
 
   @override
-  String get sessionExpired => 'انتهت الجلسة. يرجى تسجيل الدخول مرة أخرى.';
+  String get sessionExpired => 'انتهت جلستك. يرجى تسجيل الدخول مرة أخرى.';
 
   @override
   String get permissionDenied => 'ليس لديك صلاحية لتنفيذ هذا الإجراء.';

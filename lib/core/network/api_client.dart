@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:project_gofull/core/network/api_constants.dart';
 import 'package:project_gofull/core/network/server_locator.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
+import 'package:project_gofull/core/utils/session_expiry.dart';
 
 class ApiClient {
   late final Dio dio;
@@ -118,9 +119,20 @@ class ApiClient {
       name: 'HTTP',
       error: error.response?.data,
     );
-    // 401 → token expired / invalid → clear session
+    // 401 → the session is gone (token revoked by a login elsewhere,
+    // expired, or the account was suspended).
     if (error.response?.statusCode == 401) {
+      // A 401 from /auth/login is just wrong credentials, not an expiry —
+      // only a request that CARRIED a token can have had a session.
+      final wasAuthenticated =
+          error.requestOptions.headers.containsKey('Authorization');
+      // A burst of parallel polls all 401 at once; the first one clears
+      // the token, so the rest see no session and skip the redirect.
+      final alreadyHandled = _tokenStorage.getToken() == null;
       _tokenStorage.clearAll();
+      if (wasAuthenticated && !alreadyHandled) {
+        handleSessionExpired();
+      }
     }
     handler.next(error);
   }

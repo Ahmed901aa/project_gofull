@@ -19,6 +19,7 @@ import 'package:project_gofull/core/utils/tracked_dispatch.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
 import 'package:project_gofull/core/utils/startup_log.dart';
+import 'package:project_gofull/core/utils/session_expiry.dart';
 
 void main() async {
   logStartup('main() entered');
@@ -70,6 +71,9 @@ class GoFullApp extends StatelessWidget {
                   title: 'GoFull',
               
                   scaffoldMessengerKey: rootScaffoldMessengerKey,
+                  // Lets the API layer send an expired session back to
+                  // login from outside the widget tree.
+                  navigatorKey: rootNavigatorKey,
                   locale: locale,
                   supportedLocales: S.supportedLocales,
                   localizationsDelegates: const [

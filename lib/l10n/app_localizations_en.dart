@@ -792,7 +792,17 @@ class SEn extends S {
   String get processing => 'Processing';
 
   @override
-  String get activeOrderTitle => 'Active order in progress';
+  String get activeOrderTitle => 'You already have an active order';
+
+  @override
+  String get activeOrderSheetBody =>
+      'You can create a new order once your current one is complete.';
+
+  @override
+  String get closeBtn => 'Close';
+
+  @override
+  String get orderNumberLabel => 'Order number';
 
   @override
   String get viewCurrentOrder => 'View Current Order';
@@ -815,7 +825,7 @@ class SEn extends S {
   String get serverError => 'Server error. Please try again later.';
 
   @override
-  String get sessionExpired => 'Session expired. Please log in again.';
+  String get sessionExpired => 'Your session has ended. Please sign in again.';
 
   @override
   String get permissionDenied => 'You don\'t have permission for this action.';

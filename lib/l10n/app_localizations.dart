@@ -1636,8 +1636,26 @@ abstract class S {
   /// No description provided for @activeOrderTitle.
   ///
   /// In en, this message translates to:
-  /// **'Active order in progress'**
+  /// **'You already have an active order'**
   String get activeOrderTitle;
+
+  /// No description provided for @activeOrderSheetBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You can create a new order once your current one is complete.'**
+  String get activeOrderSheetBody;
+
+  /// No description provided for @closeBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get closeBtn;
+
+  /// No description provided for @orderNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Order number'**
+  String get orderNumberLabel;
 
   /// No description provided for @viewCurrentOrder.
   ///
@@ -1678,7 +1696,7 @@ abstract class S {
   /// No description provided for @sessionExpired.
   ///
   /// In en, this message translates to:
-  /// **'Session expired. Please log in again.'**
+  /// **'Your session has ended. Please sign in again.'**
   String get sessionExpired;
 
   /// No description provided for @permissionDenied.

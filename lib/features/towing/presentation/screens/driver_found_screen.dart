@@ -22,6 +22,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../widgets/driver_found_header.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/animated_tow_truck.dart';
 
 class DriverFoundScreen extends StatefulWidget {
   final DriverFoundArgs? args;
@@ -201,16 +202,21 @@ class _DriverFoundScreenState extends State<DriverFoundScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       SizedBox(height: Insets.s16),
-                      Center(
-                        child: DottedCircleContainer(
-                          imagePath: _isEnRoute
-                              ? (_args.serviceType == 'fuel_delivery'
-                                  ? 'assets/images/tank_truck.gif'
-                                  : 'assets/images/magnifying_glass.gif')
-                              : (_args.imagePath ??
-                                  'assets/images/tank_truck.gif'),
+                      // A TOW provider driving to the customer gets the real
+                      // tow-truck icon travelling the route (it previously
+                      // showed a magnifying glass here). Fuel keeps its own
+                      // artwork.
+                      if (_isEnRoute && _args.serviceType != 'fuel_delivery')
+                        const AnimatedTowTruck(moving: true)
+                      else
+                        Center(
+                          child: DottedCircleContainer(
+                            imagePath: _isEnRoute
+                                ? 'assets/images/tank_truck.gif'
+                                : (_args.imagePath ??
+                                    'assets/images/tank_truck.gif'),
+                          ),
                         ),
-                      ),
                       SizedBox(height: Insets.s16),
                       Text(
                         _isEnRoute

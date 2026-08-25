@@ -24,7 +24,7 @@ import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/fuel_details_form.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
-import 'package:project_gofull/features/requests/presentation/widgets/active_order_dialog.dart';
+import 'package:project_gofull/features/requests/presentation/widgets/active_order_sheet.dart';
 
 class FuelScreen extends StatefulWidget {
   /// Emergency flow (out of fuel on the road) — full tank is not offered.
@@ -143,7 +143,7 @@ class _FuelScreenState extends State<FuelScreen> {
     // One active order per customer (both service types). Client-side
     // pre-check for instant feedback; the backend re-validates atomically.
     if (context.read<AppConfigBloc>().state.activeOrder != null) {
-      showActiveOrderDialog(context);
+      showActiveOrderSheet(context);
       return;
     }
 
@@ -217,7 +217,7 @@ class _FuelScreenState extends State<FuelScreen> {
             setState(() => _isSubmitting = false);
             if (state.isActiveOrderConflict) {
               // Server-confirmed: an order is already active.
-              showActiveOrderDialog(context);
+              showActiveOrderSheet(context);
             } else {
               AppSnackbar.error(context, _friendlyError(context, state.message));
             }

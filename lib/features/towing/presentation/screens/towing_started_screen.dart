@@ -9,7 +9,6 @@ import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/order_polling_service.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
-import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
 import 'package:project_gofull/core/widgets/provider_info_card.dart';
 import 'package:project_gofull/features/requests/domain/entities/service_request_entity.dart';
 import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
@@ -20,6 +19,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
+import 'package:project_gofull/core/widgets/animated_tow_truck.dart';
 
 class TowingStartedScreen extends StatefulWidget {
   final TowingStartedArgs? args;
@@ -128,7 +128,13 @@ class _TowingStartedScreenState extends State<TowingStartedScreen> {
                 padding: EdgeInsets.all(Insets.s16),
                 child: Column(children: [
                   SizedBox(height: Insets.s16),
-                  DottedCircleContainer(imagePath: _args.imagePath),
+                  // Same tow-truck artwork as everywhere else; only its
+                  // position animates. Parked while the provider is
+                  // hooking up the car ('arrived'), and it starts
+                  // travelling the moment the service starts.
+                  AnimatedTowTruck(
+                    moving: _request?.status == 'in_progress',
+                  ),
                   SizedBox(height: Insets.s16),
                   Text(_args.title ?? S.of(context).towingStartHeader,
                       style: getBoldStyle(
