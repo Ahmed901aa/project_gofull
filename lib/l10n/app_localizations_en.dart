@@ -792,6 +792,33 @@ class SEn extends S {
   String get processing => 'Processing';
 
   @override
+  String get onbFuelTitle => 'Fuel, wherever you are';
+
+  @override
+  String get onbFuelBody =>
+      'Ran out of fuel? Order petrol or diesel and we deliver it straight to your car\'s location.';
+
+  @override
+  String get onbTowingTitle => 'A tow truck when you need one';
+
+  @override
+  String get onbTowingBody =>
+      'Car broke down? Request a tow and a verified provider will carry it wherever you need.';
+
+  @override
+  String get onbTrackingTitle => 'Follow your order live';
+
+  @override
+  String get onbTrackingBody =>
+      'Track your provider on the way, see clear prices, and pay cash on delivery.';
+
+  @override
+  String get nextBtn => 'Next';
+
+  @override
+  String get getStartedBtn => 'Get Started';
+
+  @override
   String get activeOrderTitle => 'You already have an active order';
 
   @override

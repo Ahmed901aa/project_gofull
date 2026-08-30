@@ -1633,6 +1633,54 @@ abstract class S {
   /// **'Processing'**
   String get processing;
 
+  /// No description provided for @onbFuelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuel, wherever you are'**
+  String get onbFuelTitle;
+
+  /// No description provided for @onbFuelBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Ran out of fuel? Order petrol or diesel and we deliver it straight to your car\'s location.'**
+  String get onbFuelBody;
+
+  /// No description provided for @onbTowingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A tow truck when you need one'**
+  String get onbTowingTitle;
+
+  /// No description provided for @onbTowingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Car broke down? Request a tow and a verified provider will carry it wherever you need.'**
+  String get onbTowingBody;
+
+  /// No description provided for @onbTrackingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow your order live'**
+  String get onbTrackingTitle;
+
+  /// No description provided for @onbTrackingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your provider on the way, see clear prices, and pay cash on delivery.'**
+  String get onbTrackingBody;
+
+  /// No description provided for @nextBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get nextBtn;
+
+  /// No description provided for @getStartedBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get getStartedBtn;
+
   /// No description provided for @activeOrderTitle.
   ///
   /// In en, this message translates to:

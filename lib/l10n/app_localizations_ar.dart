@@ -789,6 +789,33 @@ class SAr extends S {
   String get processing => 'قيد المعالجة';
 
   @override
+  String get onbFuelTitle => 'الوقود يصلك أينما كنت';
+
+  @override
+  String get onbFuelBody =>
+      'نفد الوقود؟ اطلب بنزين أو ديزل ونوصله مباشرة إلى موقع سيارتك.';
+
+  @override
+  String get onbTowingTitle => 'ساحبة عند الحاجة';
+
+  @override
+  String get onbTowingBody =>
+      'تعطلت سيارتك؟ اطلب ساحبة وسيقوم مزود موثوق بنقلها إلى حيث تريد.';
+
+  @override
+  String get onbTrackingTitle => 'تابع طلبك لحظة بلحظة';
+
+  @override
+  String get onbTrackingBody =>
+      'تتبع مزود الخدمة في الطريق، واطلع على أسعار واضحة، وادفع نقدًا عند الاستلام.';
+
+  @override
+  String get nextBtn => 'التالي';
+
+  @override
+  String get getStartedBtn => 'ابدأ الآن';
+
+  @override
   String get activeOrderTitle => 'لديك طلب نشط بالفعل';
 
   @override

@@ -62,6 +62,7 @@ class ServicesGrid extends StatelessWidget {
                 fallbackIcon: _iconForAction(s.action),
                 iconColor: _iconColorForAction(s.action),
                 largeArt: _largeArtForAction(s.action),
+                artScale: _artScaleForAction(s.action),
                 route: routeForAction(s.action) ?? Routes.fuelType,
               ),
           ]
@@ -74,6 +75,7 @@ class ServicesGrid extends StatelessWidget {
               fallbackIcon: Icons.local_gas_station_rounded,
               iconColor: _iconColorForAction('fuel'),
               largeArt: _largeArtForAction('fuel'),
+              artScale: _artScaleForAction('fuel'),
               route: Routes.fuelType,
             ),
             _ServiceTileData(
@@ -139,7 +141,7 @@ class ServicesGrid extends StatelessWidget {
   static String? _assetForAction(String? action) {
     switch (action) {
       case 'fuel':
-        return 'assets/images/fuel_tanker.png';
+        return 'assets/images/fuel_image.png';
       case 'towing':
         return 'assets/images/tow_truck.png';
       case 'emergency':
@@ -152,6 +154,9 @@ class ServicesGrid extends StatelessWidget {
   /// Fuel & towing artwork renders larger than the rest (design request).
   static bool _largeArtForAction(String? action) =>
       action == 'fuel' || action == 'towing';
+
+  static double _artScaleForAction(String? action) =>
+      action == 'fuel' ? 0.78 : 1.0;
 
   static String? _titleForAction(String? action, S l10n) {
     switch (action) {
@@ -174,6 +179,11 @@ class _ServiceTileData {
   final IconData fallbackIcon;
   final Color? iconColor; // splash + fallback-icon tint
   final bool largeArt; // bigger artwork area (fuel & towing)
+
+  /// Shrinks this tile's artwork inside the shared art box. The fuel
+  /// truck's landscape image fills its frame edge-to-edge, so at 1.0 it
+  /// reads larger than the portrait tow/emergency art beside it.
+  final double artScale;
   final String route;
 
   const _ServiceTileData({
@@ -183,6 +193,7 @@ class _ServiceTileData {
     required this.fallbackIcon,
     this.iconColor,
     this.largeArt = false,
+    this.artScale = 1.0,
     required this.route,
   });
 }
@@ -307,7 +318,11 @@ class _ServiceTile extends StatelessWidget {
                   // the original orientation.
                   child: Transform.flip(
                     flipX: Directionality.of(context) == TextDirection.rtl,
-                    child: _image(context),
+                    child: FractionallySizedBox(
+                      widthFactor: data.artScale,
+                      heightFactor: data.artScale,
+                      child: _image(context),
+                    ),
                   ),
                 ),
                 SizedBox(height: data.largeArt ? Insets.s8 : Insets.s10),

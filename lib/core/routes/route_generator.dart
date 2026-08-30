@@ -47,12 +47,15 @@ import 'package:project_gofull/features/driver_service/presentation/screens/driv
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_task_complete_screen.dart';
 import 'package:project_gofull/features/driver_service/presentation/screens/driver_rate_customer_screen.dart';
 import 'package:project_gofull/features/driver_profile/presentation/screens/driver_privacy_policy_screen.dart';
+import 'package:project_gofull/features/onboarding/presentation/screens/onboarding_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {
       case Routes.splash:
         return _buildRoute(const SplashScreen(), settings);
+      case Routes.onboarding:
+        return _buildRoute(const OnboardingScreen(), settings);
       case Routes.login:
         return _buildRoute(const LoginScreen(), settings);
       case Routes.register:
