@@ -96,7 +96,15 @@ class _SplashScreenState extends State<SplashScreen>
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
+        // Painted explicitly so nothing white can show behind the gradient,
+        // not even for a frame.
+        backgroundColor: AppColors.primaryDark,
         body: Container(
+          // Fill the whole screen. Without an explicit size a Container with
+          // a child shrinks to that child (here the 340px glow), which left
+          // the gradient covering only the top half of the phone.
+          width: double.infinity,
+          height: double.infinity,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -106,47 +114,56 @@ class _SplashScreenState extends State<SplashScreen>
           ),
           child: SafeArea(
             child: Stack(
-              alignment: Alignment.center,
+              fit: StackFit.expand,
               children: [
                 // Warm glow behind the logo so it doesn't float on a void.
-                Container(
-                  width: 340,
-                  height: 340,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [
-                        AppColors.gold.withValues(alpha: 0.14),
-                        AppColors.gold.withValues(alpha: 0.0),
-                      ],
-                    ),
-                  ),
-                ),
-                FadeTransition(
-                  opacity: _fade,
-                  child: ScaleTransition(
-                    scale: _scale,
-                    child: SvgPicture.asset(
-                      SvgAssets.logo,
-                      width: 180,
-                      colorFilter: const ColorFilter.mode(
-                        AppColors.white,
-                        BlendMode.srcIn,
+                Center(
+                  child: Container(
+                    width: 340,
+                    height: 340,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          AppColors.gold.withValues(alpha: 0.14),
+                          AppColors.gold.withValues(alpha: 0.0),
+                        ],
                       ),
                     ),
                   ),
                 ),
-                // Quiet activity cue during the branded pause.
+                Center(
+                  child: FadeTransition(
+                    opacity: _fade,
+                    child: ScaleTransition(
+                      scale: _scale,
+                      child: SvgPicture.asset(
+                        SvgAssets.logo,
+                        width: 180,
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.white,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                // Quiet activity cue during the branded pause, pinned to the
+                // bottom of the screen and centred horizontally.
                 PositionedDirectional(
                   bottom: 48,
-                  child: FadeTransition(
-                    opacity: _footerFade,
-                    child: SizedBox(
-                      width: 22,
-                      height: 22,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: AppColors.goldLight.withValues(alpha: 0.85),
+                  start: 0,
+                  end: 0,
+                  child: Center(
+                    child: FadeTransition(
+                      opacity: _footerFade,
+                      child: SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.goldLight.withValues(alpha: 0.85),
+                        ),
                       ),
                     ),
                   ),
