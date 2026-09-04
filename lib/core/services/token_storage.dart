@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Persists and retrieves the Sanctum Bearer token + basic user info.
+
 class TokenStorage {
   static const _keyToken = 'auth_token';
   static const _keyUser = 'auth_user';

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/network/server_locator.dart';
 import 'package:project_gofull/core/services/reverb_service.dart';
+import 'package:project_gofull/core/services/token_storage.dart';
+import 'package:project_gofull/features/auth/data/models/user_model.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
 import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
@@ -139,6 +140,20 @@ class _BottomNavShellState extends State<BottomNavShell>
     setState(() => _currentIndex = index);
   }
 
+  /// Profile-tab avatar, read from the stored session user (same source as
+  /// the home header's initial bubble).
+  Map<String, dynamic>? get _storedUser => sl<TokenStorage>().getUser();
+
+  String? get _avatarUrl {
+    final u = _storedUser;
+    return u == null ? null : UserModel.readAvatar(u);
+  }
+
+  String get _avatarInitial {
+    final name = (_storedUser?['name'] as String?)?.trim() ?? '';
+    return name.isEmpty ? '' : name.characters.first;
+  }
+
   List<Widget> get _screens => [
         const HomeScreen(),
         KeyedSubtree(key: _ordersKey, child: const OrdersScreen()),
@@ -155,59 +170,22 @@ class _BottomNavShellState extends State<BottomNavShell>
         child: Scaffold(
           backgroundColor: context.colors.surface,
           body: IndexedStack(index: _currentIndex, children: _screens),
-          bottomNavigationBar: Container(
-            decoration: BoxDecoration(
-              color: context.isDarkMode
-                  ? context.colors.surface
-                  : context.colors.background,
-              border: Border(
-                top: BorderSide(
-                  color: context.isDarkMode
-                      ? context.colors.border
-                      : context.colors.surfaceVariant,
-                ),
+          bottomNavigationBar: InstaNavBar(
+            currentIndex: _currentIndex,
+            onTap: switchTo,
+            items: [
+              InstaNavDestination.glyph(InstaGlyph.home,
+                  label: S.of(context).home),
+              InstaNavDestination.glyph(InstaGlyph.orders,
+                  label: S.of(context).myOrders),
+              InstaNavDestination.glyph(InstaGlyph.support,
+                  label: S.of(context).support),
+              InstaNavDestination.avatar(
+                label: S.of(context).myAccount,
+                avatarUrl: _avatarUrl,
+                avatarInitial: _avatarInitial,
               ),
-            ),
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding:
-                    EdgeInsetsDirectional.only(top: 12.h, start: 24.w, end: 24.w),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    NavItem(
-                      icon: Icons.home_rounded,
-                      label: S.of(context).home,
-                      index: 0,
-                      currentIndex: _currentIndex,
-                      onTap: switchTo,
-                    ),
-                    NavItem(
-                      icon: Icons.receipt_long_rounded,
-                      label: S.of(context).myOrders,
-                      index: 1,
-                      currentIndex: _currentIndex,
-                      onTap: switchTo,
-                    ),
-                    NavItem(
-                      icon: Icons.headset_mic_outlined,
-                      label: S.of(context).support,
-                      index: 2,
-                      currentIndex: _currentIndex,
-                      onTap: switchTo,
-                    ),
-                    NavItem(
-                      icon: Icons.person_outline_rounded,
-                      label: S.of(context).myAccount,
-                      index: 3,
-                      currentIndex: _currentIndex,
-                      onTap: switchTo,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            ],
           ),
         ),
       ),
