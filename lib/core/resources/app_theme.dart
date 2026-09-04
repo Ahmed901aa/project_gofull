@@ -223,6 +223,16 @@ extension AppThemeX on BuildContext {
       Theme.of(this).extension<AppThemeColors>()!;
 
   bool get isDarkMode => Theme.of(this).brightness == Brightness.dark;
+
+  /// True while the app is running right-to-left (Arabic).
+  bool get isRtl => Directionality.of(this) == TextDirection.rtl;
+
+  /// Where an input's text, hint and caret should sit: the reading side of
+  /// the *locale*, not of the field. Phone and password fields pin their
+  /// own `textDirection` to LTR so digits and latin never reorder — but
+  /// `TextAlign.start` then resolves against that LTR override and drags
+  /// everything to the left, which is wrong in an Arabic layout.
+  TextAlign get inputAlign => isRtl ? TextAlign.right : TextAlign.left;
 }
 
 // ─────────────────────────────────────────────────────────────

@@ -15,7 +15,15 @@
       // the Dart entrypoint instead). Use "toolArgs" so they behave the same
       // as `flutter run --dart-define=…` in run.sh.
       "toolArgs": [
+        // SERVER_HOST is tried first and follows the Mac across networks —
+        // but .local (mDNS) resolution is unreliable on a physical iPhone,
+        // especially over a VPN. Without a SERVER_IP fallback the app drops
+        // to AppConfig's 127.0.0.1 default, which on a phone means the
+        // phone itself, so every request fails to connect.
+        // Update this when the Mac's LAN IP changes, or use ./run.sh which
+        // detects it automatically.
         "--dart-define=SERVER_HOST=UserMacs-MacBook-Air.local",
+        "--dart-define=SERVER_IP=192.168.111.130",
         "--dart-define=API_PORT=8000"
       ]
     }

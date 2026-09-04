@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,7 +12,6 @@ import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/widgets/app_header.dart';
 import 'package:project_gofull/core/cubits/locale_cubit.dart';
-import 'package:project_gofull/core/widgets/app_notification.dart';
 import 'package:project_gofull/features/auth/data/models/user_model.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
 import '../widgets/profile_menu_item.dart';
@@ -32,6 +32,10 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   Map<String, dynamic>? _profileData;
   bool _isLoading = true;
+
+  /// Logging out is a single tap with no confirmation, so a double tap must
+  /// not fire two revocations or stack two spinners.
+  bool _loggingOut = false;
 
   @override
   void initState() {
@@ -199,7 +203,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     icon: Icons.logout_rounded,
                     label: l10n.logout,
                     destructive: true,
-                    onTap: () => _showLogoutDialog(context),
+                    onTap: () => _logout(context),
                   ),
                   SizedBox(height: Sizes.s16),
                 ],
@@ -211,27 +215,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _showLogoutDialog(BuildContext context) async {
-    final l10n = S.of(context);
-    final confirmed = await AppConfirmDialog.show(
-      context,
-      icon: Icons.logout_rounded,
-      iconColor: context.colors.warning,
-      title: l10n.logoutTitle,
-      subtitle: l10n.logoutSubtitle,
-      confirmLabel: l10n.logoutBtn,
-      cancelLabel: l10n.stayBtn,
-      destructive: true,
-    );
-    if (confirmed && context.mounted) {
-      sl<ReverbService>().disconnect();
-      // Revokes the token server-side; clears local storage regardless.
-      await sl<LogoutUseCase>()(const NoParams());
-      if (context.mounted) {
-        Navigator.of(context, rootNavigator: true)
-            .pushNamedAndRemoveUntil(Routes.login, (r) => false);
-      }
+  /// Signs out immediately — no confirmation step.
+  ///
+  /// Revoking the token is a network round trip, so the tap gets a blocking
+  /// spinner rather than appearing to do nothing on a weak connection. The
+  /// spinner lives on the root navigator and is swept away by the same
+  /// `pushNamedAndRemoveUntil` that lands on login.
+  Future<void> _logout(BuildContext context) async {
+    if (_loggingOut) return;
+    _loggingOut = true;
+
+    unawaited(showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Center(
+        child: CircularProgressIndicator(color: context.colors.primary),
+      ),
+    ));
+
+    sl<ReverbService>().disconnect();
+    // Revokes the token server-side; clears local storage regardless.
+    await sl<LogoutUseCase>()(const NoParams());
+
+    if (!context.mounted) {
+      _loggingOut = false;
+      return;
     }
+    Navigator.of(context, rootNavigator: true)
+        .pushNamedAndRemoveUntil(Routes.login, (r) => false);
+    _loggingOut = false;
   }
 }
 

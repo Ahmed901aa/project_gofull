@@ -106,8 +106,11 @@ class _LoginFormCardState extends State<LoginFormCard> {
       child: TextField(
         controller: widget.passwordController,
         obscureText: _obscurePassword,
+        // LTR so a latin password never reorders; aligned to the locale's
+        // reading side so the hint and the caret both sit on the right in
+        // Arabic instead of splitting across the field.
         textDirection: TextDirection.ltr,
-        textAlign: TextAlign.start,
+        textAlign: context.inputAlign,
         style: getMediumStyle(color: context.colors.textPrimary, fontSize: 16.sp),
         decoration: InputDecoration(
           hintText: S.of(context).passwordHint,

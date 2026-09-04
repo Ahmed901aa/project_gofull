@@ -148,7 +148,7 @@ class AppConfirmDialog {
       barrierDismissible: true,
       builder: (_) => _ConfirmDialogContent(
         icon: icon,
-        iconColor: iconColor ?? context.colors.primary,
+        iconColor: iconColor,
         title: title,
         subtitle: subtitle,
         confirmLabel: confirmLabel,
@@ -162,7 +162,10 @@ class AppConfirmDialog {
 
 class _ConfirmDialogContent extends StatelessWidget {
   final IconData icon;
-  final Color iconColor;
+
+  /// Optional override. Left null, the icon takes the confirm action's own
+  /// colour so a red button never sits beneath an amber icon.
+  final Color? iconColor;
   final String title;
   final String subtitle;
   final String confirmLabel;
@@ -171,7 +174,7 @@ class _ConfirmDialogContent extends StatelessWidget {
 
   const _ConfirmDialogContent({
     required this.icon,
-    required this.iconColor,
+    this.iconColor,
     required this.title,
     required this.subtitle,
     required this.confirmLabel,
@@ -181,21 +184,32 @@ class _ConfirmDialogContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final resolvedCancelLabel = cancelLabel ?? S.of(context).goBack;
-    final confirmColor = destructive ? context.colors.error : context.colors.primary;
+    final confirmColor = destructive ? colors.error : colors.primary;
+    final resolvedIconColor = iconColor ?? confirmColor;
 
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(horizontal: Insets.s24),
-      child: Container(
+      // Cap the width so this stays a dialog on a tablet instead of
+      // stretching across the whole screen.
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 420),
+        child: Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: Insets.s20, vertical: 20.h),
+          padding: EdgeInsets.symmetric(horizontal: Insets.s20, vertical: 24.h),
           decoration: BoxDecoration(
-            color: context.colors.surface,
+            color: colors.surface,
             borderRadius: BorderRadius.circular(AppRadius.s24),
+            // The dark theme carries no shadow token, so lean on a hairline
+            // there to separate the card from the scrim.
+            border: context.isDarkMode
+                ? Border.all(color: colors.borderSubtle)
+                : null,
             boxShadow: [
               BoxShadow(
-                color: context.colors.shadow,
+                color: colors.shadow,
                 blurRadius: 24,
                 offset: const Offset(0, 8),
               ),
@@ -204,94 +218,178 @@ class _ConfirmDialogContent extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Icon circle
               Container(
                 width: 72.w,
                 height: 72.w,
                 decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.1),
+                  color: resolvedIconColor.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, size: 36.sp, color: iconColor),
+                child: Icon(icon, size: 34.sp, color: resolvedIconColor),
               ),
-              SizedBox(height: 12.h),
-
-              // Title
+              SizedBox(height: 16.h),
               Text(
                 title,
                 style: getBoldStyle(
-                  color: context.colors.textPrimary,
+                  color: colors.textPrimary,
                   fontSize: FontSize.s20,
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 6.h),
-
-              // Subtitle
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4.w),
-                child: Text(
-                  subtitle,
-                  style: getRegularStyle(
-                    color: context.colors.textSecondary,
-                    fontSize: FontSize.s14,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
+              SizedBox(height: 8.h),
+              Text(
+                subtitle,
+                style: getRegularStyle(
+                  color: colors.textSecondary,
+                  fontSize: FontSize.s14,
+                ).copyWith(height: 1.5),
+                textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20.h),
-
-              // Buttons
-              Row(
-                children: [
-                  // Cancel (outline)
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => Navigator.pop(context, false),
-                      child: Container(
-                        height: 48.h,
-                        decoration: BoxDecoration(
-                          color: context.colors.surfaceElevated,
-                          borderRadius: BorderRadius.circular(AppRadius.s16),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          resolvedCancelLabel,
-                          style: getSemiBoldStyle(
-                            color: context.colors.textSecondary,
-                            fontSize: FontSize.s15,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: Insets.s12),
-                  // Confirm
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => Navigator.pop(context, true),
-                      child: Container(
-                        height: 48.h,
-                        decoration: BoxDecoration(
-                          color: confirmColor,
-                          borderRadius: BorderRadius.circular(AppRadius.s16),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          confirmLabel,
-                          style: getSemiBoldStyle(
-                            color: context.colors.surface,
-                            fontSize: FontSize.s15,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              SizedBox(height: 24.h),
+              _DialogActions(
+                cancelLabel: resolvedCancelLabel,
+                confirmLabel: confirmLabel,
+                confirmColor: confirmColor,
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Cancel + confirm, side by side — or stacked when the viewer's text size
+/// would push the labels out of a single-line pill.
+class _DialogActions extends StatelessWidget {
+  final String cancelLabel;
+  final String confirmLabel;
+  final Color confirmColor;
+
+  const _DialogActions({
+    required this.cancelLabel,
+    required this.confirmLabel,
+    required this.confirmColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+
+    // Cancel is a real, readable choice — not grey-on-grey. On a
+    // destructive dialog the safe way out must not look disabled.
+    final cancel = _DialogButton(
+      label: cancelLabel,
+      onTap: () => Navigator.pop(context, false),
+      background: colors.surface,
+      foreground: colors.textPrimary,
+      borderColor: colors.border,
+    );
+    final confirm = _DialogButton(
+      label: confirmLabel,
+      onTap: () => Navigator.pop(context, true),
+      background: confirmColor,
+      foreground: colors.onPrimary,
+    );
+
+    // Two pills stop fitting once the labels are scaled well past their
+    // design size; stack them rather than clipping the text.
+    final stacked = MediaQuery.textScalerOf(context).scale(FontSize.s15) > 22;
+
+    if (stacked) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [confirm, SizedBox(height: Insets.s12), cancel],
+      );
+    }
+
+    // IntrinsicHeight + stretch keeps both pills the same height when one
+    // label wraps to two lines and the other does not.
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(child: cancel),
+          SizedBox(width: Insets.s12),
+          Expanded(child: confirm),
+        ],
+      ),
+    );
+  }
+}
+
+/// One dialog action: a pill that dims and shrinks slightly while held, so
+/// a destructive tap gives real feedback instead of feeling inert.
+class _DialogButton extends StatefulWidget {
+  final String label;
+  final VoidCallback onTap;
+  final Color background;
+  final Color foreground;
+  final Color? borderColor;
+
+  const _DialogButton({
+    required this.label,
+    required this.onTap,
+    required this.background,
+    required this.foreground,
+    this.borderColor,
+  });
+
+  @override
+  State<_DialogButton> createState() => _DialogButtonState();
+}
+
+class _DialogButtonState extends State<_DialogButton> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: widget.label,
+      excludeSemantics: true,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: (_) => setState(() => _pressed = true),
+        onTapCancel: () => setState(() => _pressed = false),
+        onTapUp: (_) => setState(() => _pressed = false),
+        onTap: widget.onTap,
+        child: AnimatedScale(
+          scale: _pressed ? 0.97 : 1,
+          duration: const Duration(milliseconds: 110),
+          curve: Curves.easeOut,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 110),
+            width: double.infinity,
+            // minHeight, not a fixed height: the pill grows for a long or
+            // scaled-up label instead of clipping it.
+            constraints: BoxConstraints(minHeight: 50.h),
+            padding:
+                EdgeInsets.symmetric(horizontal: Insets.s12, vertical: 12.h),
+            decoration: BoxDecoration(
+              color: _pressed
+                  ? Color.alphaBlend(
+                      Colors.black.withValues(alpha: 0.09), widget.background)
+                  : widget.background,
+              borderRadius: BorderRadius.circular(AppRadius.s16),
+              border: widget.borderColor == null
+                  ? null
+                  : Border.all(color: widget.borderColor!, width: 1.2),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              widget.label,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: getSemiBoldStyle(
+                color: widget.foreground,
+                fontSize: FontSize.s15,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

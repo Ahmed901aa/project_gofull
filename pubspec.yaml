@@ -35,6 +35,11 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
 flutter:
+  # Flutter's LLDB-based debugger terminates the app with signal 11 on a
+  # physical iPhone before the first frame. Falling back to the classic
+  # debugger avoids the crash; hot reload/restart are unaffected.
+  config:
+    enable-lldb-debugging: false
   generate: true
   uses-material-design: true
 

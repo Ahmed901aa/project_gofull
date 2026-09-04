@@ -140,11 +140,12 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
                   controller: widget.controller,
                   focusNode: _focusNode,
                   keyboardType: TextInputType.phone,
-                  // Digits always render LTR; the start alignment then
-                  // pins them to the left of their slot, so the field
-                  // looks correct in both RTL and LTR layouts.
+                  // Digits always render LTR so the number never reorders,
+                  // but the alignment follows the LOCALE — in Arabic that
+                  // puts the number right up against the +218 chip instead
+                  // of stranding it at the far left of the row.
                   textDirection: TextDirection.ltr,
-                  textAlign: TextAlign.start,
+                  textAlign: context.inputAlign,
                   style: getMediumStyle(
                     color: context.colors.textPrimary,
                     fontSize: 16.sp,
@@ -159,7 +160,6 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
                           .withValues(alpha: 0.65),
                       fontSize: 16.sp,
                     ),
-                    hintTextDirection: TextDirection.ltr,
                     border: InputBorder.none,
                     isDense: true,
                     contentPadding: EdgeInsetsDirectional.symmetric(
