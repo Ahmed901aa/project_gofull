@@ -873,5 +873,7 @@
   "homeServicesTitle": "وش تحتاج الحين؟",
   "todaysFuelPrices": "أسعار الوقود اليوم",
   "liveNow": "مباشر",
-  "openStationsNow": "{count, plural, =0{لا توجد محطات مفتوحة الآن} =1{محطة واحدة مفتوحة الآن} =2{محطتان مفتوحتان الآن} few{{count} محطات مفتوحة الآن} many{{count} محطة مفتوحة الآن} other{{count} محطة مفتوحة الآن}}"
+  "openStationsNow": "{count, plural, =0{لا توجد محطات مفتوحة الآن} =1{محطة واحدة مفتوحة الآن} =2{محطتان مفتوحتان الآن} few{{count} محطات مفتوحة الآن} many{{count} محطة مفتوحة الآن} other{{count} محطة مفتوحة الآن}}",
+  "cameraUnavailableUseGallery": "الكاميرا غير متاحة — اختر صورة من المعرض بدلاً من ذلك.",
+  "photoCaptureFailed": "تعذّر الحصول على الصورة. حاول مرة أخرى."
 }

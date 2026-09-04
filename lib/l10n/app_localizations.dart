@@ -5028,6 +5028,18 @@ abstract class S {
   /// In en, this message translates to:
   /// **'{count, plural, =0{No stations open now} =1{1 station open now} other{{count} stations open now}}'**
   String openStationsNow(int count);
+
+  /// No description provided for @cameraUnavailableUseGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera isn\'t available — pick a photo from your library instead.'**
+  String get cameraUnavailableUseGallery;
+
+  /// No description provided for @photoCaptureFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t get the photo. Please try again.'**
+  String get photoCaptureFailed;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

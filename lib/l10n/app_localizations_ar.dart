@@ -2589,4 +2589,11 @@ class SAr extends S {
     );
     return '$_temp0';
   }
+
+  @override
+  String get cameraUnavailableUseGallery =>
+      'الكاميرا غير متاحة — اختر صورة من المعرض بدلاً من ذلك.';
+
+  @override
+  String get photoCaptureFailed => 'تعذّر الحصول على الصورة. حاول مرة أخرى.';
 }

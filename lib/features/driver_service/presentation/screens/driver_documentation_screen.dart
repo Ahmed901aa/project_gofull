@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:project_gofull/core/utils/photo_capture.dart';
 import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/l10n/app_localizations.dart';
@@ -28,7 +28,6 @@ class DriverDocumentationScreen extends StatefulWidget {
 }
 
 class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
-  final _picker = ImagePicker();
 
   File? _photo;
 
@@ -40,13 +39,10 @@ class _DriverDocumentationScreenState extends State<DriverDocumentationScreen> {
       _isPickup ? S.of(context).startToDestination : S.of(context).collectPayment;
 
   Future<void> _capturePhoto() async {
-    final picked = await _picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 80,
-      maxWidth: 1280,
-    );
-    if (picked != null && mounted) {
-      setState(() => _photo = File(picked.path));
+    final file =
+        await capturePhoto(context, imageQuality: 80, maxWidth: 1280);
+    if (file != null && mounted) {
+      setState(() => _photo = file);
     }
   }
 

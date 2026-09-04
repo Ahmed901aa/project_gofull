@@ -880,5 +880,7 @@
         "type": "int"
       }
     }
-  }
+  },
+  "cameraUnavailableUseGallery": "Camera isn't available — pick a photo from your library instead.",
+  "photoCaptureFailed": "Couldn't get the photo. Please try again."
 }

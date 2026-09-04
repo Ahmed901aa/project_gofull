@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:project_gofull/core/utils/photo_capture.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/resources/app_theme.dart';
 
@@ -13,16 +14,12 @@ class PhotoPickerSection extends StatefulWidget {
 
 class _PhotoPickerSectionState extends State<PhotoPickerSection> {
   File? _photo; // both camera and gallery results go here (middle slot)
-  final _picker = ImagePicker();
 
   Future<void> _pick(ImageSource source) async {
-    final picked = await _picker.pickImage(source: source, imageQuality: 90);
-    if (picked == null || !mounted) {
-
-      return;
-
+    final file = await capturePhoto(context, source: source, imageQuality: 90);
+    if (file != null && mounted) {
+      setState(() => _photo = file);
     }
-    setState(() => _photo = File(picked.path));
   }
 
   @override

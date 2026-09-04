@@ -2603,4 +2603,11 @@ class SEn extends S {
     );
     return '$_temp0';
   }
+
+  @override
+  String get cameraUnavailableUseGallery =>
+      'Camera isn\'t available — pick a photo from your library instead.';
+
+  @override
+  String get photoCaptureFailed => 'Couldn\'t get the photo. Please try again.';
 }
