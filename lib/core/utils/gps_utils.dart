@@ -4,7 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 typedef GpsLocation = ({String address, double lat, double lng});
 
-/// Shared permission check used by both helpers below.
+
 Future<bool> _ensurePermission() async {
   var p = await Geolocator.checkPermission();
   if (p == LocationPermission.denied) p = await Geolocator.requestPermission();

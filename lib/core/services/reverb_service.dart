@@ -74,14 +74,13 @@ class ReverbService {
 
   String get _url {
     final scheme = AppConfig.reverbUseTls ? 'wss' : 'ws';
-    // Reverb runs on the same machine as the API — follow the live host.
+   
     final host = ServerLocator.instance.host.value;
     return '$scheme://$host:${AppConfig.reverbPort}'
         '/app/${AppConfig.reverbAppKey}?protocol=7&client=dart&version=1.0';
   }
 
-  /// Stream of events for [channel] (e.g. 'private-driver.12').
-  /// Connects and subscribes lazily.
+  
   Stream<ReverbEvent> channelStream(String channel) {
     _channels.add(channel);
     _ensureConnected();
@@ -99,9 +98,7 @@ class ReverbService {
       try {
         socket = await pending.timeout(_connectTimeout);
       } on TimeoutException {
-        // `pending` is abandoned but still running; without a handler its
-        // eventual completion becomes an unhandled async exception or a
-        // leaked socket. Close on late success, swallow late errors.
+       
         pending.then((s) => s.close(), onError: (_) {});
         rethrow;
       }
@@ -128,8 +125,7 @@ class ReverbService {
     }
   }
 
-  /// (Re)start the dead-connection watchdog. Called on connect and on
-  /// every inbound frame.
+  
   void _armHeartbeat() {
     _heartbeatTimer?.cancel();
     _heartbeatTimer = Timer(_heartbeatTimeout, () {

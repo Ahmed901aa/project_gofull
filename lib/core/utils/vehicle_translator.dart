@@ -1,17 +1,10 @@
 import 'package:flutter/widgets.dart';
 
-/// Locale-aware translator for standardized vehicle values (make, model,
-/// optionally color) that are stored as free text in the backend.
-///
-/// Personal names and addresses are *not* covered here on purpose — those
-/// must always be shown as entered. Only standardized values that have a
-/// canonical English/Arabic spelling go through this helper.
+
 class VehicleTranslator {
   VehicleTranslator._();
 
-  // ── Make / Model ──────────────────────────────────────────────────────
-  /// Canonical Arabic → English mapping for vehicle makes and models we
-  /// commonly see in the Saudi / Libyan market.
+  
   static const Map<String, String> _arToEn = {
     // Makes
     'تويوتا': 'Toyota',

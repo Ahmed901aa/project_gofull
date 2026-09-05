@@ -1,6 +1,5 @@
 import 'dart:async';
 
-/// Reusable polling utility — calls [callback] every [interval] until stopped.
 class OrderPollingService {
   Timer? _timer;
   bool _isPolling = false;
@@ -14,9 +13,7 @@ class OrderPollingService {
   }) {
     stop();
     _isPolling = true;
-    // One tick at a time: on a slow network, overlapping callbacks would
-    // pile up requests and let stale responses interleave. Errors must not
-    // kill the timer.
+   
     Future<void> tick() async {
       if (_inFlight || !_isPolling) return;
       _inFlight = true;

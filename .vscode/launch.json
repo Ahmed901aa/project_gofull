@@ -1,31 +1,62 @@
 {
   "version": "0.2.0",
+  // Three ways to launch:
+  //   "GoFull (both devices)"  → simulator + physical phone together
+  //   "GoFull (phone)"         → the physical iPhone only
+  //   "GoFull (simulator)"     → the iOS Simulator only
+  // Pick one from the dropdown at the top of the Run and Debug panel.
+  //
+  // NOTE: dart-defines must be passed to the flutter TOOL, not the app.
+  // Putting them under "args" silently drops them (they get forwarded to the
+  // Dart entrypoint instead). "toolArgs" behaves like `flutter run --dart-define=…`.
+  //
+  // SERVER_HOST is tried first and follows the Mac across networks — but
+  // .local (mDNS) resolution is unreliable on a physical iPhone, especially
+  // over a VPN. Without the SERVER_IP fallback the app drops to AppConfig's
+  // 127.0.0.1 default, which on a phone means the phone itself, so every
+  // request fails to connect. The same IP works for the simulator too,
+  // because the simulator shares the Mac's network stack.
+  //
+  // Update SERVER_IP when the Mac's LAN IP changes, or use ./run.sh /
+  // ./run-both.sh, which detect it automatically.
   "configurations": [
     {
-      "name": "GoFull (device)",
+      "name": "GoFull (phone)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
+      "deviceId": "00008030-000E190E1160802E",
       // Route output to the integrated terminal so the debugger doesn't
-      // freeze the app on caught async exceptions (e.g. transient
-      // SocketException from ServerLocator probing) — matches `./run.sh`.
+      // freeze the app on caught async exceptions (e.g. a transient
+      // SocketException while ServerLocator probes) — matches ./run.sh.
       "console": "terminal",
-      // NOTE: dart-defines must be passed to the flutter tool, not the app.
-      // Putting them under "args" silently drops them (they get forwarded to
-      // the Dart entrypoint instead). Use "toolArgs" so they behave the same
-      // as `flutter run --dart-define=…` in run.sh.
       "toolArgs": [
-        // SERVER_HOST is tried first and follows the Mac across networks —
-        // but .local (mDNS) resolution is unreliable on a physical iPhone,
-        // especially over a VPN. Without a SERVER_IP fallback the app drops
-        // to AppConfig's 127.0.0.1 default, which on a phone means the
-        // phone itself, so every request fails to connect.
-        // Update this when the Mac's LAN IP changes, or use ./run.sh which
-        // detects it automatically.
         "--dart-define=SERVER_HOST=UserMacs-MacBook-Air.local",
         "--dart-define=SERVER_IP=192.168.111.130",
         "--dart-define=API_PORT=8000"
       ]
+    },
+    {
+      "name": "GoFull (simulator)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "deviceId": "59EC552C-1A6D-493F-ADD7-345E8AED2A1B",
+      "console": "terminal",
+      "toolArgs": [
+        "--dart-define=SERVER_HOST=UserMacs-MacBook-Air.local",
+        "--dart-define=SERVER_IP=192.168.111.130",
+        "--dart-define=API_PORT=8000"
+      ]
+    }
+  ],
+  // A compound starts both configurations as two independent debug sessions,
+  // so each device keeps its own hot reload and its own console.
+  "compounds": [
+    {
+      "name": "GoFull (both devices)",
+      "configurations": ["GoFull (simulator)", "GoFull (phone)"],
+      "stopAll": true
     }
   ]
 }

@@ -3,23 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Finds the dev backend on the local network at RUNTIME so the app keeps
-/// working when the Mac changes Wi‑Fi or the API lands on another port —
-/// no rebuild, no code edit, works even when launched from the IDE without
-/// `./run.sh`'s dart-defines.
-///
-/// Host resolution order (first reachable wins):
-///   1. `SERVER_HOST` (.local mDNS name, e.g. UserMacs-MacBook-Air.local) —
-///      follows the Mac across networks automatically.
-///   2. Last host that worked (cached in SharedPreferences).
-///   3. `SERVER_IP` baked in at build time (`--dart-define`).
-///
-/// For each host, ports are probed in parallel: last-good port, build-time
-/// `API_PORT`, then 8000–8005 — because `php artisan serve` silently
-/// auto-increments past a busy port, so the API may sit on 8001/8002/…
-///
-/// "Reachable" = GET /api/app/settings answers 200 within ~1.5 s, which
-/// proves it's actually our Laravel API and not some other local server.
+
 class ServerLocator {
   ServerLocator._();
   static final ServerLocator instance = ServerLocator._();

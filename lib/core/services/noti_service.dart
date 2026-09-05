@@ -8,7 +8,7 @@ class NotiService {
   final _plugin = FlutterLocalNotificationsPlugin();
   bool _isInitialized = false;
 
-  // ── Initialize ─────────────────────────────────────────────
+
 
   Future<void> initNotification() async {
     if (_isInitialized) {
@@ -33,7 +33,7 @@ class NotiService {
       ),
     );
 
-    // Create Android notification channel
+  
     await _plugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
@@ -50,7 +50,7 @@ class NotiService {
     _isInitialized = true;
   }
 
-  // ── Show notification ──────────────────────────────────────
+
 
   Future<void> showNotification({
     int id = 0,
