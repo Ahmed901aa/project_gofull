@@ -1,7 +1,8 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:project_gofull/features/notifications/data/datasources/notification_data_source.dart';
 import 'package:project_gofull/features/notifications/domain/entities/notification_entity.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_gofull/core/error/exceptions.dart';
 
 // Events
 abstract class NotificationEvent extends Equatable {
@@ -56,8 +57,11 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     try {
       final list = await dataSource.getNotifications();
       emit(NotificationsLoaded(list));
-    } catch (e) {
-      emit(NotificationError(e.toString()));
+    } on ServerException catch (e) {
+      emit(NotificationError(e.message));
+    } catch (_) {
+      // Parse/type errors etc. — never leak Dart internals to the UI.
+      emit(const NotificationError('failed'));
     }
   }
 }

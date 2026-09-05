@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class PhoneField extends StatelessWidget {
   final TextEditingController controller;
@@ -23,15 +25,15 @@ class PhoneField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('رقم الجوال', style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s16).copyWith(height: 1.4)),
+        Text(S.of(context).phoneLabel, style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s16).copyWith(height: 1.4)),
         SizedBox(height: Insets.s8),
         Container(
           height: 48.h,
           padding: EdgeInsets.symmetric(horizontal: Insets.s16),
           decoration: BoxDecoration(
-            color: const Color(0xFFF8F8F9),
+            color: context.colors.inputFill,
             borderRadius: BorderRadius.circular(AppRadius.s16),
-            border: Border.all(color: const Color(0xFFEFF0F1)),
+            border: Border.all(color: context.colors.border),
           ),
           child: Row(
             children: [
@@ -40,19 +42,19 @@ class PhoneField extends StatelessWidget {
                 children: [
                   Text('\u{1F1F1}\u{1F1FE}', style: TextStyle(fontSize: 16.sp)),
                   SizedBox(width: Insets.s8),
-                  Text('+218', style: getRegularStyle(color: const Color(0xFF838485), fontSize: FontSize.s16).copyWith(height: 1.6)),
-                  Icon(Icons.keyboard_arrow_down_rounded, size: 16.sp, color: const Color(0xFF838485)),
+                  Text('+218', style: getRegularStyle(color: context.colors.textSecondary, fontSize: FontSize.s16).copyWith(height: 1.6)),
+                  Icon(Icons.keyboard_arrow_down_rounded, size: 16.sp, color: context.colors.textSecondary),
                 ],
               ),
-              Container(width: 1, height: 24.h, color: const Color(0xFFD9DADB), margin: EdgeInsets.symmetric(horizontal: 3.w)),
+              Container(width: 1, height: 24.h, color: context.colors.border, margin: EdgeInsets.symmetric(horizontal: 3.w)),
               Expanded(
                 child: TextField(
                   controller: controller,
                   textDirection: TextDirection.ltr,
-                  textAlign: TextAlign.right,
+                  textAlign: TextAlign.start,
                   keyboardType: TextInputType.phone,
                   decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero),
-                  style: getMediumStyle(color: const Color(0xFF0E0E0E), fontSize: FontSize.s14).copyWith(height: 1.4),
+                  style: getMediumStyle(color: context.colors.textPrimary, fontSize: FontSize.s14).copyWith(height: 1.4),
                   onChanged: onChanged,
                 ),
               ),
@@ -62,7 +64,7 @@ class PhoneField extends StatelessWidget {
               else
                 GestureDetector(
                   onTap: onVerifyTap,
-                  child: Text('تأكيد الرقم', style: getBoldStyle(color: const Color(0xFF004B3B), fontSize: FontSize.s14).copyWith(height: 1.6)),
+                  child: Text(S.of(context).confirmNumber, style: getBoldStyle(color: context.colors.primary, fontSize: FontSize.s14).copyWith(height: 1.6)),
                 ),
             ],
           ),

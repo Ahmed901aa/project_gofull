@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'arc_with_dots_painter.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 /// Reusable loading circle widget matching the Figma design.
 /// Green gradient circle with a spinning arc that has dots at both tips.
@@ -56,8 +57,8 @@ class _LoadingCircleWidgetState extends State<LoadingCircleWidget>
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  const Color(0xFF004B3B).withValues(alpha: 0.1),
-                  const Color(0xFF8AACA5).withValues(alpha: 0.1),
+                  context.colors.primary.withValues(alpha: 0.1),
+                  context.colors.primaryLight.withValues(alpha: 0.1),
                 ],
               ),
             ),
@@ -65,12 +66,12 @@ class _LoadingCircleWidgetState extends State<LoadingCircleWidget>
           Container(
             width: innerSize,
             height: innerSize,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xFF004B3B), Color(0xFF8AACA5)],
+                colors: [context.colors.primary, context.colors.primaryLight],
               ),
             ),
           ),

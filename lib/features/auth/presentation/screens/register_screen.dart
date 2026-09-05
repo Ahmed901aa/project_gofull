@@ -6,7 +6,7 @@ import 'package:project_gofull/core/di/injection_container.dart';
 import 'package:project_gofull/core/resources/assets_manager.dart';
 import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
@@ -16,6 +16,8 @@ import 'package:project_gofull/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_event.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_state.dart';
 import 'package:project_gofull/features/auth/presentation/widgets/phone_input_field.dart';
+import 'package:project_gofull/features/auth/presentation/widgets/register_otp_sheet.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -29,9 +31,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  String _selectedRole = 'driver';
+  final String _selectedRole = 'driver';
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
+  bool _otpSheetOpen = false;
 
   @override
   void dispose() {
@@ -48,18 +51,61 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final password = _passwordController.text;
     final confirm = _confirmPasswordController.text;
 
-    if (name.isEmpty) return;
-    if (phone.isEmpty || phone.length < 9) return;
-    if (password.isEmpty || password.length < 6) return;
-    if (password != confirm) return;
+    if (name.isEmpty) {
 
-    context.read<AuthBloc>().add(RegisterRequested(
-          name: name,
-          phone: phone,
-          password: password,
-          passwordConfirmation: confirm,
-          role: _selectedRole,
-        ));
+
+      return;
+
+
+    }
+    if (phone.isEmpty || phone.length < 9) {
+
+      return;
+
+    }
+    if (password.isEmpty || password.length < 6) {
+
+      return;
+
+    }
+    if (password != confirm) {
+
+      return;
+
+    }
+
+    // Step 1: request an SMS verification code. Registration continues in
+    // _onOtpSent once the code arrives and the user enters it.
+    context.read<AuthBloc>().add(SendOtpRequested(phone: phone));
+  }
+
+  Future<void> _onOtpSent(BuildContext context, String phone) async {
+    if (_otpSheetOpen) {
+      return; // resend fired while the sheet is already showing
+    }
+    _otpSheetOpen = true;
+    final bloc = context.read<AuthBloc>();
+
+    final code = await RegisterOtpSheet.show(
+      context,
+      phone,
+      onResend: () => bloc.add(SendOtpRequested(phone: phone)),
+    );
+    _otpSheetOpen = false;
+
+    if (code == null) {
+      return; // user dismissed the sheet
+    }
+
+    // Step 2: register with the entered code.
+    bloc.add(RegisterRequested(
+      name: _nameController.text.trim(),
+      phone: phone,
+      password: _passwordController.text,
+      passwordConfirmation: _confirmPasswordController.text,
+      role: _selectedRole,
+      otpCode: code,
+    ));
   }
 
   void _navigateAfterAuth(UserEntity user) {
@@ -76,10 +122,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
           if (state is AuthAuthenticated) {
             _navigateAfterAuth(state.user);
           }
+          if (state is OtpSent) {
+            _onOtpSent(context, state.phone);
+          }
         },
         child: Builder(
           builder: (context) => Scaffold(
-            backgroundColor: AppColors.primary,
+            backgroundColor: context.colors.primary,
             body: Column(
               children: [
                 Expanded(
@@ -101,7 +150,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: AppColors.white,
+                      color: context.colors.surface,
                       borderRadius: BorderRadius.vertical(
                           top: Radius.circular(AppRadius.s32)),
                     ),
@@ -119,7 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget _buildForm(BuildContext context, AuthState state) {
-    final isLoading = state is AuthLoading;
+    final isLoading = state is AuthLoading || state is OtpSending;
     final errorMsg = state is AuthFailure ? state.message : null;
 
     return SingleChildScrollView(
@@ -128,49 +177,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(AppStrings.createAccountTitle,
+          Text(S.of(context).createAccountTitle,
               textAlign: TextAlign.center,
               style: getBoldStyle(
-                  color: AppColors.black, fontSize: FontSize.s24)),
+                  color: context.colors.textPrimary, fontSize: FontSize.s24)),
           SizedBox(height: Sizes.s8),
           _buildLoginRow(),
           SizedBox(height: Sizes.s20),
 
-          // ── Role selector ──────────────────────────────────
-          Text(AppStrings.accountType,
-              style: getMediumStyle(
-                  color: AppColors.black, fontSize: FontSize.s16)),
-          SizedBox(height: Sizes.s8),
-          _buildRoleSelector(),
-          SizedBox(height: Sizes.s16),
-
           // ── Name ───────────────────────────────────────────
-          Text(AppStrings.nameLabel,
+          Text(S.of(context).nameLabel,
               style: getMediumStyle(
-                  color: AppColors.black, fontSize: FontSize.s16)),
+                  color: context.colors.textPrimary, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
           _buildTextField(
             controller: _nameController,
-            hint: AppStrings.nameHint,
+            hint: S.of(context).nameHint,
           ),
           SizedBox(height: Sizes.s16),
 
           // ── Phone ──────────────────────────────────────────
-          Text(AppStrings.phoneLabel,
+          Text(S.of(context).phoneLabel,
               style: getMediumStyle(
-                  color: AppColors.black, fontSize: FontSize.s16)),
+                  color: context.colors.textPrimary, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
           PhoneInputField(controller: _phoneController, errorText: null),
           SizedBox(height: Sizes.s16),
 
           // ── Password ───────────────────────────────────────
-          Text(AppStrings.passwordLabel,
+          Text(S.of(context).passwordLabel,
               style: getMediumStyle(
-                  color: AppColors.black, fontSize: FontSize.s16)),
+                  color: context.colors.textPrimary, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
           _buildPasswordField(
             controller: _passwordController,
-            hint: AppStrings.passwordHint,
+            hint: S.of(context).passwordHint,
             obscure: _obscurePassword,
             onToggle: () =>
                 setState(() => _obscurePassword = !_obscurePassword),
@@ -178,13 +219,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
           SizedBox(height: Sizes.s16),
 
           // ── Confirm Password ───────────────────────────────
-          Text(AppStrings.confirmPasswordLabel,
+          Text(S.of(context).confirmPasswordLabel,
               style: getMediumStyle(
-                  color: AppColors.black, fontSize: FontSize.s16)),
+                  color: context.colors.textPrimary, fontSize: FontSize.s16)),
           SizedBox(height: Sizes.s8),
           _buildPasswordField(
             controller: _confirmPasswordController,
-            hint: AppStrings.confirmPasswordHint,
+            hint: S.of(context).confirmPasswordHint,
             obscure: _obscureConfirm,
             onToggle: () =>
                 setState(() => _obscureConfirm = !_obscureConfirm),
@@ -196,58 +237,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Text(errorMsg,
                 textAlign: TextAlign.center,
                 style: getRegularStyle(
-                    color: AppColors.error, fontSize: FontSize.s14)),
+                    color: context.colors.error, fontSize: FontSize.s14)),
           ],
 
           SizedBox(height: Sizes.s24),
           AppButton(
-            text: AppStrings.registerButton,
+            text: S.of(context).registerButton,
             isLoading: isLoading,
             onPressed: () => _onRegister(context),
           ),
         ],
-      ),
-    );
-  }
-
-  // ── Role Toggle ────────────────────────────────────────────
-
-  Widget _buildRoleSelector() {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.lightGrey,
-        borderRadius: BorderRadius.circular(AppRadius.s12),
-      ),
-      child: Row(
-        children: [
-          _roleOption('driver', AppStrings.roleDriver),
-          _roleOption('provider', AppStrings.roleProvider),
-        ],
-      ),
-    );
-  }
-
-  Widget _roleOption(String value, String label) {
-    final isSelected = _selectedRole == value;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() => _selectedRole = value),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: EdgeInsets.symmetric(vertical: Insets.s12),
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(AppRadius.s12),
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            label,
-            style: getSemiBoldStyle(
-              color: isSelected ? AppColors.white : AppColors.grey,
-              fontSize: FontSize.s14,
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -260,17 +259,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightGrey,
+        color: context.colors.surfaceVariant,
         borderRadius: BorderRadius.circular(AppRadius.s12),
-        border: Border.all(color: AppColors.inputBorder),
+        border: Border.all(color: context.colors.inputBorder),
       ),
       child: TextField(
         controller: controller,
-        textAlign: TextAlign.right,
-        style: getMediumStyle(color: AppColors.black, fontSize: 16.sp),
+        textAlign: TextAlign.start,
+        style: getMediumStyle(color: context.colors.textPrimary, fontSize: 16.sp),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: getRegularStyle(color: AppColors.grey, fontSize: 16.sp),
+          hintStyle: getRegularStyle(color: context.colors.iconSecondary, fontSize: 16.sp),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
               horizontal: Insets.s12, vertical: Insets.s12),
@@ -287,26 +286,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightGrey,
+        color: context.colors.surfaceVariant,
         borderRadius: BorderRadius.circular(AppRadius.s12),
-        border: Border.all(color: AppColors.inputBorder),
+        border: Border.all(color: context.colors.inputBorder),
       ),
       child: TextField(
         controller: controller,
         obscureText: obscure,
+        // LTR so a latin password never reorders; aligned to the locale's
+        // reading side so the hint and the caret both sit on the right in
+        // Arabic instead of splitting across the field.
         textDirection: TextDirection.ltr,
-        textAlign: TextAlign.right,
-        style: getMediumStyle(color: AppColors.black, fontSize: 16.sp),
+        textAlign: context.inputAlign,
+        style: getMediumStyle(color: context.colors.textPrimary, fontSize: 16.sp),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: getRegularStyle(color: AppColors.grey, fontSize: 16.sp),
+          hintStyle: getRegularStyle(color: context.colors.iconSecondary, fontSize: 16.sp),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(
               horizontal: Insets.s12, vertical: Insets.s12),
           prefixIcon: IconButton(
             icon: Icon(
               obscure ? Icons.visibility_off : Icons.visibility,
-              color: AppColors.grey,
+              color: context.colors.iconSecondary,
               size: 20.sp,
             ),
             onPressed: onToggle,
@@ -321,13 +323,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
         children: [
           GestureDetector(
             onTap: () => Navigator.of(context).pop(),
-            child: Text(AppStrings.loginButton,
+            child: Text(S.of(context).loginButton,
                 style: getSemiBoldStyle(
-                    color: AppColors.primary, fontSize: FontSize.s14)),
+                    color: context.colors.primary, fontSize: FontSize.s14)),
           ),
-          Text(' ${AppStrings.alreadyHaveAccount}',
+          Text(' ${S.of(context).alreadyHaveAccount}',
               style: getRegularStyle(
-                  color: AppColors.grey, fontSize: FontSize.s14)),
+                  color: context.colors.iconSecondary, fontSize: FontSize.s14)),
         ],
       );
 }

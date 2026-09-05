@@ -1,27 +1,32 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project_gofull/core/error/failure.dart';
 import 'package:project_gofull/core/services/token_storage.dart';
 import 'package:project_gofull/core/usecases/usecase.dart';
 import 'package:project_gofull/features/auth/data/models/user_model.dart';
 import 'package:project_gofull/features/auth/domain/usecases/login_usecase.dart';
 import 'package:project_gofull/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:project_gofull/features/auth/domain/usecases/register_usecase.dart';
+import 'package:project_gofull/features/auth/domain/usecases/send_otp_usecase.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_event.dart';
 import 'package:project_gofull/features/auth/presentation/bloc/auth_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUseCase loginUseCase;
   final RegisterUseCase registerUseCase;
+  final SendOtpUseCase sendOtpUseCase;
   final LogoutUseCase logoutUseCase;
   final TokenStorage tokenStorage;
 
   AuthBloc({
     required this.loginUseCase,
     required this.registerUseCase,
+    required this.sendOtpUseCase,
     required this.logoutUseCase,
     required this.tokenStorage,
   }) : super(const AuthInitial()) {
     on<CheckAuthRequested>(_onCheckAuth);
     on<LoginRequested>(_onLogin);
+    on<SendOtpRequested>(_onSendOtp);
     on<RegisterRequested>(_onRegister);
     on<LogoutRequested>(_onLogout);
   }
@@ -32,13 +37,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     CheckAuthRequested event,
     Emitter<AuthState> emit,
   ) async {
-    if (tokenStorage.isLoggedIn) {
-      final userJson = tokenStorage.getUser();
-      if (userJson != null) {
-        final user = UserModel.fromJson(userJson);
-        emit(AuthAuthenticated(user));
-        return;
+    try {
+      if (tokenStorage.isLoggedIn) {
+        final userJson = tokenStorage.getUser();
+        if (userJson != null) {
+          final user = UserModel.fromJson(userJson);
+          emit(AuthAuthenticated(user));
+          return;
+        }
       }
+    } catch (_) {
+      // Stored user JSON from an older app version may not match the
+      // current model — treat as logged out rather than crashing startup.
+      await tokenStorage.clearAll();
     }
     emit(const AuthUnauthenticated());
   }
@@ -54,8 +65,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       LoginParams(phone: event.phone, password: event.password),
     );
     result.fold(
-      (failure) => emit(AuthFailure(failure.message)),
+      (failure) => emit(AuthFailure(failure.message,
+          isNetwork: failure is NetworkFailure)),
       (user) => emit(AuthAuthenticated(user)),
+    );
+  }
+
+  // ── Send OTP ──────────────────────────────────────────────
+
+  Future<void> _onSendOtp(
+    SendOtpRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const OtpSending());
+    final result = await sendOtpUseCase(SendOtpParams(phone: event.phone));
+    result.fold(
+      (failure) => emit(AuthFailure(failure.message,
+          isNetwork: failure is NetworkFailure)),
+      (message) => emit(OtpSent(phone: event.phone, message: message)),
     );
   }
 
@@ -73,10 +100,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         password: event.password,
         passwordConfirmation: event.passwordConfirmation,
         role: event.role,
+        otpCode: event.otpCode,
       ),
     );
     result.fold(
-      (failure) => emit(AuthFailure(failure.message)),
+      (failure) => emit(AuthFailure(failure.message,
+          isNetwork: failure is NetworkFailure)),
       (user) => emit(AuthAuthenticated(user)),
     );
   }

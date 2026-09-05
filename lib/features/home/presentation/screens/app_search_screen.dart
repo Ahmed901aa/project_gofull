@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/features/home/presentation/widgets/search_data.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/features/home/presentation/widgets/search_header.dart';
 import 'package:project_gofull/features/home/presentation/widgets/search_idle_content.dart';
 import 'package:project_gofull/features/home/presentation/widgets/search_result_tile.dart';
 import 'package:project_gofull/features/shell/presentation/screens/bottom_nav_shell.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class AppSearchScreen extends StatefulWidget {
   const AppSearchScreen({super.key});
@@ -32,12 +33,14 @@ class _AppSearchScreenState extends State<AppSearchScreen> {
   void _onSearch() {
     final query = _controller.text.trim();
     if (query.isEmpty) { setState(() => _results = []); return; }
+    final items = getSearchableItems(context);
+    final keywords = getSearchKeywords(context);
     setState(() {
-      _results = searchableItems.where((item) {
+      _results = items.where((item) {
         final title = item['title'] as String;
         final subtitle = item['subtitle'] as String;
         if (title.contains(query) || subtitle.contains(query)) return true;
-        return (searchKeywords[title] ?? []).any((k) => k.contains(query));
+        return (keywords[title] ?? []).any((k) => k.contains(query));
       }).toList().cast<Map<String, dynamic>>();
     });
   }
@@ -52,10 +55,8 @@ class _AppSearchScreenState extends State<AppSearchScreen> {
   @override
   Widget build(BuildContext context) {
     final query = _controller.text.trim();
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+    return Scaffold(
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             SearchHeader(controller: _controller),
@@ -70,7 +71,7 @@ class _AppSearchScreenState extends State<AppSearchScreen> {
                     if (query.isNotEmpty && _results.isEmpty) const SearchEmptyResults(),
                     if (query.isNotEmpty && _results.isNotEmpty) ...[
                       SizedBox(height: Insets.s16),
-                      Text('نتائج البحث (${_results.length})', style: getMediumStyle(color: const Color(0xFF838485), fontSize: FontSize.s14)),
+                      Text('${S.of(context).searchResults} (${_results.length})', style: getMediumStyle(color: context.colors.textSecondary, fontSize: FontSize.s14)),
                       SizedBox(height: Insets.s12),
                       ..._results.map((item) => SearchResultTile(
                             title: item['title'] as String, subtitle: item['subtitle'] as String,
@@ -85,7 +86,6 @@ class _AppSearchScreenState extends State<AppSearchScreen> {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }

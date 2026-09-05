@@ -41,6 +41,17 @@ class RequestCancelled extends RequestState {
   const RequestCancelled();
 }
 
+class UnratedOrderFound extends RequestState {
+  final ServiceRequestEntity request;
+  const UnratedOrderFound(this.request);
+  @override
+  List<Object?> get props => [request];
+}
+
+class NoUnratedOrder extends RequestState {
+  const NoUnratedOrder();
+}
+
 class ProviderRated extends RequestState {
   final RatingEntity rating;
   const ProviderRated(this.rating);
@@ -50,7 +61,12 @@ class ProviderRated extends RequestState {
 
 class RequestError extends RequestState {
   final String message;
-  const RequestError(this.message);
+
+  /// True when the failure is the one-active-order rule — the UI shows the
+  /// "view current order" dialog instead of a generic error.
+  final bool isActiveOrderConflict;
+
+  const RequestError(this.message, {this.isActiveOrderConflict = false});
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, isActiveOrderConflict];
 }

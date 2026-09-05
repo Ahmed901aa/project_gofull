@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:project_gofull/core/config/api_keys.dart';
 import 'reverse_geocode_service.dart';
 
 class PlacePrediction {
@@ -13,7 +14,7 @@ typedef PlaceDetail = ({String address, double lat, double lng});
 
 /// Places API (New) + Geocoding API wrapper.
 class GooglePlacesService {
-  static const _key = 'AIzaSyDZ_ZezX058d36aMTOc9E--MbyWqCdOI9I';
+  static const _key = ApiKeys.googleMaps;
   static const _placesBase = 'https://places.googleapis.com/v1/places';
 
   final _dio = Dio();

@@ -5,6 +5,7 @@ import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
 import '../../resources/styles_manager.dart';
 import '../../resources/values_manager.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class MapConfirmButton extends StatelessWidget {
   final String address;
@@ -23,13 +24,13 @@ class MapConfirmButton extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(
           Insets.s16, Insets.s16, Insets.s16, 32.h),
-      decoration: const BoxDecoration(
-        color: AppColors.white,
+      decoration: BoxDecoration(
+        color: context.colors.surface,
         borderRadius:
             BorderRadius.vertical(top: Radius.circular(20)),
         boxShadow: [
           BoxShadow(
-              color: AppColors.shadow,
+              color: context.colors.shadow,
               blurRadius: 16,
               offset: Offset(0, -4))
         ],
@@ -42,13 +43,13 @@ class MapConfirmButton extends StatelessWidget {
             Row(
               children: [
                 Icon(Icons.location_on,
-                    color: AppColors.primary, size: 16.sp),
+                    color: context.colors.primary, size: 16.sp),
                 SizedBox(width: Insets.s8),
                 Expanded(
                   child: Text(
                     address,
                     style: getMediumStyle(
-                        color: AppColors.black,
+                        color: context.colors.textPrimary,
                         fontSize: FontSize.s12),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -64,7 +65,7 @@ class MapConfirmButton extends StatelessWidget {
             child: ElevatedButton(
               onPressed: onTap,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: context.colors.primary,
                 foregroundColor: AppColors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
@@ -73,7 +74,7 @@ class MapConfirmButton extends StatelessWidget {
               ),
               child: Text(label,
                   style: getBoldStyle(
-                      color: AppColors.white,
+                      color: context.colors.surface,
                       fontSize: FontSize.s16)),
             ),
           ),

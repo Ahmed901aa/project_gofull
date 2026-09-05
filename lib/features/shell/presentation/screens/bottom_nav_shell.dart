@@ -1,85 +1,191 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:project_gofull/core/di/injection_container.dart';
+import 'package:project_gofull/core/network/server_locator.dart';
+import 'package:project_gofull/core/services/reverb_service.dart';
+import 'package:project_gofull/core/services/token_storage.dart';
+import 'package:project_gofull/features/auth/data/models/user_model.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/features/app_config/presentation/bloc/app_config_bloc.dart';
+import 'package:project_gofull/features/app_config/presentation/bloc/app_config_event.dart';
 import 'package:project_gofull/features/home/presentation/screens/home_screen.dart';
 import 'package:project_gofull/features/orders/presentation/screens/orders_screen.dart';
 import 'package:project_gofull/features/profile/presentation/screens/profile_screen.dart';
 import 'package:project_gofull/features/profile/presentation/screens/support_screen.dart';
+import 'package:project_gofull/features/requests/presentation/bloc/request_bloc.dart';
+import 'package:project_gofull/features/requests/presentation/bloc/request_event.dart';
+import 'package:project_gofull/features/requests/presentation/bloc/request_state.dart';
 import '../widgets/nav_item.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/routes/routes.dart';
 
 class BottomNavShell extends StatefulWidget {
   BottomNavShell({Key? key}) : super(key: key ?? shellKey);
 
   static final shellKey = GlobalKey<_BottomNavShellState>();
 
+  /// The ONLY correct way to navigate back to the home shell.
+  ///
+  /// Every shell instance shares [shellKey], so pushing Routes.home while a
+  /// shell is still anywhere in the stack puts the same GlobalKey in the
+  /// tree twice for one frame → "Duplicate GlobalKey detected" crash.
+  /// If a shell is mounted we unwind to it (it is always the root route for
+  /// customers); only when none exists do we create a fresh one.
+  static void popToHome(BuildContext context) {
+    final navigator = Navigator.of(context);
+    if (shellKey.currentState != null) {
+      navigator.popUntil((route) => route.isFirst);
+    } else {
+      navigator.pushNamedAndRemoveUntil(Routes.home, (route) => false);
+    }
+  }
+
+  /// Call this when a new order is created — saves the order ID so we know
+  /// the customer had an active order when they left.
+  static Future<void> markOrderActive(int orderId) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('active_order_id', orderId);
+    await prefs.setBool('completed_in_app', false);
+  }
+
+  /// Call this when the customer sees the completion screen inside the app.
+  /// This means they DON'T need the rating popup — they'll rate normally.
+  static Future<void> markCompletedInApp() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('completed_in_app', true);
+    await prefs.remove('active_order_id');
+  }
+
   @override
   State<BottomNavShell> createState() => _BottomNavShellState();
 }
 
-class _BottomNavShellState extends State<BottomNavShell> {
+class _BottomNavShellState extends State<BottomNavShell>
+    with WidgetsBindingObserver {
   int _currentIndex = 0;
   Key _ordersKey = UniqueKey();
 
+  late final RequestBloc _ratingBloc;
+  final bool _ratingSheetShown = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _ratingBloc = sl<RequestBloc>();
+    // On first app open, check if an order completed while the user was away
+    _checkIfCompletedWhileAway();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // ONLY check when returning from background — not on every state change
+    if (state == AppLifecycleState.resumed) {
+      _checkIfCompletedWhileAway();
+      // Network may have changed while backgrounded → re-find the server,
+      // then reconnect the (probably dead) Reverb socket.
+      ServerLocator.instance.resolve().then((_) {
+        sl<ReverbService>().reconnectNow();
+      });
+      // Fallback fetch covers anything missed while the socket was down.
+      sl<AppConfigBloc>()
+        ..add(const LoadAppConfigEvent())
+        ..add(const LoadHomeDataEvent());
+    }
+  }
+
+  Future<void> _checkIfCompletedWhileAway() async {
+    if (_ratingSheetShown) {
+
+      return;
+
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    final activeOrderId = prefs.getInt('active_order_id');
+    final completedInApp = prefs.getBool('completed_in_app') ?? false;
+    final dismissed =
+        prefs.getBool('rating_dismissed_$activeOrderId') ?? false;
+
+    // Only check if:
+    // 1. There was an active order saved
+    // 2. The customer was NOT in the app when it completed
+    // 3. They haven't already dismissed this rating popup
+    if (activeOrderId == null || completedInApp || dismissed) {
+
+      return;
+
+    }
+
+    // Ask the backend if there's an unrated completed order
+    _ratingBloc.add(const CheckUnratedOrderEvent());
+  }
+
+  void _onRatingState(BuildContext context, RequestState state) {
+    // Rating is no longer auto-opened from the shell. The customer taps
+    // "Rate Provider" on the trip details screen to open the sheet
+    // manually. The shell still fires CheckUnratedOrderEvent so that any
+    // future non-UI reactions (analytics, notifications) can hook in.
+  }
+
   void switchTo(int index) {
-    if (index == 1) _ordersKey = UniqueKey(); // refresh orders on tab switch
+    if (index == 1) _ordersKey = UniqueKey();
     setState(() => _currentIndex = index);
   }
 
+  /// Profile-tab avatar, read from the stored session user (same source as
+  /// the home header's initial bubble).
+  Map<String, dynamic>? get _storedUser => sl<TokenStorage>().getUser();
+
+  String? get _avatarUrl {
+    final u = _storedUser;
+    return u == null ? null : UserModel.readAvatar(u);
+  }
+
+  String get _avatarInitial {
+    final name = (_storedUser?['name'] as String?)?.trim() ?? '';
+    return name.isEmpty ? '' : name.characters.first;
+  }
+
   List<Widget> get _screens => [
-    const HomeScreen(),
-    KeyedSubtree(key: _ordersKey, child: const OrdersScreen()),
-    const SupportScreen(showBack: false),
-    const ProfileScreen(),
-  ];
+        const HomeScreen(),
+        KeyedSubtree(key: _ordersKey, child: const OrdersScreen()),
+        const SupportScreen(showBack: false),
+        const ProfileScreen(),
+      ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: IndexedStack(index: _currentIndex, children: _screens),
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.scaffoldBg,
-          border: Border(top: BorderSide(color: Color(0xFFF4F5F6))),
-        ),
-        child: SafeArea(
-          top: false,
-          child: Padding(
-            padding: EdgeInsets.only(top: 12.h, left: 24.w, right: 24.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                NavItem(
-                  icon: Icons.home_rounded,
-                  label: AppStrings.home,
-                  index: 0,
-                  currentIndex: _currentIndex,
-                  onTap: switchTo,
-                ),
-                NavItem(
-                  icon: Icons.receipt_long_rounded,
-                  label: AppStrings.myOrders,
-                  index: 1,
-                  currentIndex: _currentIndex,
-                  onTap: switchTo,
-                ),
-                NavItem(
-                  icon: Icons.headset_mic_outlined,
-                  label: 'الدعم',
-                  index: 2,
-                  currentIndex: _currentIndex,
-                  onTap: switchTo,
-                ),
-                NavItem(
-                  icon: Icons.person_outline_rounded,
-                  label: AppStrings.myAccount,
-                  index: 3,
-                  currentIndex: _currentIndex,
-                  onTap: switchTo,
-                ),
-              ],
-            ),
+    return BlocProvider.value(
+      value: _ratingBloc,
+      child: BlocListener<RequestBloc, RequestState>(
+        listener: _onRatingState,
+        child: Scaffold(
+          backgroundColor: context.colors.surface,
+          body: IndexedStack(index: _currentIndex, children: _screens),
+          bottomNavigationBar: InstaNavBar(
+            currentIndex: _currentIndex,
+            onTap: switchTo,
+            items: [
+              InstaNavDestination.glyph(InstaGlyph.home,
+                  label: S.of(context).home),
+              InstaNavDestination.glyph(InstaGlyph.orders,
+                  label: S.of(context).myOrders),
+              InstaNavDestination.glyph(InstaGlyph.support,
+                  label: S.of(context).support),
+              InstaNavDestination.avatar(
+                label: S.of(context).myAccount,
+                avatarUrl: _avatarUrl,
+                avatarInitial: _avatarInitial,
+              ),
+            ],
           ),
         ),
       ),

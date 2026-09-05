@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:project_gofull/core/resources/color_manager.dart';
 import 'package:project_gofull/core/resources/font_manager.dart';
-import 'package:project_gofull/core/resources/strings_manager.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/core/routes/routes.dart';
 import 'package:project_gofull/core/utils/route_args.dart';
 import 'package:project_gofull/core/widgets/app_button.dart';
+import 'package:project_gofull/core/widgets/dotted_circle_container.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class DriverTaskCompleteScreen extends StatelessWidget {
   final DriverTaskCompleteArgs args;
@@ -15,10 +16,8 @@ class DriverTaskCompleteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        backgroundColor: AppColors.scaffoldBg,
+    return Scaffold(
+        backgroundColor: context.colors.background,
         body: Column(
           children: [
             _buildHeader(context),
@@ -32,9 +31,9 @@ class DriverTaskCompleteScreen extends StatelessWidget {
                     SizedBox(height: Sizes.s40),
                     _buildSuccessIcon(),
                     SizedBox(height: Insets.s24),
-                    _buildSuccessText(),
+                    _buildSuccessText(context),
                     SizedBox(height: Sizes.s32),
-                    _buildEarningsCard(),
+                    _buildEarningsCard(context),
                     SizedBox(height: Insets.s24),
                   ],
                 ),
@@ -43,14 +42,13 @@ class DriverTaskCompleteScreen extends StatelessWidget {
             _buildBottomButton(context),
           ],
         ),
-      ),
-    );
+      );
   }
 
   // ── Header ──────────────────────────────────────────────────
 
   Widget _buildHeader(BuildContext context) => Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         child: Column(
           children: [
             SizedBox(height: MediaQuery.of(context).padding.top),
@@ -66,60 +64,50 @@ class DriverTaskCompleteScreen extends StatelessWidget {
                             route.settings.name == Routes.driverHome ||
                             route.isFirst),
                     child: Icon(Icons.close_rounded,
-                        size: 24.sp, color: const Color(0xFF0E0E0E)),
+                        size: 24.sp, color: context.colors.textPrimary),
                   ),
                   Expanded(
                     child: Text(
-                      AppStrings.taskComplete,
+                      S.of(context).taskComplete,
                       style: getBoldStyle(
-                          color: const Color(0xFF0E0E0E),
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s20),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   Icon(Icons.info_outline_rounded,
-                      size: 24.sp, color: const Color(0xFF0E0E0E)),
+                      size: 24.sp, color: context.colors.textPrimary),
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFF5F5F5)),
+            Divider(height: 1, color: context.colors.borderSubtle),
           ],
         ),
       );
 
   // ── Success Icon ────────────────────────────────────────────
 
-  Widget _buildSuccessIcon() => Center(
-        child: Container(
-          width: 100.w,
-          height: 100.w,
-          decoration: BoxDecoration(
-            color: AppColors.success.withOpacity(0.12),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            Icons.verified_rounded,
-            size: 60.sp,
-            color: AppColors.success,
-          ),
+  Widget _buildSuccessIcon() => const Center(
+        child: DottedCircleContainer(
+          imagePath: 'assets/images/shield.gif',
         ),
       );
 
   // ── Success Text ────────────────────────────────────────────
 
-  Widget _buildSuccessText() => Column(
+  Widget _buildSuccessText(BuildContext context) => Column(
         children: [
           Text(
-            AppStrings.orderCompletedSuccess,
+            S.of(context).orderCompletedSuccess,
             style: getBoldStyle(
-                color: const Color(0xFF0E0E0E), fontSize: FontSize.s22),
+                color: context.colors.textPrimary, fontSize: FontSize.s22),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: Insets.s8),
           Text(
-            AppStrings.earningsRecorded,
+            S.of(context).earningsRecorded,
             style: getRegularStyle(
-                color: AppColors.neutral800, fontSize: FontSize.s14),
+                color: context.colors.textSecondary, fontSize: FontSize.s14),
             textAlign: TextAlign.center,
           ),
         ],
@@ -127,25 +115,25 @@ class DriverTaskCompleteScreen extends StatelessWidget {
 
   // ── Earnings Card ───────────────────────────────────────────
 
-  Widget _buildEarningsCard() => Container(
+  Widget _buildEarningsCard(BuildContext context) => Container(
         padding: EdgeInsets.all(Insets.s20),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.s16),
-          border: Border.all(color: AppColors.success.withOpacity(0.3)),
+          border: Border.all(color: context.colors.success.withValues(alpha: 0.3)),
         ),
         child: Column(
           children: [
             Text(
-              AppStrings.addedEarnings,
+              S.of(context).addedEarnings,
               style: getMediumStyle(
-                  color: AppColors.neutral800, fontSize: FontSize.s14),
+                  color: context.colors.textSecondary, fontSize: FontSize.s14),
             ),
             SizedBox(height: Insets.s8),
             Text(
-              '${args.earnings.toStringAsFixed(2)} ج.م',
+              '${args.earnings.toStringAsFixed(2)} ${S.of(context).currencyEGP}',
               style: getBoldStyle(
-                  color: AppColors.primary, fontSize: FontSize.s28),
+                  color: context.colors.primary, fontSize: FontSize.s28),
             ),
           ],
         ),
@@ -160,12 +148,12 @@ class DriverTaskCompleteScreen extends StatelessWidget {
           Insets.s16,
           Insets.s12 + MediaQuery.of(context).padding.bottom,
         ),
-        decoration: const BoxDecoration(
-          color: AppColors.white,
-          border: Border(top: BorderSide(color: Color(0xFFF5F5F5))),
+        decoration: BoxDecoration(
+          color: context.colors.surface,
+          border: Border(top: BorderSide(color: context.colors.borderSubtle)),
         ),
         child: AppButton(
-          text: 'العودة للرئيسية',
+          text: S.of(context).backToHomeBtn,
           onPressed: () {
             Navigator.pushNamedAndRemoveUntil(
               context,

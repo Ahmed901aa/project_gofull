@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
 
-import '../../resources/color_manager.dart';
 import '../../resources/font_manager.dart';
 import '../../resources/styles_manager.dart';
 import '../../resources/values_manager.dart';
 import 'map_suggestion.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
+import 'package:project_gofull/core/widgets/directional_icon.dart';
 
 class MapSearchOverlay extends StatelessWidget {
   final TextEditingController controller;
@@ -31,19 +33,20 @@ class MapSearchOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = S.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildInputRow(),
-        const Divider(color: AppColors.divider, height: 1),
-        _buildResults(),
+        _buildInputRow(context, l10n),
+        Divider(color: context.colors.divider, height: 1),
+        _buildResults(context),
       ],
     );
   }
 
-  Widget _buildInputRow() {
+  Widget _buildInputRow(BuildContext context, S l10n) {
     return Container(
-      color: AppColors.white,
+      color: context.colors.surface,
       padding: EdgeInsets.fromLTRB(
           Insets.s16, Insets.s12, Insets.s16, Insets.s12),
       child: Row(
@@ -54,11 +57,11 @@ class MapSearchOverlay extends StatelessWidget {
             child: Container(
               width: 36.w,
               height: 36.w,
-              decoration: const BoxDecoration(
-                  color: AppColors.lightGrey,
+              decoration: BoxDecoration(
+                  color: context.colors.surfaceVariant,
                   shape: BoxShape.circle),
-              child: Icon(Icons.arrow_back,
-                  size: 18.sp, color: AppColors.black),
+              child: Icon(backArrowIcon(context),
+                  size: 18.sp, color: context.colors.textPrimary),
             ),
           ),
           SizedBox(width: Insets.s8),
@@ -66,29 +69,28 @@ class MapSearchOverlay extends StatelessWidget {
             child: Container(
               height: 44.h,
               decoration: BoxDecoration(
-                color: AppColors.lightGrey,
+                color: context.colors.surfaceVariant,
                 borderRadius: BorderRadius.circular(AppRadius.s12),
               ),
               padding: EdgeInsets.symmetric(horizontal: Insets.s12),
               child: Row(
                 children: [
                   Icon(Icons.search_rounded,
-                      color: AppColors.grey, size: 18.sp),
+                      color: context.colors.iconSecondary, size: 18.sp),
                   SizedBox(width: Insets.s8),
                   Expanded(
                     child: TextField(
                       controller: controller,
                       focusNode: focusNode,
                       autofocus: true,
-                      textDirection: TextDirection.rtl,
                       textInputAction: TextInputAction.search,
                       style: getMediumStyle(
-                          color: AppColors.black,
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s14),
                       decoration: InputDecoration(
-                        hintText: 'ابحث عن مدينة أو منطقة...',
+                        hintText: l10n.searchCityOrArea,
                         hintStyle: getRegularStyle(
-                            color: AppColors.grey,
+                            color: context.colors.iconSecondary,
                             fontSize: FontSize.s14),
                         border: InputBorder.none,
                         isDense: true,
@@ -103,7 +105,7 @@ class MapSearchOverlay extends StatelessWidget {
                       onTap: onClear,
                       behavior: HitTestBehavior.opaque,
                       child: Icon(Icons.close,
-                          color: AppColors.grey, size: 16.sp),
+                          color: context.colors.iconSecondary, size: 16.sp),
                     ),
                 ],
               ),
@@ -114,26 +116,30 @@ class MapSearchOverlay extends StatelessWidget {
     );
   }
 
-  Widget _buildResults() {
+  Widget _buildResults(BuildContext context) {
     if (isLoading) {
       return Container(
-        color: AppColors.white,
+        color: context.colors.surface,
         padding: EdgeInsets.symmetric(vertical: 20.h),
-        child: const Center(
+        child: Center(
           child: CircularProgressIndicator(
-              color: AppColors.primary, strokeWidth: 2),
+              color: context.colors.primary, strokeWidth: 2),
         ),
       );
     }
-    if (suggestions.isEmpty) return const SizedBox.shrink();
+    if (suggestions.isEmpty) {
+
+      return const SizedBox.shrink();
+
+    }
     return Container(
-      color: AppColors.white,
+      color: context.colors.surface,
       constraints: BoxConstraints(maxHeight: 300.h),
       child: ListView.separated(
         shrinkWrap: true,
         itemCount: suggestions.length,
         separatorBuilder: (_, __) =>
-            const Divider(color: AppColors.divider, height: 1),
+            Divider(color: context.colors.divider, height: 1),
         itemBuilder: (_, i) {
           final s = suggestions[i];
           return InkWell(
@@ -144,13 +150,13 @@ class MapSearchOverlay extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(Icons.location_on_outlined,
-                      color: AppColors.primary, size: 20.sp),
+                      color: context.colors.primary, size: 20.sp),
                   SizedBox(width: Insets.s12),
                   Expanded(
                     child: Text(
                       s.description,
                       style: getMediumStyle(
-                          color: AppColors.black,
+                          color: context.colors.textPrimary,
                           fontSize: FontSize.s14),
                     ),
                   ),

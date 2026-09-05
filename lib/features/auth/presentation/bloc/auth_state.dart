@@ -28,10 +28,30 @@ class AuthUnauthenticated extends AuthState {
   const AuthUnauthenticated();
 }
 
-class AuthFailure extends AuthState {
+/// SMS code request is in flight.
+class OtpSending extends AuthState {
+  const OtpSending();
+}
+
+/// SMS code sent — show the code entry UI.
+class OtpSent extends AuthState {
+  final String phone;
   final String message;
-  const AuthFailure(this.message);
+  const OtpSent({required this.phone, required this.message});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [phone, message];
+}
+
+class AuthFailure extends AuthState {
+  final String message;
+
+  /// True when the request never reached the server (connectivity), so the
+  /// UI can show a localized connection message instead of [message].
+  final bool isNetwork;
+
+  const AuthFailure(this.message, {this.isNetwork = false});
+
+  @override
+  List<Object?> get props => [message, isNetwork];
 }

@@ -4,6 +4,8 @@ class BannerModel extends BannerEntity {
   const BannerModel({
     required super.id,
     required super.title,
+    super.type,
+    super.action,
     super.subtitle,
     super.imageUrl,
     super.discountCode,
@@ -13,8 +15,12 @@ class BannerModel extends BannerEntity {
   factory BannerModel.fromJson(Map<String, dynamic> json) => BannerModel(
         id: json['id'] as int,
         title: json['title'] as String,
+        type: (json['type'] as String?) ?? 'promo',
+        action: json['action'] as String?,
         subtitle: json['subtitle'] as String?,
-        imageUrl: json['image_url'] as String?,
+        // Prefer the backend's fully-qualified URL; fall back to raw path
+        imageUrl:
+            (json['full_image_url'] ?? json['image_url']) as String?,
         discountCode: json['discount_code'] as String?,
         colorHex: json['color_hex'] as String?,
       );

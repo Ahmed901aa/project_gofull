@@ -25,9 +25,21 @@ class AppConfigState extends Equatable {
       settings[key] ?? fallback;
 
   String get currency => setting('currency', 'د.ل');
+  String get supportPhone => setting('support_phone', '0915909734');
   double get serviceFee => double.tryParse(setting('service_fee', '15')) ?? 15;
+
+  /// Admin-configurable surcharge for emergency fuel orders (default 0).
+  /// MUST be added to the quoted service fee whenever isEmergency is true —
+  /// the backend folds it into service_fee on the order.
+  double get emergencyFee =>
+      double.tryParse(setting('emergency_fee', '0')) ?? 0;
   double get towingBasePrice =>
       double.tryParse(setting('towing_base_price', '50')) ?? 50;
+
+  /// Number of stations currently open — admin-controlled, updated live
+  /// over the `home-data` Reverb channel.
+  int get openStationsCount =>
+      int.tryParse(setting('open_stations_count', '0')) ?? 0;
 
   AppConfigState copyWith({
     List<FuelPriceEntity>? fuelPrices,

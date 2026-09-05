@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Persists and retrieves the Sanctum Bearer token + basic user info.
+
 class TokenStorage {
   static const _keyToken = 'auth_token';
   static const _keyUser = 'auth_user';
@@ -31,7 +31,11 @@ class TokenStorage {
 
   Map<String, dynamic>? getUser() {
     final raw = _prefs.getString(_keyUser);
-    if (raw == null) return null;
+    if (raw == null) {
+
+      return null;
+
+    }
     return jsonDecode(raw) as Map<String, dynamic>;
   }
 

@@ -4,6 +4,8 @@ import 'package:project_gofull/core/resources/font_manager.dart';
 import 'package:project_gofull/core/resources/styles_manager.dart';
 import 'package:project_gofull/core/resources/values_manager.dart';
 import 'package:project_gofull/features/orders/models/order_data.dart';
+import 'package:project_gofull/l10n/app_localizations.dart';
+import 'package:project_gofull/core/resources/app_theme.dart';
 
 class StatusBadge extends StatelessWidget {
   final OrderStatus status;
@@ -17,17 +19,17 @@ class StatusBadge extends StatelessWidget {
 
     switch (status) {
       case OrderStatus.active:
-        bgColor = const Color(0xFFF2F3F4);
-        textColor = const Color(0xFF0E0E0E);
-        label = 'قيد التنفيذ';
+        bgColor = context.colors.surfaceElevated;
+        textColor = context.colors.textPrimary;
+        label = S.of(context).inProgressLabel;
       case OrderStatus.cancelled:
-        bgColor = const Color(0xFFFDECEA);
-        textColor = const Color(0xFFD32F2F);
-        label = 'ملغي';
+        bgColor = context.colors.errorSurface;
+        textColor = context.colors.error;
+        label = S.of(context).cancelledLabel;
       case OrderStatus.completed:
-        bgColor = const Color(0xFFF2F3F4);
-        textColor = const Color(0xFF646565);
-        label = 'منتهي';
+        bgColor = context.colors.surfaceElevated;
+        textColor = context.colors.textSecondary;
+        label = S.of(context).completedLabel;
     }
 
     return Container(

@@ -1,6 +1,6 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'location_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LocationCubit extends Cubit<LocationState> {
   static const _keyAddress = 'saved_address';

@@ -9,33 +9,38 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   cupertino_icons: ^1.0.8
   flutter_screenutil: ^5.9.3
   flutter_svg: ^2.0.10+1
   flutter_bloc: ^9.1.1
+  bloc_concurrency: ^0.3.0
   dio: ^5.9.0
+  flutter_local_notifications: ^21.0.0
   dartz: ^0.10.1
   get_it: ^8.3.0
-  injectable: ^2.5.2
   shared_preferences: ^2.5.3
+  intl: ^0.20.2
   equatable: ^2.0.7
   cached_network_image: ^3.4.1
-  fluttertoast: ^9.0.0
   google_maps_flutter: ^2.14.2
   geolocator: ^14.0.2
-  geocoding: ^4.0.0
   image_picker: ^1.1.2
-  image_gallery_saver: ^2.0.3
+  gal: ^2.3.1
   url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
-  build_runner: ^2.10.1
-  injectable_generator: ^2.9.0
-
 flutter:
+  # Flutter's LLDB-based debugger terminates the app with signal 11 on a
+  # physical iPhone before the first frame. Falling back to the classic
+  # debugger avoids the crash; hot reload/restart are unaffected.
+  config:
+    enable-lldb-debugging: false
+  generate: true
   uses-material-design: true
 
   assets:

@@ -29,6 +29,9 @@ class AppColors {
   static const Color warning = Color(0xFFFFA726);
   static const Color info = Color(0xFF2196F3);
 
+  // Sky blue used to tint service icons (fuel, tow) against light-gray cards.
+  static const Color iconBlueLight = Color(0xFF87CEEB);
+
   // Figma design tokens
   static const Color neutral50  = Color(0xFFFAFAFB);
   static const Color neutral200 = Color(0xFFF8F8F9);

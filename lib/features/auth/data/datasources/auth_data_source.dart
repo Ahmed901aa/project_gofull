@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:project_gofull/core/network/api_client.dart';
 import 'package:project_gofull/core/network/api_constants.dart';
@@ -7,12 +9,14 @@ import 'package:project_gofull/features/auth/data/models/user_model.dart';
 
 abstract class AuthDataSource {
   Future<UserModel> login(String phone, String password);
+  Future<String> sendOtp(String phone);
   Future<UserModel> register(
     String name,
     String phone,
     String password,
     String passwordConfirmation,
     String role,
+    String otpCode,
   );
   Future<void> logout();
   Future<String> changePassword(
@@ -31,10 +35,16 @@ class AuthMockDataSource implements AuthDataSource {
     return UserModel(
       id: 1,
       phone: phone,
-      name: 'أحمد',
+      name: 'Ahmed',
       role: 'driver',
       token: 'mock-token-123',
     );
+  }
+
+  @override
+  Future<String> sendOtp(String phone) async {
+    await Future.delayed(const Duration(milliseconds: 800));
+    return 'Mock OTP sent';
   }
 
   @override
@@ -44,6 +54,7 @@ class AuthMockDataSource implements AuthDataSource {
     String password,
     String passwordConfirmation,
     String role,
+    String otpCode,
   ) async {
     await Future.delayed(const Duration(milliseconds: 800));
     return UserModel(
@@ -79,6 +90,16 @@ class AuthRemoteDataSource implements AuthDataSource {
 
   AuthRemoteDataSource({required this.apiClient, required this.tokenStorage});
 
+  /// The request never reached the server (dead Wi‑Fi, wrong IP, server
+  /// down, iOS local-network permission denied). Must NOT be reported as
+  /// "wrong credentials" — the UI shows a localized connection message.
+  bool _isConnectionError(DioException e) =>
+      e.type == DioExceptionType.connectionError ||
+      e.type == DioExceptionType.connectionTimeout ||
+      e.type == DioExceptionType.sendTimeout ||
+      e.type == DioExceptionType.receiveTimeout ||
+      e.error is SocketException;
+
   @override
   Future<UserModel> login(String phone, String password) async {
     try {
@@ -97,14 +118,39 @@ class AuthRemoteDataSource implements AuthDataSource {
         name: user.name,
         role: user.role,
         status: user.status,
+        avatarUrl: user.avatarUrl,
       ).toJson());
       return user;
     } on DioException catch (e) {
+      if (_isConnectionError(e)) {
+        throw const NetworkException('Cannot reach the server');
+      }
       final msg =
           (e.response?.data as Map<String, dynamic>?)?['message'] as String?;
-      throw ServerException(msg ?? 'فشل تسجيل الدخول');
+      throw ServerException(msg ?? 'Failed to login');
     } catch (_) {
-      throw const ServerException('فشل تسجيل الدخول');
+      throw const ServerException('Failed to login');
+    }
+  }
+
+  @override
+  Future<String> sendOtp(String phone) async {
+    try {
+      final response = await apiClient.dio.post(
+        ApiConstants.otpSend,
+        data: {'phone': phone, 'purpose': 'registration'},
+      );
+      final data = response.data as Map<String, dynamic>;
+      return (data['message'] as String?) ?? 'OTP sent';
+    } on DioException catch (e) {
+      if (_isConnectionError(e)) {
+        throw const NetworkException('Cannot reach the server');
+      }
+      final msg =
+          (e.response?.data as Map<String, dynamic>?)?['message'] as String?;
+      throw ServerException(msg ?? 'Failed to send verification code');
+    } catch (_) {
+      throw const ServerException('Failed to send verification code');
     }
   }
 
@@ -115,6 +161,7 @@ class AuthRemoteDataSource implements AuthDataSource {
     String password,
     String passwordConfirmation,
     String role,
+    String otpCode,
   ) async {
     try {
       final response = await apiClient.dio.post(
@@ -125,6 +172,7 @@ class AuthRemoteDataSource implements AuthDataSource {
           'password': password,
           'password_confirmation': passwordConfirmation,
           'role': role,
+          'otp_code': otpCode,
         },
       );
       final user = UserModel.fromLoginResponse(
@@ -137,14 +185,18 @@ class AuthRemoteDataSource implements AuthDataSource {
         name: user.name,
         role: user.role,
         status: user.status,
+        avatarUrl: user.avatarUrl,
       ).toJson());
       return user;
     } on DioException catch (e) {
+      if (_isConnectionError(e)) {
+        throw const NetworkException('Cannot reach the server');
+      }
       final msg =
           (e.response?.data as Map<String, dynamic>?)?['message'] as String?;
-      throw ServerException(msg ?? 'فشل إنشاء الحساب');
+      throw ServerException(msg ?? 'Failed to create account');
     } catch (_) {
-      throw const ServerException('فشل إنشاء الحساب');
+      throw const ServerException('Failed to create account');
     }
   }
 
@@ -179,11 +231,14 @@ class AuthRemoteDataSource implements AuthDataSource {
       await tokenStorage.saveToken(newToken);
       return newToken;
     } on DioException catch (e) {
+      if (_isConnectionError(e)) {
+        throw const NetworkException('Cannot reach the server');
+      }
       final msg =
           (e.response?.data as Map<String, dynamic>?)?['message'] as String?;
-      throw ServerException(msg ?? 'فشل تغيير كلمة المرور');
+      throw ServerException(msg ?? 'Failed to change password');
     } catch (_) {
-      throw const ServerException('فشل تغيير كلمة المرور');
+      throw const ServerException('Failed to change password');
     }
   }
 }

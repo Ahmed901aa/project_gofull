@@ -13,6 +13,8 @@ class ProviderProfileEntity extends Equatable {
   final String verificationStatus;
   final double averageRating;
   final int totalRatings;
+  final int completedOrders;
+  final double totalIncome;
   final String? userName;
   final String? userPhone;
 
@@ -29,6 +31,8 @@ class ProviderProfileEntity extends Equatable {
     this.verificationStatus = 'pending',
     this.averageRating = 0,
     this.totalRatings = 0,
+    this.completedOrders = 0,
+    this.totalIncome = 0,
     this.userName,
     this.userPhone,
   });
@@ -38,5 +42,10 @@ class ProviderProfileEntity extends Equatable {
   bool get isApproved => verificationStatus == 'approved';
 
   @override
-  List<Object?> get props => [id, userId, isAvailable, verificationStatus];
+  List<Object?> get props => [
+        id, userId, serviceType, vehicleMake, vehicleModel,
+        vehicleYear, vehiclePlate, vehicleColor, isAvailable,
+        verificationStatus, averageRating, totalRatings,
+        completedOrders, totalIncome, userName, userPhone,
+      ];
 }
